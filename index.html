@@ -53,7 +53,6 @@
       font-size: 0.9rem;
     }
 
-    /* Top Navigation Tabs */
     .main-nav {
       display: flex;
       background-color: #1e293b;
@@ -82,7 +81,6 @@
       box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
     }
 
-    /* Filters */
     .filter-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -117,7 +115,6 @@
       width: 100%;
     }
 
-    /* Content Area */
     .cards-list {
       display: grid;
       grid-gap: 12px;
@@ -136,9 +133,29 @@
     .card-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       font-size: 0.85rem;
       color: var(--text-muted);
+    }
+
+    .header-titles {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .match-round {
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+
+    .match-datetime {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
     .badge {
@@ -148,6 +165,7 @@
       padding: 3px 8px;
       border-radius: 4px;
       letter-spacing: 0.5px;
+      white-space: nowrap;
     }
 
     .badge.finished { background: rgba(100, 116, 139, 0.3); color: #94a3b8; }
@@ -174,6 +192,13 @@
     .team.right { text-align: right; }
     .team.winner { color: var(--win-color); }
 
+    .score-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 10px;
+    }
+
     .score-badge {
       background: #0b1120;
       border: 1px solid var(--card-border);
@@ -181,13 +206,11 @@
       border-radius: 6px;
       font-size: 0.95rem;
       font-weight: 800;
-      margin: 0 10px;
       min-width: 80px;
       text-align: center;
       flex-shrink: 0;
     }
 
-    /* Medal Projections Table */
     .table-container {
       overflow-x: auto;
       background: var(--card-bg);
@@ -257,7 +280,6 @@
     <p id="view-subtitle">Live Match Tracker</p>
   </header>
 
-  <!-- Tabs Navigation -->
   <div class="main-nav">
     <button id="nav-tracker" class="main-nav-btn active" onclick="switchMainTab('tracker')">
       📊 Match Tracker
@@ -267,7 +289,6 @@
     </button>
   </div>
 
-  <!-- Multi-Sport Dropdown Filters -->
   <div class="filter-grid">
     <div class="select-wrapper">
       <label class="select-label" for="select-sport">Sport</label>
@@ -285,7 +306,6 @@
     </div>
   </div>
 
-  <!-- Cards & Tables Container -->
   <div id="content-cards" class="cards-list">
     <div class="empty-state">Loading data...</div>
   </div>
@@ -344,7 +364,6 @@
       }
     }
 
-    // --- MEDAL PREDICTIONS LOGIC ---
     function loadMedalPredictions(filePath, division) {
       const container = document.getElementById('content-cards');
       container.innerHTML = '<div class="empty-state">Loading simulation results...</div>';
@@ -359,11 +378,7 @@
           renderMedalTable(list, data);
         })
         .catch(err => {
-          container.innerHTML = `
-            <div class="empty-state">
-              No predictions file found at ${filePath}.
-            </div>
-          `;
+          container.innerHTML = `<div class="empty-state">No predictions file found at ${filePath}.</div>`;
         });
     }
 
@@ -421,7 +436,6 @@
       container.innerHTML = metaHeader + tableHtml;
     }
 
-    // --- MATCH TRACKER LOGIC ---
     function loadMatches(filePath) {
       const container = document.getElementById('content-cards');
       container.innerHTML = '<div class="empty-state">Loading live fixtures...</div>';
@@ -451,15 +465,31 @@
         const isP2Win = m.winner && (m.winner.trim().toLowerCase() === m.player2.trim().toLowerCase());
         const statusClass = (m.status || 'upcoming').toLowerCase();
 
+        // Format date string (e.g. "2026-09-10" -> "10 Sep")
+        let dateDisplay = m.date || '';
+        if (dateDisplay && dateDisplay.includes('-')) {
+          const parts = dateDisplay.split('-');
+          const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          const monthIndex = parseInt(parts[1], 10) - 1;
+          dateDisplay = `${parts[2]} ${months[monthIndex] || ''}`;
+        }
+
+        const dateTimeStr = [dateDisplay, m.time].filter(Boolean).join(' • ');
+
         return `
           <div class="match-card">
             <div class="card-header">
-              <span>${m.round || 'Match'}</span>
-              <span class="badge ${statusClass}">${m.status}</span>
+              <div class="header-titles">
+                <span class="match-round">${m.round || 'Match'}</span>
+                ${dateTimeStr ? `<span class="match-datetime">📅 ${dateTimeStr}</span>` : ''}
+              </div>
+              <span class="badge ${statusClass}">${m.state || m.status}</span>
             </div>
             <div class="card-body">
               <span class="team left ${isP1Win ? 'winner' : ''}">${m.player1}</span>
-              <span class="score-badge">${m.score}</span>
+              <div class="score-container">
+                <span class="score-badge">${m.score}</span>
+              </div>
               <span class="team right ${isP2Win ? 'winner' : ''}">${m.player2}</span>
             </div>
           </div>
@@ -467,7 +497,6 @@
       }).join('');
     }
 
-    // Initial page load
     loadCurrentView();
   </script>
 </body>
