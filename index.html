@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +9,8 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 16px; font-size: 14px; }
     h1 { font-size: 1.25rem; margin-bottom: 4px; }
-    p.sub { color: var(--muted); font-size: 0.8rem; margin-bottom: 16px; }
+    p.sub { color: var(--muted); font-size: 0.8rem; margin-bottom: 12px; }
+    #status { padding: 10px; border-radius: 6px; font-size: 0.82rem; margin-bottom: 14px; background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2); }
     select { width: 100%; padding: 12px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); color: #fff; font-size: 0.95rem; margin-bottom: 16px; outline: none; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; text-align: left; }
@@ -30,7 +30,11 @@
   <h1>Asian Games 2026 Model</h1>
   <p class="sub">Predictions across tournament disciplines</p>
   
-  <select id="sportSelect" onchange="loadSportData(this.value)"></select>
+  <div id="status">Connecting to sports repository...</div>
+
+  <select id="sportSelect" onchange="loadSportData(this.value)">
+    <option value="">-- Choose Sport --</option>
+  </select>
 
   <div class="card">
     <table>
@@ -48,44 +52,68 @@
   </div>
 
   <script>
+    // Robust root path calculation for GitHub Pages
+    const currentPath = window.location.pathname;
+    const repoBase = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+
+    function showStatus(msg, isError = false) {
+      const box = document.getElementById('status');
+      box.style.display = 'block';
+      box.textContent = msg;
+      if (isError) {
+        box.style.background = 'rgba(239, 68, 68, 0.15)';
+        box.style.color = '#f87171';
+        box.style.borderColor = '#ef4444';
+      } else {
+        box.style.background = 'rgba(56, 189, 248, 0.1)';
+        box.style.color = '#38bdf8';
+        box.style.borderColor = 'rgba(56, 189, 248, 0.2)';
+      }
+    }
+
     async function init() {
       const selector = document.getElementById('sportSelect');
-      try {
-        const res = await fetch('./sports.json?v=' + Date.now());
-        if (!res.ok) throw new Error('Could not load sports.json');
-        const sportsList = await res.json();
+      const targetUrl = window.location.origin + repoBase + 'sports.json?t=' + Date.now();
 
+      try {
+        showStatus('Loading sports list...');
+        const res = await fetch(targetUrl);
+        if (!res.ok) throw new Error('File sports.json not found (HTTP ' + res.status + ')');
+        
+        const sportsList = await res.json();
         selector.innerHTML = '';
-        sportsList.forEach((item, index) => {
+        
+        sportsList.forEach(item => {
           const opt = document.createElement('option');
           opt.value = item.file;
           opt.textContent = item.name;
           selector.appendChild(opt);
         });
 
+        document.getElementById('status').style.display = 'none';
+
         if (sportsList.length > 0) {
           loadSportData(sportsList[0].file);
         }
       } catch (err) {
-        selector.innerHTML = '<option>Error loading index</option>';
-        document.getElementById('tableBody').innerHTML = `
-          <tr><td colspan="5" style="text-align:center; color:#f87171; padding:20px;">
-            ${err.message}. Make sure sports.json exists in root.
-          </td></tr>`;
+        showStatus('Error: ' + err.message + '. Make sure sports.json is created in the repository.', true);
       }
     }
 
-    async function loadSportData(filePath) {
+    async function loadSportData(fileName) {
+      if (!fileName) return;
       const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Loading data...</td></tr>';
-      
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Loading match probabilities...</td></tr>';
+
+      const fileUrl = window.location.origin + repoBase + fileName + '?t=' + Date.now();
+
       try {
-        const res = await fetch('./' + filePath + '?v=' + Date.now());
-        if (!res.ok) throw new Error(`Could not load ${filePath}`);
-        const sportPayload = await res.json();
-        
+        const res = await fetch(fileUrl);
+        if (!res.ok) throw new Error('Could not find ' + fileName + ' (HTTP ' + res.status + ')');
+        const payload = await res.json();
+
         tbody.innerHTML = '';
-        sportPayload.data.forEach((row, i) => {
+        payload.data.forEach((row, i) => {
           const tr = document.createElement('tr');
           let badge = '';
           if (i === 0) badge = '<span class="badge badge-gold">🥇 1st</span>';
@@ -102,7 +130,7 @@
           tbody.appendChild(tr);
         });
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#f87171; padding:20px;">${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#f87171; padding:20px;">Error: ${err.message}</td></tr>`;
       }
     }
 
