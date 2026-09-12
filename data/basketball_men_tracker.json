@@ -1,101 +1,37 @@
 {
-  "event": "Basketball (Men's 5v5)",
+  "sport": "Basketball (Men)",
   "matches": [
     {
-      "round": "Group Stage - Group A",
-      "player1": "China (CHN)",
-      "player2": "Saudi Arabia (KSA)",
-      "score": "88 - 62",
+      "round": "Men Group B - Game 1",
       "status": "Finished",
-      "winner": "China (CHN)"
+      "player1": "IR Iran",
+      "player2": "Qatar",
+      "score": "53 - 59",
+      "winner": "Qatar"
     },
     {
-      "round": "Group Stage - Group A",
-      "player1": "Jordan (JOR)",
-      "player2": "Qatar (QAT)",
-      "score": "76 - 71",
+      "round": "Men Group B - Game 2",
       "status": "Finished",
-      "winner": "Jordan (JOR)"
+      "player1": "Jordan",
+      "player2": "Chinese Taipei",
+      "score": "80 - 83",
+      "winner": "Chinese Taipei"
     },
     {
-      "round": "Group Stage - Group B",
-      "player1": "Japan (JPN) [Host]",
-      "player2": "Kazakhstan (KAZ)",
-      "score": "94 - 58",
+      "round": "Men Group A - Game 1",
       "status": "Finished",
-      "winner": "Japan (JPN) [Host]"
+      "player1": "Korea",
+      "player2": "Saudi Arabia",
+      "score": "82 - 66",
+      "winner": "Korea"
     },
     {
-      "round": "Group Stage - Group B",
-      "player1": "South Korea (KOR)",
-      "player2": "Indonesia (INA)",
-      "score": "82 - 64",
+      "round": "Men Group A - Game 2",
       "status": "Finished",
-      "winner": "South Korea (KOR)"
-    },
-    {
-      "round": "Group Stage - Group C",
-      "player1": "Philippines (PHI)",
-      "player2": "Chinese Taipei (TPE)",
-      "score": "74 - 68",
-      "status": "Finished",
-      "winner": "Philippines (PHI)"
-    },
-    {
-      "round": "Group Stage - Group C",
-      "player1": "Iran (IRI)",
-      "player2": "Bahrain (BRN)",
-      "score": "85 - 63",
-      "status": "Finished",
-      "winner": "Iran (IRI)"
-    },
-    {
-      "round": "Quarterfinals",
-      "player1": "China (CHN)",
-      "player2": "South Korea (KOR)",
-      "score": "Q3 04:12 (61 - 54)",
-      "status": "Live",
-      "winner": null
-    },
-    {
-      "round": "Quarterfinals",
-      "player1": "Japan (JPN) [Host]",
-      "player2": "Jordan (JOR)",
-      "score": "Starts 18:30 JST",
-      "status": "Upcoming",
-      "winner": null
-    },
-    {
-      "round": "Quarterfinals",
-      "player1": "Philippines (PHI)",
-      "player2": "Iran (IRI)",
-      "score": "Starts 20:30 JST",
-      "status": "Upcoming",
-      "winner": null
-    },
-    {
-      "round": "Semifinals",
-      "player1": "TBD",
-      "player2": "TBD",
-      "score": "Scheduled",
-      "status": "Upcoming",
-      "winner": null
-    },
-    {
-      "round": "Bronze Medal Game",
-      "player1": "TBD",
-      "player2": "TBD",
-      "score": "Scheduled",
-      "status": "Upcoming",
-      "winner": null
-    },
-    {
-      "round": "Gold Medal Game",
-      "player1": "TBD",
-      "player2": "TBD",
-      "score": "Scheduled",
-      "status": "Upcoming",
-      "winner": null
+      "player1": "Japan",
+      "player2": "Indonesia",
+      "score": "98 - 53",
+      "winner": "Japan"
     }
   ]
 }
