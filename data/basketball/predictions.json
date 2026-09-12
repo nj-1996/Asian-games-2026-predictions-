@@ -1,63 +1,106 @@
 {
   "sport": "Basketball",
-  "model_version": "v1.4-elo-weighted",
-  "last_updated": "2026-09-12T12:00:00Z",
-  "predictions": [
+  "simulation_model": "Monte Carlo (50,000 Runs)",
+  "weighting": "FIBA Asia Cup 2025 + 2023 Asian Games + Regional Margin of Victory",
+  "home_court_boost": "+3.8 pts (Japan)",
+  "men": [
     {
-      "match": "Men's Group A - Round 2",
-      "confidence": "High Confidence",
-      "team1": "Japan",
-      "team2": "Korea",
-      "predicted_winner": "Japan",
-      "win_prob": "64% - 36%"
+      "rank": 1,
+      "team": "China",
+      "gold": "41.5%",
+      "silver": "28.4%",
+      "bronze": "15.6%",
+      "podium": "85.5%"
     },
     {
-      "match": "Men's Group B - Round 2",
-      "confidence": "Moderate Pick",
-      "team1": "Qatar",
-      "team2": "Chinese Taipei",
-      "predicted_winner": "Chinese Taipei",
-      "win_prob": "46% - 54%"
+      "rank": 2,
+      "team": "Japan (Host)",
+      "gold": "27.2%",
+      "silver": "31.0%",
+      "bronze": "21.3%",
+      "podium": "79.5%"
     },
     {
-      "match": "Men's Group C - Round 1",
-      "confidence": "High Confidence",
-      "team1": "China",
-      "team2": "Philippines",
-      "predicted_winner": "China",
-      "win_prob": "58% - 42%"
+      "rank": 3,
+      "team": "Philippines",
+      "gold": "14.8%",
+      "silver": "18.5%",
+      "bronze": "26.2%",
+      "podium": "59.5%"
     },
     {
-      "match": "Men's Group B - Round 3",
-      "confidence": "Lean Pick",
-      "team1": "IR Iran",
-      "team2": "Jordan",
-      "predicted_winner": "Jordan",
-      "win_prob": "48% - 52%"
+      "rank": 4,
+      "team": "Republic of Korea",
+      "gold": "8.1%",
+      "silver": "11.2%",
+      "bronze": "17.5%",
+      "podium": "36.8%"
     },
     {
-      "match": "Women's Group A - Round 1",
-      "confidence": "High Confidence",
-      "team1": "China",
-      "team2": "Indonesia",
-      "predicted_winner": "China",
-      "win_prob": "89% - 11%"
+      "rank": 5,
+      "team": "Jordan",
+      "gold": "4.6%",
+      "silver": "6.1%",
+      "bronze": "10.4%",
+      "podium": "21.1%"
     },
     {
-      "match": "Women's Group B - Round 1",
-      "confidence": "Moderate Pick",
-      "team1": "Japan",
-      "team2": "Chinese Taipei",
-      "predicted_winner": "Japan",
-      "win_prob": "72% - 28%"
+      "rank": 6,
+      "team": "Chinese Taipei",
+      "gold": "2.3%",
+      "silver": "3.2%",
+      "bronze": "5.8%",
+      "podium": "11.3%"
     },
     {
-      "match": "Women's Group A - Round 2",
-      "confidence": "Tossup",
-      "team1": "Korea",
-      "team2": "Philippines",
-      "predicted_winner": "Korea",
-      "win_prob": "55% - 45%"
+      "rank": 7,
+      "team": "IR Iran",
+      "gold": "1.5%",
+      "silver": "1.6%",
+      "bronze": "3.2%",
+      "podium": "6.3%"
+    }
+  ],
+  "women": [
+    {
+      "rank": 1,
+      "team": "Japan (Host)",
+      "gold": "55.2%",
+      "silver": "32.1%",
+      "bronze": "8.4%",
+      "podium": "95.7%"
+    },
+    {
+      "rank": 2,
+      "team": "China",
+      "gold": "41.3%",
+      "silver": "43.5%",
+      "bronze": "10.8%",
+      "podium": "95.6%"
+    },
+    {
+      "rank": 3,
+      "team": "Republic of Korea",
+      "gold": "2.4%",
+      "silver": "14.2%",
+      "bronze": "42.1%",
+      "podium": "58.7%"
+    },
+    {
+      "rank": 4,
+      "team": "Chinese Taipei",
+      "gold": "0.8%",
+      "silver": "6.8%",
+      "bronze": "22.5%",
+      "podium": "30.1%"
+    },
+    {
+      "rank": 5,
+      "team": "Philippines",
+      "gold": "0.3%",
+      "silver": "3.4%",
+      "bronze": "16.2%",
+      "podium": "19.9%"
     }
   ]
 }
