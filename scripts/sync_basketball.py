@@ -66,73 +66,54 @@ def fetch_api_day(date_str):
 
 def extract_match_datetime(m, fallback_date=""):
     """
-    Extracts match date and 24-hr HH:MM time in JST (Venue Time),
-    handling spaces, 'T', ISO strings, UTC offsets, and naming variants.
+    Extracts match date and 24-hr HH:MM time in JST (Venue Time)
+    from 'DateTimeRaw' or fallback date/time fields.
     """
     match_date = fallback_date
     match_time = ""
 
-    # 1. Check composite date/time fields
-    dt_keys = [
-        "StartDate", "startDate", "StartDateTime", "startDateTime",
-        "DateTime", "dateTime", "UnitDateTime", "unitDateTime",
-        "Start", "start", "ScheduleDate", "scheduleDate"
-    ]
+    # Check DateTimeRaw first (official feed key)
+    raw = m.get("DateTimeRaw") or m.get("StartDate") or m.get("StartDateTime") or ""
 
-    raw_dt = None
-    for k in dt_keys:
-        val = m.get(k)
-        if val and isinstance(val, str) and any(c.isdigit() for c in val):
-            raw_dt = val.strip()
-            break
+    if raw:
+        # Handle numeric Epoch milliseconds / seconds
+        if isinstance(raw, (int, float)) or (isinstance(raw, str) and raw.isdigit()):
+            ts = float(raw)
+            if ts > 1e11:  # milliseconds
+                ts /= 1000.0
+            dt = datetime.fromtimestamp(ts, tz=JST)
+            return dt.strftime("%Y-%m-%d"), dt.strftime("%H:%M")
 
-    if raw_dt:
-        # ISO with timezone (e.g. 2026-09-13T01:00:00Z -> converts UTC to 10:00 JST)
-        try:
-            iso_str = raw_dt.replace("Z", "+00:00")
-            dt = datetime.fromisoformat(iso_str)
-            if dt.tzinfo is not None:
-                dt_jst = dt.astimezone(JST)
-                match_date = dt_jst.strftime("%Y-%m-%d")
-                match_time = dt_jst.strftime("%H:%M")
-            else:
-                match_date = dt.strftime("%Y-%m-%d")
-                match_time = dt.strftime("%H:%M")
-        except Exception:
-            # Fallback regex search for date and time strings
-            d_match = re.search(r"(\d{4}-\d{2}-\d{2})", raw_dt)
-            if d_match:
-                match_date = d_match.group(1)
-            t_match = re.search(r"[T\s](\d{1,2}:\d{2})(?::\d{2})?", raw_dt)
-            if t_match:
-                match_time = t_match.group(1).zfill(5)
+        # Handle ISO / string representations
+        if isinstance(raw, str) and any(c.isdigit() for c in raw):
+            raw_str = raw.strip()
+            try:
+                iso_clean = raw_str.replace("Z", "+00:00")
+                dt = datetime.fromisoformat(iso_clean)
+                if dt.tzinfo is not None:
+                    dt = dt.astimezone(JST)
+                return dt.strftime("%Y-%m-%d"), dt.strftime("%H:%M")
+            except Exception:
+                # Regex fallback for strings like "2026-09-13 10:00:00" or "/Date(...)/"
+                d_match = re.search(r"(\d{4}-\d{2}-\d{2})", raw_str)
+                if d_match:
+                    match_date = d_match.group(1)
+                t_match = re.search(r"[T\s](\d{1,2}:\d{2})(?::\d{2})?", raw_str)
+                if t_match:
+                    match_time = t_match.group(1).zfill(5)
 
-    # 2. Check standalone time fields if time is still missing
+    # Secondary fallback for separate time attributes
     if not match_time:
-        time_keys = [
-            "Time", "time", "StartTime", "startTime", "ScheduleTime",
-            "scheduleTime", "UnitTime", "unitTime", "TimeVenue", "VenueTime"
-        ]
-        for k in time_keys:
+        for k in ["Time", "StartTime", "ScheduleTime"]:
             val = m.get(k)
             if val and isinstance(val, str):
-                val = val.strip()
                 t_match = re.search(r"\b(\d{1,2}:\d{2})\b", val)
                 if t_match:
-                    raw_time = t_match.group(1).zfill(5)
-                    if "Z" in val.upper() or "UTC" in val.upper():
-                        # Convert UTC HH:MM to JST (+9)
-                        h, mins = map(int, raw_time.split(":"))
-                        h = (h + 9) % 24
-                        match_time = f"{h:02d}:{mins:02d}"
-                    else:
-                        match_time = raw_time
+                    match_time = t_match.group(1).zfill(5)
                     break
 
-    if not match_date:
-        match_date = fallback_date
+    return match_date or fallback_date, match_time
 
-    return match_date, match_time
 
 
 def parse_matches(raw_matches, gender="Men", date_str=""):
@@ -203,6 +184,10 @@ def main():
 
     for d in dates:
         day_data = fetch_api_day(d)
+                if day_data:
+            sample_dt = day_data[0].get("DateTimeRaw")
+            print(f"[{d}] Found {len(day_data)} items. Sample DateTimeRaw: {sample_dt}")
+                    
         if day_data:
             print(f"[{d}] Found {len(day_data)} items. Sample keys: {list(day_data[0].keys())}")
         men_parsed = parse_matches(day_data, "Men", date_str=d)
