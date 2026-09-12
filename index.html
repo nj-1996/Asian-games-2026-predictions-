@@ -1,34 +1,36 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aichi-Nagoya 2026: Multi-Sport Predictor</title>
+  <title>Aichi-Nagoya 2026 Predictions</title>
   <style>
-    :root { --bg: #0b0f19; --card: #151d30; --accent: #38bdf8; --border: #22304e; --text: #f1f5f9; --muted: #94a3b8; }
+    :root { --bg: #0b0f19; --card: #151d30; --border: #22304e; --text: #f1f5f9; --muted: #94a3b8; --gold: #facc15; --silver: #cbd5e1; --bronze: #fb923c; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 16px; font-size: 15px; }
-    h1 { font-size: 1.3rem; margin-bottom: 4px; }
-    p.sub { color: var(--muted); font-size: 0.82rem; margin-bottom: 16px; }
-    select { width: 100%; padding: 12px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); color: #fff; font-size: 1rem; margin-bottom: 16px; outline: none; }
+    body { background: var(--bg); color: var(--text); padding: 16px; font-size: 14px; }
+    h1 { font-size: 1.25rem; margin-bottom: 4px; }
+    p.sub { color: var(--muted); font-size: 0.8rem; margin-bottom: 16px; }
+    select { width: 100%; padding: 12px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); color: #fff; font-size: 0.95rem; margin-bottom: 16px; outline: none; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; text-align: left; }
-    th { background: #1a253e; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; padding: 10px; }
-    td { padding: 10px; border-top: 1px solid var(--border); font-size: 0.85rem; white-space: nowrap; }
-    .gold { color: #facc15; font-weight: bold; }
-    .silver { color: #94a3b8; font-weight: bold; }
-    .bronze { color: #fb923c; font-weight: bold; }
+    th { background: #1a253e; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; padding: 10px 8px; letter-spacing: 0.05em; }
+    td { padding: 9px 8px; border-top: 1px solid var(--border); font-size: 0.82rem; white-space: nowrap; }
+    .gold { color: var(--gold); font-weight: bold; }
+    .silver { color: var(--silver); font-weight: bold; }
+    .bronze { color: var(--bronze); font-weight: bold; }
     .text-right { text-align: right; }
+    .badge { display: inline-block; padding: 2px 5px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; margin-right: 4px; }
+    .badge-gold { background: rgba(250, 204, 21, 0.2); color: var(--gold); }
+    .badge-silver { background: rgba(203, 213, 225, 0.2); color: var(--silver); }
+    .badge-bronze { background: rgba(251, 146, 60, 0.2); color: var(--bronze); }
   </style>
 </head>
 <body>
   <h1>Asian Games 2026 Model</h1>
-  <p class="sub">Predictions across all 43 disciplines</p>
+  <p class="sub">Predictions across tournament disciplines</p>
   
-  <label for="sportSelect" style="display:none;">Select Sport</label>
-  <select id="sportSelect" onchange="renderTable()">
-    <!-- Populated dynamically via JS -->
-  </select>
+  <select id="sportSelect" onchange="loadSportData(this.value)"></select>
 
   <div class="card">
     <table>
@@ -38,7 +40,7 @@
           <th class="text-right">Gold %</th>
           <th class="text-right">Silver %</th>
           <th class="text-right">Bronze %</th>
-          <th class="text-right">Medal %</th>
+          <th class="text-right">Total %</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -46,44 +48,65 @@
   </div>
 
   <script>
-    let db = {};
-    // Load dynamically from predictions.json
-    fetch('predictions.json')
-      .then(res => res.json())
-      .then(data => {
-        db = data;
-        const selector = document.getElementById('sportSelect');
+    async function init() {
+      const selector = document.getElementById('sportSelect');
+      try {
+        const res = await fetch('./sports.json?v=' + Date.now());
+        if (!res.ok) throw new Error('Could not load sports.json');
+        const sportsList = await res.json();
+
         selector.innerHTML = '';
-        Object.keys(db).forEach(sport => {
+        sportsList.forEach((item, index) => {
           const opt = document.createElement('option');
-          opt.value = sport;
-          opt.innerText = sport;
+          opt.value = item.file;
+          opt.textContent = item.name;
           selector.appendChild(opt);
         });
-        renderTable();
-      })
-      .catch(err => {
-        console.error("Run locally or upload JSON alongside HTML", err);
-      });
 
-    function renderTable() {
-      const sport = document.getElementById('sportSelect').value;
-      const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '';
-      if (!db[sport]) return;
-
-      db[sport].data.forEach((row, i) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${i + 1}. ${row.name}</strong></td>
-          <td class="text-right gold">${row.gold}%</td>
-          <td class="text-right silver">${row.silver}%</td>
-          <td class="text-right bronze">${row.bronze}%</td>
-          <td class="text-right"><strong>${row.total}%</strong></td>
-        `;
-        tbody.appendChild(tr);
-      });
+        if (sportsList.length > 0) {
+          loadSportData(sportsList[0].file);
+        }
+      } catch (err) {
+        selector.innerHTML = '<option>Error loading index</option>';
+        document.getElementById('tableBody').innerHTML = `
+          <tr><td colspan="5" style="text-align:center; color:#f87171; padding:20px;">
+            ${err.message}. Make sure sports.json exists in root.
+          </td></tr>`;
+      }
     }
+
+    async function loadSportData(filePath) {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px; color:#94a3b8;">Loading data...</td></tr>';
+      
+      try {
+        const res = await fetch('./' + filePath + '?v=' + Date.now());
+        if (!res.ok) throw new Error(`Could not load ${filePath}`);
+        const sportPayload = await res.json();
+        
+        tbody.innerHTML = '';
+        sportPayload.data.forEach((row, i) => {
+          const tr = document.createElement('tr');
+          let badge = '';
+          if (i === 0) badge = '<span class="badge badge-gold">🥇 1st</span>';
+          else if (i === 1) badge = '<span class="badge badge-silver">🥈 2nd</span>';
+          else if (i === 2) badge = '<span class="badge badge-bronze">🥉 3rd</span>';
+
+          tr.innerHTML = `
+            <td>${badge}<strong>${row.name}</strong></td>
+            <td class="text-right gold">${row.gold}%</td>
+            <td class="text-right silver">${row.silver}%</td>
+            <td class="text-right bronze">${row.bronze}%</td>
+            <td class="text-right"><strong>${row.total}%</strong></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#f87171; padding:20px;">${err.message}</td></tr>`;
+      }
+    }
+
+    init();
   </script>
 </body>
 </html>
