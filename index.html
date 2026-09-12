@@ -14,8 +14,8 @@
       --primary: #2563eb;
       --win-color: #22c55e;
       --gold: #f59e0b;
-      --silver: #94a3b8;
-      --bronze: #b45309;
+      --silver: #cbd5e1;
+      --bronze: #d97706;
       --badge-live: #ef4444;
       --badge-finished: #475569;
       --badge-upcoming: #3b82f6;
@@ -33,7 +33,7 @@
       background-color: var(--bg-color);
       color: var(--text-main);
       padding: 16px 14px 40px;
-      max-width: 800px;
+      max-width: 820px;
       margin: 0 auto;
     }
 
@@ -62,7 +62,7 @@
       border-radius: 12px;
       margin-bottom: 16px;
       border: 1px solid var(--card-border);
-      gap: 3px;
+      gap: 4px;
     }
 
     .main-nav-btn {
@@ -162,6 +162,7 @@
       color: var(--text-muted);
     }
 
+    /* Status Badges & Pulsing LIVE Dot */
     .badge {
       font-size: 0.7rem;
       text-transform: uppercase;
@@ -170,38 +171,95 @@
       border-radius: 4px;
       letter-spacing: 0.5px;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
 
     .badge.finished { background: rgba(100, 116, 139, 0.3); color: #94a3b8; }
-    .badge.live { background: rgba(239, 68, 68, 0.25); color: #f87171; }
     .badge.upcoming { background: rgba(59, 130, 246, 0.25); color: #60a5fa; }
     .badge.model { background: rgba(16, 185, 129, 0.2); color: #34d399; }
     .badge.danger { background: rgba(244, 63, 94, 0.25); color: #fb7185; }
 
+    .badge.live {
+      background: rgba(239, 68, 68, 0.22);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .live-pulse-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #ef4444;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse-dot 1.4s infinite ease-in-out;
+    }
+
+    @keyframes pulse-dot {
+      0% {
+        transform: scale(0.9);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      }
+      70% {
+        transform: scale(1.15);
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+      }
+      100% {
+        transform: scale(0.9);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
+    }
+
+    /* Match Card Body */
     .card-body {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 600;
     }
 
     .team {
       flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .team.left { justify-content: flex-start; text-align: left; }
+    .team.right { justify-content: flex-end; text-align: right; }
+    .team.winner { color: var(--win-color); font-weight: 700; }
+
+    .team-flag {
+      font-size: 1.15rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .team-name-text {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .team.left { text-align: left; }
-    .team.right { text-align: right; }
-    .team.winner { color: var(--win-color); }
+    .noc-tag {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 1px 4px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
 
     .score-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin: 0 10px;
+      margin: 0 8px;
+      flex-shrink: 0;
     }
 
     .score-badge {
@@ -211,9 +269,8 @@
       border-radius: 6px;
       font-size: 0.95rem;
       font-weight: 800;
-      min-width: 80px;
+      min-width: 76px;
       text-align: center;
-      flex-shrink: 0;
     }
 
     /* Table Styles */
@@ -228,21 +285,22 @@
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
 
     .medal-table th {
       padding: 12px 14px;
       background: #0f172a;
       color: var(--text-muted);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       border-bottom: 1px solid var(--card-border);
+      white-space: nowrap;
     }
 
     .medal-table td {
-      padding: 12px 14px;
+      padding: 11px 14px;
       border-bottom: 1px solid rgba(51, 65, 85, 0.5);
       font-weight: 600;
     }
@@ -254,21 +312,53 @@
     .team-cell {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
+      white-space: nowrap;
     }
 
     .rank-num {
       color: var(--text-muted);
-      font-size: 0.8rem;
-      width: 16px;
+      font-size: 0.75rem;
+      width: 14px;
+      flex-shrink: 0;
     }
+
+    /* Inline Probability Bars */
+    .prob-cell {
+      min-width: 72px;
+    }
+
+    .prob-val {
+      display: block;
+      font-size: 0.84rem;
+      margin-bottom: 4px;
+    }
+
+    .prob-bar-track {
+      width: 100%;
+      max-width: 60px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .prob-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    .prob-bar-fill.gold { background: var(--gold); }
+    .prob-bar-fill.silver { background: var(--silver); }
+    .prob-bar-fill.bronze { background: var(--bronze); }
+    .prob-bar-fill.podium { background: var(--win-color); }
 
     .gold-cell { color: var(--gold); }
     .silver-cell { color: var(--silver); }
     .bronze-cell { color: var(--bronze); }
     .podium-cell { color: var(--win-color); }
 
-    /* Calibration Specific Styles */
+    /* Calibration Styles */
     .accuracy-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -335,7 +425,6 @@
     <p id="view-subtitle">Live Match Tracker</p>
   </header>
 
-  <!-- 3 Navigation Tabs -->
   <div class="main-nav">
     <button id="nav-tracker" class="main-nav-btn active" onclick="switchMainTab('tracker')">
       📊 Tracker
@@ -348,7 +437,6 @@
     </button>
   </div>
 
-  <!-- Shared Dropdown Selectors -->
   <div class="filter-grid">
     <div class="select-wrapper">
       <label class="select-label" for="select-sport">Sport</label>
@@ -366,7 +454,6 @@
     </div>
   </div>
 
-  <!-- Main Display Area -->
   <div id="content-cards" class="cards-list">
     <div class="empty-state">Loading data...</div>
   </div>
@@ -383,6 +470,29 @@
       }
     };
 
+    // NOC & Flag Metadata Dictionary
+    const NOC_REGISTRY = {
+      'china': { flag: '🇨🇳', code: 'CHN' },
+      'japan': { flag: '🇯🇵', code: 'JPN' },
+      'philippines': { flag: '🇵🇭', code: 'PHI' },
+      'republic of korea': { flag: '🇰🇷', code: 'KOR' },
+      'korea': { flag: '🇰🇷', code: 'KOR' },
+      'jordan': { flag: '🇯🇴', code: 'JOR' },
+      'chinese taipei': { flag: '🇹🇼', code: 'TPE' },
+      'ir iran': { flag: '🇮🇷', code: 'IRI' },
+      'iran': { flag: '🇮🇷', code: 'IRI' },
+      'india': { flag: '🇮🇳', code: 'IND' },
+      'kazakhstan': { flag: '🇰🇿', code: 'KAZ' },
+      'saudi arabia': { flag: '🇸🇦', code: 'KSA' },
+      'hong kong': { flag: '🇭🇰', code: 'HKG' },
+      'thailand': { flag: '🇹🇭', code: 'THA' },
+      'indonesia': { flag: '🇮🇩', code: 'INA' },
+      'mongolia': { flag: '🇲🇳', code: 'MGL' },
+      'qatar': { flag: '🇶🇦', code: 'QAT' },
+      'bahrain': { flag: '🇧🇭', code: 'BRN' },
+      'lebanon': { flag: '🇱🇧', code: 'LBN' }
+    };
+
     let currentTab = 'tracker';
 
     function switchMainTab(tab) {
@@ -392,7 +502,6 @@
       const navCalibration = document.getElementById('nav-calibration');
       const subtitle = document.getElementById('view-subtitle');
 
-      // Reset active tabs
       navTracker.classList.remove('active');
       navPredictions.classList.remove('active');
       navCalibration.classList.remove('active');
@@ -430,7 +539,6 @@
       }
     }
 
-    // Name normalization helper
     function normName(name) {
       return (name || '')
         .toLowerCase()
@@ -441,8 +549,39 @@
         .trim();
     }
 
+    function getNOCInfo(rawName) {
+      const clean = normName(rawName);
+      return NOC_REGISTRY[clean] || { flag: '🌐', code: '' };
+    }
+
+    function renderTeamBadge(name, isRight = false) {
+      if (!name) return 'TBD';
+      const info = getNOCInfo(name);
+      const flagSpan = `<span class="team-flag">${info.flag}</span>`;
+      const nameSpan = `<span class="team-name-text">${name}</span>`;
+      const codeSpan = info.code ? `<span class="noc-tag">${info.code}</span>` : '';
+
+      if (isRight) {
+        return `${codeSpan} ${nameSpan} ${flagSpan}`;
+      }
+      return `${flagSpan} ${nameSpan} ${codeSpan}`;
+    }
+
+    // Helper to generate probability micro-bars
+    function renderProbCell(valStr, colorClass) {
+      const numericVal = parseFloat(valStr) || 0;
+      return `
+        <td class="prob-cell ${colorClass}-cell">
+          <span class="prob-val">${valStr}</span>
+          <div class="prob-bar-track">
+            <div class="prob-bar-fill ${colorClass}" style="width: ${Math.min(100, numericVal)}%;"></div>
+          </div>
+        </td>
+      `;
+    }
+
     // ==========================================
-    // 1. PREDICTIONS TAB (Clean Original Table)
+    // 1. PREDICTIONS TAB
     // ==========================================
     function loadMedalPredictions(filePath, division) {
       const container = document.getElementById('content-cards');
@@ -470,7 +609,7 @@
       }
 
       let metaHeader = `
-        <div class="match-card" style="margin-bottom: 4px;">
+        <div class="match-card" style="margin-bottom: 6px;">
           <div class="card-header">
             <span>Simulation Engine: <strong>${meta.simulation_model || 'Monte Carlo'}</strong></span>
             <span class="badge model">Host Boost: ${meta.home_court_boost || 'None'}</span>
@@ -487,27 +626,32 @@
             <thead>
               <tr>
                 <th>Team</th>
-                <th class="gold-cell">🥇 Gold</th>
-                <th class="silver-cell">🥈 Silver</th>
-                <th class="bronze-cell">🥉 Bronze</th>
-                <th class="podium-cell">Podium</th>
+                <th>🥇 Gold</th>
+                <th>🥈 Silver</th>
+                <th>🥉 Bronze</th>
+                <th>Podium</th>
               </tr>
             </thead>
             <tbody>
-              ${teams.map(t => `
-                <tr>
-                  <td>
-                    <div class="team-cell">
-                      <span class="rank-num">${t.rank}</span>
-                      <span>${t.team}</span>
-                    </div>
-                  </td>
-                  <td class="gold-cell">${t.gold}</td>
-                  <td class="silver-cell">${t.silver}</td>
-                  <td class="bronze-cell">${t.bronze}</td>
-                  <td class="podium-cell">${t.podium}</td>
-                </tr>
-              `).join('')}
+              ${teams.map(t => {
+                const info = getNOCInfo(t.team);
+                return `
+                  <tr>
+                    <td>
+                      <div class="team-cell">
+                        <span class="rank-num">${t.rank}</span>
+                        <span class="team-flag">${info.flag}</span>
+                        <span class="team-name-text">${t.team}</span>
+                        ${info.code ? `<span class="noc-tag">${info.code}</span>` : ''}
+                      </div>
+                    </td>
+                    ${renderProbCell(t.gold, 'gold')}
+                    ${renderProbCell(t.silver, 'silver')}
+                    ${renderProbCell(t.bronze, 'bronze')}
+                    ${renderProbCell(t.podium, 'podium')}
+                  </tr>
+                `;
+              }).join('')}
             </tbody>
           </table>
         </div>
@@ -517,7 +661,7 @@
     }
 
     // ==========================================
-    // 2. CALIBRATION TAB (Accuracy, Records, Upsets)
+    // 2. CALIBRATION TAB
     // ==========================================
     function loadCalibration(predFile, trackerFile, division) {
       const container = document.getElementById('content-cards');
@@ -620,12 +764,13 @@
                 <th>Team</th>
                 <th>Actual W-L</th>
                 <th>Trajectory</th>
-                <th class="gold-cell">🥇 Exp. Gold</th>
+                <th>🥇 Exp. Gold</th>
               </tr>
             </thead>
             <tbody>
               ${teams.map(t => {
                 const rec = records[normName(t.team)] || { w: 0, l: 0 };
+                const info = getNOCInfo(t.team);
                 let trajectory = '<span class="pill-status pill-on-track">On Track</span>';
                 if (rec.l >= 2) {
                   trajectory = '<span class="pill-status pill-at-risk">At Risk</span>';
@@ -638,12 +783,14 @@
                     <td>
                       <div class="team-cell">
                         <span class="rank-num">${t.rank}</span>
-                        <span>${t.team}</span>
+                        <span class="team-flag">${info.flag}</span>
+                        <span class="team-name-text">${t.team}</span>
+                        ${info.code ? `<span class="noc-tag">${info.code}</span>` : ''}
                       </div>
                     </td>
                     <td>${rec.w}-${rec.l}</td>
                     <td>${trajectory}</td>
-                    <td class="gold-cell">${t.gold}</td>
+                    ${renderProbCell(t.gold, 'gold')}
                   </tr>
                 `;
               }).join('')}
@@ -659,15 +806,19 @@
             <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
               ⚠️ Upset Log (Model Deviations)
             </div>
-            ${upsets.map(u => `
-              <div class="match-card" style="border-left: 3px solid var(--badge-danger); padding: 10px 14px; margin-bottom: 6px;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
-                  <span><strong>${u.winner}</strong> def. ${u.loser}</span>
-                  <span style="font-weight: 700; color: #fb7185;">${u.score}</span>
+            ${upsets.map(u => {
+              const winInfo = getNOCInfo(u.winner);
+              const loseInfo = getNOCInfo(u.loser);
+              return `
+                <div class="match-card" style="border-left: 3px solid var(--badge-danger); padding: 10px 14px; margin-bottom: 6px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                    <span><strong>${winInfo.flag} ${u.winner}</strong> def. ${loseInfo.flag} ${u.loser}</span>
+                    <span style="font-weight: 700; color: #fb7185;">${u.score}</span>
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">${u.round}</div>
                 </div>
-                <div style="font-size: 0.75rem; color: var(--text-muted);">${u.round}</div>
-              </div>
-            `).join('')}
+              `;
+            }).join('')}
           </div>
         `;
       }
@@ -676,7 +827,7 @@
     }
 
     // ==========================================
-    // 3. TRACKER TAB (Live Schedule & Scores)
+    // 3. TRACKER TAB
     // ==========================================
     function loadMatches(filePath) {
       const container = document.getElementById('content-cards');
@@ -716,6 +867,7 @@
         }
 
         const dateTimeStr = [dateDisplay, m.time].filter(Boolean).join(' • ');
+        const isLive = statusClass === 'live';
 
         return `
           <div class="match-card">
@@ -724,21 +876,27 @@
                 <span class="match-round">${m.round || 'Match'}</span>
                 ${dateTimeStr ? `<span class="match-datetime">📅 ${dateTimeStr}</span>` : ''}
               </div>
-              <span class="badge ${statusClass}">${m.state || m.status}</span>
+              <span class="badge ${statusClass}">
+                ${isLive ? '<span class="live-pulse-dot"></span>' : ''}
+                ${m.state || m.status}
+              </span>
             </div>
             <div class="card-body">
-              <span class="team left ${isP1Win ? 'winner' : ''}">${m.player1}</span>
+              <div class="team left ${isP1Win ? 'winner' : ''}">
+                ${renderTeamBadge(m.player1, false)}
+              </div>
               <div class="score-container">
                 <span class="score-badge">${m.score}</span>
               </div>
-              <span class="team right ${isP2Win ? 'winner' : ''}">${m.player2}</span>
+              <div class="team right ${isP2Win ? 'winner' : ''}">
+                ${renderTeamBadge(m.player2, true)}
+              </div>
             </div>
           </div>
         `;
       }).join('');
     }
 
-    // Default view
     loadCurrentView();
   </script>
 </body>
