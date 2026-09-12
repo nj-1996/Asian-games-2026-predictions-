@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Basketball (Men's 5v5)",
+    "file": "data/basketball_men.json"
+  },
+  {
+    "name": "Basketball (Women's 5v5)",
+    "file": "data/basketball_women.json"
+  },
+  {
+    "name": "Badminton (Men's Singles)",
+    "file": "data/badminton_men.json"
+  }
+]
