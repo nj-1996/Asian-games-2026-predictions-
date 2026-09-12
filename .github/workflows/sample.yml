@@ -16,16 +16,12 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests brotli
+        run: pip install requests
 
       - name: Download and Decode
         run: |
           python -c "
-          import requests, zlib, json, gzip, sys
-          try:
-              import brotli
-          except Exception:
-              brotli = None
+          import requests, zlib, json, sys
 
           url = 'https://back.results.asiangames2026.org/s/AG2026/en/BKB/schedule/daily/2026-09-10'
           headers = {
@@ -36,49 +32,70 @@ jobs:
 
           resp = requests.get(url, headers=headers)
           print('HTTP Status:', resp.status_code)
-          print('Headers:', dict(resp.headers))
-          raw = resp.content
-          print(f'Raw payload length: {len(raw)} bytes')
-          print('First 16 bytes (hex):', raw[:16].hex())
 
-          decoded_text = None
-
-          methods = [
-              ('zlib standard', lambda b: zlib.decompress(b)),
-              ('zlib raw deflate (-15)', lambda b: zlib.decompress(b, -15)),
-              ('zlib gzip (+16)', lambda b: zlib.decompress(b, 16 + zlib.MAX_WBITS)),
-              ('zlib offset 2', lambda b: zlib.decompress(b[2:], -15)),
-              ('zlib offset 4', lambda b: zlib.decompress(b[4:])),
-              ('gzip lib', lambda b: gzip.decompress(b)),
-          ]
-          if brotli:
-              methods.append(('brotli', lambda b: brotli.decompress(b)))
-
-          for name, fn in methods:
+          # Build Windows-1252 / Latin-1 reverse byte map
+          charmap = {}
+          for b in range(256):
               try:
-                  res = fn(raw)
-                  print(f'SUCCESS with {name}! Length: {len(res)}')
-                  decoded_text = res.decode('utf-8')
-                  break
-              except Exception as e:
-                  print(f'Method {name} failed: {e}')
-
-          if not decoded_text:
-              try:
-                  json.loads(resp.text)
-                  decoded_text = resp.text
-                  print('Response was already plain JSON!')
+                  ch = bytes([b]).decode('cp1252')
+                  charmap[ch] = b
               except Exception:
-                  pass
+                  try:
+                      ch = bytes([b]).decode('latin1')
+                      charmap[ch] = b
+                  except Exception:
+                      pass
 
-          if not decoded_text:
-              print('All unpacking methods failed.')
+          candidates = []
+
+          # Candidate 1: Reverse mapping from resp.text
+          try:
+              b1 = bytes([charmap.get(c, ord(c) & 0xFF) for c in resp.text])
+              candidates.append(('charmap(resp.text)', b1))
+          except Exception as e:
+              print('Candidate 1 build error:', e)
+
+          # Candidate 2: CP1252 encode
+          try:
+              candidates.append(('resp.text.encode(cp1252)', resp.text.encode('cp1252', errors='replace')))
+          except Exception:
+              pass
+
+          # Candidate 3: Latin-1 encode
+          try:
+              candidates.append(('resp.text.encode(latin1)', resp.text.encode('latin1', errors='replace')))
+          except Exception:
+              pass
+
+          # Candidate 4: Raw bytes directly
+          candidates.append(('resp.content', resp.content))
+
+          decompressed_bytes = None
+          used_name = None
+
+          for name, byte_payload in candidates:
+              print(f'Testing {name}: First 4 bytes = {byte_payload[:4].hex()}')
+              for wbits in [zlib.MAX_WBITS, -zlib.MAX_WBITS, 16 + zlib.MAX_WBITS]:
+                  try:
+                      decompressed_bytes = zlib.decompress(byte_payload, wbits)
+                      used_name = f'{name} with wbits={wbits}'
+                      break
+                  except Exception:
+                      continue
+              if decompressed_bytes:
+                  break
+
+          if not decompressed_bytes:
+              print('Could not decompress payload with any candidate.')
               sys.exit(1)
 
-          data = json.loads(decoded_text)
+          print(f'SUCCESS! Decompressed using {used_name}. Length: {len(decompressed_bytes)} bytes')
+
+          json_data = json.loads(decompressed_bytes.decode('utf-8'))
           with open('data/api_sample.json', 'w', encoding='utf-8') as f:
-              json.dump(data, f, indent=2)
-          print('Saved cleanly to data/api_sample.json')
+              json.dump(json_data, f, indent=2)
+
+          print('Saved parsed JSON to data/api_sample.json')
           "
 
       - name: Commit and Push
@@ -87,4 +104,3 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add data/api_sample.json
           git diff --quiet && git diff --staged --quiet || (git commit -m 'Fetch decoded API sample' && git push)
-          
