@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asian Games 2026 - Basketball Match Tracker</title>
+  <title>Asian Games 2026 - Hub</title>
   <style>
     :root {
-      --bg-color: #0f172a;
+      --bg-color: #0b1120;
       --card-bg: #1e293b;
       --card-border: #334155;
       --text-main: #f8fafc;
@@ -15,7 +15,7 @@
       --primary-hover: #1d4ed8;
       --win-color: #22c55e;
       --badge-live: #ef4444;
-      --badge-finished: #64748b;
+      --badge-finished: #475569;
       --badge-upcoming: #3b82f6;
     }
 
@@ -29,68 +29,110 @@
     body {
       background-color: var(--bg-color);
       color: var(--text-main);
-      padding: 20px 14px;
+      padding: 16px 14px 40px;
       max-width: 800px;
       margin: 0 auto;
     }
 
     header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     header h1 {
       font-size: 1.6rem;
-      margin-bottom: 6px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
     }
 
     header p {
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
-    /* Sub-Navigation Switcher */
-    .division-nav {
+    /* Primary Navigation (Predictions vs Tracker) */
+    .main-nav {
       display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 24px;
+      background-color: #1e293b;
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
     }
 
-    .pill-btn {
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
+    .main-nav-btn {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      background: transparent;
       color: var(--text-muted);
-      padding: 9px 20px;
-      border-radius: 9999px;
-      cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.95rem;
+      border-radius: 8px;
+      cursor: pointer;
       transition: all 0.2s ease;
     }
 
-    .pill-btn.active {
+    .main-nav-btn.active {
       background-color: var(--primary);
-      border-color: var(--primary);
       color: #ffffff;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
     }
 
-    /* Cards Grid */
-    #match-tracker-cards {
+    /* Dropdown GUI Filters */
+    .filter-grid {
       display: grid;
-      grid-gap: 14px;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .select-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .select-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .custom-select {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .custom-select:focus {
+      border-color: var(--primary);
+    }
+
+    /* Cards */
+    .cards-list {
+      display: grid;
+      grid-gap: 12px;
     }
 
     .match-card {
       background-color: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 16px;
+      border-radius: 12px;
+      padding: 14px 16px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .card-header {
@@ -102,16 +144,17 @@
     }
 
     .badge {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
-      font-weight: 700;
+      font-weight: 800;
       padding: 3px 8px;
       border-radius: 4px;
+      letter-spacing: 0.5px;
     }
 
     .badge.finished {
-      background: rgba(100, 116, 139, 0.25);
-      color: #cbd5e1;
+      background: rgba(100, 116, 139, 0.3);
+      color: #94a3b8;
     }
 
     .badge.live {
@@ -128,7 +171,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 600;
     }
 
@@ -139,36 +182,31 @@
       white-space: nowrap;
     }
 
-    .team.left {
-      text-align: left;
-    }
-
-    .team.right {
-      text-align: right;
-    }
-
-    .team.winner {
-      color: var(--win-color);
-    }
+    .team.left { text-align: left; }
+    .team.right { text-align: right; }
+    .team.winner { color: var(--win-color); }
 
     .score-badge {
-      background: #0f172a;
+      background: #0b1120;
       border: 1px solid var(--card-border);
-      padding: 5px 14px;
+      padding: 5px 12px;
       border-radius: 6px;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      font-size: 0.95rem;
+      font-weight: 800;
       margin: 0 10px;
-      min-width: 90px;
+      min-width: 80px;
       text-align: center;
+      flex-shrink: 0;
     }
 
-    .loading, .empty-state {
+    .empty-state {
       text-align: center;
       color: var(--text-muted);
-      padding: 40px 10px;
+      padding: 50px 14px;
       font-size: 0.95rem;
+      border: 1px dashed var(--card-border);
+      border-radius: 12px;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -176,55 +214,145 @@
 
   <header>
     <h1>Asian Games 2026</h1>
-    <p>Live Basketball Match Results</p>
+    <p id="view-subtitle">Live Match Tracker</p>
   </header>
 
-  <!-- Category Selection Pills -->
-  <div class="division-nav">
-    <button id="btn-men" class="pill-btn active" onclick="switchCategory('men')">
-      🏀 Men's Tournament
+  <!-- Top Main Navigation -->
+  <div class="main-nav">
+    <button id="nav-tracker" class="main-nav-btn active" onclick="switchMainTab('tracker')">
+      📊 Match Tracker
     </button>
-    <button id="btn-women" class="pill-btn" onclick="switchCategory('women')">
-      🏀 Women's Tournament
+    <button id="nav-predictions" class="main-nav-btn" onclick="switchMainTab('predictions')">
+      🎯 Predictions
     </button>
   </div>
 
-  <!-- Container for Matches -->
-  <div id="match-tracker-cards">
-    <div class="loading">Loading tournament data...</div>
-  </div>
+  <!-- VIEW 1: MATCH TRACKER -->
+  <section id="section-tracker">
+    <!-- Scalable Multi-Sport Dropdown GUI -->
+    <div class="filter-grid">
+      <div class="select-wrapper">
+        <label class="select-label" for="select-sport">Sport</label>
+        <select id="select-sport" class="custom-select" onchange="onSportChange()">
+          <option value="basketball">🏀 Basketball (5x5)</option>
+          <option value="badminton" disabled>🏸 Badminton (Upcoming)</option>
+          <option value="table_tennis" disabled>🏓 Table Tennis (Upcoming)</option>
+        </select>
+      </div>
+
+      <div class="select-wrapper">
+        <label class="select-label" for="select-event">Event / Division</label>
+        <select id="select-event" class="custom-select" onchange="onEventChange()">
+          <!-- Dynamically populated based on selected sport -->
+          <option value="men">Men's Tournament</option>
+          <option value="women">Women's Tournament</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Match Results Container -->
+    <div id="tracker-cards-container" class="cards-list">
+      <div class="empty-state">Loading matches...</div>
+    </div>
+  </section>
+
+  <!-- VIEW 2: PREDICTIONS -->
+  <section id="section-predictions" style="display: none;">
+    <div class="match-card" style="margin-bottom: 14px;">
+      <div class="card-header">
+        <span>Model Predictions</span>
+        <span class="badge upcoming">Active Model</span>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 6px;">
+        Head-to-head win probabilities and medal simulations.
+      </p>
+    </div>
+
+    <div id="predictions-container" class="cards-list">
+      <div class="empty-state">
+        Connect your prediction models or JSON feeds here.
+      </div>
+    </div>
+  </section>
 
   <script>
-    let activeCategory = 'men';
+    // Sport & Event configuration mapping for effortless expansion
+    const SPORT_CONFIG = {
+      basketball: {
+        events: [
+          { label: "Men's Tournament", file: "data/basketball_men_tracker.json" },
+          { label: "Women's Tournament", file: "data/basketball_women_tracker.json" }
+        ]
+      },
+      badminton: {
+        events: [
+          { label: "Men's Singles", file: "data/badminton_ms_tracker.json" },
+          { label: "Women's Singles", file: "data/badminton_ws_tracker.json" },
+          { label: "Men's Doubles", file: "data/badminton_md_tracker.json" },
+          { label: "Women's Doubles", file: "data/badminton_wd_tracker.json" }
+        ]
+      }
+    };
 
-    function switchCategory(category) {
-      activeCategory = category;
+    // Navigation switching
+    function switchMainTab(tab) {
+      const trackerSec = document.getElementById('section-tracker');
+      const predictionsSec = document.getElementById('section-predictions');
+      const navTracker = document.getElementById('nav-tracker');
+      const navPredictions = document.getElementById('nav-predictions');
+      const subtitle = document.getElementById('view-subtitle');
 
-      const btnMen = document.getElementById('btn-men');
-      const btnWomen = document.getElementById('btn-women');
-
-      if (category === 'women') {
-        btnWomen.classList.add('active');
-        btnMen.classList.remove('active');
-        loadTrackerData('data/basketball_women_tracker.json');
+      if (tab === 'predictions') {
+        trackerSec.style.display = 'none';
+        predictionsSec.style.display = 'block';
+        navPredictions.classList.add('active');
+        navTracker.classList.remove('active');
+        subtitle.innerText = 'Tournament Predictions & Probability';
       } else {
-        btnMen.classList.add('active');
-        btnWomen.classList.remove('active');
-        loadTrackerData('data/basketball_men_tracker.json');
+        trackerSec.style.display = 'block';
+        predictionsSec.style.display = 'none';
+        navTracker.classList.add('active');
+        navPredictions.classList.remove('active');
+        subtitle.innerText = 'Live Match Tracker';
       }
     }
 
-    function loadTrackerData(path) {
-      const container = document.getElementById('match-tracker-cards');
-      container.innerHTML = '<div class="loading">Fetching latest scores...</div>';
+    // Dropdown Handlers
+    function onSportChange() {
+      const sportKey = document.getElementById('select-sport').value;
+      const eventSelect = document.getElementById('select-event');
+      const config = SPORT_CONFIG[sportKey];
 
-      // Bypass browser cache using timestamp parameter
-      fetch(path + '?_nocache=' + Date.now())
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Data unavailable: HTTP ${response.status}`);
-          }
-          return response.json();
+      eventSelect.innerHTML = '';
+      if (config && config.events) {
+        config.events.forEach((ev, idx) => {
+          const opt = document.createElement('option');
+          opt.value = idx;
+          opt.textContent = ev.label;
+          eventSelect.appendChild(opt);
+        });
+      }
+      onEventChange();
+    }
+
+    function onEventChange() {
+      const sportKey = document.getElementById('select-sport').value;
+      const eventIdx = document.getElementById('select-event').value;
+      const config = SPORT_CONFIG[sportKey];
+
+      if (config && config.events[eventIdx]) {
+        fetchMatchData(config.events[eventIdx].file);
+      }
+    }
+
+    function fetchMatchData(filePath) {
+      const container = document.getElementById('tracker-cards-container');
+      container.innerHTML = '<div class="empty-state">Loading matches...</div>';
+
+      fetch(filePath + '?_nocache=' + Date.now())
+        .then(res => {
+          if (!res.ok) throw new Error(`Status ${res.status}`);
+          return res.json();
         })
         .then(data => {
           renderMatches(data.matches || []);
@@ -232,43 +360,42 @@
         .catch(err => {
           container.innerHTML = `
             <div class="empty-state">
-              No fixtures currently loaded for this division. Check back soon!
+              No live matches or schedule published yet for this event.
             </div>
           `;
         });
     }
 
     function renderMatches(matches) {
-      const container = document.getElementById('match-tracker-cards');
+      const container = document.getElementById('tracker-cards-container');
       if (!matches || matches.length === 0) {
         container.innerHTML = '<div class="empty-state">No matches scheduled.</div>';
         return;
       }
 
       container.innerHTML = matches.map(m => {
-        const isTeam1Winner = m.winner && (m.winner === m.player1);
-        const isTeam2Winner = m.winner && (m.winner === m.player2);
+        const isP1Win = m.winner && (m.winner.trim().toLowerCase() === m.player1.trim().toLowerCase());
+        const isP2Win = m.winner && (m.winner.trim().toLowerCase() === m.player2.trim().toLowerCase());
         const statusClass = (m.status || 'upcoming').toLowerCase();
 
         return `
           <div class="match-card">
             <div class="card-header">
-              <span>${m.round || 'Round'}</span>
+              <span>${m.round || 'Match'}</span>
               <span class="badge ${statusClass}">${m.status}</span>
             </div>
             <div class="card-body">
-              <span class="team left ${isTeam1Winner ? 'winner' : ''}" title="${m.player1}">${m.player1}</span>
+              <span class="team left ${isP1Win ? 'winner' : ''}">${m.player1}</span>
               <span class="score-badge">${m.score}</span>
-              <span class="team right ${isTeam2Winner ? 'winner' : ''}" title="${m.player2}">${m.player2}</span>
+              <span class="team right ${isP2Win ? 'winner' : ''}">${m.player2}</span>
             </div>
           </div>
         `;
       }).join('');
     }
 
-    // Default load to Men's tournament
-    switchCategory('men');
+    // Initialize on first load
+    onSportChange();
   </script>
-
 </body>
 </html>
