@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aichi-Nagoya 2026: Multi-Sport Predictor</title>
+  <style>
+    :root { --bg: #0b0f19; --card: #151d30; --accent: #38bdf8; --border: #22304e; --text: #f1f5f9; --muted: #94a3b8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 16px; font-size: 15px; }
+    h1 { font-size: 1.3rem; margin-bottom: 4px; }
+    p.sub { color: var(--muted); font-size: 0.82rem; margin-bottom: 16px; }
+    select { width: 100%; padding: 12px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); color: #fff; font-size: 1rem; margin-bottom: 16px; outline: none; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background: #1a253e; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; padding: 10px; }
+    td { padding: 10px; border-top: 1px solid var(--border); font-size: 0.85rem; white-space: nowrap; }
+    .gold { color: #facc15; font-weight: bold; }
+    .silver { color: #94a3b8; font-weight: bold; }
+    .bronze { color: #fb923c; font-weight: bold; }
+    .text-right { text-align: right; }
+  </style>
+</head>
+<body>
+  <h1>Asian Games 2026 Model</h1>
+  <p class="sub">Predictions across all 43 disciplines</p>
+  
+  <label for="sportSelect" style="display:none;">Select Sport</label>
+  <select id="sportSelect" onchange="renderTable()">
+    <!-- Populated dynamically via JS -->
+  </select>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Contender</th>
+          <th class="text-right">Gold %</th>
+          <th class="text-right">Silver %</th>
+          <th class="text-right">Bronze %</th>
+          <th class="text-right">Medal %</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    let db = {};
+    // Load dynamically from predictions.json
+    fetch('predictions.json')
+      .then(res => res.json())
+      .then(data => {
+        db = data;
+        const selector = document.getElementById('sportSelect');
+        selector.innerHTML = '';
+        Object.keys(db).forEach(sport => {
+          const opt = document.createElement('option');
+          opt.value = sport;
+          opt.innerText = sport;
+          selector.appendChild(opt);
+        });
+        renderTable();
+      })
+      .catch(err => {
+        console.error("Run locally or upload JSON alongside HTML", err);
+      });
+
+    function renderTable() {
+      const sport = document.getElementById('sportSelect').value;
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+      if (!db[sport]) return;
+
+      db[sport].data.forEach((row, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${i + 1}. ${row.name}</strong></td>
+          <td class="text-right gold">${row.gold}%</td>
+          <td class="text-right silver">${row.silver}%</td>
+          <td class="text-right bronze">${row.bronze}%</td>
+          <td class="text-right"><strong>${row.total}%</strong></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  </script>
+</body>
+</html>
