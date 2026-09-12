@@ -538,15 +538,16 @@
       }
     }
 
-    function normName(name) {
-      return (name || '')
-        .toLowerCase()
-        .replace(/\s*\(host\)/g, '')
-        .replace(/republic of\s*/g, '')
-        .replace(/ir\s*/g, '')
-        .replace(/\./g, '')
-        .trim();
+  function normName(name) {
+  return (name || '')
+    .toLowerCase()
+    .replace(/\s*\(host\)/g, '')
+    .replace(/\b(republic of|ir)\b/g, '')
+    .replace(/\./g, '')
+    .trim();
     }
+    
+    
 
     function getNOCInfo(rawName) {
       const clean = normName(rawName);
