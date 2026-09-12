@@ -39,7 +39,7 @@
 
     header {
       text-align: center;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     header h1 {
@@ -60,7 +60,7 @@
       background-color: #1e293b;
       padding: 4px;
       border-radius: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       border: 1px solid var(--card-border);
       gap: 4px;
     }
@@ -86,18 +86,76 @@
       box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
     }
 
-    /* Filters */
+    /* Sticky / Featured "Next Up" Banner */
+    .next-up-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid #3b82f6;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18);
+    }
+
+    .next-up-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .next-up-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .next-up-tag.live {
+      background: rgba(239, 68, 68, 0.25);
+      color: #f87171;
+    }
+
+    .next-up-timer {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #38bdf8;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .next-up-matchup {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .next-up-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Filters & Controls Grid */
     .filter-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .select-wrapper {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
     }
 
     .select-label {
@@ -112,13 +170,57 @@
       background-color: var(--card-bg);
       border: 1px solid var(--card-border);
       color: var(--text-main);
-      padding: 10px 12px;
+      padding: 9px 12px;
       border-radius: 8px;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 600;
       outline: none;
       cursor: pointer;
       width: 100%;
+    }
+
+    /* Timezone Switch Bar */
+    .tz-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      margin-bottom: 14px;
+      font-size: 0.78rem;
+    }
+
+    .tz-bar-label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .tz-btn-group {
+      display: inline-flex;
+      background: #0b1120;
+      padding: 2px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      gap: 2px;
+    }
+
+    .tz-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tz-toggle-btn.active {
+      background: var(--primary);
+      color: #ffffff;
     }
 
     /* Cards & Layout */
@@ -437,6 +539,9 @@
     </button>
   </div>
 
+  <!-- Dynamic Sticky "Next Up" Banner Container -->
+  <div id="next-up-container"></div>
+
   <div class="filter-grid">
     <div class="select-wrapper">
       <label class="select-label" for="select-sport">Sport</label>
@@ -451,6 +556,19 @@
         <option value="men">Men's Tournament</option>
         <option value="women">Women's Tournament</option>
       </select>
+    </div>
+  </div>
+
+  <!-- Timezone Toggle Bar -->
+  <div class="tz-bar">
+    <span class="tz-bar-label">🕒 Match Times Display:</span>
+    <div class="tz-btn-group">
+      <button id="tz-btn-local" class="tz-toggle-btn active" onclick="setTimezoneMode(true)">
+        Local (<span id="tz-abbr-name">Detecting...</span>)
+      </button>
+      <button id="tz-btn-jst" class="tz-toggle-btn" onclick="setTimezoneMode(false)">
+        Venue (JST)
+      </button>
     </div>
   </div>
 
@@ -493,6 +611,32 @@
     };
 
     let currentTab = 'tracker';
+    let useLocalTime = true;
+    let cachedCurrentMatches = [];
+    let countdownIntervalId = null;
+
+    // Detect user's local timezone abbreviation
+    const localTzAbbr = (() => {
+      try {
+        const parts = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' }).formatToParts(new Date());
+        const tzPart = parts.find(p => p.type === 'timeZoneName');
+        return tzPart ? tzPart.value : 'Local';
+      } catch (e) {
+        return 'Local';
+      }
+    })();
+    document.getElementById('tz-abbr-name').innerText = localTzAbbr;
+
+    function setTimezoneMode(localMode) {
+      useLocalTime = localMode;
+      document.getElementById('tz-btn-local').classList.toggle('active', localMode);
+      document.getElementById('tz-btn-jst').classList.toggle('active', !localMode);
+
+      if (currentTab === 'tracker') {
+        renderMatches(cachedCurrentMatches);
+      }
+      updateNextUpBanner(cachedCurrentMatches);
+    }
 
     function switchMainTab(tab) {
       currentTab = tab;
@@ -500,6 +644,7 @@
       const navPredictions = document.getElementById('nav-predictions');
       const navCalibration = document.getElementById('nav-calibration');
       const subtitle = document.getElementById('view-subtitle');
+      const tzBar = document.querySelector('.tz-bar');
 
       navTracker.classList.remove('active');
       navPredictions.classList.remove('active');
@@ -508,12 +653,15 @@
       if (tab === 'predictions') {
         navPredictions.classList.add('active');
         subtitle.innerText = 'Monte Carlo Medal Projections (50,000 Iterations)';
+        if (tzBar) tzBar.style.display = 'none';
       } else if (tab === 'calibration') {
         navCalibration.classList.add('active');
         subtitle.innerText = 'Live Model Calibration & Performance Accuracy';
+        if (tzBar) tzBar.style.display = 'none';
       } else {
         navTracker.classList.add('active');
         subtitle.innerText = 'Live Match Tracker';
+        if (tzBar) tzBar.style.display = 'flex';
       }
 
       loadCurrentView();
@@ -538,7 +686,7 @@
       }
     }
 
-      function normName(name) {
+    function normName(name) {
       let str = (name || '').toLowerCase()
         .replace(/\s*\(host\)/gi, '')
         .replace(/\./g, '')
@@ -556,7 +704,6 @@
       if (clean === 'iran') return { flag: '🇮🇷', code: 'IRI' };
       return NOC_REGISTRY[clean] || { flag: '🌐', code: '' };
     }
-    
 
     function renderTeamBadge(name, isRight = false) {
       if (!name) return 'TBD';
@@ -583,11 +730,147 @@
       `;
     }
 
+    // Parses JST match string into a Date object
+    function parseJSTDate(dateStr, timeStr) {
+      if (!dateStr) return null;
+      let cleanTime = timeStr || '00:00';
+      if (cleanTime.split(':').length === 2) cleanTime += ':00';
+      const iso = `${dateStr.trim()}T${cleanTime.trim()}+09:00`;
+      const d = new Date(iso);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    function formatMatchDateTime(dateStr, timeStr) {
+      const d = parseJSTDate(dateStr, timeStr);
+      if (!d) return [dateStr, timeStr].filter(Boolean).join(' • ');
+
+      if (useLocalTime) {
+        const localMonth = d.toLocaleString('en-US', { month: 'short' });
+        const localDay = d.getDate();
+        const localTime = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        return `${localDay} ${localMonth} • ${localTime} (${localTzAbbr})`;
+      } else {
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const parts = dateStr.split('-');
+        const day = parts[2] ? parseInt(parts[2], 10) : '';
+        const month = parts[1] ? months[parseInt(parts[1], 10) - 1] : '';
+        return `${day} ${month} • ${timeStr} (JST)`;
+      }
+    }
+
+    // ==========================================
+    // STICKY "NEXT UP" / LIVE BANNER
+    // ==========================================
+    function updateNextUpBanner(matches) {
+      const banner = document.getElementById('next-up-container');
+      if (countdownIntervalId) {
+        clearInterval(countdownIntervalId);
+        countdownIntervalId = null;
+      }
+
+      if (!matches || matches.length === 0) {
+        banner.innerHTML = '';
+        return;
+      }
+
+      // Check if any match is currently Live
+      const liveMatch = matches.find(m => (m.status || '').toLowerCase() === 'live');
+      if (liveMatch) {
+        const p1Info = getNOCInfo(liveMatch.player1);
+        const p2Info = getNOCInfo(liveMatch.player2);
+        banner.innerHTML = `
+          <div class="next-up-card" style="border-color: #ef4444;">
+            <div class="next-up-header">
+              <span class="next-up-tag live"><span class="live-pulse-dot"></span> LIVE MATCH IN PROGRESS</span>
+              <span class="next-up-timer" style="color: #f87171;">${liveMatch.state || 'Live'}</span>
+            </div>
+            <div class="next-up-matchup">
+              <span>${p1Info.flag} ${liveMatch.player1}</span>
+              <span style="color: #ef4444; font-size: 1.1rem;">${liveMatch.score || '0 - 0'}</span>
+              <span>${liveMatch.player2} ${p2Info.flag}</span>
+            </div>
+            <div class="next-up-sub">${liveMatch.round || 'Round Match'}</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Find the next upcoming match
+      const upcomingMatches = matches
+        .filter(m => (m.status || '').toLowerCase() !== 'finished')
+        .map(m => ({ match: m, dateObj: parseJSTDate(m.date, m.time) }))
+        .filter(item => item.dateObj !== null)
+        .sort((a, b) => a.dateObj - b.dateObj);
+
+      if (upcomingMatches.length === 0) {
+        banner.innerHTML = '';
+        return;
+      }
+
+      const nextItem = upcomingMatches[0];
+      const m = nextItem.match;
+      const targetTime = nextItem.dateObj.getTime();
+      const p1Info = getNOCInfo(m.player1);
+      const p2Info = getNOCInfo(m.player2);
+
+      function renderCountdown() {
+        const now = Date.now();
+        const diff = targetTime - now;
+
+        if (diff <= 0) {
+          banner.innerHTML = `
+            <div class="next-up-card">
+              <div class="next-up-header">
+                <span class="next-up-tag">NEXT UP</span>
+                <span class="next-up-timer" style="color: #4ade80;">Starting soon...</span>
+              </div>
+              <div class="next-up-matchup">
+                <span>${p1Info.flag} ${m.player1}</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">vs</span>
+                <span>${m.player2} ${p2Info.flag}</span>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const mins = Math.floor((diff / (1000 * 60)) % 60);
+        const secs = Math.floor((diff / 1000) % 60);
+
+        let timeString = '';
+        if (days > 0) timeString += `${days}d `;
+        timeString += `${String(hours).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
+
+        const scheduleDisplay = formatMatchDateTime(m.date, m.time);
+
+        banner.innerHTML = `
+          <div class="next-up-card">
+            <div class="next-up-header">
+              <span class="next-up-tag">⏳ NEXT TIP-OFF</span>
+              <span class="next-up-timer">Starts in ${timeString}</span>
+            </div>
+            <div class="next-up-matchup">
+              <span>${p1Info.flag} ${m.player1}</span>
+              <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">vs</span>
+              <span>${m.player2} ${p2Info.flag}</span>
+            </div>
+            <div class="next-up-sub">${m.round || 'Preliminary Round'} • ${scheduleDisplay}</div>
+          </div>
+        `;
+      }
+
+      renderCountdown();
+      countdownIntervalId = setInterval(renderCountdown, 1000);
+    }
+
     // ==========================================
     // 1. PREDICTIONS TAB
     // ==========================================
     function loadMedalPredictions(filePath, division) {
       const container = document.getElementById('content-cards');
+      document.getElementById('next-up-container').innerHTML = '';
       container.innerHTML = '<div class="empty-state">Loading simulation results...</div>';
 
       fetch(filePath + '?_nocache=' + Date.now())
@@ -668,6 +951,7 @@
     // ==========================================
     function loadCalibration(predFile, trackerFile, division) {
       const container = document.getElementById('content-cards');
+      document.getElementById('next-up-container').innerHTML = '';
       container.innerHTML = '<div class="empty-state">Computing live model calibration...</div>';
 
       Promise.all([
@@ -842,9 +1126,13 @@
           return res.json();
         })
         .then(data => {
-          renderMatches(data.matches || []);
+          cachedCurrentMatches = data.matches || [];
+          updateNextUpBanner(cachedCurrentMatches);
+          renderMatches(cachedCurrentMatches);
         })
         .catch(err => {
+          cachedCurrentMatches = [];
+          updateNextUpBanner([]);
           container.innerHTML = `<div class="empty-state">No fixtures loaded for this division.</div>`;
         });
     }
@@ -860,16 +1148,7 @@
         const isP1Win = m.winner && (m.winner.trim().toLowerCase() === m.player1.trim().toLowerCase());
         const isP2Win = m.winner && (m.winner.trim().toLowerCase() === m.player2.trim().toLowerCase());
         const statusClass = (m.status || 'upcoming').toLowerCase();
-
-        let dateDisplay = m.date || '';
-        if (dateDisplay && dateDisplay.includes('-')) {
-          const parts = dateDisplay.split('-');
-          const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          const monthIndex = parseInt(parts[1], 10) - 1;
-          dateDisplay = `${parts[2]} ${months[monthIndex] || ''}`;
-        }
-
-        const dateTimeStr = [dateDisplay, m.time].filter(Boolean).join(' • ');
+        const dateTimeStr = formatMatchDateTime(m.date, m.time);
         const isLive = statusClass === 'live';
 
         return `
