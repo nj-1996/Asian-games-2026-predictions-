@@ -4,6 +4,9 @@
     {
       "round": "Women Group A G 1",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-17",
+      "time": "",
       "player1": "Indonesia",
       "player2": "Thailand",
       "score": "vs",
@@ -12,6 +15,9 @@
     {
       "round": "Women Group B G 1",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-17",
+      "time": "",
       "player1": "Philippines",
       "player2": "Kazakhstan",
       "score": "vs",
@@ -20,6 +26,9 @@
     {
       "round": "Women Group B G 2",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-17",
+      "time": "",
       "player1": "Japan",
       "player2": "Hong Kong, China",
       "score": "vs",
@@ -28,6 +37,9 @@
     {
       "round": "Women Group C G 1",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-18",
+      "time": "",
       "player1": "Korea",
       "player2": "Malaysia",
       "score": "vs",
@@ -36,6 +48,9 @@
     {
       "round": "Women Group C G 2",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-18",
+      "time": "",
       "player1": "Chinese Taipei",
       "player2": "Mongolia",
       "score": "vs",
@@ -44,6 +59,9 @@
     {
       "round": "Women Group A G 2",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-19",
+      "time": "",
       "player1": "Thailand",
       "player2": "China",
       "score": "vs",
@@ -52,6 +70,9 @@
     {
       "round": "Women Group B G 3",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-20",
+      "time": "",
       "player1": "Hong Kong, China",
       "player2": "Philippines",
       "score": "vs",
@@ -60,6 +81,9 @@
     {
       "round": "Women Group B G 4",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-20",
+      "time": "",
       "player1": "Kazakhstan",
       "player2": "Japan",
       "score": "vs",
@@ -68,6 +92,9 @@
     {
       "round": "Women Group C G 3",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-21",
+      "time": "",
       "player1": "Mongolia",
       "player2": "Korea",
       "score": "vs",
@@ -76,6 +103,9 @@
     {
       "round": "Women Group C G 4",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-21",
+      "time": "",
       "player1": "Malaysia",
       "player2": "Chinese Taipei",
       "score": "vs",
@@ -84,6 +114,9 @@
     {
       "round": "Women Group A G 3",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-21",
+      "time": "",
       "player1": "China",
       "player2": "Indonesia",
       "score": "vs",
@@ -92,6 +125,9 @@
     {
       "round": "Women Group B G 5",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-22",
+      "time": "",
       "player1": "Kazakhstan",
       "player2": "Hong Kong, China",
       "score": "vs",
@@ -100,6 +136,9 @@
     {
       "round": "Women Group B G 6",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-22",
+      "time": "",
       "player1": "Japan",
       "player2": "Philippines",
       "score": "vs",
@@ -108,6 +147,9 @@
     {
       "round": "Women Group C G 5",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-22",
+      "time": "",
       "player1": "Korea",
       "player2": "Chinese Taipei",
       "score": "vs",
@@ -116,6 +158,9 @@
     {
       "round": "Women Group C G 6",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-22",
+      "time": "",
       "player1": "Mongolia",
       "player2": "Malaysia",
       "score": "vs",
@@ -124,6 +169,9 @@
     {
       "round": "Women 1/4 G 1",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-24",
+      "time": "",
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
@@ -132,6 +180,9 @@
     {
       "round": "Women 1/4 G 2",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-24",
+      "time": "",
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
@@ -140,6 +191,9 @@
     {
       "round": "Women 1/4 G 3",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-24",
+      "time": "",
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
@@ -148,6 +202,9 @@
     {
       "round": "Women 1/4 G 4",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-24",
+      "time": "",
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
@@ -156,6 +213,9 @@
     {
       "round": "Women 1/2 G 1",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-25",
+      "time": "",
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
@@ -164,6 +224,9 @@
     {
       "round": "Women 1/2 G 2",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-25",
+      "time": "",
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
@@ -172,6 +235,9 @@
     {
       "round": "Women F BM",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-26",
+      "time": "",
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
@@ -180,6 +246,9 @@
     {
       "round": "Women F GM",
       "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-26",
+      "time": "",
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
