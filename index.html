@@ -12,7 +12,6 @@
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --primary: #2563eb;
-      --primary-hover: #1d4ed8;
       --win-color: #22c55e;
       --badge-live: #ef4444;
       --badge-finished: #475569;
@@ -51,13 +50,13 @@
       font-size: 0.9rem;
     }
 
-    /* Primary Navigation (Predictions vs Tracker) */
+    /* Main Navigation */
     .main-nav {
       display: flex;
       background-color: #1e293b;
       padding: 4px;
       border-radius: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       border: 1px solid var(--card-border);
     }
 
@@ -80,7 +79,7 @@
       box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
     }
 
-    /* Dropdown GUI Filters */
+    /* Dropdown Filters */
     .filter-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -115,11 +114,7 @@
       width: 100%;
     }
 
-    .custom-select:focus {
-      border-color: var(--primary);
-    }
-
-    /* Cards */
+    /* Card Layouts */
     .cards-list {
       display: grid;
       grid-gap: 12px;
@@ -152,20 +147,10 @@
       letter-spacing: 0.5px;
     }
 
-    .badge.finished {
-      background: rgba(100, 116, 139, 0.3);
-      color: #94a3b8;
-    }
-
-    .badge.live {
-      background: rgba(239, 68, 68, 0.25);
-      color: #f87171;
-    }
-
-    .badge.upcoming {
-      background: rgba(59, 130, 246, 0.25);
-      color: #60a5fa;
-    }
+    .badge.finished { background: rgba(100, 116, 139, 0.3); color: #94a3b8; }
+    .badge.live { background: rgba(239, 68, 68, 0.25); color: #f87171; }
+    .badge.upcoming { background: rgba(59, 130, 246, 0.25); color: #60a5fa; }
+    .badge.model { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 
     .card-body {
       display: flex;
@@ -202,7 +187,7 @@
     .empty-state {
       text-align: center;
       color: var(--text-muted);
-      padding: 50px 14px;
+      padding: 40px 14px;
       font-size: 0.95rem;
       border: 1px dashed var(--card-border);
       border-radius: 12px;
@@ -217,7 +202,7 @@
     <p id="view-subtitle">Live Match Tracker</p>
   </header>
 
-  <!-- Top Main Navigation -->
+  <!-- Navigation -->
   <div class="main-nav">
     <button id="nav-tracker" class="main-nav-btn active" onclick="switchMainTab('tracker')">
       📊 Match Tracker
@@ -227,97 +212,65 @@
     </button>
   </div>
 
-  <!-- VIEW 1: MATCH TRACKER -->
-  <section id="section-tracker">
-    <!-- Scalable Multi-Sport Dropdown GUI -->
-    <div class="filter-grid">
-      <div class="select-wrapper">
-        <label class="select-label" for="select-sport">Sport</label>
-        <select id="select-sport" class="custom-select" onchange="onSportChange()">
-          <option value="basketball">🏀 Basketball (5x5)</option>
-          <option value="badminton" disabled>🏸 Badminton (Upcoming)</option>
-          <option value="table_tennis" disabled>🏓 Table Tennis (Upcoming)</option>
-        </select>
-      </div>
-
-      <div class="select-wrapper">
-        <label class="select-label" for="select-event">Event / Division</label>
-        <select id="select-event" class="custom-select" onchange="onEventChange()">
-          <!-- Dynamically populated based on selected sport -->
-          <option value="men">Men's Tournament</option>
-          <option value="women">Women's Tournament</option>
-        </select>
-      </div>
+  <!-- Shared Dropdown Filters -->
+  <div class="filter-grid">
+    <div class="select-wrapper">
+      <label class="select-label" for="select-sport">Sport</label>
+      <select id="select-sport" class="custom-select" onchange="onSportChange()">
+        <option value="basketball">🏀 Basketball</option>
+      </select>
     </div>
 
-    <!-- Match Results Container -->
-    <div id="tracker-cards-container" class="cards-list">
-      <div class="empty-state">Loading matches...</div>
+    <div class="select-wrapper" id="wrapper-event">
+      <label class="select-label" for="select-event">Division</label>
+      <select id="select-event" class="custom-select" onchange="onEventChange()">
+        <!-- Filled dynamically -->
+      </select>
     </div>
-  </section>
+  </div>
 
-  <!-- VIEW 2: PREDICTIONS -->
-  <section id="section-predictions" style="display: none;">
-    <div class="match-card" style="margin-bottom: 14px;">
-      <div class="card-header">
-        <span>Model Predictions</span>
-        <span class="badge upcoming">Active Model</span>
-      </div>
-      <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 6px;">
-        Head-to-head win probabilities and medal simulations.
-      </p>
-    </div>
-
-    <div id="predictions-container" class="cards-list">
-      <div class="empty-state">
-        Connect your prediction models or JSON feeds here.
-      </div>
-    </div>
-  </section>
+  <!-- Content Container -->
+  <div id="content-cards" class="cards-list">
+    <div class="empty-state">Loading data...</div>
+  </div>
 
   <script>
-    // Sport & Event configuration mapping for effortless expansion
+    // Directory and file mappings per sport
     const SPORT_CONFIG = {
       basketball: {
+        name: "Basketball",
+        predictionsFile: "data/basketball/predictions.json",
         events: [
-          { label: "Men's Tournament", file: "data/basketball_men_tracker.json" },
-          { label: "Women's Tournament", file: "data/basketball_women_tracker.json" }
-        ]
-      },
-      badminton: {
-        events: [
-          { label: "Men's Singles", file: "data/badminton_ms_tracker.json" },
-          { label: "Women's Singles", file: "data/badminton_ws_tracker.json" },
-          { label: "Men's Doubles", file: "data/badminton_md_tracker.json" },
-          { label: "Women's Doubles", file: "data/badminton_wd_tracker.json" }
+          { label: "Men's Tournament", file: "data/basketball/tracker_men.json" },
+          { label: "Women's Tournament", file: "data/basketball/tracker_women.json" }
         ]
       }
     };
 
-    // Navigation switching
+    let currentTab = 'tracker';
+
     function switchMainTab(tab) {
-      const trackerSec = document.getElementById('section-tracker');
-      const predictionsSec = document.getElementById('section-predictions');
+      currentTab = tab;
       const navTracker = document.getElementById('nav-tracker');
       const navPredictions = document.getElementById('nav-predictions');
       const subtitle = document.getElementById('view-subtitle');
+      const eventWrapper = document.getElementById('wrapper-event');
 
       if (tab === 'predictions') {
-        trackerSec.style.display = 'none';
-        predictionsSec.style.display = 'block';
         navPredictions.classList.add('active');
         navTracker.classList.remove('active');
-        subtitle.innerText = 'Tournament Predictions & Probability';
+        subtitle.innerText = 'Tournament Predictions & Win Probabilities';
+        eventWrapper.style.display = 'none'; // Predictions are sport-wide
+        loadCurrentView();
       } else {
-        trackerSec.style.display = 'block';
-        predictionsSec.style.display = 'none';
         navTracker.classList.add('active');
         navPredictions.classList.remove('active');
         subtitle.innerText = 'Live Match Tracker';
+        eventWrapper.style.display = 'flex';
+        loadCurrentView();
       }
     }
 
-    // Dropdown Handlers
     function onSportChange() {
       const sportKey = document.getElementById('select-sport').value;
       const eventSelect = document.getElementById('select-event');
@@ -332,42 +285,98 @@
           eventSelect.appendChild(opt);
         });
       }
-      onEventChange();
+      loadCurrentView();
     }
 
     function onEventChange() {
-      const sportKey = document.getElementById('select-sport').value;
-      const eventIdx = document.getElementById('select-event').value;
-      const config = SPORT_CONFIG[sportKey];
-
-      if (config && config.events[eventIdx]) {
-        fetchMatchData(config.events[eventIdx].file);
+      if (currentTab === 'tracker') {
+        loadCurrentView();
       }
     }
 
-    function fetchMatchData(filePath) {
-      const container = document.getElementById('tracker-cards-container');
-      container.innerHTML = '<div class="empty-state">Loading matches...</div>';
+    function loadCurrentView() {
+      const sportKey = document.getElementById('select-sport').value;
+      const config = SPORT_CONFIG[sportKey];
+      if (!config) return;
+
+      if (currentTab === 'predictions') {
+        loadPredictions(config.predictionsFile);
+      } else {
+        const eventIdx = document.getElementById('select-event').value || 0;
+        const targetEvent = config.events[eventIdx];
+        if (targetEvent) {
+          loadMatches(targetEvent.file);
+        }
+      }
+    }
+
+    function loadPredictions(filePath) {
+      const container = document.getElementById('content-cards');
+      container.innerHTML = '<div class="empty-state">Loading predictions...</div>';
 
       fetch(filePath + '?_nocache=' + Date.now())
         .then(res => {
-          if (!res.ok) throw new Error(`Status ${res.status}`);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          renderPredictions(data.predictions || []);
+        })
+        .catch(err => {
+          container.innerHTML = `
+            <div class="empty-state">
+              No predictions file found at ${filePath}.
+            </div>
+          `;
+        });
+    }
+
+    function renderPredictions(predictions) {
+      const container = document.getElementById('content-cards');
+      if (!predictions || predictions.length === 0) {
+        container.innerHTML = '<div class="empty-state">No predictions published yet for this sport.</div>';
+        return;
+      }
+
+      container.innerHTML = predictions.map(p => {
+        const isT1Win = p.predicted_winner && (p.predicted_winner.toLowerCase() === p.team1.toLowerCase());
+        const isT2Win = p.predicted_winner && (p.predicted_winner.toLowerCase() === p.team2.toLowerCase());
+
+        return `
+          <div class="match-card">
+            <div class="card-header">
+              <span>${p.match || 'Matchup'}</span>
+              <span class="badge model">${p.confidence || 'Pick'}</span>
+            </div>
+            <div class="card-body">
+              <span class="team left ${isT1Win ? 'winner' : ''}">${p.team1}</span>
+              <span class="score-badge">${p.win_prob || 'vs'}</span>
+              <span class="team right ${isT2Win ? 'winner' : ''}">${p.team2}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadMatches(filePath) {
+      const container = document.getElementById('content-cards');
+      container.innerHTML = '<div class="empty-state">Loading live fixtures...</div>';
+
+      fetch(filePath + '?_nocache=' + Date.now())
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
           return res.json();
         })
         .then(data => {
           renderMatches(data.matches || []);
         })
         .catch(err => {
-          container.innerHTML = `
-            <div class="empty-state">
-              No live matches or schedule published yet for this event.
-            </div>
-          `;
+          container.innerHTML = `<div class="empty-state">No fixtures loaded for this division.</div>`;
         });
     }
 
     function renderMatches(matches) {
-      const container = document.getElementById('tracker-cards-container');
+      const container = document.getElementById('content-cards');
       if (!matches || matches.length === 0) {
         container.innerHTML = '<div class="empty-state">No matches scheduled.</div>';
         return;
@@ -394,7 +403,7 @@
       }).join('');
     }
 
-    // Initialize on first load
+    // Initialize UI on page load
     onSportChange();
   </script>
 </body>
