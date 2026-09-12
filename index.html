@@ -19,6 +19,7 @@
       --badge-live: #ef4444;
       --badge-finished: #475569;
       --badge-upcoming: #3b82f6;
+      --badge-danger: #f43f5e;
     }
 
     * {
@@ -85,7 +86,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .select-wrapper {
@@ -113,6 +114,43 @@
       outline: none;
       cursor: pointer;
       width: 100%;
+    }
+
+    /* Accuracy & Calibration KPI Bar */
+    .accuracy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .kpi-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 10px;
+      text-align: center;
+    }
+
+    .kpi-title {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+
+    .kpi-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--win-color);
+    }
+
+    .kpi-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
 
     .cards-list {
@@ -153,9 +191,6 @@
     .match-datetime {
       font-size: 0.75rem;
       color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 5px;
     }
 
     .badge {
@@ -172,6 +207,7 @@
     .badge.live { background: rgba(239, 68, 68, 0.25); color: #f87171; }
     .badge.upcoming { background: rgba(59, 130, 246, 0.25); color: #60a5fa; }
     .badge.model { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .badge.danger { background: rgba(244, 63, 94, 0.25); color: #fb7185; }
 
     .card-body {
       display: flex;
@@ -211,6 +247,7 @@
       flex-shrink: 0;
     }
 
+    /* Table Styles */
     .table-container {
       overflow-x: auto;
       background: var(--card-bg);
@@ -262,6 +299,18 @@
     .bronze-cell { color: var(--bronze); }
     .podium-cell { color: var(--win-color); }
 
+    .pill-status {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .pill-on-track { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .pill-contested { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .pill-at-risk { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
+
     .empty-state {
       text-align: center;
       color: var(--text-muted);
@@ -285,7 +334,7 @@
       📊 Match Tracker
     </button>
     <button id="nav-predictions" class="main-nav-btn" onclick="switchMainTab('predictions')">
-      🎯 Medal Predictions
+      🎯 Medal Projections & Calibration
     </button>
   </div>
 
@@ -333,7 +382,7 @@
       if (tab === 'predictions') {
         navPredictions.classList.add('active');
         navTracker.classList.remove('active');
-        subtitle.innerText = 'Monte Carlo Medal Projections (50,000 Iterations)';
+        subtitle.innerText = 'Monte Carlo Predictions & Live Calibration';
       } else {
         navTracker.classList.add('active');
         navPredictions.classList.remove('active');
@@ -342,13 +391,8 @@
       loadCurrentView();
     }
 
-    function onSportChange() {
-      loadCurrentView();
-    }
-
-    function onEventChange() {
-      loadCurrentView();
-    }
+    function onSportChange() { loadCurrentView(); }
+    function onEventChange() { loadCurrentView(); }
 
     function loadCurrentView() {
       const sportKey = document.getElementById('select-sport').value;
@@ -357,85 +401,204 @@
       if (!config) return;
 
       if (currentTab === 'predictions') {
-        loadMedalPredictions(config.predictionsFile, divisionKey);
+        loadCalibrationAndPredictions(config.predictionsFile, config.trackerFiles[divisionKey], divisionKey);
       } else {
         const filePath = config.trackerFiles[divisionKey];
         if (filePath) loadMatches(filePath);
       }
     }
 
-    function loadMedalPredictions(filePath, division) {
-      const container = document.getElementById('content-cards');
-      container.innerHTML = '<div class="empty-state">Loading simulation results...</div>';
-
-      fetch(filePath + '?_nocache=' + Date.now())
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
-          const list = (division === 'women') ? data.women : data.men;
-          renderMedalTable(list, data);
-        })
-        .catch(err => {
-          container.innerHTML = `<div class="empty-state">No predictions file found at ${filePath}.</div>`;
-        });
+    // Name normalization to match tracker strings with model entries
+    function normName(name) {
+      return (name || '')
+        .toLowerCase()
+        .replace(/\s*\(host\)/g, '')
+        .replace(/republic of\s*/g, '')
+        .replace(/ir\s*/g, '')
+        .replace(/\./g, '')
+        .trim();
     }
 
-    function renderMedalTable(teams, meta) {
+    // --- PREDICTIONS & CALIBRATION LOADER ---
+    function loadCalibrationAndPredictions(predFile, trackerFile, division) {
+      const container = document.getElementById('content-cards');
+      container.innerHTML = '<div class="empty-state">Calculating model calibration...</div>';
+
+      Promise.all([
+        fetch(predFile + '?_nocache=' + Date.now()).then(r => r.json()),
+        fetch(trackerFile + '?_nocache=' + Date.now()).then(r => r.json()).catch(() => ({ matches: [] }))
+      ])
+      .then(([predData, trackerData]) => {
+        const teams = (division === 'women') ? predData.women : predData.men;
+        const matches = trackerData.matches || [];
+        renderPredictionsView(teams, predData, matches);
+      })
+      .catch(err => {
+        container.innerHTML = `<div class="empty-state">Failed to load prediction or tracker datasets.</div>`;
+      });
+    }
+
+    function renderPredictionsView(teams, meta, matches) {
       const container = document.getElementById('content-cards');
       if (!teams || teams.length === 0) {
         container.innerHTML = '<div class="empty-state">No simulation data available.</div>';
         return;
       }
 
+      // Rank mapping
+      const rankMap = {};
+      teams.forEach(t => {
+        rankMap[normName(t.team)] = t.rank;
+      });
+
+      // Compute actual records and track upsets
+      const records = {};
+      let finishedCount = 0;
+      let favoriteHits = 0;
+      const upsets = [];
+
+      matches.forEach(m => {
+        if (m.status !== 'Finished' || !m.winner) return;
+        finishedCount++;
+
+        const p1Norm = normName(m.player1);
+        const p2Norm = normName(m.player2);
+        const wNorm = normName(m.winner);
+
+        records[p1Norm] = records[p1Norm] || { w: 0, l: 0 };
+        records[p2Norm] = records[p2Norm] || { w: 0, l: 0 };
+
+        if (wNorm === p1Norm) {
+          records[p1Norm].w++;
+          records[p2Norm].l++;
+        } else {
+          records[p2Norm].w++;
+          records[p1Norm].l++;
+        }
+
+        const r1 = rankMap[p1Norm] || 99;
+        const r2 = rankMap[p2Norm] || 99;
+
+        if (r1 !== r2) {
+          const favoriteNorm = r1 < r2 ? p1Norm : p2Norm;
+          if (wNorm === favoriteNorm) {
+            favoriteHits++;
+          } else {
+            upsets.push({
+              winner: m.winner,
+              loser: (wNorm === p1Norm) ? m.player2 : m.player1,
+              score: m.score,
+              round: m.round
+            });
+          }
+        }
+      });
+
+      const accuracy = finishedCount > 0 ? Math.round((favoriteHits / finishedCount) * 100) : 100;
+      const alignmentStatus = accuracy >= 75 ? 'Optimal' : (accuracy >= 50 ? 'Moderate' : 'Volatile');
+
+      // 1. KPI Calibration Summary
+      let kpiHtml = `
+        <div class="accuracy-grid">
+          <div class="kpi-card">
+            <div class="kpi-title">Model Accuracy</div>
+            <div class="kpi-val">${accuracy}%</div>
+            <div class="kpi-sub">${favoriteHits}/${finishedCount} favorites won</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Upsets Logged</div>
+            <div class="kpi-val" style="color: ${upsets.length > 0 ? '#fb7185' : '#4ade80'}">${upsets.length}</div>
+            <div class="kpi-sub">${upsets.length === 0 ? 'No upsets yet' : 'Underdog wins'}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Calibration</div>
+            <div class="kpi-val" style="color: #60a5fa">${alignmentStatus}</div>
+            <div class="kpi-sub">50k Sim Alignment</div>
+          </div>
+        </div>
+      `;
+
+      // 2. Simulation Meta Header
       let metaHeader = `
-        <div class="match-card" style="margin-bottom: 4px;">
+        <div class="match-card" style="margin-bottom: 10px;">
           <div class="card-header">
-            <span>Simulation Engine: <strong>${meta.simulation_model || 'Monte Carlo'}</strong></span>
-            <span class="badge model">Host Boost: ${meta.home_court_boost || 'None'}</span>
+            <span>Simulation: <strong>${meta.simulation_model || 'Monte Carlo'}</strong></span>
+            <span class="badge model">Host Boost: ${meta.home_court_boost || '+3.8'}</span>
           </div>
           <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-            ${meta.weighting || 'Weighted Regional Ratings'}
+            ${meta.weighting || 'FIBA Rankings + Asia Cup 2025 Weighting'}
           </p>
         </div>
       `;
 
+      // 3. Medal Table with Real-Time Record & Trajectory
       let tableHtml = `
         <div class="table-container">
           <table class="medal-table">
             <thead>
               <tr>
                 <th>Team</th>
+                <th>Record</th>
+                <th>Trajectory</th>
                 <th class="gold-cell">🥇 Gold</th>
-                <th class="silver-cell">🥈 Silver</th>
-                <th class="bronze-cell">🥉 Bronze</th>
                 <th class="podium-cell">Podium</th>
               </tr>
             </thead>
             <tbody>
-              ${teams.map(t => `
-                <tr>
-                  <td>
-                    <div class="team-cell">
-                      <span class="rank-num">${t.rank}</span>
-                      <span>${t.team}</span>
-                    </div>
-                  </td>
-                  <td class="gold-cell">${t.gold}</td>
-                  <td class="silver-cell">${t.silver}</td>
-                  <td class="bronze-cell">${t.bronze}</td>
-                  <td class="podium-cell">${t.podium}</td>
-                </tr>
-              `).join('')}
+              ${teams.map(t => {
+                const rec = records[normName(t.team)] || { w: 0, l: 0 };
+                let trajectory = '<span class="pill-status pill-on-track">On Track</span>';
+                if (rec.l >= 2) {
+                  trajectory = '<span class="pill-status pill-at-risk">At Risk</span>';
+                } else if (rec.l === 1) {
+                  trajectory = '<span class="pill-status pill-contested">Contested</span>';
+                }
+
+                return `
+                  <tr>
+                    <td>
+                      <div class="team-cell">
+                        <span class="rank-num">${t.rank}</span>
+                        <span>${t.team}</span>
+                      </div>
+                    </td>
+                    <td>${rec.w}-${rec.l}</td>
+                    <td>${trajectory}</td>
+                    <td class="gold-cell">${t.gold}</td>
+                    <td class="podium-cell">${t.podium}</td>
+                  </tr>
+                `;
+              }).join('')}
             </tbody>
           </table>
         </div>
       `;
 
-      container.innerHTML = metaHeader + tableHtml;
+      // 4. Upsets Callout (if any occurred)
+      let upsetsHtml = '';
+      if (upsets.length > 0) {
+        upsetsHtml = `
+          <div style="margin-top: 14px;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
+              ⚠️ Model Deviations / Upsets Logged
+            </div>
+            ${upsets.map(u => `
+              <div class="match-card" style="border-left: 3px solid var(--badge-danger); padding: 10px 14px; margin-bottom: 6px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                  <span><strong>${u.winner}</strong> def. ${u.loser}</span>
+                  <span style="font-weight: 700; color: #fb7185;">${u.score}</span>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">${u.round}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      container.innerHTML = kpiHtml + metaHeader + tableHtml + upsetsHtml;
     }
 
+    // --- MATCH TRACKER LOADER ---
     function loadMatches(filePath) {
       const container = document.getElementById('content-cards');
       container.innerHTML = '<div class="empty-state">Loading live fixtures...</div>';
@@ -465,7 +628,6 @@
         const isP2Win = m.winner && (m.winner.trim().toLowerCase() === m.player2.trim().toLowerCase());
         const statusClass = (m.status || 'upcoming').toLowerCase();
 
-        // Format date string (e.g. "2026-09-10" -> "10 Sep")
         let dateDisplay = m.date || '';
         if (dateDisplay && dateDisplay.includes('-')) {
           const parts = dateDisplay.split('-');
