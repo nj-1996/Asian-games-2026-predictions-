@@ -1,0 +1,63 @@
+{
+  "sport": "Basketball",
+  "model_version": "v1.4-elo-weighted",
+  "generated_at": "2026-09-12T12:00:00Z",
+  "predictions": [
+    {
+      "match": "Men's Group A - Round 2",
+      "confidence": "High Confidence",
+      "team1": "Japan",
+      "team2": "Korea",
+      "predicted_winner": "Japan",
+      "win_prob": "64% - 36%"
+    },
+    {
+      "match": "Men's Group B - Round 2",
+      "confidence": "Moderate Pick",
+      "team1": "Qatar",
+      "team2": "Chinese Taipei",
+      "predicted_winner": "Chinese Taipei",
+      "win_prob": "46% - 54%"
+    },
+    {
+      "match": "Men's Group C - Round 1",
+      "confidence": "High Confidence",
+      "team1": "China",
+      "team2": "Philippines",
+      "predicted_winner": "China",
+      "win_prob": "58% - 42%"
+    },
+    {
+      "match": "Men's Group B - Round 3",
+      "confidence": "Lean Pick",
+      "team1": "IR Iran",
+      "team2": "Jordan",
+      "predicted_winner": "Jordan",
+      "win_prob": "48% - 52%"
+    },
+    {
+      "match": "Women's Group A - Round 1",
+      "confidence": "High Confidence",
+      "team1": "China",
+      "team2": "Indonesia",
+      "predicted_winner": "China",
+      "win_prob": "89% - 11%"
+    },
+    {
+      "match": "Women's Group B - Round 1",
+      "confidence": "Moderate Pick",
+      "team1": "Japan",
+      "team2": "Chinese Taipei",
+      "predicted_winner": "Japan",
+      "win_prob": "72% - 28%"
+    },
+    {
+      "match": "Women's Group A - Round 2",
+      "confidence": "Tossup",
+      "team1": "Korea",
+      "team2": "Philippines",
+      "predicted_winner": "Korea",
+      "win_prob": "55% - 45%"
+    }
+  ]
+}
