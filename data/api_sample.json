@@ -1,0 +1,2050 @@
+[
+  {
+    "Orgs": [
+      "IRI",
+      "QAT"
+    ],
+    "IsPhase": false,
+    "ResCode": "M.TEAM5-------------.GPB-.000100--",
+    "ShowLink": true,
+    "Disc": "BKB",
+    "DiscDesc": "Basketball",
+    "Key": "M.TEAM5-------------.GPB-.000100--",
+    "isH2H": true,
+    "Type": "T",
+    "Medal": "",
+    "Status": "OFFICIAL",
+    "StatusDesc": "Official",
+    "DateTimeRaw": "2026-09-10T10:00:00+09:00",
+    "HideStartDate": false,
+    "Estimated": false,
+    "EstText": "",
+    "HideLocation": false,
+    "Venue": "AIA",
+    "VenueDesc": "Aichi International Arena",
+    "VenueDescS": "Aichi International Arena",
+    "Loc": "001",
+    "LocDesc": "Aichi International Arena",
+    "LocDescS": "AIA",
+    "Event": "M.TEAM5-------------",
+    "EventDesc": "Men",
+    "Phase": "M.TEAM5-------------.GPB-",
+    "PhaseOrder": 26,
+    "PhaseDesc": "Men Group Phase - Group B",
+    "PhaseDescS": "Men Group B",
+    "PhaseDescA": "Group Phase - Group B",
+    "UnitDesc": "Men Group Phase - Group B Game 1",
+    "UnitDescS": "Men Group B G 1",
+    "UnitDescA": "Game 1",
+    "UnitNum": "1",
+    "IsLive": false,
+    "ShowResults": true,
+    "Periods": [
+      {
+        "Order": 1,
+        "Desc": "Quarter 1",
+        "DescS": "Q1"
+      },
+      {
+        "Order": 2,
+        "Desc": "Quarter 2",
+        "DescS": "Q2"
+      },
+      {
+        "Order": 3,
+        "Desc": "Quarter 3",
+        "DescS": "Q3"
+      },
+      {
+        "Order": 4,
+        "Desc": "Quarter 4",
+        "DescS": "Q4"
+      }
+    ],
+    "Home": {
+      "Org": "IRI",
+      "Reg": "BKBMTEAM5------IRI01",
+      "Name": "Islamic Republic of Iran",
+      "Result": "53",
+      "Winner": false,
+      "HasData": true,
+      "NameS": "IR Iran",
+      "Medal": "",
+      "Members": [
+        {
+          "Org": "IRI",
+          "Bib": "1",
+          "Name": "GIRGOORIAN Piter",
+          "NameS": "GIRGOORIAN Piter",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Small Forward"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "4",
+          "Name": "SHARIFI Alireza",
+          "NameS": "SHARIFI Alireza",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Power Forward"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "5",
+          "Name": "SHEIKHI Mobin",
+          "NameS": "SHEIKHI Mobin",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Point Guard"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "7",
+          "Name": "REZAEIFAR Navid",
+          "NameS": "REZAEIFAR Navid",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "9",
+          "Name": "ALIAKBARINAMGHI Khashayar",
+          "NameS": "ALIAKBARINAMGHI Khashayar",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "11",
+          "Name": "HEYDARI Mohammad",
+          "NameS": "HEYDARI Mohammad",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Small Forward"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "12",
+          "Name": "ZANGANEH Arman",
+          "NameS": "ZANGANEH Arman",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Power Forward"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "13",
+          "Name": "JAMSHIDIJAFARABADI Mohammad",
+          "NameS": "JAMSHIDIJAFARABADI Mohammad",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Shooting Guard"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "14",
+          "Name": "KAZEMI Arsalan",
+          "NameS": "KAZEMI Arsalan",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Small Forward"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "17",
+          "Name": "AGHAJANPOUR Matin",
+          "NameS": "AGHAJANPOUR Matin",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Power Forward"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "51",
+          "Name": "MONJI Salar",
+          "NameS": "MONJI Salar",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "IRI",
+          "Bib": "55",
+          "Name": "JAFARI Mahdi",
+          "NameS": "JAFARI Mahdi",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        }
+      ],
+      "Splits": [
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "10",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "11",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "13",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "19",
+          "Extensions": []
+        }
+      ],
+      "Extensions": [
+        {
+          "Type": "SERVICE",
+          "Code": "MemberServer",
+          "Pos": 0,
+          "Value": "",
+          "Extensions": []
+        },
+        {
+          "Type": "SERVICE",
+          "Code": "Server",
+          "Pos": 0,
+          "Value": "false",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Age",
+          "Pos": 0,
+          "Value": "27.7",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Height",
+          "Pos": 0,
+          "Value": "1.96/6.43",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_15MIN",
+          "Pos": 0,
+          "Value": "17",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_25MIN",
+          "Pos": 0,
+          "Value": "22",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_35MIN",
+          "Pos": 0,
+          "Value": "44",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_5MIN",
+          "Pos": 0,
+          "Value": "7",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "TimeLeading",
+          "Pos": 0,
+          "Value": "1:11",
+          "Extensions": []
+        }
+      ]
+    },
+    "Away": {
+      "Org": "QAT",
+      "Reg": "BKBMTEAM5------QAT01",
+      "Name": "Qatar",
+      "Result": "59",
+      "Winner": true,
+      "HasData": true,
+      "NameS": "Qatar",
+      "Medal": "",
+      "Members": [
+        {
+          "Org": "QAT",
+          "Bib": "0",
+          "Name": "FOUDA Moustafa",
+          "NameS": "FOUDA Moustafa",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "2",
+          "Name": "LEWIS Michael",
+          "NameS": "LEWIS Michael",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "3",
+          "Name": "DARWISH Mahmoud",
+          "NameS": "DARWISH Mahmoud",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "4",
+          "Name": "SAAD Abdulrahman",
+          "NameS": "SAAD Abdulrahman",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "5",
+          "Name": "SEYDOU Ndoye",
+          "NameS": "SEYDOU Ndoye",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "10",
+          "Name": "MOUSA Abdulla",
+          "NameS": "MOUSA Abdulla",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Point Guard"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "14",
+          "Name": "ABBASHER Mohammed",
+          "NameS": "ABBASHER Mohammed",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "24",
+          "Name": "DIENG Ousmanediatta",
+          "NameS": "DIENG Ousmanediatta",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "27",
+          "Name": "ABDELHALEEM Abdelrahman",
+          "NameS": "ABDELHALEEM Abdelrahman",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "31",
+          "Name": "JANJIC Dejan",
+          "NameS": "JANJIC Dejan",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "33",
+          "Name": "MAGASSA Aladji",
+          "NameS": "MAGASSA Aladji",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "QAT",
+          "Bib": "58",
+          "Name": "ARFA Oussama",
+          "NameS": "ARFA Oussama",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        }
+      ],
+      "Splits": [
+        {
+          "Rk": "1",
+          "RkPo": 2,
+          "Res": "10",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "21",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 2,
+          "Res": "13",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "15",
+          "Extensions": []
+        }
+      ],
+      "Extensions": [
+        {
+          "Type": "SERVICE",
+          "Code": "MemberServer",
+          "Pos": 0,
+          "Value": "",
+          "Extensions": []
+        },
+        {
+          "Type": "SERVICE",
+          "Code": "Server",
+          "Pos": 0,
+          "Value": "false",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Age",
+          "Pos": 0,
+          "Value": "26.0",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Height",
+          "Pos": 0,
+          "Value": "1.95/6.40",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_15MIN",
+          "Pos": 0,
+          "Value": "20",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_25MIN",
+          "Pos": 0,
+          "Value": "41",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_35MIN",
+          "Pos": 0,
+          "Value": "48",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_5MIN",
+          "Pos": 0,
+          "Value": "7",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "TimeLeading",
+          "Pos": 0,
+          "Value": "32:27",
+          "Extensions": []
+        }
+      ]
+    },
+    "Extensions": [
+      {
+        "Type": "UNIT_INFO",
+        "Code": "ATTENDANCE",
+        "Pos": 0,
+        "Value": "",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_FOULS",
+        "Pos": 0,
+        "Value": "T",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_INFO",
+        "Pos": 0,
+        "Value": "T",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_MEM_FOULS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_MEM_PTS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_TOUTS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "REAL_DURATION",
+        "Pos": 0,
+        "Value": "1:54",
+        "Extensions": []
+      }
+    ]
+  },
+  {
+    "Orgs": [
+      "JOR",
+      "TPE"
+    ],
+    "IsPhase": false,
+    "ResCode": "M.TEAM5-------------.GPB-.000200--",
+    "ShowLink": true,
+    "Disc": "BKB",
+    "DiscDesc": "Basketball",
+    "Key": "M.TEAM5-------------.GPB-.000200--",
+    "isH2H": true,
+    "Type": "T",
+    "Medal": "",
+    "Status": "OFFICIAL",
+    "StatusDesc": "Official",
+    "DateTimeRaw": "2026-09-10T13:00:00+09:00",
+    "HideStartDate": false,
+    "Estimated": false,
+    "EstText": "",
+    "HideLocation": false,
+    "Venue": "AIA",
+    "VenueDesc": "Aichi International Arena",
+    "VenueDescS": "Aichi International Arena",
+    "Loc": "001",
+    "LocDesc": "Aichi International Arena",
+    "LocDescS": "AIA",
+    "Event": "M.TEAM5-------------",
+    "EventDesc": "Men",
+    "Phase": "M.TEAM5-------------.GPB-",
+    "PhaseOrder": 26,
+    "PhaseDesc": "Men Group Phase - Group B",
+    "PhaseDescS": "Men Group B",
+    "PhaseDescA": "Group Phase - Group B",
+    "UnitDesc": "Men Group Phase - Group B Game 2",
+    "UnitDescS": "Men Group B G 2",
+    "UnitDescA": "Game 2",
+    "UnitNum": "2",
+    "IsLive": false,
+    "ShowResults": true,
+    "Periods": [
+      {
+        "Order": 1,
+        "Desc": "Quarter 1",
+        "DescS": "Q1"
+      },
+      {
+        "Order": 2,
+        "Desc": "Quarter 2",
+        "DescS": "Q2"
+      },
+      {
+        "Order": 3,
+        "Desc": "Quarter 3",
+        "DescS": "Q3"
+      },
+      {
+        "Order": 4,
+        "Desc": "Quarter 4",
+        "DescS": "Q4"
+      }
+    ],
+    "Home": {
+      "Org": "JOR",
+      "Reg": "BKBMTEAM5------JOR01",
+      "Name": "Jordan",
+      "Result": "80",
+      "Winner": false,
+      "HasData": true,
+      "NameS": "Jordan",
+      "Medal": "",
+      "Members": [
+        {
+          "Org": "JOR",
+          "Bib": "0",
+          "Name": "OLAJUWON Abdullah",
+          "NameS": "OLAJUWON Abdullah",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "1",
+          "Name": "ABU HAWWAS Amin",
+          "NameS": "ABU HAWWAS Amin",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Shooting Guard"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "2",
+          "Name": "TUCKER Darquavis",
+          "NameS": "TUCKER Darquavis",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Shooting Guard"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "5",
+          "Name": "MUSTAFA Fadi",
+          "NameS": "MUSTAFA Fadi",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "6",
+          "Name": "BUFORD Perrin",
+          "NameS": "BUFORD Perrin",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "7",
+          "Name": "ALHAMARSHEH Ahmad",
+          "NameS": "ALHAMARSHEH Ahmad",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "9",
+          "Name": "KILANI Rawhi",
+          "NameS": "KILANI Rawhi",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Small Forward"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "11",
+          "Name": "ALTAWEEL Yazan",
+          "NameS": "ALTAWEEL Yazan",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "12",
+          "Name": "ABUWAZANEH Yousef",
+          "NameS": "ABUWAZANEH Yousef",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "13",
+          "Name": "HUSSEIN Mohammad",
+          "NameS": "HUSSEIN Mohammad",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "22",
+          "Name": "KANAAN Malek",
+          "NameS": "KANAAN Malek",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "JOR",
+          "Bib": "44",
+          "Name": "ALDWAIRI Ahmad",
+          "NameS": "ALDWAIRI Ahmad",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        }
+      ],
+      "Splits": [
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "13",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "23",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "19",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "25",
+          "Extensions": []
+        }
+      ],
+      "Extensions": [
+        {
+          "Type": "SERVICE",
+          "Code": "MemberServer",
+          "Pos": 0,
+          "Value": "",
+          "Extensions": []
+        },
+        {
+          "Type": "SERVICE",
+          "Code": "Server",
+          "Pos": 0,
+          "Value": "false",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Age",
+          "Pos": 0,
+          "Value": "31.6",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Height",
+          "Pos": 0,
+          "Value": "1.96/6.43",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_15MIN",
+          "Pos": 0,
+          "Value": "20",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_25MIN",
+          "Pos": 0,
+          "Value": "45",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_35MIN",
+          "Pos": 0,
+          "Value": "66",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_5MIN",
+          "Pos": 0,
+          "Value": "5",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "TimeLeading",
+          "Pos": 0,
+          "Value": "0:11",
+          "Extensions": []
+        }
+      ]
+    },
+    "Away": {
+      "Org": "TPE",
+      "Reg": "BKBMTEAM5------TPE01",
+      "Name": "Chinese Taipei",
+      "Result": "83",
+      "Winner": true,
+      "HasData": true,
+      "NameS": "Chinese Taipei",
+      "Medal": "",
+      "Members": [
+        {
+          "Org": "TPE",
+          "Bib": "0",
+          "Name": "LIN Ting-Chien",
+          "NameS": "LIN Ting-Chien",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "2",
+          "Name": "MA Chien-Hao",
+          "NameS": "MA Chien-Hao",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Small Forward"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "7",
+          "Name": "YU Ai-Che",
+          "NameS": "YU Ai-Che",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "9",
+          "Name": "CHEN Ying-Chun",
+          "NameS": "CHEN Ying-Chun",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Point Guard"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "10",
+          "Name": "HU Long-Mao",
+          "NameS": "HU Long-Mao",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "12",
+          "Name": "LI Chia-Kang",
+          "NameS": "LI Chia-Kang",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Shooting Guard"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "33",
+          "Name": "MANU Samuel",
+          "NameS": "MANU Samuel",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "34",
+          "Name": "GILBECK Brandon",
+          "NameS": "GILBECK Brandon",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "39",
+          "Name": "LU Chun-Hsiang",
+          "NameS": "LU Chun-Hsiang",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Shooting Guard"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "41",
+          "Name": "MORRISON Jonah",
+          "NameS": "MORRISON Jonah",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "62",
+          "Name": "CHEN Kuan-Chuan",
+          "NameS": "CHEN Kuan-Chuan",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "TPE",
+          "Bib": "88",
+          "Name": "TSENG Hsiang-chun",
+          "NameS": "TSENG Hsiang-chun",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        }
+      ],
+      "Splits": [
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "17",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "29",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "14",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "23",
+          "Extensions": []
+        }
+      ],
+      "Extensions": [
+        {
+          "Type": "SERVICE",
+          "Code": "MemberServer",
+          "Pos": 0,
+          "Value": "",
+          "Extensions": []
+        },
+        {
+          "Type": "SERVICE",
+          "Code": "Server",
+          "Pos": 0,
+          "Value": "false",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Age",
+          "Pos": 0,
+          "Value": "28.1",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Height",
+          "Pos": 0,
+          "Value": "1.95/6.40",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_15MIN",
+          "Pos": 0,
+          "Value": "32",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_25MIN",
+          "Pos": 0,
+          "Value": "55",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_35MIN",
+          "Pos": 0,
+          "Value": "75",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_5MIN",
+          "Pos": 0,
+          "Value": "10",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "TimeLeading",
+          "Pos": 0,
+          "Value": "38:28",
+          "Extensions": []
+        }
+      ]
+    },
+    "Extensions": [
+      {
+        "Type": "UNIT_INFO",
+        "Code": "ATTENDANCE",
+        "Pos": 0,
+        "Value": "",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_FOULS",
+        "Pos": 0,
+        "Value": "T",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_INFO",
+        "Pos": 0,
+        "Value": "T",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_MEM_FOULS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_MEM_PTS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_TOUTS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "REAL_DURATION",
+        "Pos": 0,
+        "Value": "2:14",
+        "Extensions": []
+      }
+    ]
+  },
+  {
+    "Orgs": [
+      "KOR",
+      "KSA"
+    ],
+    "IsPhase": false,
+    "ResCode": "M.TEAM5-------------.GPA-.000100--",
+    "ShowLink": true,
+    "Disc": "BKB",
+    "DiscDesc": "Basketball",
+    "Key": "M.TEAM5-------------.GPA-.000100--",
+    "isH2H": true,
+    "Type": "T",
+    "Medal": "",
+    "Status": "OFFICIAL",
+    "StatusDesc": "Official",
+    "DateTimeRaw": "2026-09-10T16:00:00+09:00",
+    "HideStartDate": false,
+    "Estimated": false,
+    "EstText": "",
+    "HideLocation": false,
+    "Venue": "AIA",
+    "VenueDesc": "Aichi International Arena",
+    "VenueDescS": "Aichi International Arena",
+    "Loc": "001",
+    "LocDesc": "Aichi International Arena",
+    "LocDescS": "AIA",
+    "Event": "M.TEAM5-------------",
+    "EventDesc": "Men",
+    "Phase": "M.TEAM5-------------.GPA-",
+    "PhaseOrder": 25,
+    "PhaseDesc": "Men Group Phase - Group A",
+    "PhaseDescS": "Men Group A",
+    "PhaseDescA": "Group Phase - Group A",
+    "UnitDesc": "Men Group Phase - Group A Game 1",
+    "UnitDescS": "Men Group A G 1",
+    "UnitDescA": "Game 1",
+    "UnitNum": "3",
+    "IsLive": false,
+    "ShowResults": true,
+    "Periods": [
+      {
+        "Order": 1,
+        "Desc": "Quarter 1",
+        "DescS": "Q1"
+      },
+      {
+        "Order": 2,
+        "Desc": "Quarter 2",
+        "DescS": "Q2"
+      },
+      {
+        "Order": 3,
+        "Desc": "Quarter 3",
+        "DescS": "Q3"
+      },
+      {
+        "Order": 4,
+        "Desc": "Quarter 4",
+        "DescS": "Q4"
+      }
+    ],
+    "Home": {
+      "Org": "KOR",
+      "Reg": "BKBMTEAM5------KOR01",
+      "Name": "Republic of Korea",
+      "Result": "82",
+      "Winner": true,
+      "HasData": true,
+      "NameS": "Korea",
+      "Medal": "",
+      "Members": [
+        {
+          "Org": "KOR",
+          "Bib": "1",
+          "Name": "LEE Hyunjung",
+          "NameS": "LEE Hyunjung",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "2",
+          "Name": "CHOI Junyong",
+          "NameS": "CHOI Junyong",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Power Forward"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "5",
+          "Name": "BYEON Junhyeong",
+          "NameS": "BYEON Junhyeong",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "6",
+          "Name": "LEE Junghyun",
+          "NameS": "LEE Junghyun",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "7",
+          "Name": "YU Kisang",
+          "NameS": "YU Kisang",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "11",
+          "Name": "LEE Woosuk",
+          "NameS": "LEE Woosuk",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "12",
+          "Name": "MOON Jeonghyeon",
+          "NameS": "MOON Jeonghyeon",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "22",
+          "Name": "YEO Jun Seok",
+          "NameS": "YEO Jun Seok",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "24",
+          "Name": "MOON Yuhyeon",
+          "NameS": "MOON Yuhyeon",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Point Guard"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "31",
+          "Name": "JANG Jaeseok",
+          "NameS": "JANG Jaeseok",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "33",
+          "Name": "LEE Seounghyun",
+          "NameS": "LEE Seounghyun",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "KOR",
+          "Bib": "36",
+          "Name": "EDI Daniel",
+          "NameS": "EDI Daniel",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        }
+      ],
+      "Splits": [
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "24",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "17",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "33",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "8",
+          "Extensions": []
+        }
+      ],
+      "Extensions": [
+        {
+          "Type": "SERVICE",
+          "Code": "MemberServer",
+          "Pos": 0,
+          "Value": "",
+          "Extensions": []
+        },
+        {
+          "Type": "SERVICE",
+          "Code": "Server",
+          "Pos": 0,
+          "Value": "false",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Age",
+          "Pos": 0,
+          "Value": "27.1",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Height",
+          "Pos": 0,
+          "Value": "1.94/6.36",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_15MIN",
+          "Pos": 0,
+          "Value": "29",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_25MIN",
+          "Pos": 0,
+          "Value": "53",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_35MIN",
+          "Pos": 0,
+          "Value": "77",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_5MIN",
+          "Pos": 0,
+          "Value": "8",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "TimeLeading",
+          "Pos": 0,
+          "Value": "38:58",
+          "Extensions": []
+        }
+      ]
+    },
+    "Away": {
+      "Org": "KSA",
+      "Reg": "BKBMTEAM5------KSA01",
+      "Name": "Saudi Arabia",
+      "Result": "66",
+      "Winner": false,
+      "HasData": true,
+      "NameS": "Saudi Arabia",
+      "Medal": "",
+      "Members": [
+        {
+          "Org": "KSA",
+          "Bib": "0",
+          "Name": "ALBARGAWI Osama",
+          "NameS": "ALBARGAWI Osama",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Shooting Guard"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "00",
+          "Name": "ALMUWALLAD Marzouq",
+          "NameS": "ALMUWALLAD Marzouq",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "5",
+          "Name": "ABDURRAHKMAN Muhammad",
+          "NameS": "ABDURRAHKMAN Muhammad",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "6",
+          "Name": "ALMARWANI Mathna",
+          "NameS": "ALMARWANI Mathna",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "7",
+          "Name": "ALSAGER Mohammed",
+          "NameS": "ALSAGER Mohammed",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Point Guard"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "10",
+          "Name": "ABDELGABAR Khalid",
+          "NameS": "ABDELGABAR Khalid",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "12",
+          "Name": "ALSUWAILEM Mohammed",
+          "NameS": "ALSUWAILEM Mohammed",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "13",
+          "Name": "ALMUKHTAR Ahmed",
+          "NameS": "ALMUKHTAR Ahmed",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "20",
+          "Name": "SHUBAYLI Ali",
+          "NameS": "SHUBAYLI Ali",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "35",
+          "Name": "MOHAMMED Thamer",
+          "NameS": "MOHAMMED Thamer",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "44",
+          "Name": "ALKHATER Mohammed",
+          "NameS": "ALKHATER Mohammed",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Power Forward"
+        },
+        {
+          "Org": "KSA",
+          "Bib": "88",
+          "Name": "HUSSAIN Hammam",
+          "NameS": "HUSSAIN Hammam",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        }
+      ],
+      "Splits": [
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "17",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "11",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "19",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "19",
+          "Extensions": []
+        }
+      ],
+      "Extensions": [
+        {
+          "Type": "SERVICE",
+          "Code": "MemberServer",
+          "Pos": 0,
+          "Value": "",
+          "Extensions": []
+        },
+        {
+          "Type": "SERVICE",
+          "Code": "Server",
+          "Pos": 0,
+          "Value": "false",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Age",
+          "Pos": 0,
+          "Value": "30.6",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Height",
+          "Pos": 0,
+          "Value": "1.92/6.30",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_15MIN",
+          "Pos": 0,
+          "Value": "20",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_25MIN",
+          "Pos": 0,
+          "Value": "40",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_35MIN",
+          "Pos": 0,
+          "Value": "57",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_5MIN",
+          "Pos": 0,
+          "Value": "6",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "TimeLeading",
+          "Pos": 0,
+          "Value": "00:00",
+          "Extensions": []
+        }
+      ]
+    },
+    "Extensions": [
+      {
+        "Type": "UNIT_INFO",
+        "Code": "ATTENDANCE",
+        "Pos": 0,
+        "Value": "",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_FOULS",
+        "Pos": 0,
+        "Value": "T",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_INFO",
+        "Pos": 0,
+        "Value": "T",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_MEM_FOULS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_MEM_PTS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_TOUTS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "REAL_DURATION",
+        "Pos": 0,
+        "Value": "1:57",
+        "Extensions": []
+      }
+    ]
+  },
+  {
+    "Orgs": [
+      "JPN",
+      "INA"
+    ],
+    "IsPhase": false,
+    "ResCode": "M.TEAM5-------------.GPA-.000200--",
+    "ShowLink": true,
+    "Disc": "BKB",
+    "DiscDesc": "Basketball",
+    "Key": "M.TEAM5-------------.GPA-.000200--",
+    "isH2H": true,
+    "Type": "T",
+    "Medal": "",
+    "Status": "OFFICIAL",
+    "StatusDesc": "Official",
+    "DateTimeRaw": "2026-09-10T19:00:00+09:00",
+    "HideStartDate": false,
+    "Estimated": false,
+    "EstText": "",
+    "HideLocation": false,
+    "Venue": "AIA",
+    "VenueDesc": "Aichi International Arena",
+    "VenueDescS": "Aichi International Arena",
+    "Loc": "001",
+    "LocDesc": "Aichi International Arena",
+    "LocDescS": "AIA",
+    "Event": "M.TEAM5-------------",
+    "EventDesc": "Men",
+    "Phase": "M.TEAM5-------------.GPA-",
+    "PhaseOrder": 25,
+    "PhaseDesc": "Men Group Phase - Group A",
+    "PhaseDescS": "Men Group A",
+    "PhaseDescA": "Group Phase - Group A",
+    "UnitDesc": "Men Group Phase - Group A Game 2",
+    "UnitDescS": "Men Group A G 2",
+    "UnitDescA": "Game 2",
+    "UnitNum": "4",
+    "IsLive": false,
+    "ShowResults": true,
+    "Periods": [
+      {
+        "Order": 1,
+        "Desc": "Quarter 1",
+        "DescS": "Q1"
+      },
+      {
+        "Order": 2,
+        "Desc": "Quarter 2",
+        "DescS": "Q2"
+      },
+      {
+        "Order": 3,
+        "Desc": "Quarter 3",
+        "DescS": "Q3"
+      },
+      {
+        "Order": 4,
+        "Desc": "Quarter 4",
+        "DescS": "Q4"
+      }
+    ],
+    "Home": {
+      "Org": "JPN",
+      "Reg": "BKBMTEAM5------JPN01",
+      "Name": "Japan",
+      "Result": "98",
+      "Winner": true,
+      "HasData": true,
+      "NameS": "Japan",
+      "Medal": "",
+      "Members": [
+        {
+          "Org": "JPN",
+          "Bib": "3",
+          "Name": "KUROKAWA Kotetsu",
+          "NameS": "KUROKAWA Kotetsu",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "5",
+          "Name": "HARPER JR John",
+          "NameS": "HARPER JR John",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Point Guard"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "13",
+          "Name": "KANECHIKA Ren",
+          "NameS": "KANECHIKA Ren",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Small Forward"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "14",
+          "Name": "KANO Toyoshige",
+          "NameS": "KANO Toyoshige",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "20",
+          "Name": "YAMAZAKI Ibu",
+          "NameS": "YAMAZAKI Ibu",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "25",
+          "Name": "KAWASHIMA Yuto",
+          "NameS": "KAWASHIMA Yuto",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Power Forward"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "28",
+          "Name": "TSUYA Kazuma",
+          "NameS": "TSUYA Kazuma",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "31",
+          "Name": "OGAWA Atsuya",
+          "NameS": "OGAWA Atsuya",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "32",
+          "Name": "SCHAFER Avi",
+          "NameS": "SCHAFER Avi",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "45",
+          "Name": "YAMAUCHI Jaheru",
+          "NameS": "YAMAUCHI Jaheru",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "53",
+          "Name": "KIRK Alex",
+          "NameS": "KIRK Alex",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "JPN",
+          "Bib": "64",
+          "Name": "TAKASHIMA Shinji",
+          "NameS": "TAKASHIMA Shinji",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        }
+      ],
+      "Splits": [
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "29",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "26",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "20",
+          "Extensions": []
+        },
+        {
+          "Rk": "1",
+          "RkPo": 1,
+          "Res": "23",
+          "Extensions": []
+        }
+      ],
+      "Extensions": [
+        {
+          "Type": "SERVICE",
+          "Code": "MemberServer",
+          "Pos": 0,
+          "Value": "",
+          "Extensions": []
+        },
+        {
+          "Type": "SERVICE",
+          "Code": "Server",
+          "Pos": 0,
+          "Value": "false",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Age",
+          "Pos": 0,
+          "Value": "25.1",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Height",
+          "Pos": 0,
+          "Value": "1.94/6.36",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_15MIN",
+          "Pos": 0,
+          "Value": "44",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_25MIN",
+          "Pos": 0,
+          "Value": "63",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_35MIN",
+          "Pos": 0,
+          "Value": "88",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_5MIN",
+          "Pos": 0,
+          "Value": "16",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "TimeLeading",
+          "Pos": 0,
+          "Value": "39:47",
+          "Extensions": []
+        }
+      ]
+    },
+    "Away": {
+      "Org": "INA",
+      "Reg": "BKBMTEAM5------INA01",
+      "Name": "Indonesia",
+      "Result": "53",
+      "Winner": false,
+      "HasData": true,
+      "NameS": "Indonesia",
+      "Medal": "",
+      "Members": [
+        {
+          "Org": "INA",
+          "Bib": "1",
+          "Name": "XZAVIERRO Derrick",
+          "NameS": "XZAVIERRO Derrick",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "INA",
+          "Bib": "4",
+          "Name": "GRAHITA Abraham",
+          "NameS": "GRAHITA Abraham",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Guard"
+        },
+        {
+          "Org": "INA",
+          "Bib": "6",
+          "Name": "ALHADAR Ali",
+          "NameS": "ALHADAR Ali",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "INA",
+          "Bib": "7",
+          "Name": "DHYAKSA Andakara",
+          "NameS": "DHYAKSA Andakara",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Point Guard"
+        },
+        {
+          "Org": "INA",
+          "Bib": "8",
+          "Name": "SAPUTERA Yudha",
+          "NameS": "SAPUTERA Yudha",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Point Guard"
+        },
+        {
+          "Org": "INA",
+          "Bib": "15",
+          "Name": "KOSASIH Vincent",
+          "NameS": "KOSASIH Vincent",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "INA",
+          "Bib": "21",
+          "Name": "YONGA Hendrick",
+          "NameS": "YONGA Hendrick",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Shooting Guard"
+        },
+        {
+          "Org": "INA",
+          "Bib": "25",
+          "Name": "PROSPER Lester",
+          "NameS": "PROSPER Lester",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Centre"
+        },
+        {
+          "Org": "INA",
+          "Bib": "29",
+          "Name": "DIAGNE Dame",
+          "NameS": "DIAGNE Dame",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Forward"
+        },
+        {
+          "Org": "INA",
+          "Bib": "34",
+          "Name": "WIGUNA Pandu",
+          "NameS": "WIGUNA Pandu",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Power Forward"
+        },
+        {
+          "Org": "INA",
+          "Bib": "77",
+          "Name": "MAULANA Muhammad",
+          "NameS": "MAULANA Muhammad",
+          "FuncDesc": "",
+          "PosDesc": "Small Forward"
+        },
+        {
+          "Org": "INA",
+          "Bib": "88",
+          "Name": "BEANE Anthony Jr",
+          "NameS": "BEANE Anthony Jr",
+          "FuncDesc": "Athlete",
+          "PosDesc": "Point Guard"
+        }
+      ],
+      "Splits": [
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "9",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "12",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "14",
+          "Extensions": []
+        },
+        {
+          "Rk": "2",
+          "RkPo": 2,
+          "Res": "18",
+          "Extensions": []
+        }
+      ],
+      "Extensions": [
+        {
+          "Type": "SERVICE",
+          "Code": "MemberServer",
+          "Pos": 0,
+          "Value": "",
+          "Extensions": []
+        },
+        {
+          "Type": "SERVICE",
+          "Code": "Server",
+          "Pos": 0,
+          "Value": "false",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Age",
+          "Pos": 0,
+          "Value": "28.5",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "Height",
+          "Pos": 0,
+          "Value": "1.89/6.20",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_15MIN",
+          "Pos": 0,
+          "Value": "20",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_25MIN",
+          "Pos": 0,
+          "Value": "25",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_35MIN",
+          "Pos": 0,
+          "Value": "41",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "SCORE_5MIN",
+          "Pos": 0,
+          "Value": "8",
+          "Extensions": []
+        },
+        {
+          "Type": "TEAM_INFO",
+          "Code": "TimeLeading",
+          "Pos": 0,
+          "Value": "00:00",
+          "Extensions": []
+        }
+      ]
+    },
+    "Extensions": [
+      {
+        "Type": "UNIT_INFO",
+        "Code": "ATTENDANCE",
+        "Pos": 0,
+        "Value": "",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_FOULS",
+        "Pos": 0,
+        "Value": "T",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_INFO",
+        "Pos": 0,
+        "Value": "T",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_MEM_FOULS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_MEM_PTS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "CONSOLE_TOUTS",
+        "Pos": 0,
+        "Value": "F",
+        "Extensions": []
+      },
+      {
+        "Type": "UNIT_INFO",
+        "Code": "REAL_DURATION",
+        "Pos": 0,
+        "Value": "1:38",
+        "Extensions": []
+      }
+    ]
+  }
+]
