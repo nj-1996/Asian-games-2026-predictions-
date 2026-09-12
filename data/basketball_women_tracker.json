@@ -1,0 +1,69 @@
+{
+  "event": "Basketball (Women's 5v5)",
+  "matches": [
+    {
+      "round": "Group Stage - Group A",
+      "player1": "Japan (JPN) [Host]",
+      "player2": "Thailand (THA)",
+      "score": "101 - 42",
+      "status": "Finished",
+      "winner": "Japan (JPN) [Host]"
+    },
+    {
+      "round": "Group Stage - Group A",
+      "player1": "Chinese Taipei (TPE)",
+      "player2": "Philippines (PHI)",
+      "score": "72 - 68",
+      "status": "Finished",
+      "winner": "Chinese Taipei (TPE)"
+    },
+    {
+      "round": "Group Stage - Group B",
+      "player1": "China (CHN)",
+      "player2": "Hong Kong (HKG)",
+      "score": "112 - 38",
+      "status": "Finished",
+      "winner": "China (CHN)"
+    },
+    {
+      "round": "Group Stage - Group B",
+      "player1": "South Korea (KOR)",
+      "player2": "Indonesia (INA)",
+      "score": "86 - 54",
+      "status": "Finished",
+      "winner": "South Korea (KOR)"
+    },
+    {
+      "round": "Semifinal 1",
+      "player1": "Japan (JPN) [Host]",
+      "player2": "South Korea (KOR)",
+      "score": "Scheduled",
+      "status": "Upcoming",
+      "winner": null
+    },
+    {
+      "round": "Semifinal 2",
+      "player1": "China (CHN)",
+      "player2": "Chinese Taipei (TPE)",
+      "score": "Scheduled",
+      "status": "Upcoming",
+      "winner": null
+    },
+    {
+      "round": "Bronze Medal Game",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "Scheduled",
+      "status": "Upcoming",
+      "winner": null
+    },
+    {
+      "round": "Gold Medal Game",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "Scheduled",
+      "status": "Upcoming",
+      "winner": null
+    }
+  ]
+}
