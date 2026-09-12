@@ -1,7 +1,7 @@
 {
   "sport": "Basketball",
   "simulation_model": "Monte Carlo (50,000 Runs)",
-  "weighting": "FIBA Asia Cup 2025 + 2023 Asian Games + Regional Margin of Victory",
+  "weighting": "FIBA world rankings + FIBA Asia Cup 2025 + 2023 Asian Games + Regional Margin of Victory",
   "home_court_boost": "+3.8 pts (Japan)",
   "men": [
     {
