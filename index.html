@@ -86,7 +86,7 @@
       box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
     }
 
-    /* Sticky / Featured "Next Up" Banner */
+    /* Sticky Next Up Banner */
     .next-up-card {
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       border: 1px solid #3b82f6;
@@ -144,7 +144,7 @@
       color: var(--text-muted);
     }
 
-    /* Filters & Controls Grid */
+    /* Filters Grid */
     .filter-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -179,7 +179,7 @@
       width: 100%;
     }
 
-    /* Timezone Switch Bar */
+    /* Timezone Bar */
     .tz-bar {
       display: flex;
       justify-content: space-between;
@@ -264,7 +264,6 @@
       color: var(--text-muted);
     }
 
-    /* Status Badges & Pulsing LIVE Dot */
     .badge {
       font-size: 0.7rem;
       text-transform: uppercase;
@@ -313,7 +312,6 @@
       }
     }
 
-    /* Match Card Body */
     .card-body {
       display: flex;
       justify-content: space-between;
@@ -375,7 +373,7 @@
       text-align: center;
     }
 
-    /* Table Styles */
+    /* Tables */
     .table-container {
       overflow-x: auto;
       background: var(--card-bg);
@@ -425,7 +423,6 @@
       flex-shrink: 0;
     }
 
-    /* Inline Probability Bars */
     .prob-cell {
       min-width: 72px;
     }
@@ -460,7 +457,7 @@
     .bronze-cell { color: var(--bronze); }
     .podium-cell { color: var(--win-color); }
 
-    /* Calibration Styles */
+    /* Calibration Grid */
     .accuracy-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -539,7 +536,6 @@
     </button>
   </div>
 
-  <!-- Dynamic Sticky "Next Up" Banner Container -->
   <div id="next-up-container"></div>
 
   <div class="filter-grid">
@@ -559,7 +555,6 @@
     </div>
   </div>
 
-  <!-- Timezone Toggle Bar -->
   <div class="tz-bar">
     <span class="tz-bar-label">🕒 Match Times Display:</span>
     <div class="tz-btn-group">
@@ -615,7 +610,6 @@
     let cachedCurrentMatches = [];
     let countdownIntervalId = null;
 
-    // Detect user's local timezone abbreviation
     const localTzAbbr = (() => {
       try {
         const parts = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' }).formatToParts(new Date());
@@ -730,7 +724,6 @@
       `;
     }
 
-    // Parses JST match string into a Date object
     function parseJSTDate(dateStr, timeStr) {
       if (!dateStr) return null;
       let cleanTime = timeStr || '00:00';
@@ -758,9 +751,6 @@
       }
     }
 
-    // ==========================================
-    // STICKY "NEXT UP" / LIVE BANNER
-    // ==========================================
     function updateNextUpBanner(matches) {
       const banner = document.getElementById('next-up-container');
       if (countdownIntervalId) {
@@ -773,7 +763,6 @@
         return;
       }
 
-      // Check if any match is currently Live
       const liveMatch = matches.find(m => (m.status || '').toLowerCase() === 'live');
       if (liveMatch) {
         const p1Info = getNOCInfo(liveMatch.player1);
@@ -795,7 +784,6 @@
         return;
       }
 
-      // Find the next upcoming match
       const upcomingMatches = matches
         .filter(m => (m.status || '').toLowerCase() !== 'finished')
         .map(m => ({ match: m, dateObj: parseJSTDate(m.date, m.time) }))
