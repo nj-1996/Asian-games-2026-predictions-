@@ -67,26 +67,33 @@ def fetch_api_day(date_str):
 def extract_match_datetime(m, fallback_date=""):
     """
     Extracts match date and 24-hr HH:MM time in JST (Venue Time)
-    from 'DateTimeRaw' or fallback date/time fields.
+    handling DateTimeRaw (epoch ms, ISO, .NET formats) and fallback fields.
     """
     match_date = fallback_date
     match_time = ""
 
-    # Check DateTimeRaw first (official feed key)
     raw = m.get("DateTimeRaw") or m.get("StartDate") or m.get("StartDateTime") or ""
 
     if raw:
-        # Handle numeric Epoch milliseconds / seconds
-        if isinstance(raw, (int, float)) or (isinstance(raw, str) and raw.isdigit()):
-            ts = float(raw)
-            if ts > 1e11:  # milliseconds
+        raw_str = str(raw).strip()
+
+        # 1. Handle .NET JSON date format: /Date(1789345200000)/
+        dot_net_match = re.search(r"/Date\((\d+)", raw_str)
+        if dot_net_match:
+            ts = float(dot_net_match.group(1)) / 1000.0
+            dt = datetime.fromtimestamp(ts, tz=JST)
+            return dt.strftime("%Y-%m-%d"), dt.strftime("%H:%M")
+
+        # 2. Handle Epoch numeric timestamp (seconds or milliseconds)
+        if isinstance(raw, (int, float)) or raw_str.isdigit():
+            ts = float(raw_str)
+            if ts > 1e11:
                 ts /= 1000.0
             dt = datetime.fromtimestamp(ts, tz=JST)
             return dt.strftime("%Y-%m-%d"), dt.strftime("%H:%M")
 
-        # Handle ISO / string representations
-        if isinstance(raw, str) and any(c.isdigit() for c in raw):
-            raw_str = raw.strip()
+        # 3. Handle standard ISO or datetime string
+        if any(c.isdigit() for c in raw_str):
             try:
                 iso_clean = raw_str.replace("Z", "+00:00")
                 dt = datetime.fromisoformat(iso_clean)
@@ -94,7 +101,6 @@ def extract_match_datetime(m, fallback_date=""):
                     dt = dt.astimezone(JST)
                 return dt.strftime("%Y-%m-%d"), dt.strftime("%H:%M")
             except Exception:
-                # Regex fallback for strings like "2026-09-13 10:00:00" or "/Date(...)/"
                 d_match = re.search(r"(\d{4}-\d{2}-\d{2})", raw_str)
                 if d_match:
                     match_date = d_match.group(1)
@@ -102,18 +108,17 @@ def extract_match_datetime(m, fallback_date=""):
                 if t_match:
                     match_time = t_match.group(1).zfill(5)
 
-    # Secondary fallback for separate time attributes
+    # 4. Secondary fallback: standalone time attributes
     if not match_time:
-        for k in ["Time", "StartTime", "ScheduleTime"]:
+        for k in ["Time", "StartTime", "ScheduleTime", "UnitTime"]:
             val = m.get(k)
             if val and isinstance(val, str):
-                t_match = re.search(r"\b(\d{1,2}:\d{2})\b", val)
+                t_match = re.search(r"\b(\d{1,2}:\d{2})\b", val.strip())
                 if t_match:
                     match_time = t_match.group(1).zfill(5)
                     break
 
     return match_date or fallback_date, match_time
-
 
 
 def parse_matches(raw_matches, gender="Men", date_str=""):
@@ -184,12 +189,10 @@ def main():
 
     for d in dates:
         day_data = fetch_api_day(d)
-                if day_data:
-            sample_dt = day_data[0].get("DateTimeRaw")
-            print(f"[{d}] Found {len(day_data)} items. Sample DateTimeRaw: {sample_dt}")
-                    
         if day_data:
-            print(f"[{d}] Found {len(day_data)} items. Sample keys: {list(day_data[0].keys())}")
+            sample_item = day_data[0]
+            print(f"[{d}] Items: {len(day_data)} | Sample DateTimeRaw: {sample_item.get('DateTimeRaw')}")
+
         men_parsed = parse_matches(day_data, "Men", date_str=d)
         women_parsed = parse_matches(day_data, "Women", date_str=d)
         all_men.extend(men_parsed)
