@@ -1,0 +1,17 @@
+{
+  "event": "Basketball (Women's 5v5)",
+  "type": "Head-to-Head",
+  "data": [
+    {"name": "Japan (JPN) [Host]", "gold": 55.2, "silver": 38.4, "bronze": 4.1, "total": 97.7},
+    {"name": "China (CHN)", "gold": 41.3, "silver": 52.1, "bronze": 4.8, "total": 98.2},
+    {"name": "South Korea (KOR)", "gold": 2.8, "silver": 7.6, "bronze": 66.5, "total": 76.9},
+    {"name": "Chinese Taipei (TPE)", "gold": 0.4, "silver": 1.1, "bronze": 12.8, "total": 14.3},
+    {"name": "Philippines (PHI)", "gold": 0.3, "silver": 0.8, "bronze": 11.2, "total": 12.3},
+    {"name": "Indonesia (INA)", "gold": 0.0, "silver": 0.1, "bronze": 0.3, "total": 0.3},
+    {"name": "Thailand (THA)", "gold": 0.0, "silver": 0.0, "bronze": 0.2, "total": 0.2},
+    {"name": "Kazakhstan (KAZ)", "gold": 0.0, "silver": 0.0, "bronze": 0.1, "total": 0.1},
+    {"name": "Malaysia (MAS)", "gold": 0.0, "silver": 0.0, "bronze": 0.1, "total": 0.1},
+    {"name": "Mongolia (MGL)", "gold": 0.0, "silver": 0.0, "bronze": 0.1, "total": 0.1},
+    {"name": "Hong Kong (HKG)", "gold": 0.0, "silver": 0.0, "bronze": 0.1, "total": 0.1}
+  ]
+}
