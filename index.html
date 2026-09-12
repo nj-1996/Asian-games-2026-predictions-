@@ -852,7 +852,40 @@
       renderCountdown();
       countdownIntervalId = setInterval(renderCountdown, 1000);
     }
+    function parseJSTDate(dateStr, timeStr) {
+      if (!dateStr || !timeStr) return null;
+      let cleanTime = timeStr.trim();
+      if (cleanTime.split(':').length === 2) cleanTime += ':00';
+      const iso = `${dateStr.trim()}T${cleanTime}+09:00`;
+      const d = new Date(iso);
+      return isNaN(d.getTime()) ? null : d;
+    }
 
+    function formatMatchDateTime(dateStr, timeStr) {
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const parts = (dateStr || '').split('-');
+      const day = parts[2] ? parseInt(parts[2], 10) : '';
+      const month = parts[1] ? months[parseInt(parts[1], 10) - 1] : '';
+      const baseDate = [day, month].filter(Boolean).join(' ');
+
+      // If no valid time exists in tracker JSON, keep date and avoid rolling back to 8:30 PM
+      if (!timeStr || timeStr.trim() === '') {
+        return `${baseDate} • Time TBD`;
+      }
+
+      const d = parseJSTDate(dateStr, timeStr);
+      if (!d) return `${baseDate} • ${timeStr}`;
+
+      if (useLocalTime) {
+        const localMonth = d.toLocaleString('en-US', { month: 'short' });
+        const localDay = d.getDate();
+        const localTime = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        return `${localDay} ${localMonth} • ${localTime} (${localTzAbbr})`;
+      } else {
+        return `${baseDate} • ${timeStr} (JST)`;
+      }
+    }
+    
     // ==========================================
     // 1. PREDICTIONS TAB
     // ==========================================
@@ -1136,7 +1169,9 @@
         const isP1Win = m.winner && (m.winner.trim().toLowerCase() === m.player1.trim().toLowerCase());
         const isP2Win = m.winner && (m.winner.trim().toLowerCase() === m.player2.trim().toLowerCase());
         const statusClass = (m.status || 'upcoming').toLowerCase();
-        const dateTimeStr = formatMatchDateTime(m.date, m.time);
+        const matchTime = m.time || m.start_time || m.match_time || '';
+const dateTimeStr = formatMatchDateTime(m.date, matchTime);
+
         const isLive = statusClass === 'live';
 
         return `
