@@ -470,7 +470,6 @@
       }
     };
 
-    // NOC & Flag Metadata Dictionary
     const NOC_REGISTRY = {
       'china': { flag: '🇨🇳', code: 'CHN' },
       'japan': { flag: '🇯🇵', code: 'JPN' },
@@ -567,7 +566,6 @@
       return `${flagSpan} ${nameSpan} ${codeSpan}`;
     }
 
-    // Helper to generate probability micro-bars
     function renderProbCell(valStr, colorClass) {
       const numericVal = parseFloat(valStr) || 0;
       return `
