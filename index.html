@@ -538,21 +538,25 @@
       }
     }
 
-  function normName(name) {
-  return (name || '')
-    .toLowerCase()
-    .replace(/\s*\(host\)/g, '')
-    .replace(/\b(republic of|ir)\b/g, '')
-    .replace(/\./g, '')
-    .trim();
+      function normName(name) {
+      let str = (name || '').toLowerCase()
+        .replace(/\s*\(host\)/gi, '')
+        .replace(/\./g, '')
+        .trim();
+
+      if (str.includes('iran')) return 'iran';
+      if (str.includes('korea')) return 'republic of korea';
+      if (str.includes('taipei') || str.includes('taiwan')) return 'chinese taipei';
+      if (str.includes('philippine')) return 'philippines';
+      return str;
     }
-    
-    
 
     function getNOCInfo(rawName) {
       const clean = normName(rawName);
+      if (clean === 'iran') return { flag: '🇮🇷', code: 'IRI' };
       return NOC_REGISTRY[clean] || { flag: '🌐', code: '' };
     }
+    
 
     function renderTeamBadge(name, isRight = false) {
       if (!name) return 'TBD';
