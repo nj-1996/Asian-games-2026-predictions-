@@ -10,7 +10,7 @@ HEADERS = {
     "Accept": "*/*",
 }
 
-# Reverse CP1252/UTF-8 character map to reconstruct raw binary bytes
+# Rebuild single-byte array from CP1252/UTF-8 transcoded characters
 CHARMAP = {}
 for b in range(256):
     try:
@@ -23,12 +23,12 @@ for b in range(256):
 
 
 def fetch_api_day(date_str):
-    """Fetches and decompresses schedule/results for a single tournament day."""
+    """Queries and decompresses raw daily schedule items."""
     url = f"https://back.results.asiangames2026.org/s/AG2026/en/BKB/schedule/daily/{date_str}"
     try:
         resp = requests.get(url, headers=HEADERS, timeout=15)
     except Exception as e:
-        print(f"[{date_str}] HTTP request failed: {e}")
+        print(f"[{date_str}] Request failed: {e}")
         return []
 
     if resp.status_code != 200:
@@ -42,7 +42,7 @@ def fetch_api_day(date_str):
     except Exception:
         pass
 
-    # Reconstruct binary payload from transcoded CP1252 text
+    # Decompress zlib stream
     candidates = []
     try:
         candidates.append(bytes([CHARMAP.get(c, ord(c) & 0xFF) for c in resp.text]))
@@ -61,8 +61,8 @@ def fetch_api_day(date_str):
     return []
 
 
-def parse_matches(raw_matches, gender="Men"):
-    """Normalizes API matches for a specified division (Men or Women)."""
+def parse_matches(raw_matches, gender="Men", date_str=""):
+    """Extracts match scores, date, start time, and state for each fixture."""
     output = []
     for m in raw_matches:
         event_desc = (m.get("EventDesc") or "").lower()
@@ -83,6 +83,21 @@ def parse_matches(raw_matches, gender="Men"):
             status = "Live"
         else:
             status = "Upcoming"
+
+        # Extract detailed state/quarter if available
+        state_desc = m.get("StatusDesc") or m.get("Period") or status
+
+        # Extract date and time
+        start_raw = m.get("StartDate", "")
+        match_date = date_str
+        match_time = m.get("Time") or m.get("StartTime") or ""
+
+        if "T" in start_raw:
+            parts = start_raw.split("T")
+            if not match_date:
+                match_date = parts[0]
+            if not match_time and len(parts) > 1:
+                match_time = parts[1][:5]
 
         home = m.get("Home", {})
         away = m.get("Away", {})
@@ -105,6 +120,9 @@ def parse_matches(raw_matches, gender="Men"):
         output.append({
             "round": round_name,
             "status": status,
+            "state": state_desc,
+            "date": match_date,
+            "time": match_time,
             "player1": home_name,
             "player2": away_name,
             "score": score_str,
@@ -114,7 +132,6 @@ def parse_matches(raw_matches, gender="Men"):
 
 
 def main():
-    # Full tournament date range (Sept 10 - Sept 26, 2026)
     start_date = datetime(2026, 9, 10)
     dates = [(start_date + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(17)]
 
@@ -123,23 +140,18 @@ def main():
 
     for d in dates:
         day_data = fetch_api_day(d)
-        men_matches = parse_matches(day_data, "Men")
-        women_matches = parse_matches(day_data, "Women")
-        all_men.extend(men_matches)
-        all_women.extend(women_matches)
+        all_men.extend(parse_matches(day_data, "Men", date_str=d))
+        all_women.extend(parse_matches(day_data, "Women", date_str=d))
 
-    # Ensure target directory exists
     os.makedirs("data/basketball", exist_ok=True)
 
-    # Write Men's matches
     with open("data/basketball/tracker_men.json", "w", encoding="utf-8") as f:
         json.dump({"sport": "Basketball (Men)", "matches": all_men}, f, indent=2, ensure_ascii=False)
-    print(f"Saved {len(all_men)} Men's matches to data/basketball/tracker_men.json")
+    print(f"Saved {len(all_men)} Men's fixtures.")
 
-    # Write Women's matches
     with open("data/basketball/tracker_women.json", "w", encoding="utf-8") as f:
         json.dump({"sport": "Basketball (Women)", "matches": all_women}, f, indent=2, ensure_ascii=False)
-    print(f"Saved {len(all_women)} Women's matches to data/basketball/tracker_women.json")
+    print(f"Saved {len(all_women)} Women's fixtures.")
 
 
 if __name__ == "__main__":
