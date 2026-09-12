@@ -39,7 +39,7 @@
 
     header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     header h1 {
@@ -54,6 +54,7 @@
       font-size: 0.9rem;
     }
 
+    /* 3-Tab Main Navigation */
     .main-nav {
       display: flex;
       background-color: #1e293b;
@@ -61,18 +62,21 @@
       border-radius: 12px;
       margin-bottom: 16px;
       border: 1px solid var(--card-border);
+      gap: 3px;
     }
 
     .main-nav-btn {
       flex: 1;
-      padding: 10px 14px;
+      padding: 9px 4px;
       border: none;
       background: transparent;
       color: var(--text-muted);
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.82rem;
       border-radius: 8px;
       cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
       transition: all 0.2s ease;
     }
 
@@ -82,6 +86,7 @@
       box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
     }
 
+    /* Filters */
     .filter-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -96,7 +101,7 @@
     }
 
     .select-label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -109,50 +114,14 @@
       color: var(--text-main);
       padding: 10px 12px;
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 600;
       outline: none;
       cursor: pointer;
       width: 100%;
     }
 
-    /* Accuracy & Calibration KPI Bar */
-    .accuracy-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .kpi-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 12px 10px;
-      text-align: center;
-    }
-
-    .kpi-title {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-      margin-bottom: 4px;
-    }
-
-    .kpi-val {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--win-color);
-    }
-
-    .kpi-sub {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
+    /* Cards & Layout */
     .cards-list {
       display: grid;
       grid-gap: 12px;
@@ -299,6 +268,43 @@
     .bronze-cell { color: var(--bronze); }
     .podium-cell { color: var(--win-color); }
 
+    /* Calibration Specific Styles */
+    .accuracy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .kpi-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+
+    .kpi-title {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+
+    .kpi-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--win-color);
+    }
+
+    .kpi-sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
     .pill-status {
       font-size: 0.7rem;
       font-weight: 700;
@@ -329,15 +335,20 @@
     <p id="view-subtitle">Live Match Tracker</p>
   </header>
 
+  <!-- 3 Navigation Tabs -->
   <div class="main-nav">
     <button id="nav-tracker" class="main-nav-btn active" onclick="switchMainTab('tracker')">
-      📊 Match Tracker
+      📊 Tracker
     </button>
     <button id="nav-predictions" class="main-nav-btn" onclick="switchMainTab('predictions')">
-      🎯 Medal Projections & Calibration
+      🎯 Predictions
+    </button>
+    <button id="nav-calibration" class="main-nav-btn" onclick="switchMainTab('calibration')">
+      📈 Calibration
     </button>
   </div>
 
+  <!-- Shared Dropdown Selectors -->
   <div class="filter-grid">
     <div class="select-wrapper">
       <label class="select-label" for="select-sport">Sport</label>
@@ -355,6 +366,7 @@
     </div>
   </div>
 
+  <!-- Main Display Area -->
   <div id="content-cards" class="cards-list">
     <div class="empty-state">Loading data...</div>
   </div>
@@ -377,17 +389,25 @@
       currentTab = tab;
       const navTracker = document.getElementById('nav-tracker');
       const navPredictions = document.getElementById('nav-predictions');
+      const navCalibration = document.getElementById('nav-calibration');
       const subtitle = document.getElementById('view-subtitle');
+
+      // Reset active tabs
+      navTracker.classList.remove('active');
+      navPredictions.classList.remove('active');
+      navCalibration.classList.remove('active');
 
       if (tab === 'predictions') {
         navPredictions.classList.add('active');
-        navTracker.classList.remove('active');
-        subtitle.innerText = 'Monte Carlo Predictions & Live Calibration';
+        subtitle.innerText = 'Monte Carlo Medal Projections (50,000 Iterations)';
+      } else if (tab === 'calibration') {
+        navCalibration.classList.add('active');
+        subtitle.innerText = 'Live Model Calibration & Performance Accuracy';
       } else {
         navTracker.classList.add('active');
-        navPredictions.classList.remove('active');
         subtitle.innerText = 'Live Match Tracker';
       }
+
       loadCurrentView();
     }
 
@@ -401,14 +421,16 @@
       if (!config) return;
 
       if (currentTab === 'predictions') {
-        loadCalibrationAndPredictions(config.predictionsFile, config.trackerFiles[divisionKey], divisionKey);
+        loadMedalPredictions(config.predictionsFile, divisionKey);
+      } else if (currentTab === 'calibration') {
+        loadCalibration(config.predictionsFile, config.trackerFiles[divisionKey], divisionKey);
       } else {
         const filePath = config.trackerFiles[divisionKey];
         if (filePath) loadMatches(filePath);
       }
     }
 
-    // Name normalization to match tracker strings with model entries
+    // Name normalization helper
     function normName(name) {
       return (name || '')
         .toLowerCase()
@@ -419,10 +441,87 @@
         .trim();
     }
 
-    // --- PREDICTIONS & CALIBRATION LOADER ---
-    function loadCalibrationAndPredictions(predFile, trackerFile, division) {
+    // ==========================================
+    // 1. PREDICTIONS TAB (Clean Original Table)
+    // ==========================================
+    function loadMedalPredictions(filePath, division) {
       const container = document.getElementById('content-cards');
-      container.innerHTML = '<div class="empty-state">Calculating model calibration...</div>';
+      container.innerHTML = '<div class="empty-state">Loading simulation results...</div>';
+
+      fetch(filePath + '?_nocache=' + Date.now())
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          const list = (division === 'women') ? data.women : data.men;
+          renderMedalTable(list, data);
+        })
+        .catch(err => {
+          container.innerHTML = `<div class="empty-state">No predictions file found at ${filePath}.</div>`;
+        });
+    }
+
+    function renderMedalTable(teams, meta) {
+      const container = document.getElementById('content-cards');
+      if (!teams || teams.length === 0) {
+        container.innerHTML = '<div class="empty-state">No simulation data available.</div>';
+        return;
+      }
+
+      let metaHeader = `
+        <div class="match-card" style="margin-bottom: 4px;">
+          <div class="card-header">
+            <span>Simulation Engine: <strong>${meta.simulation_model || 'Monte Carlo'}</strong></span>
+            <span class="badge model">Host Boost: ${meta.home_court_boost || 'None'}</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+            ${meta.weighting || 'Weighted Regional Ratings'}
+          </p>
+        </div>
+      `;
+
+      let tableHtml = `
+        <div class="table-container">
+          <table class="medal-table">
+            <thead>
+              <tr>
+                <th>Team</th>
+                <th class="gold-cell">🥇 Gold</th>
+                <th class="silver-cell">🥈 Silver</th>
+                <th class="bronze-cell">🥉 Bronze</th>
+                <th class="podium-cell">Podium</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${teams.map(t => `
+                <tr>
+                  <td>
+                    <div class="team-cell">
+                      <span class="rank-num">${t.rank}</span>
+                      <span>${t.team}</span>
+                    </div>
+                  </td>
+                  <td class="gold-cell">${t.gold}</td>
+                  <td class="silver-cell">${t.silver}</td>
+                  <td class="bronze-cell">${t.bronze}</td>
+                  <td class="podium-cell">${t.podium}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      container.innerHTML = metaHeader + tableHtml;
+    }
+
+    // ==========================================
+    // 2. CALIBRATION TAB (Accuracy, Records, Upsets)
+    // ==========================================
+    function loadCalibration(predFile, trackerFile, division) {
+      const container = document.getElementById('content-cards');
+      container.innerHTML = '<div class="empty-state">Computing live model calibration...</div>';
 
       Promise.all([
         fetch(predFile + '?_nocache=' + Date.now()).then(r => r.json()),
@@ -431,27 +530,23 @@
       .then(([predData, trackerData]) => {
         const teams = (division === 'women') ? predData.women : predData.men;
         const matches = trackerData.matches || [];
-        renderPredictionsView(teams, predData, matches);
+        renderCalibrationView(teams, matches);
       })
       .catch(err => {
-        container.innerHTML = `<div class="empty-state">Failed to load prediction or tracker datasets.</div>`;
+        container.innerHTML = `<div class="empty-state">Failed to calculate calibration data.</div>`;
       });
     }
 
-    function renderPredictionsView(teams, meta, matches) {
+    function renderCalibrationView(teams, matches) {
       const container = document.getElementById('content-cards');
       if (!teams || teams.length === 0) {
         container.innerHTML = '<div class="empty-state">No simulation data available.</div>';
         return;
       }
 
-      // Rank mapping
       const rankMap = {};
-      teams.forEach(t => {
-        rankMap[normName(t.team)] = t.rank;
-      });
+      teams.forEach(t => { rankMap[normName(t.team)] = t.rank; });
 
-      // Compute actual records and track upsets
       const records = {};
       let finishedCount = 0;
       let favoriteHits = 0;
@@ -497,7 +592,6 @@
       const accuracy = finishedCount > 0 ? Math.round((favoriteHits / finishedCount) * 100) : 100;
       const alignmentStatus = accuracy >= 75 ? 'Optimal' : (accuracy >= 50 ? 'Moderate' : 'Volatile');
 
-      // 1. KPI Calibration Summary
       let kpiHtml = `
         <div class="accuracy-grid">
           <div class="kpi-card">
@@ -518,30 +612,15 @@
         </div>
       `;
 
-      // 2. Simulation Meta Header
-      let metaHeader = `
-        <div class="match-card" style="margin-bottom: 10px;">
-          <div class="card-header">
-            <span>Simulation: <strong>${meta.simulation_model || 'Monte Carlo'}</strong></span>
-            <span class="badge model">Host Boost: ${meta.home_court_boost || '+3.8'}</span>
-          </div>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-            ${meta.weighting || 'FIBA Rankings + Asia Cup 2025 Weighting'}
-          </p>
-        </div>
-      `;
-
-      // 3. Medal Table with Real-Time Record & Trajectory
       let tableHtml = `
         <div class="table-container">
           <table class="medal-table">
             <thead>
               <tr>
                 <th>Team</th>
-                <th>Record</th>
+                <th>Actual W-L</th>
                 <th>Trajectory</th>
-                <th class="gold-cell">🥇 Gold</th>
-                <th class="podium-cell">Podium</th>
+                <th class="gold-cell">🥇 Exp. Gold</th>
               </tr>
             </thead>
             <tbody>
@@ -565,7 +644,6 @@
                     <td>${rec.w}-${rec.l}</td>
                     <td>${trajectory}</td>
                     <td class="gold-cell">${t.gold}</td>
-                    <td class="podium-cell">${t.podium}</td>
                   </tr>
                 `;
               }).join('')}
@@ -574,13 +652,12 @@
         </div>
       `;
 
-      // 4. Upsets Callout (if any occurred)
       let upsetsHtml = '';
       if (upsets.length > 0) {
         upsetsHtml = `
           <div style="margin-top: 14px;">
-            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
-              ⚠️ Model Deviations / Upsets Logged
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
+              ⚠️ Upset Log (Model Deviations)
             </div>
             ${upsets.map(u => `
               <div class="match-card" style="border-left: 3px solid var(--badge-danger); padding: 10px 14px; margin-bottom: 6px;">
@@ -595,10 +672,12 @@
         `;
       }
 
-      container.innerHTML = kpiHtml + metaHeader + tableHtml + upsetsHtml;
+      container.innerHTML = kpiHtml + tableHtml + upsetsHtml;
     }
 
-    // --- MATCH TRACKER LOADER ---
+    // ==========================================
+    // 3. TRACKER TAB (Live Schedule & Scores)
+    // ==========================================
     function loadMatches(filePath) {
       const container = document.getElementById('content-cards');
       container.innerHTML = '<div class="empty-state">Loading live fixtures...</div>';
@@ -659,6 +738,7 @@
       }).join('');
     }
 
+    // Default view
     loadCurrentView();
   </script>
 </body>
