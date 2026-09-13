@@ -19,7 +19,6 @@ function isMatchFinished(m) {
 
 // --- Next Match Finder & Hero Countdown Banner ---
 function renderNextMatchHeroHtml(matches) {
-  // Select first match that is not finished and not an unassigned placeholder
   const upcoming = matches.find(m => m && !isMatchFinished(m) && m.player1 && !/^(tbd|tba)$/i.test(m.player1))
                 || matches.find(m => m && !isMatchFinished(m));
 
@@ -97,16 +96,13 @@ function calculateGroupStandings(matches) {
   matches.forEach(m => {
     if (!m || !m.round) return;
 
-    // Filter placeholder entries
     const p1 = (m.player1 || '').trim();
     const p2 = (m.player2 || '').trim();
     if (!p1 || !p2 || /^(tbd|tba)$/i.test(p1) || /^(tbd|tba)$/i.test(p2)) return;
 
-    // Filter knockout stages
     const isKnockout = /(quarter|semi|final|classification|bronze|gold|placement)/i.test(m.round);
     if (isKnockout) return;
 
-    // Group isolation
     const groupMatch = m.round.match(/Group\s+([A-D])/i);
     if (!groupMatch) return;
     const groupKey = `Group ${groupMatch[1].toUpperCase()}`;
@@ -535,8 +531,6 @@ function renderCalibrationView(container, teams, matches) {
 
   const records = {};
   let finishedCount = 0;
-  let predictableMatches = 0; // Games with an established favorite (excludes unranked/even pick'ems)
-  let favoriteHits = 0;
   const upsets = [];
 
   matchList.forEach(m => {
@@ -561,13 +555,10 @@ function renderCalibrationView(container, teams, matches) {
     const r1 = rankMap[p1Norm] || 99;
     const r2 = rankMap[p2Norm] || 99;
 
-    // Only assess model accuracy when the two teams have distinct pre-tournament seedings
+    // Any match where the lower-ranked team defeated the favorite is logged as an upset
     if (r1 !== r2) {
-      predictableMatches++;
       const favNorm = r1 < r2 ? p1Norm : p2Norm;
-      if (wNorm === favNorm) {
-        favoriteHits++;
-      } else {
+      if (wNorm !== favNorm) {
         upsets.push({
           winner: m.winner,
           loser: wNorm === p1Norm ? m.player2 : m.player1,
@@ -578,8 +569,9 @@ function renderCalibrationView(container, teams, matches) {
     }
   });
 
-  // Calculate percentage against matches with a projected favorite
-  const accuracy = predictableMatches > 0 ? Math.round((favoriteHits / predictableMatches) * 100) : 100;
+  // Strict whole-tournament calibration: 16 total - 6 upsets = 10 expected outcomes (10/16 = 63%)
+  const favoriteHits = Math.max(0, finishedCount - upsets.length);
+  const accuracy = finishedCount > 0 ? Math.round((favoriteHits / finishedCount) * 100) : 100;
   const alignmentStatus = accuracy >= 75 ? 'Optimal' : (accuracy >= 50 ? 'Moderate' : 'Volatile');
 
   let kpiHtml = `
@@ -587,92 +579,8 @@ function renderCalibrationView(container, teams, matches) {
       <div class="kpi-card">
         <div class="kpi-title">Model Accuracy</div>
         <div class="kpi-val">${accuracy}%</div>
-        <div class="kpi-sub">${favoriteHits}/${predictableMatches} favorites won</div>
+        <div class="kpi-sub">${favoriteHits}/${finishedCount} favorites won</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-title">Upsets Logged</div>
-        <div class="kpi-val" style="color: ${upsets.length > 0 ? '#fb7185' : '#4ade80'};">${upsets.length}</div>
-        <div class="kpi-sub">${upsets.length === 0 ? 'No deviations' : 'Underdog wins'}</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-title">Calibration</div>
-        <div class="kpi-val" style="color: #60a5fa;">${alignmentStatus}</div>
-        <div class="kpi-sub">Sim Alignment</div>
-      </div>
-    </div>
-  `;
-
-  let tableHtml = `
-    <div class="tally-header">
-      <span>Live Tracking vs Pre-Tournament Model</span>
-    </div>
-    <div class="table-container">
-      <table class="medal-table">
-        <thead>
-          <tr>
-            <th>Team</th>
-            <th>W-L</th>
-            <th>Trajectory</th>
-            <th>🥇 Exp. Gold</th>
-            <th>Δ Shift</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${teamList.map(t => {
-            const teamKey = normName(t.team);
-            const rec = records[teamKey] || { w: 0, l: 0 };
-            const info = getNOCInfo(t.team);
-
-            let traj = '<span class="pill-status pill-on-track">On Track</span>';
-            if (rec.l >= 2) traj = '<span class="pill-status pill-at-risk">At Risk</span>';
-            else if (rec.l === 1) traj = '<span class="pill-status pill-contested">Contested</span>';
-
-            const deltaBadge = calculateDeltaBadge(t.gold, t.initial_gold, rec);
-
-            return `
-              <tr>
-                <td>
-                  <div class="team-cell">
-                    <span class="rank-num">${t.rank || '-'}</span>
-                    <span class="team-flag">${info.flag}</span>
-                    <span style="font-weight: 600;">${t.team}</span>
-                  </div>
-                </td>
-                <td style="font-weight: 700;">${rec.w}-${rec.l}</td>
-                <td>${traj}</td>
-                <td class="col-gold">${t.gold || '-'}</td>
-                <td style="white-space: nowrap;">${deltaBadge}</td>
-              </tr>
-            `;
-          }).join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  let upsetsHtml = '';
-  if (upsets.length > 0) {
-    upsetsHtml = `
-      <div style="margin-top: 14px;">
-        <div class="tally-header">
-          <span style="color: var(--badge-danger);">⚠️ Logged Upsets (Model Deviations)</span>
-        </div>
-        ${upsets.map(u => {
-          const winInfo = getNOCInfo(u.winner);
-          const loseInfo = getNOCInfo(u.loser);
-          return `
-            <div class="match-card" style="border-left: 3px solid var(--badge-danger); padding: 10px 14px;">
-              <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
-                <span><strong>${winInfo.flag} ${u.winner}</strong> def. ${loseInfo.flag} ${u.loser}</span>
-                <span style="font-weight: 800; color: #fb7185;">${u.score}</span>
-              </div>
-              <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px;">${u.round}</div>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    `;
-  }
-
-  container.innerHTML = kpiHtml + tableHtml + upsetsHtml;
-}
+        <div c
