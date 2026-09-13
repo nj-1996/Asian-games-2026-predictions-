@@ -30,18 +30,25 @@ function calculateGroupStandings(matches) {
   };
 
   matches.forEach(m => {
-    if (!m || !m.round) return;
+        if (!m || !m.round) return;
 
-    // Filter out knockout games
+    // 1. Skip placeholder / unconfirmed matches
+    const p1 = (m.player1 || '').trim();
+    const p2 = (m.player2 || '').trim();
+    if (!p1 || !p2 || /^(tbd|tba)$/i.test(p1) || /^(tbd|tba)$/i.test(p2)) return;
+
+    // 2. Filter out knockout / classification games
     const isKnockout = /(quarter|semi|final|classification|bronze|gold|placement)/i.test(m.round);
     if (isKnockout) return;
 
-    // Extract Group identifier (e.g., "Group A", "Group B") or fallback to "Group Stage"
+    // 3. Only keep matches assigned to Group A, B, C, or D
     const groupMatch = m.round.match(/Group\s+([A-D])/i);
-    const groupKey = groupMatch ? `Group ${groupMatch[1].toUpperCase()}` : "Group Stage";
+    if (!groupMatch) return;
+    const groupKey = `Group ${groupMatch[1].toUpperCase()}`;
 
-    const t1 = ensureTeam(groupKey, m.player1);
-    const t2 = ensureTeam(groupKey, m.player2);
+    const t1 = ensureTeam(groupKey, p1);
+    const t2 = ensureTeam(groupKey, p2);
+    
 
     if (m.status === 'Finished') {
       t1.gp++;
