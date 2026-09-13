@@ -427,3 +427,65 @@ main {
   margin-bottom: 14px;
   word-break: break-all;
 }
+
+/* --- Matches Sub-Navigation (Fixtures vs Standings) --- */
+.sub-nav-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  background: rgba(8, 11, 18, 0.6);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+}
+
+.sub-nav-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.sub-nav-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* --- Standings Table Specifics --- */
+.group-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 14px 2px 8px 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.standings-table th, .standings-table td {
+  padding: 8px 5px;
+  font-size: 0.78rem;
+}
+
+.diff-pos { color: #4ade80; font-weight: 700; }
+.diff-neg { color: #fb7185; font-weight: 700; }
+.diff-zero { color: var(--text-muted); }
+
+.qualify-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  background: var(--badge-success);
+  margin-right: 2px;
+}
+
