@@ -489,3 +489,51 @@ main {
   margin-right: 2px;
 }
 
+/* --- Next Match Banner --- */
+.next-match-hero {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.18) 0%, rgba(19, 28, 46, 0.95) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.next-match-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-blue);
+  margin-bottom: 8px;
+}
+
+.countdown-timer {
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-timer.is-live {
+  background: rgba(244, 63, 94, 0.25);
+  color: #fb7185;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.next-match-teams {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
