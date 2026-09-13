@@ -136,7 +136,7 @@
     {
       "round": "Men Group B G 5",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-13",
       "time": "10:00",
       "player1": "IR Iran",
@@ -147,7 +147,7 @@
     {
       "round": "Men Group B G 6",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-13",
       "time": "13:00",
       "player1": "Chinese Taipei",
@@ -158,7 +158,7 @@
     {
       "round": "Men Group A G 5",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-13",
       "time": "16:00",
       "player1": "Saudi Arabia",
@@ -169,7 +169,7 @@
     {
       "round": "Men Group A G 6",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-13",
       "time": "19:00",
       "player1": "Japan",
