@@ -146,24 +146,24 @@
     },
     {
       "round": "Men Group B G 6",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-13",
       "time": "13:00",
       "player1": "Chinese Taipei",
       "player2": "Qatar",
-      "score": "68 - 45",
-      "winner": ""
+      "score": "91 - 69",
+      "winner": "Chinese Taipei"
     },
     {
       "round": "Men Group A G 5",
       "status": "Upcoming",
-      "state": "Start List",
+      "state": "Getting Ready",
       "date": "2026-09-13",
       "time": "16:00",
       "player1": "Saudi Arabia",
       "player2": "Indonesia",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {
