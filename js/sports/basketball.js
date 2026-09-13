@@ -8,17 +8,18 @@ function setMatchesSubTab(subTab) {
   renderMatchesView(container, matches);
 }
 
-// --- Next Match Finder & Hero Banner ---
+// --- Match Status & Finish State Helper ---
 function isMatchFinished(m) {
-  if (!m) return true;
+  if (!m) return false;
   if (m.status === 'Finished') return true;
   if (m.state && m.state.toLowerCase().includes('offi')) return true;
   if (m.winner && m.winner.trim() !== '') return true;
   return false;
 }
 
+// --- Next Match Finder & Hero Countdown Banner ---
 function renderNextMatchHeroHtml(matches) {
-  // Find first match that isn't finished and isn't an unassigned TBD placeholder
+  // Select first match that is not finished and not an unassigned placeholder
   const upcoming = matches.find(m => m && !isMatchFinished(m) && m.player1 && !/^(tbd|tba)$/i.test(m.player1))
                 || matches.find(m => m && !isMatchFinished(m));
 
@@ -72,7 +73,7 @@ function renderNextMatchHeroHtml(matches) {
   `;
 }
 
-// --- Group Standings Calculator ---
+// --- Group Standings Calculator (FIBA Standard: 2pts Win / 1pt Loss) ---
 function calculateGroupStandings(matches) {
   const groups = {};
 
@@ -96,13 +97,16 @@ function calculateGroupStandings(matches) {
   matches.forEach(m => {
     if (!m || !m.round) return;
 
+    // Filter placeholder entries
     const p1 = (m.player1 || '').trim();
     const p2 = (m.player2 || '').trim();
     if (!p1 || !p2 || /^(tbd|tba)$/i.test(p1) || /^(tbd|tba)$/i.test(p2)) return;
 
+    // Filter knockout stages
     const isKnockout = /(quarter|semi|final|classification|bronze|gold|placement)/i.test(m.round);
     if (isKnockout) return;
 
+    // Group isolation
     const groupMatch = m.round.match(/Group\s+([A-D])/i);
     if (!groupMatch) return;
     const groupKey = `Group ${groupMatch[1].toUpperCase()}`;
@@ -310,7 +314,7 @@ function renderMatchesView(container, matches) {
   container.innerHTML = subNavHtml + heroHtml + matchesHtml;
 }
 
-// --- Predictions & Medal Table ---
+// --- Predictions & Projected Podium Calculations ---
 function resolveProjectedPodium(teams) {
   const list = extractList(teams);
   if (list.length === 0) return null;
@@ -501,7 +505,7 @@ function renderPredictionsView(container, menPreds, womenPreds, activeGender) {
   container.innerHTML = tallyHtml + podiumHtml + tableHtml;
 }
 
-// --- Calibration & Delta View ---
+// --- Calibration, Delta & Predictive Alignment ---
 function calculateDeltaBadge(currentVal, initialVal, records) {
   let cur = parseFloat(currentVal) || 0;
   let diff = 0;
@@ -531,6 +535,7 @@ function renderCalibrationView(container, teams, matches) {
 
   const records = {};
   let finishedCount = 0;
+  let predictableMatches = 0; // Games with an established favorite (excludes unranked/even pick'ems)
   let favoriteHits = 0;
   const upsets = [];
 
@@ -556,7 +561,9 @@ function renderCalibrationView(container, teams, matches) {
     const r1 = rankMap[p1Norm] || 99;
     const r2 = rankMap[p2Norm] || 99;
 
+    // Only assess model accuracy when the two teams have distinct pre-tournament seedings
     if (r1 !== r2) {
+      predictableMatches++;
       const favNorm = r1 < r2 ? p1Norm : p2Norm;
       if (wNorm === favNorm) {
         favoriteHits++;
@@ -571,7 +578,8 @@ function renderCalibrationView(container, teams, matches) {
     }
   });
 
-  const accuracy = finishedCount > 0 ? Math.round((favoriteHits / finishedCount) * 100) : 100;
+  // Calculate percentage against matches with a projected favorite
+  const accuracy = predictableMatches > 0 ? Math.round((favoriteHits / predictableMatches) * 100) : 100;
   const alignmentStatus = accuracy >= 75 ? 'Optimal' : (accuracy >= 50 ? 'Moderate' : 'Volatile');
 
   let kpiHtml = `
@@ -579,7 +587,7 @@ function renderCalibrationView(container, teams, matches) {
       <div class="kpi-card">
         <div class="kpi-title">Model Accuracy</div>
         <div class="kpi-val">${accuracy}%</div>
-        <div class="kpi-sub">${favoriteHits}/${finishedCount} favorites won</div>
+        <div class="kpi-sub">${favoriteHits}/${predictableMatches} favorites won</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-title">Upsets Logged</div>
