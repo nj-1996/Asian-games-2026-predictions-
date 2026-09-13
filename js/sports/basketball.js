@@ -172,6 +172,59 @@ function renderStandingsTablesHtml(matches) {
     </div>
   `;
 }
+// --- Next Match Finder & Banner ---
+function renderNextMatchHeroHtml(matches) {
+  const upcoming = matches.find(m => m && m.status !== 'Finished');
+  if (!upcoming) return '';
+
+  const p1Info = getNOCInfo(upcoming.player1);
+  const p2Info = getNOCInfo(upcoming.player2);
+
+  let countdownText = 'Upcoming';
+  let isLive = upcoming.status === 'Live';
+
+  if (isLive) {
+    countdownText = '🔥 Live Now';
+  } else if (upcoming.date && upcoming.time && upcoming.time !== 'TBD') {
+    try {
+      const matchEpoch = new Date(`${upcoming.date}T${upcoming.time}:00+09:00`).getTime();
+      const diffMs = matchEpoch - Date.now();
+
+      if (diffMs <= 0) {
+        countdownText = '🔥 In Progress / Starting Soon';
+        isLive = true;
+      } else {
+        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+        if (diffHrs >= 24) {
+          const days = Math.floor(diffHrs / 24);
+          const remHrs = diffHrs % 24;
+          countdownText = `in ${days}d ${remHrs}h`;
+        } else if (diffHrs > 0) {
+          countdownText = `in ${diffHrs}h ${diffMins}m`;
+        } else {
+          countdownText = `in ${diffMins}m`;
+        }
+      }
+    } catch (e) {}
+  }
+
+  return `
+    <div class="next-match-hero">
+      <div class="next-match-label">
+        <span>⏱️ Next Tip-Off • ${upcoming.round || 'Basketball'}</span>
+        <span class="countdown-timer ${isLive ? 'is-live' : ''}">${countdownText}</span>
+      </div>
+      <div class="next-match-teams">
+        <span>${p1Info.flag} ${upcoming.player1}</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">VS</span>
+        <span>${upcoming.player2} ${p2Info.flag}</span>
+      </div>
+    </div>
+  `;
+}
+
 
 // --- Matches Tab (Fixtures + Standings Sub-Nav) ---
 function renderMatchesView(container, matches) {
@@ -250,7 +303,10 @@ function renderMatchesView(container, matches) {
     `;
   }).join('');
 
-  container.innerHTML = subNavHtml + matchesHtml;
+    const heroBanner = renderNextMatchHeroHtml(list);
+  container.innerHTML = subNavHtml + heroBanner + matchesHtml;
+}
+
 }
 
 // --- Predictions & Medal Table ---
