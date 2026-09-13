@@ -8,6 +8,70 @@ function setMatchesSubTab(subTab) {
   renderMatchesView(container, matches);
 }
 
+// --- Next Match Finder & Hero Banner ---
+function isMatchFinished(m) {
+  if (!m) return true;
+  if (m.status === 'Finished') return true;
+  if (m.state && m.state.toLowerCase().includes('offi')) return true;
+  if (m.winner && m.winner.trim() !== '') return true;
+  return false;
+}
+
+function renderNextMatchHeroHtml(matches) {
+  // Find first match that isn't finished and isn't an unassigned TBD placeholder
+  const upcoming = matches.find(m => m && !isMatchFinished(m) && m.player1 && !/^(tbd|tba)$/i.test(m.player1))
+                || matches.find(m => m && !isMatchFinished(m));
+
+  if (!upcoming) return '';
+
+  const p1Info = getNOCInfo(upcoming.player1);
+  const p2Info = getNOCInfo(upcoming.player2);
+
+  let countdownText = 'Upcoming';
+  let isLive = upcoming.status === 'Live' || (upcoming.state && upcoming.state.toLowerCase().includes('live'));
+
+  if (isLive) {
+    countdownText = '🔥 Live Now';
+  } else if (upcoming.date && upcoming.time && upcoming.time !== 'TBD') {
+    try {
+      const matchEpoch = new Date(`${upcoming.date}T${upcoming.time}:00+09:00`).getTime();
+      const diffMs = matchEpoch - Date.now();
+
+      if (diffMs <= 0) {
+        countdownText = '🔥 In Progress / Starting Soon';
+        isLive = true;
+      } else {
+        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+        if (diffHrs >= 24) {
+          const days = Math.floor(diffHrs / 24);
+          const remHrs = diffHrs % 24;
+          countdownText = `in ${days}d ${remHrs}h`;
+        } else if (diffHrs > 0) {
+          countdownText = `in ${diffHrs}h ${diffMins}m`;
+        } else {
+          countdownText = `in ${diffMins}m`;
+        }
+      }
+    } catch (e) {}
+  }
+
+  return `
+    <div class="next-match-hero">
+      <div class="next-match-label">
+        <span>⏱️ Next Tip-Off • ${upcoming.round || 'Basketball'}</span>
+        <span class="countdown-timer ${isLive ? 'is-live' : ''}">${countdownText}</span>
+      </div>
+      <div class="next-match-teams">
+        <span>${p1Info.flag} ${upcoming.player1 || 'TBD'}</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">VS</span>
+        <span>${upcoming.player2 || 'TBD'} ${p2Info.flag}</span>
+      </div>
+    </div>
+  `;
+}
+
 // --- Group Standings Calculator ---
 function calculateGroupStandings(matches) {
   const groups = {};
@@ -30,31 +94,26 @@ function calculateGroupStandings(matches) {
   };
 
   matches.forEach(m => {
-        if (!m || !m.round) return;
+    if (!m || !m.round) return;
 
-    // 1. Skip placeholder / unconfirmed matches
     const p1 = (m.player1 || '').trim();
     const p2 = (m.player2 || '').trim();
     if (!p1 || !p2 || /^(tbd|tba)$/i.test(p1) || /^(tbd|tba)$/i.test(p2)) return;
 
-    // 2. Filter out knockout / classification games
     const isKnockout = /(quarter|semi|final|classification|bronze|gold|placement)/i.test(m.round);
     if (isKnockout) return;
 
-    // 3. Only keep matches assigned to Group A, B, C, or D
     const groupMatch = m.round.match(/Group\s+([A-D])/i);
     if (!groupMatch) return;
     const groupKey = `Group ${groupMatch[1].toUpperCase()}`;
 
     const t1 = ensureTeam(groupKey, p1);
     const t2 = ensureTeam(groupKey, p2);
-    
 
-    if (m.status === 'Finished') {
+    if (isMatchFinished(m)) {
       t1.gp++;
       t2.gp++;
 
-      // Parse score e.g., "85 - 72" or "85-72"
       let s1 = 0, s2 = 0;
       const scoreParts = (m.score || "").match(/(\d+)\s*[-:]\s*(\d+)/);
       if (scoreParts) {
@@ -72,9 +131,9 @@ function calculateGroupStandings(matches) {
 
       if (winNorm === p1Norm || s1 > s2) {
         t1.w++;
-        t1.pts += 2; // FIBA win: 2 pts
+        t1.pts += 2;
         t2.l++;
-        t2.pts += 1; // FIBA loss: 1 pt
+        t2.pts += 1;
       } else if (winNorm === p2Norm || s2 > s1) {
         t2.w++;
         t2.pts += 2;
@@ -84,7 +143,6 @@ function calculateGroupStandings(matches) {
     }
   });
 
-  // Calculate differentials and sort
   const result = {};
   Object.keys(groups).sort().forEach(gKey => {
     const list = Object.values(groups[gKey]).map(t => {
@@ -92,7 +150,6 @@ function calculateGroupStandings(matches) {
       return t;
     });
 
-    // Sort: Points -> Point Differential -> Points For
     list.sort((a, b) => {
       if (b.pts !== a.pts) return b.pts - a.pts;
       if (b.diff !== a.diff) return b.diff - a.diff;
@@ -139,7 +196,7 @@ function renderStandingsTablesHtml(matches) {
               const info = getNOCInfo(t.team);
               const diffClass = t.diff > 0 ? 'diff-pos' : (t.diff < 0 ? 'diff-neg' : 'diff-zero');
               const diffStr = t.diff > 0 ? `+${t.diff}` : `${t.diff}`;
-              const isQualifying = idx < 2; // Top 2 advance
+              const isQualifying = idx < 2;
 
               return `
                 <tr>
@@ -172,65 +229,11 @@ function renderStandingsTablesHtml(matches) {
     </div>
   `;
 }
-// --- Next Match Finder & Banner ---
-function renderNextMatchHeroHtml(matches) {
-  const upcoming = matches.find(m => m && m.status !== 'Finished');
-  if (!upcoming) return '';
 
-  const p1Info = getNOCInfo(upcoming.player1);
-  const p2Info = getNOCInfo(upcoming.player2);
-
-  let countdownText = 'Upcoming';
-  let isLive = upcoming.status === 'Live';
-
-  if (isLive) {
-    countdownText = '🔥 Live Now';
-  } else if (upcoming.date && upcoming.time && upcoming.time !== 'TBD') {
-    try {
-      const matchEpoch = new Date(`${upcoming.date}T${upcoming.time}:00+09:00`).getTime();
-      const diffMs = matchEpoch - Date.now();
-
-      if (diffMs <= 0) {
-        countdownText = '🔥 In Progress / Starting Soon';
-        isLive = true;
-      } else {
-        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-        const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-        if (diffHrs >= 24) {
-          const days = Math.floor(diffHrs / 24);
-          const remHrs = diffHrs % 24;
-          countdownText = `in ${days}d ${remHrs}h`;
-        } else if (diffHrs > 0) {
-          countdownText = `in ${diffHrs}h ${diffMins}m`;
-        } else {
-          countdownText = `in ${diffMins}m`;
-        }
-      }
-    } catch (e) {}
-  }
-
-  return `
-    <div class="next-match-hero">
-      <div class="next-match-label">
-        <span>⏱️ Next Tip-Off • ${upcoming.round || 'Basketball'}</span>
-        <span class="countdown-timer ${isLive ? 'is-live' : ''}">${countdownText}</span>
-      </div>
-      <div class="next-match-teams">
-        <span>${p1Info.flag} ${upcoming.player1}</span>
-        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">VS</span>
-        <span>${upcoming.player2} ${p2Info.flag}</span>
-      </div>
-    </div>
-  `;
-}
-
-
-// --- Matches Tab (Fixtures + Standings Sub-Nav) ---
+// --- Matches Tab (Fixtures + Standings Sub-Nav + Hero Countdown) ---
 function renderMatchesView(container, matches) {
   const list = extractList(matches);
 
-  // Sub-Navigation Pills
   const subNavHtml = `
     <div class="sub-nav-bar">
       <button class="sub-nav-btn ${matchesSubTab === 'fixtures' ? 'active' : ''}" onclick="setMatchesSubTab('fixtures')">
@@ -247,11 +250,12 @@ function renderMatchesView(container, matches) {
     return;
   }
 
-  // Fixtures List
   if (!list || list.length === 0) {
     container.innerHTML = subNavHtml + '<div class="empty-state">No matches scheduled or recorded yet for this category.</div>';
     return;
   }
+
+  const heroHtml = renderNextMatchHeroHtml(list);
 
   const matchesHtml = list.map(m => {
     if (!m) return '';
@@ -261,15 +265,15 @@ function renderMatchesView(container, matches) {
     const p2Norm = normName(m.player2);
     const winNorm = normName(m.winner);
 
-    const isP1Winner = m.status === 'Finished' && winNorm && winNorm === p1Norm;
-    const isP2Winner = m.status === 'Finished' && winNorm && winNorm === p2Norm;
+    const isP1Winner = isMatchFinished(m) && winNorm && winNorm === p1Norm;
+    const isP2Winner = isMatchFinished(m) && winNorm && winNorm === p2Norm;
 
     let stateBadgeClass = 'state-start';
-    let stateText = m.state || (m.status === 'Finished' ? 'Official' : 'Start List');
-    if (m.status === 'Finished' || stateText.toLowerCase().includes('official')) {
+    let stateText = m.state || (isMatchFinished(m) ? 'Official' : 'Start List');
+    if (isMatchFinished(m) || stateText.toLowerCase().includes('official')) {
       stateBadgeClass = 'state-official';
       stateText = 'OFFI';
-    } else if (m.status === 'Live') {
+    } else if (m.status === 'Live' || stateText.toLowerCase().includes('live')) {
       stateBadgeClass = 'state-live';
       stateText = 'LIVE';
     } else {
@@ -303,10 +307,7 @@ function renderMatchesView(container, matches) {
     `;
   }).join('');
 
-    const heroBanner = renderNextMatchHeroHtml(list);
-  container.innerHTML = subNavHtml + heroBanner + matchesHtml;
-}
-
+  container.innerHTML = subNavHtml + heroHtml + matchesHtml;
 }
 
 // --- Predictions & Medal Table ---
@@ -534,7 +535,7 @@ function renderCalibrationView(container, teams, matches) {
   const upsets = [];
 
   matchList.forEach(m => {
-    if (!m || m.status !== 'Finished' || !m.winner) return;
+    if (!m || !isMatchFinished(m) || !m.winner) return;
     finishedCount++;
 
     const p1Norm = normName(m.player1);
