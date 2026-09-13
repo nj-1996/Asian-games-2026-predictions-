@@ -4,7 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Asian Games 2026 • Basketball Projections & Tracker</title>
-  <link rel="stylesheet" href="css/style.css?v=3" />
+  
+  <!-- Auto-versioned Stylesheet -->
+  <script>
+    const ver = Date.now();
+    document.write(`<link rel="stylesheet" href="css/style.css?v=${ver}">`);
+  </script>
 </head>
 <body>
 
@@ -34,9 +39,26 @@
     <div class="empty-state">Loading tournament data...</div>
   </main>
 
-  <!-- Modular Scripts with Cache-Busting -->
-  <script src="js/core.js?v=3"></script>
-  <script src="js/sports/basketball.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <!-- Auto-versioned Script Loader -->
+  <script>
+    (function() {
+      const v = Date.now();
+      const scripts = [
+        `js/core.js?v=${v}`,
+        `js/sports/basketball.js?v=${v}`,
+        `js/app.js?v=${v}`
+      ];
+
+      function loadNext(index) {
+        if (index >= scripts.length) return;
+        const s = document.createElement('script');
+        s.src = scripts[index];
+        s.onload = () => loadNext(index + 1);
+        document.body.appendChild(s);
+      }
+
+      loadNext(0);
+    })();
+  </script>
 </body>
 </html>
