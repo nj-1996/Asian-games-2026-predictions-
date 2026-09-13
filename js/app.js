@@ -9,52 +9,40 @@ let appData = {
   womenPredictions: []
 };
 
-// --- Resilient Fetch Prober ---
-async function fetchJsonAnywhere(paths) {
-  for (const path of paths) {
-    try {
-      const res = await fetch(`${path}?t=${Date.now()}`);
-      if (res.ok) {
-        const parsed = await res.json();
-        if (parsed) return parsed;
-      }
-    } catch (e) {}
+// --- High-Performance Direct Fetcher ---
+async function fetchDirectJson(filename) {
+  try {
+    const res = await fetch(`${filename}?t=${Date.now()}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data) return data;
+    }
+  } catch (e) {
+    console.warn(`Failed to fetch ${filename}:`, e);
   }
   return null;
 }
 
+// --- Parallelized Data Loader ---
 async function loadAllData() {
   try {
-    const menTrackerRaw = await fetchJsonAnywhere([
-      'data/basketball/tracker_men.json',
-      'tracker_men.json',
-      'data/tracker_men.json'
+    // Concurrently fetch all JSON resources to eliminate waterfall latency
+    const [menTrackerRaw, womenTrackerRaw, predRaw] = await Promise.all([
+      fetchDirectJson('tracker_men.json'),
+      fetchDirectJson('tracker_women.json'),
+      fetchDirectJson('predictions.json')
     ]);
-    appData.menMatches = extractList(menTrackerRaw);
 
-    const womenTrackerRaw = await fetchJsonAnywhere([
-      'data/basketball/tracker_women.json',
-      'tracker_women.json',
-      'data/tracker_women.json'
-    ]);
+    appData.menMatches = extractList(menTrackerRaw);
     appData.womenMatches = extractList(womenTrackerRaw);
 
-    const predRaw = await fetchJsonAnywhere([
-      'data/basketball/predictions.json',
-      'predictions.json',
-      'data/predictions.json',
-      'data/basketball/predictions_men.json'
-    ]);
-
+    // Support both combined predictions schema and standalone format
     if (predRaw && !Array.isArray(predRaw) && (predRaw.men || predRaw.women)) {
       appData.menPredictions = extractList(predRaw.men);
       appData.womenPredictions = extractList(predRaw.women);
     } else {
       appData.menPredictions = extractList(predRaw);
-      const womenPredRaw = await fetchJsonAnywhere([
-        'data/basketball/predictions_women.json',
-        'predictions_women.json'
-      ]);
+      const womenPredRaw = await fetchDirectJson('predictions_women.json');
       appData.womenPredictions = extractList(womenPredRaw);
     }
   } catch (err) {
@@ -75,13 +63,13 @@ function showToast(message) {
   }, 3000);
 }
 
-// --- Live Sync Button & Remote Workflow Dispatcher ---
+// --- GitHub Workflow Remote Dispatcher ---
 async function triggerGitHubWorkflowIfAvailable() {
   const repo = 'nj-1996/Asian-games-2026-predictions-';
   let token = localStorage.getItem('gh_sync_token');
 
-  // If no token exists yet, offer the user a prompt to save one for 1-tap remote workflow triggering
-  if (!token && confirm("Trigger GitHub Scraper Action directly?\n\nTap OK to enter your Personal Access Token (stored only on your phone), or Cancel to just re-fetch the latest data.")) {
+  // Request Personal Access Token on first use; store in browser localStorage
+  if (!token && confirm("Trigger GitHub Scraper Action directly?\n\nTap OK to enter your Personal Access Token (stored only on your phone), or Cancel to just re-fetch latest data.")) {
     token = prompt("Paste your GitHub Personal Access Token (classic with 'repo' or fine-grained with 'actions:write'):");
     if (token && token.trim()) {
       token = token.trim();
@@ -92,34 +80,24 @@ async function triggerGitHubWorkflowIfAvailable() {
   if (!token) return false;
 
   try {
-    // Attempt triggering common workflow files (tracker.yml, scrape.yml, or main.yml)
-    const workflowFiles = ['tracker_cron.yml'];
-    let triggered = false;
+    const res = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/tracker_cron.yml/dispatches`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ref: 'main' })
+    });
 
-    for (const wf of workflowFiles) {
-      const res = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${wf}/dispatches`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ref: 'main' })
-      });
-
-      if (res.ok || res.status === 204) {
-        triggered = true;
-        break;
-      }
-    }
-
-    return triggered;
+    return res.ok || res.status === 204;
   } catch (err) {
     console.warn("Workflow dispatch error:", err);
     return false;
   }
 }
 
+// --- Interactive Live Sync Handler ---
 async function handleManualSync() {
   if (isSyncing) return;
   isSyncing = true;
@@ -133,10 +111,10 @@ async function handleManualSync() {
   btn.classList.remove('is-success');
   if (indicator) indicator.style.display = 'none';
 
-  // Optional workflow trigger via GitHub API
+  // Trigger remote GitHub Actions workflow run via API
   await triggerGitHubWorkflowIfAvailable();
 
-  // 2. Countdown Timer (14 seconds to allow the action to run / poll fresh data)
+  // 2. Countdown Timer (14 seconds to allow scraper execution & commit)
   let remainingSeconds = 14;
   label.innerHTML = `<span class="sync-spin-icon">🔄</span> Fetching (${remainingSeconds}s)...`;
 
@@ -153,17 +131,17 @@ async function handleManualSync() {
   await new Promise(r => setTimeout(r, 14000));
   clearInterval(timer);
 
-  // 3. Re-fetch all data files with cache-busting
+  // 3. Reload latest datasets concurrently with cache-busting
   label.innerHTML = `<span class="sync-spin-icon">🔄</span> Reloading...`;
   await loadAllData();
 
-  // 4. Success State
+  // 4. Success State Feedback
   btn.classList.remove('is-syncing');
   btn.classList.add('is-success');
   label.innerHTML = `✓ Synced`;
   showToast("✅ Fetch complete! Dashboard updated.");
 
-  // Reset to idle after 3 seconds
+  // Reset to idle state after 3 seconds
   setTimeout(() => {
     btn.classList.remove('is-success');
     label.innerHTML = `Live Sync`;
@@ -188,7 +166,7 @@ function setGender(gender) {
   renderView();
 }
 
-// --- Global Router ---
+// --- Global View Router ---
 function renderView() {
   const container = document.getElementById('content-cards');
   if (!container) return;
