@@ -157,24 +157,24 @@
     },
     {
       "round": "Men Group A G 5",
-      "status": "Upcoming",
-      "state": "Getting Ready",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-13",
       "time": "16:00",
       "player1": "Saudi Arabia",
       "player2": "Indonesia",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "100 - 89",
+      "winner": "Saudi Arabia"
     },
     {
       "round": "Men Group A G 6",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-13",
       "time": "19:00",
       "player1": "Japan",
       "player2": "Korea",
-      "score": "vs",
+      "score": "22 - 28",
       "winner": ""
     },
     {
