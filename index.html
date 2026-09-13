@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Asian Games 2026 • Basketball Projections & Tracker</title>
-  
+
   <!-- Auto-versioned Stylesheet -->
   <script>
     const ver = Date.now();
@@ -18,9 +18,10 @@
       <div class="header-title">
         <span>🏀</span> Asian Games 2026
       </div>
-      <div class="sync-status">
-        <span class="sync-dot"></span> Live Sync
-      </div>
+      <button class="sync-status" id="live-sync-btn" onclick="handleManualSync()">
+        <span class="sync-dot" id="sync-indicator"></span>
+        <span id="sync-label">Live Sync</span>
+      </button>
     </div>
     <div class="nav-controls">
       <div class="tab-group">
@@ -38,6 +39,9 @@
   <main id="content-cards">
     <div class="empty-state">Loading tournament data...</div>
   </main>
+
+  <!-- Sync Toast Notification -->
+  <div id="sync-toast" class="sync-toast">Fetching complete!</div>
 
   <!-- Auto-versioned Script Loader -->
   <script>
