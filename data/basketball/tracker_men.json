@@ -135,24 +135,24 @@
     },
     {
       "round": "Men Group B G 5",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-13",
       "time": "10:00",
       "player1": "IR Iran",
       "player2": "Jordan",
-      "score": "vs",
-      "winner": ""
+      "score": "81 - 68",
+      "winner": "IR Iran"
     },
     {
       "round": "Men Group B G 6",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-13",
       "time": "13:00",
       "player1": "Chinese Taipei",
       "player2": "Qatar",
-      "score": "vs",
+      "score": "23 - 10",
       "winner": ""
     },
     {
