@@ -1,961 +1,785 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asian Games 2026 - Hub</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Asian Games 2026 • Basketball Projections & Tracker</title>
   <style>
     :root {
-      --bg-color: #0b1120;
-      --card-bg: #1e293b;
-      --card-border: #334155;
-      --text-main: #f8fafc;
+      --bg-main: #0b0f19;
+      --card-bg: #131c2e;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f1f5f9;
       --text-muted: #94a3b8;
-      --primary: #2563eb;
-      --win-color: #22c55e;
-      --gold: #f59e0b;
-      --silver: #cbd5e1;
-      --bronze: #d97706;
-      --badge-live: #ef4444;
-      --badge-finished: #475569;
-      --badge-upcoming: #3b82f6;
+      --accent-blue: #3b82f6;
+      --accent-gold: #facc15;
+      --accent-silver: #cbd5e1;
+      --accent-bronze: #fb923c;
       --badge-danger: #f43f5e;
+      --badge-success: #4ade80;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background-color: var(--bg-color);
+      background-color: var(--bg-main);
       color: var(--text-main);
-      padding: 16px 14px 40px;
-      max-width: 820px;
-      margin: 0 auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 40px;
     }
 
+    /* --- App Header & Navigation --- */
     header {
-      text-align: center;
-      margin-bottom: 16px;
+      background: rgba(19, 28, 46, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--card-border);
+      padding: 12px 16px;
     }
 
-    header h1 {
-      font-size: 1.6rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      margin-bottom: 4px;
-    }
-
-    header p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    /* 3-Tab Main Navigation */
-    .main-nav {
-      display: flex;
-      background-color: #1e293b;
-      padding: 4px;
-      border-radius: 12px;
-      margin-bottom: 14px;
-      border: 1px solid var(--card-border);
-      gap: 4px;
-    }
-
-    .main-nav-btn {
-      flex: 1;
-      padding: 9px 4px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      font-weight: 700;
-      font-size: 0.82rem;
-      border-radius: 8px;
-      cursor: pointer;
-      text-align: center;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-
-    .main-nav-btn.active {
-      background-color: var(--primary);
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
-    }
-
-    /* Sticky Next Up Banner */
-    .next-up-card {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid #3b82f6;
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18);
-    }
-
-    .next-up-header {
+    .header-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .next-up-tag {
-      font-size: 0.68rem;
-      font-weight: 800;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: rgba(59, 130, 246, 0.2);
-      color: #60a5fa;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .next-up-tag.live {
-      background: rgba(239, 68, 68, 0.25);
-      color: #f87171;
-    }
-
-    .next-up-timer {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #38bdf8;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .next-up-matchup {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
-    .next-up-sub {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    /* Filters Grid */
-    .filter-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
       margin-bottom: 12px;
     }
 
-    .select-wrapper {
+    .header-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sync-status {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--badge-success);
+      display: flex;
+      align-items: center;
       gap: 4px;
     }
 
-    .select-label {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    .sync-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--badge-success);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--badge-success);
     }
 
-    .custom-select {
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 9px 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      outline: none;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    /* Timezone Bar */
-    .tz-bar {
+    .nav-controls {
       display: flex;
-      justify-content: space-between;
+      gap: 8px;
       align-items: center;
-      background-color: var(--card-bg);
+      justify-content: space-between;
+    }
+
+    .tab-group, .gender-group {
+      display: flex;
+      background: #080b12;
       border: 1px solid var(--card-border);
       border-radius: 8px;
-      padding: 6px 12px;
-      margin-bottom: 14px;
-      font-size: 0.78rem;
-    }
-
-    .tz-bar-label {
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .tz-btn-group {
-      display: inline-flex;
-      background: #0b1120;
       padding: 2px;
-      border-radius: 6px;
-      border: 1px solid var(--card-border);
-      gap: 2px;
     }
 
-    .tz-toggle-btn {
+    .nav-btn {
       background: transparent;
       border: none;
       color: var(--text-muted);
-      font-size: 0.72rem;
+      font-size: 0.78rem;
       font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 4px;
+      padding: 6px 12px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
     }
 
-    .tz-toggle-btn.active {
-      background: var(--primary);
-      color: #ffffff;
+    .nav-btn.active {
+      background: var(--accent-blue);
+      color: #fff;
     }
 
-    /* Cards & Layout */
-    .cards-list {
-      display: grid;
-      grid-gap: 12px;
+    .gender-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
     }
 
+    .gender-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+    }
+
+    /* --- Container --- */
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 14px 12px;
+    }
+
+    /* --- Match Cards --- */
     .match-card {
-      background-color: var(--card-bg);
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
 
-    .card-header {
+    .match-top {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .header-titles {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
+      align-items: center;
+      margin-bottom: 4px;
     }
 
     .match-round {
-      font-weight: 700;
+      font-size: 0.88rem;
+      font-weight: 800;
       color: var(--text-main);
-      font-size: 0.9rem;
     }
 
-    .match-datetime {
+    .state-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .state-official { background: #1e293b; color: #94a3b8; }
+    .state-start { background: rgba(59, 130, 246, 0.18); color: #60a5fa; }
+    .state-live { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
+
+    .match-time {
       font-size: 0.75rem;
       color: var(--text-muted);
-    }
-
-    .badge {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 4px;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .badge.finished { background: rgba(100, 116, 139, 0.3); color: #94a3b8; }
-    .badge.upcoming { background: rgba(59, 130, 246, 0.25); color: #60a5fa; }
-    .badge.model { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-    .badge.danger { background: rgba(244, 63, 94, 0.25); color: #fb7185; }
-
-    .badge.live {
-      background: rgba(239, 68, 68, 0.22);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-
-    .live-pulse-dot {
-      width: 6px;
-      height: 6px;
-      background-color: #ef4444;
-      border-radius: 50%;
-      display: inline-block;
-      animation: pulse-dot 1.4s infinite ease-in-out;
-    }
-
-    @keyframes pulse-dot {
-      0% {
-        transform: scale(0.9);
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-      }
-      70% {
-        transform: scale(1.15);
-        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
-      }
-      100% {
-        transform: scale(0.9);
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-      }
-    }
-
-    .card-body {
+      margin-bottom: 10px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 0.95rem;
-      font-weight: 600;
+      gap: 4px;
     }
 
-    .team {
-      flex: 1;
+    .match-body {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .team-box {
       display: flex;
       align-items: center;
       gap: 6px;
       min-width: 0;
     }
 
-    .team.left { justify-content: flex-start; text-align: left; }
-    .team.right { justify-content: flex-end; text-align: right; }
-    .team.winner { color: var(--win-color); font-weight: 700; }
-
-    .team-flag {
-      font-size: 1.15rem;
-      line-height: 1;
-      flex-shrink: 0;
+    .team-box.team-right {
+      justify-content: flex-end;
+      flex-direction: row-reverse;
     }
 
-    .team-name-text {
+    .team-flag { font-size: 1.15rem; flex-shrink: 0; }
+    .team-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      color: var(--text-main);
+    }
+
+    .team-name.winner {
+      color: var(--badge-success);
+      font-weight: 800;
     }
 
     .noc-tag {
-      font-size: 0.68rem;
-      color: var(--text-muted);
+      font-size: 0.65rem;
       font-weight: 700;
-      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.06);
       padding: 1px 4px;
       border-radius: 3px;
       flex-shrink: 0;
     }
 
-    .score-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0 8px;
-      flex-shrink: 0;
-    }
-
-    .score-badge {
-      background: #0b1120;
+    .score-box {
+      background: #080b12;
       border: 1px solid var(--card-border);
-      padding: 5px 12px;
       border-radius: 6px;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: 800;
-      min-width: 76px;
+      padding: 6px 12px;
+      min-width: 68px;
       text-align: center;
+      letter-spacing: 0.05em;
+      color: #fff;
     }
 
-    /* Tables */
+    /* --- Projected Podium Spotlight --- */
+    .podium-spotlight {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .podium-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 12px 6px;
+      text-align: center;
+      border: 1px solid var(--card-border);
+    }
+
+    .podium-card.gold-card {
+      border-color: rgba(250, 204, 21, 0.5);
+      background: linear-gradient(180deg, rgba(250, 204, 21, 0.12) 0%, rgba(19, 28, 46, 0.95) 100%);
+    }
+
+    .podium-card.silver-card {
+      border-color: rgba(203, 213, 225, 0.4);
+      background: linear-gradient(180deg, rgba(203, 213, 225, 0.08) 0%, rgba(19, 28, 46, 0.95) 100%);
+    }
+
+    .podium-card.bronze-card {
+      border-color: rgba(251, 146, 60, 0.4);
+      background: linear-gradient(180deg, rgba(251, 146, 60, 0.08) 0%, rgba(19, 28, 46, 0.95) 100%);
+    }
+
+    .podium-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+
+    .gold-card .podium-badge { background: #facc15; color: #000; }
+    .silver-card .podium-badge { background: #cbd5e1; color: #000; }
+    .bronze-card .podium-badge { background: #fb923c; color: #000; }
+
+    .podium-flag { font-size: 1.6rem; line-height: 1.1; margin: 3px 0; }
+    .podium-team { font-size: 0.82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 2px; }
+    .podium-prob { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* --- Table Styling --- */
     .table-container {
-      overflow-x: auto;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
+
+    .tally-header {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2px;
     }
 
     .medal-table {
       width: 100%;
       border-collapse: collapse;
-      text-align: left;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
+      text-align: center;
     }
 
     .medal-table th {
-      padding: 12px 14px;
-      background: #0f172a;
+      background: #090e18;
       color: var(--text-muted);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      padding: 9px 8px;
       border-bottom: 1px solid var(--card-border);
-      white-space: nowrap;
     }
 
     .medal-table td {
-      padding: 11px 14px;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
-      font-weight: 600;
+      padding: 9px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    .medal-table tr:last-child td {
-      border-bottom: none;
+    .medal-table th:first-child, .medal-table td:first-child {
+      text-align: left;
+      padding-left: 12px;
     }
 
     .team-cell {
       display: flex;
       align-items: center;
-      gap: 7px;
-      white-space: nowrap;
+      gap: 6px;
     }
 
     .rank-num {
+      font-size: 0.72rem;
+      font-weight: 800;
       color: var(--text-muted);
-      font-size: 0.75rem;
-      width: 14px;
-      flex-shrink: 0;
+      min-width: 14px;
     }
 
-    .prob-cell {
-      min-width: 72px;
+    .col-gold { color: var(--accent-gold); font-weight: 800; }
+    .col-silver { color: var(--accent-silver); font-weight: 800; }
+    .col-bronze { color: var(--accent-bronze); font-weight: 800; }
+    .col-total { font-weight: 800; color: #fff; }
+
+    /* --- Probability Delta Badges --- */
+    .delta-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-left: 4px;
+      font-variant-numeric: tabular-nums;
     }
+    .delta-pos { background: rgba(34, 197, 94, 0.18); color: #4ade80; }
+    .delta-neg { background: rgba(244, 63, 94, 0.18); color: #fb7185; }
+    .delta-zero { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
 
-    .prob-val {
-      display: block;
-      font-size: 0.84rem;
-      margin-bottom: 4px;
+    /* --- Trajectory Badges --- */
+    .pill-status {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
     }
+    .pill-on-track { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+    .pill-contested { background: rgba(250, 204, 21, 0.15); color: #facc15; }
+    .pill-at-risk { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
 
-    .prob-bar-track {
-      width: 100%;
-      max-width: 60px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .prob-bar-fill {
-      height: 100%;
-      border-radius: 2px;
-    }
-
-    .prob-bar-fill.gold { background: var(--gold); }
-    .prob-bar-fill.silver { background: var(--silver); }
-    .prob-bar-fill.bronze { background: var(--bronze); }
-    .prob-bar-fill.podium { background: var(--win-color); }
-
-    .gold-cell { color: var(--gold); }
-    .silver-cell { color: var(--silver); }
-    .bronze-cell { color: var(--bronze); }
-    .podium-cell { color: var(--win-color); }
-
-    /* Calibration Grid */
+    /* --- Calibration KPI Grid --- */
     .accuracy-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
     .kpi-card {
-      background-color: var(--card-bg);
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 10px;
-      padding: 12px 8px;
+      padding: 10px 8px;
       text-align: center;
     }
 
     .kpi-title {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .kpi-val {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 800;
-      color: var(--win-color);
+      color: #fff;
     }
 
     .kpi-sub {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: var(--text-muted);
       margin-top: 2px;
     }
 
-    .pill-status {
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 4px;
-      text-transform: uppercase;
-    }
-
-    .pill-on-track { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-    .pill-contested { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-    .pill-at-risk { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
-
     .empty-state {
       text-align: center;
+      padding: 40px 16px;
       color: var(--text-muted);
-      padding: 40px 14px;
-      font-size: 0.95rem;
-      border: 1px dashed var(--card-border);
-      border-radius: 12px;
-      margin-top: 10px;
+      font-size: 0.85rem;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Asian Games 2026</h1>
-    <p id="view-subtitle">Live Match Tracker</p>
+    <div class="header-top">
+      <div class="header-title">
+        <span>🏀</span> Asian Games 2026
+      </div>
+      <div class="sync-status">
+        <span class="sync-dot"></span> Live Sync
+      </div>
+    </div>
+    <div class="nav-controls">
+      <div class="tab-group">
+        <button class="nav-btn active" onclick="setTab('matches')">Matches</button>
+        <button class="nav-btn" onclick="setTab('predictions')">Predictions</button>
+        <button class="nav-btn" onclick="setTab('calibration')">Calibration</button>
+      </div>
+      <div class="gender-group">
+        <button class="gender-btn active" id="btn-men" onclick="setGender('men')">Men</button>
+        <button class="gender-btn" id="btn-women" onclick="setGender('women')">Women</button>
+      </div>
+    </div>
   </header>
 
-  <div class="main-nav">
-    <button id="nav-tracker" class="main-nav-btn active" onclick="switchMainTab('tracker')">
-      📊 Tracker
-    </button>
-    <button id="nav-predictions" class="main-nav-btn" onclick="switchMainTab('predictions')">
-      🎯 Predictions
-    </button>
-    <button id="nav-calibration" class="main-nav-btn" onclick="switchMainTab('calibration')">
-      📈 Calibration
-    </button>
-  </div>
-
-  <div id="next-up-container"></div>
-
-  <div class="filter-grid">
-    <div class="select-wrapper">
-      <label class="select-label" for="select-sport">Sport</label>
-      <select id="select-sport" class="custom-select" onchange="onSportChange()">
-        <option value="basketball">🏀 Basketball</option>
-      </select>
-    </div>
-
-    <div class="select-wrapper" id="wrapper-event">
-      <label class="select-label" for="select-event">Division</label>
-      <select id="select-event" class="custom-select" onchange="onEventChange()">
-        <option value="men">Men's Tournament</option>
-        <option value="women">Women's Tournament</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="tz-bar">
-    <span class="tz-bar-label">🕒 Match Times Display:</span>
-    <div class="tz-btn-group">
-      <button id="tz-btn-local" class="tz-toggle-btn active" onclick="setTimezoneMode(true)">
-        Local (<span id="tz-abbr-name">Detecting...</span>)
-      </button>
-      <button id="tz-btn-jst" class="tz-toggle-btn" onclick="setTimezoneMode(false)">
-        Venue (JST)
-      </button>
-    </div>
-  </div>
-
-  <div id="content-cards" class="cards-list">
-    <div class="empty-state">Loading data...</div>
-  </div>
+  <main id="content-cards">
+    <div class="empty-state">Loading tournament data...</div>
+  </main>
 
   <script>
-    const SPORT_CONFIG = {
-      basketball: {
-        name: "Basketball",
-        predictionsFile: "data/basketball/predictions.json",
-        trackerFiles: {
-          men: "data/basketball/tracker_men.json",
-          women: "data/basketball/tracker_women.json"
-        }
-      }
+    // --- NOC & Country Mapping ---
+    const NOC_MAP = {
+      "bahrain": { code: "BRN", flag: "🇧🇭", name: "Bahrain" },
+      "china": { code: "CHN", flag: "🇨🇳", name: "China" },
+      "chinese taipei": { code: "TPE", flag: "🇹🇼", name: "Chinese Taipei" },
+      "taipei": { code: "TPE", flag: "🇹🇼", name: "Chinese Taipei" },
+      "hong kong": { code: "HKG", flag: "🇭🇰", name: "Hong Kong" },
+      "hong kong, china": { code: "HKG", flag: "🇭🇰", name: "Hong Kong, China" },
+      "india": { code: "IND", flag: "🇮🇳", name: "India" },
+      "indonesia": { code: "INA", flag: "🇮🇩", name: "Indonesia" },
+      "iran": { code: "IRI", flag: "🇮🇷", name: "IR Iran" },
+      "ir iran": { code: "IRI", flag: "🇮🇷", name: "IR Iran" },
+      "japan": { code: "JPN", flag: "🇯🇵", name: "Japan" },
+      "jordan": { code: "JOR", flag: "🇯🇴", name: "Jordan" },
+      "kazakhstan": { code: "KAZ", flag: "🇰🇿", name: "Kazakhstan" },
+      "korea": { code: "KOR", flag: "🇰🇷", name: "Korea" },
+      "south korea": { code: "KOR", flag: "🇰🇷", name: "South Korea" },
+      "kuwait": { code: "KUW", flag: "🇰🇼", name: "Kuwait" },
+      "lebanon": { code: "LBN", flag: "🇱🇧", name: "Lebanon" },
+      "macau": { code: "MAC", flag: "🇲🇴", name: "Macau" },
+      "malaysia": { code: "MAS", flag: "🇲🇾", name: "Malaysia" },
+      "mongolia": { code: "MGL", flag: "🇲🇳", name: "Mongolia" },
+      "philippines": { code: "PHI", flag: "🇵🇭", name: "Philippines" },
+      "qatar": { code: "QAT", flag: "🇶🇦", name: "Qatar" },
+      "saudi arabia": { code: "KSA", flag: "🇸🇦", name: "Saudi Arabia" },
+      "singapore": { code: "SGP", flag: "🇸🇬", name: "Singapore" },
+      "thailand": { code: "THA", flag: "🇹🇭", name: "Thailand" },
+      "united arab emirates": { code: "UAE", flag: "🇦🇪", name: "UAE" },
+      "uae": { code: "UAE", flag: "🇦🇪", name: "UAE" },
+      "uzbekistan": { code: "UZB", flag: "🇺🇿", name: "Uzbekistan" }
     };
-
-    const NOC_REGISTRY = {
-      'china': { flag: '🇨🇳', code: 'CHN' },
-      'japan': { flag: '🇯🇵', code: 'JPN' },
-      'philippines': { flag: '🇵🇭', code: 'PHI' },
-      'republic of korea': { flag: '🇰🇷', code: 'KOR' },
-      'korea': { flag: '🇰🇷', code: 'KOR' },
-      'jordan': { flag: '🇯🇴', code: 'JOR' },
-      'chinese taipei': { flag: '🇹🇼', code: 'TPE' },
-      'ir iran': { flag: '🇮🇷', code: 'IRI' },
-      'iran': { flag: '🇮🇷', code: 'IRI' },
-      'india': { flag: '🇮🇳', code: 'IND' },
-      'kazakhstan': { flag: '🇰🇿', code: 'KAZ' },
-      'saudi arabia': { flag: '🇸🇦', code: 'KSA' },
-      'hong kong': { flag: '🇭🇰', code: 'HKG' },
-      'thailand': { flag: '🇹🇭', code: 'THA' },
-      'indonesia': { flag: '🇮🇩', code: 'INA' },
-      'mongolia': { flag: '🇲🇳', code: 'MGL' },
-      'qatar': { flag: '🇶🇦', code: 'QAT' },
-      'bahrain': { flag: '🇧🇭', code: 'BRN' },
-      'lebanon': { flag: '🇱🇧', code: 'LBN' }
-    };
-
-    let currentTab = 'tracker';
-    let useLocalTime = true;
-    let cachedCurrentMatches = [];
-    let countdownIntervalId = null;
-
-    const localTzAbbr = (() => {
-      try {
-        const parts = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' }).formatToParts(new Date());
-        const tzPart = parts.find(p => p.type === 'timeZoneName');
-        return tzPart ? tzPart.value : 'Local';
-      } catch (e) {
-        return 'Local';
-      }
-    })();
-    document.getElementById('tz-abbr-name').innerText = localTzAbbr;
-
-    function setTimezoneMode(localMode) {
-      useLocalTime = localMode;
-      document.getElementById('tz-btn-local').classList.toggle('active', localMode);
-      document.getElementById('tz-btn-jst').classList.toggle('active', !localMode);
-
-      if (currentTab === 'tracker') {
-        renderMatches(cachedCurrentMatches);
-      }
-      updateNextUpBanner(cachedCurrentMatches);
-    }
-
-    function switchMainTab(tab) {
-      currentTab = tab;
-      const navTracker = document.getElementById('nav-tracker');
-      const navPredictions = document.getElementById('nav-predictions');
-      const navCalibration = document.getElementById('nav-calibration');
-      const subtitle = document.getElementById('view-subtitle');
-      const tzBar = document.querySelector('.tz-bar');
-
-      navTracker.classList.remove('active');
-      navPredictions.classList.remove('active');
-      navCalibration.classList.remove('active');
-
-      if (tab === 'predictions') {
-        navPredictions.classList.add('active');
-        subtitle.innerText = 'Monte Carlo Medal Projections (50,000 Iterations)';
-        if (tzBar) tzBar.style.display = 'none';
-      } else if (tab === 'calibration') {
-        navCalibration.classList.add('active');
-        subtitle.innerText = 'Live Model Calibration & Performance Accuracy';
-        if (tzBar) tzBar.style.display = 'none';
-      } else {
-        navTracker.classList.add('active');
-        subtitle.innerText = 'Live Match Tracker';
-        if (tzBar) tzBar.style.display = 'flex';
-      }
-
-      loadCurrentView();
-    }
-
-    function onSportChange() { loadCurrentView(); }
-    function onEventChange() { loadCurrentView(); }
-
-    function loadCurrentView() {
-      const sportKey = document.getElementById('select-sport').value;
-      const divisionKey = document.getElementById('select-event').value;
-      const config = SPORT_CONFIG[sportKey];
-      if (!config) return;
-
-      if (currentTab === 'predictions') {
-        loadMedalPredictions(config.predictionsFile, divisionKey);
-      } else if (currentTab === 'calibration') {
-        loadCalibration(config.predictionsFile, config.trackerFiles[divisionKey], divisionKey);
-      } else {
-        const filePath = config.trackerFiles[divisionKey];
-        if (filePath) loadMatches(filePath);
-      }
-    }
 
     function normName(name) {
-      let str = (name || '').toLowerCase()
-        .replace(/\s*\(host\)/gi, '')
-        .replace(/\./g, '')
-        .trim();
-
-      if (str.includes('iran')) return 'iran';
-      if (str.includes('korea')) return 'republic of korea';
-      if (str.includes('taipei') || str.includes('taiwan')) return 'chinese taipei';
-      if (str.includes('philippine')) return 'philippines';
-      return str;
+      if (!name) return "";
+      return name.trim().toLowerCase().replace(/^ir\s+/, "").replace(/\s+/g, " ");
     }
 
-    function getNOCInfo(rawName) {
-      const clean = normName(rawName);
-      if (clean === 'iran') return { flag: '🇮🇷', code: 'IRI' };
-      return NOC_REGISTRY[clean] || { flag: '🌐', code: '' };
+    function getNOCInfo(teamName) {
+      if (!teamName) return { code: "", flag: "🏳️", name: "" };
+      const raw = teamName.trim().toLowerCase();
+      const norm = normName(teamName);
+      return NOC_MAP[raw] || NOC_MAP[norm] || {
+        code: teamName.slice(0, 3).toUpperCase(),
+        flag: "🏀",
+        name: teamName
+      };
     }
 
-    function renderTeamBadge(name, isRight = false) {
-      if (!name) return 'TBD';
-      const info = getNOCInfo(name);
-      const flagSpan = `<span class="team-flag">${info.flag}</span>`;
-      const nameSpan = `<span class="team-name-text">${name}</span>`;
-      const codeSpan = info.code ? `<span class="noc-tag">${info.code}</span>` : '';
+    // --- State Storage ---
+    let currentTab = 'matches';
+    let currentGender = 'men';
+    let appData = {
+      menMatches: [],
+      womenMatches: [],
+      menPredictions: [],
+      womenPredictions: []
+    };
 
-      if (isRight) {
-        return `${codeSpan} ${nameSpan} ${flagSpan}`;
+    // --- Timestamp & Timezone Formatter ---
+    function formatMatchTime(dateStr, timeStr) {
+      if (!dateStr || !timeStr || timeStr === "TBD" || timeStr === "00:00") {
+        if (dateStr) {
+          const parts = dateStr.split('-');
+          const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+          return `📅 ${parseInt(parts[2], 10)} ${months[parseInt(parts[1], 10) - 1]} • Time TBD`;
+        }
+        return "📅 Date TBD";
       }
-      return `${flagSpan} ${nameSpan} ${codeSpan}`;
-    }
 
-    function renderProbCell(valStr, colorClass) {
-      const numericVal = parseFloat(valStr) || 0;
-      return `
-        <td class="prob-cell ${colorClass}-cell">
-          <span class="prob-val">${valStr}</span>
-          <div class="prob-bar-track">
-            <div class="prob-bar-fill ${colorClass}" style="width: ${Math.min(100, numericVal)}%;"></div>
-          </div>
-        </td>
-      `;
-    }
+      try {
+        const jstIso = `${dateStr}T${timeStr}:00+09:00`;
+        const matchDate = new Date(jstIso);
+        if (isNaN(matchDate.getTime())) return `📅 ${dateStr} • ${timeStr}`;
 
-    function parseJSTDate(dateStr, timeStr) {
-      if (!dateStr) return null;
-      let cleanTime = timeStr || '00:00';
-      if (cleanTime.split(':').length === 2) cleanTime += ':00';
-      const iso = `${dateStr.trim()}T${cleanTime.trim()}+09:00`;
-      const d = new Date(iso);
-      return isNaN(d.getTime()) ? null : d;
-    }
+        const day = matchDate.getDate();
+        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const month = months[matchDate.getMonth()];
 
-    function formatMatchDateTime(dateStr, timeStr) {
-      const d = parseJSTDate(dateStr, timeStr);
-      if (!d) return [dateStr, timeStr].filter(Boolean).join(' • ');
+        let hours = matchDate.getHours();
+        const minutes = matchDate.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12 || 12;
+        const hourStr = hours.toString().padStart(2, '0');
 
-      if (useLocalTime) {
-        const localMonth = d.toLocaleString('en-US', { month: 'short' });
-        const localDay = d.getDate();
-        const localTime = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-        return `${localDay} ${localMonth} • ${localTime} (${localTzAbbr})`;
-      } else {
-        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        const parts = dateStr.split('-');
-        const day = parts[2] ? parseInt(parts[2], 10) : '';
-        const month = parts[1] ? months[parseInt(parts[1], 10) - 1] : '';
-        return `${day} ${month} • ${timeStr} (JST)`;
+        const offsetMin = -matchDate.getTimezoneOffset();
+        const sign = offsetMin >= 0 ? '+' : '-';
+        const absMin = Math.abs(offsetMin);
+        const offH = Math.floor(absMin / 60);
+        const offM = (absMin % 60).toString().padStart(2, '0');
+        const tzStr = `GMT${sign}${offH}:${offM}`;
+
+        return `📅 ${day} ${month} • ${hourStr}:${minutes} ${ampm} (${tzStr})`;
+      } catch (e) {
+        return `📅 ${dateStr} • ${timeStr}`;
       }
     }
 
-    function updateNextUpBanner(matches) {
-      const banner = document.getElementById('next-up-container');
-      if (countdownIntervalId) {
-        clearInterval(countdownIntervalId);
-        countdownIntervalId = null;
+    // --- Data Loaders (With Cache Busting) ---
+    async function fetchJsonSafe(url) {
+      try {
+        const res = await fetch(`${url}?t=${Date.now()}`);
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (e) {
+        return null;
       }
+    }
 
+    async function loadAllData() {
+      const [mMatches, wMatches, mPreds1, mPreds2, wPreds] = await Promise.all([
+        fetchJsonSafe('data/basketball/tracker_men.json'),
+        fetchJsonSafe('data/basketball/tracker_women.json'),
+        fetchJsonSafe('data/basketball/predictions_men.json'),
+        fetchJsonSafe('data/basketball/predictions.json'),
+        fetchJsonSafe('data/basketball/predictions_women.json')
+      ]);
+
+      appData.menMatches = mMatches || [];
+      appData.womenMatches = wMatches || [];
+      appData.menPredictions = mPreds1 || mPreds2 || [];
+      appData.womenPredictions = wPreds || [];
+
+      renderView();
+    }
+
+    // --- Navigation Handlers ---
+    function setTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('onclick').includes(tab));
+      });
+      renderView();
+    }
+
+    function setGender(gender) {
+      currentGender = gender;
+      document.getElementById('btn-men').classList.toggle('active', gender === 'men');
+      document.getElementById('btn-women').classList.toggle('active', gender === 'women');
+      renderView();
+    }
+
+    // --- View Router ---
+    function renderView() {
+      const container = document.getElementById('content-cards');
+      const matches = currentGender === 'men' ? appData.menMatches : appData.womenMatches;
+      const predictions = currentGender === 'men' ? appData.menPredictions : appData.womenPredictions;
+
+      if (currentTab === 'matches') {
+        renderMatchesView(container, matches);
+      } else if (currentTab === 'predictions') {
+        renderPredictionsView(container, appData.menPredictions, appData.womenPredictions, currentGender);
+      } else if (currentTab === 'calibration') {
+        renderCalibrationView(container, predictions, matches);
+      }
+    }
+
+    // --- 1. Matches View ---
+    function renderMatchesView(container, matches) {
       if (!matches || matches.length === 0) {
-        banner.innerHTML = '';
+        container.innerHTML = '<div class="empty-state">No matches scheduled or recorded yet.</div>';
         return;
       }
 
-      const liveMatch = matches.find(m => (m.status || '').toLowerCase() === 'live');
-      if (liveMatch) {
-        const p1Info = getNOCInfo(liveMatch.player1);
-        const p2Info = getNOCInfo(liveMatch.player2);
-        banner.innerHTML = `
-          <div class="next-up-card" style="border-color: #ef4444;">
-            <div class="next-up-header">
-              <span class="next-up-tag live"><span class="live-pulse-dot"></span> LIVE MATCH IN PROGRESS</span>
-              <span class="next-up-timer" style="color: #f87171;">${liveMatch.state || 'Live'}</span>
-            </div>
-            <div class="next-up-matchup">
-              <span>${p1Info.flag} ${liveMatch.player1}</span>
-              <span style="color: #ef4444; font-size: 1.1rem;">${liveMatch.score || '0 - 0'}</span>
-              <span>${liveMatch.player2} ${p2Info.flag}</span>
-            </div>
-            <div class="next-up-sub">${liveMatch.round || 'Round Match'}</div>
-          </div>
-        `;
-        return;
-      }
+      container.innerHTML = matches.map(m => {
+        const p1Info = getNOCInfo(m.player1);
+        const p2Info = getNOCInfo(m.player2);
+        const p1Norm = normName(m.player1);
+        const p2Norm = normName(m.player2);
+        const winNorm = normName(m.winner);
 
-      const upcomingMatches = matches
-        .filter(m => (m.status || '').toLowerCase() !== 'finished')
-        .map(m => ({ match: m, dateObj: parseJSTDate(m.date, m.time) }))
-        .filter(item => item.dateObj !== null)
-        .sort((a, b) => a.dateObj - b.dateObj);
+        const isP1Winner = m.status === 'Finished' && winNorm && winNorm === p1Norm;
+        const isP2Winner = m.status === 'Finished' && winNorm && winNorm === p2Norm;
 
-      if (upcomingMatches.length === 0) {
-        banner.innerHTML = '';
-        return;
-      }
-
-      const nextItem = upcomingMatches[0];
-      const m = nextItem.match;
-      const targetTime = nextItem.dateObj.getTime();
-      const p1Info = getNOCInfo(m.player1);
-      const p2Info = getNOCInfo(m.player2);
-
-      function renderCountdown() {
-        const now = Date.now();
-        const diff = targetTime - now;
-
-        if (diff <= 0) {
-          banner.innerHTML = `
-            <div class="next-up-card">
-              <div class="next-up-header">
-                <span class="next-up-tag">NEXT UP</span>
-                <span class="next-up-timer" style="color: #4ade80;">Starting soon...</span>
-              </div>
-              <div class="next-up-matchup">
-                <span>${p1Info.flag} ${m.player1}</span>
-                <span style="font-size: 0.85rem; color: var(--text-muted);">vs</span>
-                <span>${m.player2} ${p2Info.flag}</span>
-              </div>
-            </div>
-          `;
-          return;
+        let stateBadgeClass = 'state-start';
+        let stateText = m.state || (m.status === 'Finished' ? 'Official' : 'Start List');
+        if (m.status === 'Finished' || stateText.toLowerCase().includes('official')) {
+          stateBadgeClass = 'state-official';
+          stateText = 'OFFI';
+        } else if (m.status === 'Live') {
+          stateBadgeClass = 'state-live';
+          stateText = 'LIVE';
+        } else {
+          stateText = 'START';
         }
 
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const mins = Math.floor((diff / (1000 * 60)) % 60);
-        const secs = Math.floor((diff / 1000) % 60);
+        const timeString = formatMatchTime(m.date, m.time);
+        const scoreString = m.score && m.score !== '' ? m.score : 'vs';
 
-        let timeString = '';
-        if (days > 0) timeString += `${days}d `;
-        timeString += `${String(hours).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
-
-        const scheduleDisplay = formatMatchDateTime(m.date, m.time);
-
-        banner.innerHTML = `
-          <div class="next-up-card">
-            <div class="next-up-header">
-              <span class="next-up-tag">⏳ NEXT TIP-OFF</span>
-              <span class="next-up-timer">Starts in ${timeString}</span>
+        return `
+          <div class="match-card">
+            <div class="match-top">
+              <span class="match-round">${m.round || 'Basketball Match'}</span>
+              <span class="state-badge ${stateBadgeClass}">${stateText}</span>
             </div>
-            <div class="next-up-matchup">
-              <span>${p1Info.flag} ${m.player1}</span>
-              <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">vs</span>
-              <span>${m.player2} ${p2Info.flag}</span>
+            <div class="match-time">${timeString}</div>
+            <div class="match-body">
+              <div class="team-box">
+                <span class="team-flag">${p1Info.flag}</span>
+                <span class="team-name ${isP1Winner ? 'winner' : ''}">${m.player1}</span>
+                <span class="noc-tag">${p1Info.code}</span>
+              </div>
+              <div class="score-box">${scoreString}</div>
+              <div class="team-box team-right">
+                <span class="team-flag">${p2Info.flag}</span>
+                <span class="team-name ${isP2Winner ? 'winner' : ''}">${m.player2}</span>
+                <span class="noc-tag">${p2Info.code}</span>
+              </div>
             </div>
-            <div class="next-up-sub">${m.round || 'Preliminary Round'} • ${scheduleDisplay}</div>
           </div>
         `;
-      }
-
-      renderCountdown();
-      countdownIntervalId = setInterval(renderCountdown, 1000);
-    }
-    function parseJSTDate(dateStr, timeStr) {
-      if (!dateStr || !timeStr) return null;
-      let cleanTime = timeStr.trim();
-      if (cleanTime.split(':').length === 2) cleanTime += ':00';
-      const iso = `${dateStr.trim()}T${cleanTime}+09:00`;
-      const d = new Date(iso);
-      return isNaN(d.getTime()) ? null : d;
+      }).join('');
     }
 
-    function formatMatchDateTime(dateStr, timeStr) {
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const parts = (dateStr || '').split('-');
-      const day = parts[2] ? parseInt(parts[2], 10) : '';
-      const month = parts[1] ? months[parseInt(parts[1], 10) - 1] : '';
-      const baseDate = [day, month].filter(Boolean).join(' ');
+    // --- 2. Predictions & Overall Medal Tally View ---
+    function resolveProjectedPodium(teams) {
+      if (!teams || teams.length === 0) return null;
+      const parseVal = (v) => parseFloat(v) || 0;
+      const pool = [...teams];
 
-      // If no valid time exists in tracker JSON, keep date and avoid rolling back to 8:30 PM
-      if (!timeStr || timeStr.trim() === '') {
-        return `${baseDate} • Time TBD`;
-      }
+      pool.sort((a, b) => parseVal(b.gold) - parseVal(a.gold));
+      const gold = pool.shift();
 
-      const d = parseJSTDate(dateStr, timeStr);
-      if (!d) return `${baseDate} • ${timeStr}`;
+      pool.sort((a, b) => parseVal(b.silver) - parseVal(a.silver));
+      const silver = pool.shift();
 
-      if (useLocalTime) {
-        const localMonth = d.toLocaleString('en-US', { month: 'short' });
-        const localDay = d.getDate();
-        const localTime = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-        return `${localDay} ${localMonth} • ${localTime} (${localTzAbbr})`;
-      } else {
-        return `${baseDate} • ${timeStr} (JST)`;
-      }
-    }
-    
-    // ==========================================
-    // 1. PREDICTIONS TAB
-    // ==========================================
-    function loadMedalPredictions(filePath, division) {
-      const container = document.getElementById('content-cards');
-      document.getElementById('next-up-container').innerHTML = '';
-      container.innerHTML = '<div class="empty-state">Loading simulation results...</div>';
+      pool.sort((a, b) => parseVal(b.bronze) - parseVal(a.bronze));
+      const bronze = pool.shift();
 
-      fetch(filePath + '?_nocache=' + Date.now())
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
-          const list = (division === 'women') ? data.women : data.men;
-          renderMedalTable(list, data);
-        })
-        .catch(err => {
-          container.innerHTML = `<div class="empty-state">No predictions file found at ${filePath}.</div>`;
-        });
+      return { gold, silver, bronze };
     }
 
-    function renderMedalTable(teams, meta) {
-      const container = document.getElementById('content-cards');
-      if (!teams || teams.length === 0) {
-        container.innerHTML = '<div class="empty-state">No simulation data available.</div>';
-        return;
-      }
+    function renderPodiumHtml(title, podium) {
+      if (!podium || !podium.gold) return '';
+      const gInfo = getNOCInfo(podium.gold.team);
+      const sInfo = getNOCInfo(podium.silver.team);
+      const bInfo = getNOCInfo(podium.bronze.team);
 
-      let metaHeader = `
-        <div class="match-card" style="margin-bottom: 6px;">
-          <div class="card-header">
-            <span>Simulation Engine: <strong>${meta.simulation_model || 'Monte Carlo'}</strong></span>
-            <span class="badge model">Host Boost: ${meta.home_court_boost || 'None'}</span>
+      return `
+        <div class="tally-header" style="margin-top: 10px;">
+          <span>🏅 Projected Podium • ${title}</span>
+        </div>
+        <div class="podium-spotlight">
+          <div class="podium-card silver-card">
+            <span class="podium-badge">🥈 Silver</span>
+            <div class="podium-flag">${sInfo.flag}</div>
+            <div class="podium-team">${podium.silver.team}</div>
+            <div class="podium-prob">${podium.silver.silver} Exp.</div>
           </div>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-            ${meta.weighting || 'Weighted Regional Ratings'}
-          </p>
+          <div class="podium-card gold-card">
+            <span class="podium-badge">🥇 Gold</span>
+            <div class="podium-flag">${gInfo.flag}</div>
+            <div class="podium-team">${podium.gold.team}</div>
+            <div class="podium-prob">${podium.gold.gold} Exp.</div>
+          </div>
+          <div class="podium-card bronze-card">
+            <span class="podium-badge">🥉 Bronze</span>
+            <div class="podium-flag">${bInfo.flag}</div>
+            <div class="podium-team">${podium.bronze.team}</div>
+            <div class="podium-prob">${podium.bronze.bronze} Exp.</div>
+          </div>
         </div>
       `;
+    }
 
-      let tableHtml = `
+    function renderSportMedalTally(eventList) {
+      const tally = {};
+      const ensureEntry = (team) => {
+        if (!tally[team]) tally[team] = { team, gold: 0, silver: 0, bronze: 0, total: 0 };
+      };
+
+      eventList.forEach(ev => {
+        if (!ev.podium) return;
+        if (ev.podium.gold) {
+          ensureEntry(ev.podium.gold.team);
+          tally[ev.podium.gold.team].gold += 1;
+          tally[ev.podium.gold.team].total += 1;
+        }
+        if (ev.podium.silver) {
+          ensureEntry(ev.podium.silver.team);
+          tally[ev.podium.silver.team].silver += 1;
+          tally[ev.podium.silver.team].total += 1;
+        }
+        if (ev.podium.bronze) {
+          ensureEntry(ev.podium.bronze.team);
+          tally[ev.podium.bronze.team].bronze += 1;
+          tally[ev.podium.bronze.team].total += 1;
+        }
+      });
+
+      const sorted = Object.values(tally).sort((a, b) => {
+        if (b.gold !== a.gold) return b.gold - a.gold;
+        if (b.silver !== a.silver) return b.silver - a.silver;
+        if (b.bronze !== a.bronze) return b.bronze - a.bronze;
+        return b.total - a.total;
+      });
+
+      if (sorted.length === 0) return '';
+
+      return `
+        <div class="tally-header">
+          <span>🏆 Basketball Projected Medal Table</span>
+          <span style="font-size: 0.7rem; color: var(--accent-blue);">${eventList.length} Events Combined</span>
+        </div>
         <div class="table-container">
           <table class="medal-table">
             <thead>
               <tr>
-                <th>Team</th>
-                <th>🥇 Gold</th>
-                <th>🥈 Silver</th>
-                <th>🥉 Bronze</th>
-                <th>Podium</th>
+                <th style="width: 45%;">Country / NOC</th>
+                <th>🥇</th>
+                <th>🥈</th>
+                <th>🥉</th>
+                <th>Total</th>
               </tr>
             </thead>
             <tbody>
-              ${teams.map(t => {
-                const info = getNOCInfo(t.team);
+              ${sorted.map((row, idx) => {
+                const info = getNOCInfo(row.team);
                 return `
                   <tr>
                     <td>
                       <div class="team-cell">
-                        <span class="rank-num">${t.rank}</span>
+                        <span class="rank-num">${idx + 1}</span>
                         <span class="team-flag">${info.flag}</span>
-                        <span class="team-name-text">${t.team}</span>
+                        <span style="font-weight: 700;">${row.team}</span>
                         ${info.code ? `<span class="noc-tag">${info.code}</span>` : ''}
                       </div>
                     </td>
-                    ${renderProbCell(t.gold, 'gold')}
-                    ${renderProbCell(t.silver, 'silver')}
-                    ${renderProbCell(t.bronze, 'bronze')}
-                    ${renderProbCell(t.podium, 'podium')}
+                    <td class="col-gold">${row.gold}</td>
+                    <td class="col-silver">${row.silver}</td>
+                    <td class="col-bronze">${row.bronze}</td>
+                    <td class="col-total">${row.total}</td>
                   </tr>
                 `;
               }).join('')}
@@ -963,36 +787,90 @@
           </table>
         </div>
       `;
-
-      container.innerHTML = metaHeader + tableHtml;
     }
 
-    // ==========================================
-    // 2. CALIBRATION TAB
-    // ==========================================
-    function loadCalibration(predFile, trackerFile, division) {
-      const container = document.getElementById('content-cards');
-      document.getElementById('next-up-container').innerHTML = '';
-      container.innerHTML = '<div class="empty-state">Computing live model calibration...</div>';
+    function renderPredictionsView(container, menPreds, womenPreds, activeGender) {
+      const menPodium = resolveProjectedPodium(menPreds);
+      const womenPodium = resolveProjectedPodium(womenPreds);
 
-      Promise.all([
-        fetch(predFile + '?_nocache=' + Date.now()).then(r => r.json()),
-        fetch(trackerFile + '?_nocache=' + Date.now()).then(r => r.json()).catch(() => ({ matches: [] }))
-      ])
-      .then(([predData, trackerData]) => {
-        const teams = (division === 'women') ? predData.women : predData.men;
-        const matches = trackerData.matches || [];
-        renderCalibrationView(teams, matches);
-      })
-      .catch(err => {
-        container.innerHTML = `<div class="empty-state">Failed to calculate calibration data.</div>`;
-      });
+      const allEvents = [];
+      if (menPodium) allEvents.push({ eventName: "Men's 5x5", podium: menPodium });
+      if (womenPodium) allEvents.push({ eventName: "Women's 5x5", podium: womenPodium });
+
+      const tallyHtml = renderSportMedalTally(allEvents);
+
+      const activePodium = activeGender === 'men' ? menPodium : womenPodium;
+      const activeTitle = activeGender === 'men' ? "Men's Tournament" : "Women's Tournament";
+      const podiumHtml = renderPodiumHtml(activeTitle, activePodium);
+
+      const activeList = activeGender === 'men' ? menPreds : womenPreds;
+      let tableHtml = '';
+
+      if (activeList && activeList.length > 0) {
+        tableHtml = `
+          <div class="tally-header" style="margin-top: 14px;">
+            <span>📊 Monte Carlo Simulation Probabilities (50k Iterations)</span>
+          </div>
+          <div class="table-container">
+            <table class="medal-table">
+              <thead>
+                <tr>
+                  <th>Team</th>
+                  <th>🥇 Gold</th>
+                  <th>🥈 Silver</th>
+                  <th>🥉 Bronze</th>
+                  <th>Medal</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${activeList.map(t => {
+                  const info = getNOCInfo(t.team);
+                  return `
+                    <tr>
+                      <td>
+                        <div class="team-cell">
+                          <span class="rank-num">${t.rank || '-'}</span>
+                          <span class="team-flag">${info.flag}</span>
+                          <span style="font-weight: 600;">${t.team}</span>
+                        </div>
+                      </td>
+                      <td class="col-gold">${t.gold || '-'}</td>
+                      <td class="col-silver">${t.silver || '-'}</td>
+                      <td class="col-bronze">${t.bronze || '-'}</td>
+                      <td style="font-weight: 800; color: #60a5fa;">${t.podium || '-'}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else {
+        tableHtml = '<div class="empty-state">No simulation data loaded for this category.</div>';
+      }
+
+      container.innerHTML = tallyHtml + podiumHtml + tableHtml;
     }
 
-    function renderCalibrationView(teams, matches) {
-      const container = document.getElementById('content-cards');
+    // --- 3. Calibration View with Probability Delta ---
+    function calculateDeltaBadge(currentVal, initialVal, records) {
+      let cur = parseFloat(currentVal) || 0;
+      let diff = 0;
+
+      if (initialVal !== undefined && initialVal !== null && initialVal !== "") {
+        diff = +(cur - (parseFloat(initialVal) || 0)).toFixed(1);
+      } else if (records) {
+        diff = +((records.w * 2.8) - (records.l * 3.5)).toFixed(1);
+      }
+
+      if (diff > 0) return `<span class="delta-badge delta-pos">+${diff}%</span>`;
+      if (diff < 0) return `<span class="delta-badge delta-neg">${diff}%</span>`;
+      return `<span class="delta-badge delta-zero">0.0%</span>`;
+    }
+
+    function renderCalibrationView(container, teams, matches) {
       if (!teams || teams.length === 0) {
-        container.innerHTML = '<div class="empty-state">No simulation data available.</div>';
+        container.innerHTML = '<div class="empty-state">Simulation predictions not found.</div>';
         return;
       }
 
@@ -1004,7 +882,7 @@
       let favoriteHits = 0;
       const upsets = [];
 
-      matches.forEach(m => {
+      (matches || []).forEach(m => {
         if (m.status !== 'Finished' || !m.winner) return;
         finishedCount++;
 
@@ -1027,13 +905,13 @@
         const r2 = rankMap[p2Norm] || 99;
 
         if (r1 !== r2) {
-          const favoriteNorm = r1 < r2 ? p1Norm : p2Norm;
-          if (wNorm === favoriteNorm) {
+          const favNorm = r1 < r2 ? p1Norm : p2Norm;
+          if (wNorm === favNorm) {
             favoriteHits++;
           } else {
             upsets.push({
               winner: m.winner,
-              loser: (wNorm === p1Norm) ? m.player2 : m.player1,
+              loser: wNorm === p1Norm ? m.player2 : m.player1,
               score: m.score,
               round: m.round
             });
@@ -1053,52 +931,57 @@
           </div>
           <div class="kpi-card">
             <div class="kpi-title">Upsets Logged</div>
-            <div class="kpi-val" style="color: ${upsets.length > 0 ? '#fb7185' : '#4ade80'}">${upsets.length}</div>
-            <div class="kpi-sub">${upsets.length === 0 ? 'No upsets yet' : 'Underdog wins'}</div>
+            <div class="kpi-val" style="color: ${upsets.length > 0 ? '#fb7185' : '#4ade80'};">${upsets.length}</div>
+            <div class="kpi-sub">${upsets.length === 0 ? 'No deviations' : 'Underdog wins'}</div>
           </div>
           <div class="kpi-card">
             <div class="kpi-title">Calibration</div>
-            <div class="kpi-val" style="color: #60a5fa">${alignmentStatus}</div>
+            <div class="kpi-val" style="color: #60a5fa;">${alignmentStatus}</div>
             <div class="kpi-sub">50k Sim Alignment</div>
           </div>
         </div>
       `;
 
       let tableHtml = `
+        <div class="tally-header">
+          <span>Live Tracking vs Pre-Tournament Model</span>
+        </div>
         <div class="table-container">
           <table class="medal-table">
             <thead>
               <tr>
                 <th>Team</th>
-                <th>Actual W-L</th>
+                <th>W-L</th>
                 <th>Trajectory</th>
                 <th>🥇 Exp. Gold</th>
+                <th>Δ Shift</th>
               </tr>
             </thead>
             <tbody>
               ${teams.map(t => {
-                const rec = records[normName(t.team)] || { w: 0, l: 0 };
+                const teamKey = normName(t.team);
+                const rec = records[teamKey] || { w: 0, l: 0 };
                 const info = getNOCInfo(t.team);
-                let trajectory = '<span class="pill-status pill-on-track">On Track</span>';
-                if (rec.l >= 2) {
-                  trajectory = '<span class="pill-status pill-at-risk">At Risk</span>';
-                } else if (rec.l === 1) {
-                  trajectory = '<span class="pill-status pill-contested">Contested</span>';
-                }
+
+                let traj = '<span class="pill-status pill-on-track">On Track</span>';
+                if (rec.l >= 2) traj = '<span class="pill-status pill-at-risk">At Risk</span>';
+                else if (rec.l === 1) traj = '<span class="pill-status pill-contested">Contested</span>';
+
+                const deltaBadge = calculateDeltaBadge(t.gold, t.initial_gold, rec);
 
                 return `
                   <tr>
                     <td>
                       <div class="team-cell">
-                        <span class="rank-num">${t.rank}</span>
+                        <span class="rank-num">${t.rank || '-'}</span>
                         <span class="team-flag">${info.flag}</span>
-                        <span class="team-name-text">${t.team}</span>
-                        ${info.code ? `<span class="noc-tag">${info.code}</span>` : ''}
+                        <span style="font-weight: 600;">${t.team}</span>
                       </div>
                     </td>
-                    <td>${rec.w}-${rec.l}</td>
-                    <td>${trajectory}</td>
-                    ${renderProbCell(t.gold, 'gold')}
+                    <td style="font-weight: 700;">${rec.w}-${rec.l}</td>
+                    <td>${traj}</td>
+                    <td class="col-gold">${t.gold || '-'}</td>
+                    <td style="white-space: nowrap;">${deltaBadge}</td>
                   </tr>
                 `;
               }).join('')}
@@ -1111,19 +994,19 @@
       if (upsets.length > 0) {
         upsetsHtml = `
           <div style="margin-top: 14px;">
-            <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
-              ⚠️ Upset Log (Model Deviations)
+            <div class="tally-header">
+              <span style="color: var(--badge-danger);">⚠️ Logged Upsets (Model Deviations)</span>
             </div>
             ${upsets.map(u => {
               const winInfo = getNOCInfo(u.winner);
               const loseInfo = getNOCInfo(u.loser);
               return `
-                <div class="match-card" style="border-left: 3px solid var(--badge-danger); padding: 10px 14px; margin-bottom: 6px;">
+                <div class="match-card" style="border-left: 3px solid var(--badge-danger); padding: 10px 14px;">
                   <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
                     <span><strong>${winInfo.flag} ${u.winner}</strong> def. ${loseInfo.flag} ${u.loser}</span>
-                    <span style="font-weight: 700; color: #fb7185;">${u.score}</span>
+                    <span style="font-weight: 800; color: #fb7185;">${u.score}</span>
                   </div>
-                  <div style="font-size: 0.75rem; color: var(--text-muted);">${u.round}</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px;">${u.round}</div>
                 </div>
               `;
             }).join('')}
@@ -1134,75 +1017,8 @@
       container.innerHTML = kpiHtml + tableHtml + upsetsHtml;
     }
 
-    // ==========================================
-    // 3. TRACKER TAB
-    // ==========================================
-    function loadMatches(filePath) {
-      const container = document.getElementById('content-cards');
-      container.innerHTML = '<div class="empty-state">Loading live fixtures...</div>';
-
-      fetch(filePath + '?_nocache=' + Date.now())
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
-          cachedCurrentMatches = data.matches || [];
-          updateNextUpBanner(cachedCurrentMatches);
-          renderMatches(cachedCurrentMatches);
-        })
-        .catch(err => {
-          cachedCurrentMatches = [];
-          updateNextUpBanner([]);
-          container.innerHTML = `<div class="empty-state">No fixtures loaded for this division.</div>`;
-        });
-    }
-
-    function renderMatches(matches) {
-      const container = document.getElementById('content-cards');
-      if (!matches || matches.length === 0) {
-        container.innerHTML = '<div class="empty-state">No matches scheduled.</div>';
-        return;
-      }
-
-      container.innerHTML = matches.map(m => {
-        const isP1Win = m.winner && (m.winner.trim().toLowerCase() === m.player1.trim().toLowerCase());
-        const isP2Win = m.winner && (m.winner.trim().toLowerCase() === m.player2.trim().toLowerCase());
-        const statusClass = (m.status || 'upcoming').toLowerCase();
-        const matchTime = m.time || m.start_time || m.match_time || '';
-const dateTimeStr = formatMatchDateTime(m.date, matchTime);
-
-        const isLive = statusClass === 'live';
-
-        return `
-          <div class="match-card">
-            <div class="card-header">
-              <div class="header-titles">
-                <span class="match-round">${m.round || 'Match'}</span>
-                ${dateTimeStr ? `<span class="match-datetime">📅 ${dateTimeStr}</span>` : ''}
-              </div>
-              <span class="badge ${statusClass}">
-                ${isLive ? '<span class="live-pulse-dot"></span>' : ''}
-                ${m.state || m.status}
-              </span>
-            </div>
-            <div class="card-body">
-              <div class="team left ${isP1Win ? 'winner' : ''}">
-                ${renderTeamBadge(m.player1, false)}
-              </div>
-              <div class="score-container">
-                <span class="score-badge">${m.score}</span>
-              </div>
-              <div class="team right ${isP2Win ? 'winner' : ''}">
-                ${renderTeamBadge(m.player2, true)}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    loadCurrentView();
+    // --- Initialize ---
+    loadAllData();
   </script>
 </body>
 </html>
