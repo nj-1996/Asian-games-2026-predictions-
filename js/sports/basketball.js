@@ -1,12 +1,199 @@
-// --- Basketball Matches View ---
+// --- Sub-View State ---
+let matchesSubTab = 'fixtures'; // 'fixtures' | 'standings'
+
+function setMatchesSubTab(subTab) {
+  matchesSubTab = subTab;
+  const container = document.getElementById('content-cards');
+  const matches = currentGender === 'men' ? appData.menMatches : appData.womenMatches;
+  renderMatchesView(container, matches);
+}
+
+// --- Group Standings Calculator ---
+function calculateGroupStandings(matches) {
+  const groups = {};
+
+  const ensureTeam = (groupKey, teamName) => {
+    if (!groups[groupKey]) groups[groupKey] = {};
+    if (!groups[groupKey][teamName]) {
+      groups[groupKey][teamName] = {
+        team: teamName,
+        gp: 0,
+        w: 0,
+        l: 0,
+        pf: 0,
+        pa: 0,
+        diff: 0,
+        pts: 0
+      };
+    }
+    return groups[groupKey][teamName];
+  };
+
+  matches.forEach(m => {
+    if (!m || !m.round) return;
+
+    // Filter out knockout games
+    const isKnockout = /(quarter|semi|final|classification|bronze|gold|placement)/i.test(m.round);
+    if (isKnockout) return;
+
+    // Extract Group identifier (e.g., "Group A", "Group B") or fallback to "Group Stage"
+    const groupMatch = m.round.match(/Group\s+([A-D])/i);
+    const groupKey = groupMatch ? `Group ${groupMatch[1].toUpperCase()}` : "Group Stage";
+
+    const t1 = ensureTeam(groupKey, m.player1);
+    const t2 = ensureTeam(groupKey, m.player2);
+
+    if (m.status === 'Finished') {
+      t1.gp++;
+      t2.gp++;
+
+      // Parse score e.g., "85 - 72" or "85-72"
+      let s1 = 0, s2 = 0;
+      const scoreParts = (m.score || "").match(/(\d+)\s*[-:]\s*(\d+)/);
+      if (scoreParts) {
+        s1 = parseInt(scoreParts[1], 10);
+        s2 = parseInt(scoreParts[2], 10);
+        t1.pf += s1;
+        t1.pa += s2;
+        t2.pf += s2;
+        t2.pa += s1;
+      }
+
+      const p1Norm = normName(m.player1);
+      const p2Norm = normName(m.player2);
+      const winNorm = normName(m.winner);
+
+      if (winNorm === p1Norm || s1 > s2) {
+        t1.w++;
+        t1.pts += 2; // FIBA win: 2 pts
+        t2.l++;
+        t2.pts += 1; // FIBA loss: 1 pt
+      } else if (winNorm === p2Norm || s2 > s1) {
+        t2.w++;
+        t2.pts += 2;
+        t1.l++;
+        t1.pts += 1;
+      }
+    }
+  });
+
+  // Calculate differentials and sort
+  const result = {};
+  Object.keys(groups).sort().forEach(gKey => {
+    const list = Object.values(groups[gKey]).map(t => {
+      t.diff = t.pf - t.pa;
+      return t;
+    });
+
+    // Sort: Points -> Point Differential -> Points For
+    list.sort((a, b) => {
+      if (b.pts !== a.pts) return b.pts - a.pts;
+      if (b.diff !== a.diff) return b.diff - a.diff;
+      return b.pf - a.pf;
+    });
+
+    result[gKey] = list;
+  });
+
+  return result;
+}
+
+// --- Render Standings View ---
+function renderStandingsTablesHtml(matches) {
+  const groups = calculateGroupStandings(matches);
+  const groupKeys = Object.keys(groups);
+
+  if (groupKeys.length === 0) {
+    return '<div class="empty-state">No group stage data available.</div>';
+  }
+
+  return groupKeys.map(gKey => {
+    const teams = groups[gKey];
+    return `
+      <div class="group-title">
+        <span>🏀</span> ${gKey}
+      </div>
+      <div class="table-container">
+        <table class="medal-table standings-table">
+          <thead>
+            <tr>
+              <th style="width: 42%;">Team</th>
+              <th>GP</th>
+              <th>W</th>
+              <th>L</th>
+              <th>PF</th>
+              <th>PA</th>
+              <th>+/-</th>
+              <th style="font-weight: 800; color: #fff;">PTS</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${teams.map((t, idx) => {
+              const info = getNOCInfo(t.team);
+              const diffClass = t.diff > 0 ? 'diff-pos' : (t.diff < 0 ? 'diff-neg' : 'diff-zero');
+              const diffStr = t.diff > 0 ? `+${t.diff}` : `${t.diff}`;
+              const isQualifying = idx < 2; // Top 2 advance
+
+              return `
+                <tr>
+                  <td>
+                    <div class="team-cell">
+                      <span class="rank-num">${idx + 1}</span>
+                      <span class="team-flag">${info.flag}</span>
+                      <span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        ${isQualifying ? '<span class="qualify-dot"></span>' : ''}${t.team}
+                      </span>
+                    </div>
+                  </td>
+                  <td>${t.gp}</td>
+                  <td style="color:#4ade80; font-weight:700;">${t.w}</td>
+                  <td style="color:#fb7185;">${t.l}</td>
+                  <td>${t.pf}</td>
+                  <td>${t.pa}</td>
+                  <td class="${diffClass}">${diffStr}</td>
+                  <td style="font-weight: 800; color: var(--accent-blue);">${t.pts}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }).join('') + `
+    <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: -12px; margin-bottom: 16px; padding-left: 4px;">
+      🟢 Top 2 teams advance to Quarterfinals • FIBA Points: Win = 2, Loss = 1
+    </div>
+  `;
+}
+
+// --- Matches Tab (Fixtures + Standings Sub-Nav) ---
 function renderMatchesView(container, matches) {
   const list = extractList(matches);
-  if (!list || list.length === 0) {
-    container.innerHTML = '<div class="empty-state">No matches scheduled or recorded yet for this category.</div>';
+
+  // Sub-Navigation Pills
+  const subNavHtml = `
+    <div class="sub-nav-bar">
+      <button class="sub-nav-btn ${matchesSubTab === 'fixtures' ? 'active' : ''}" onclick="setMatchesSubTab('fixtures')">
+        📋 Schedule & Scores
+      </button>
+      <button class="sub-nav-btn ${matchesSubTab === 'standings' ? 'active' : ''}" onclick="setMatchesSubTab('standings')">
+        📊 Group Standings
+      </button>
+    </div>
+  `;
+
+  if (matchesSubTab === 'standings') {
+    container.innerHTML = subNavHtml + renderStandingsTablesHtml(list);
     return;
   }
 
-  container.innerHTML = list.map(m => {
+  // Fixtures List
+  if (!list || list.length === 0) {
+    container.innerHTML = subNavHtml + '<div class="empty-state">No matches scheduled or recorded yet for this category.</div>';
+    return;
+  }
+
+  const matchesHtml = list.map(m => {
     if (!m) return '';
     const p1Info = getNOCInfo(m.player1);
     const p2Info = getNOCInfo(m.player2);
@@ -55,6 +242,8 @@ function renderMatchesView(container, matches) {
       </div>
     `;
   }).join('');
+
+  container.innerHTML = subNavHtml + matchesHtml;
 }
 
 // --- Predictions & Medal Table ---
@@ -347,44 +536,44 @@ function renderCalibrationView(container, teams, matches) {
     </div>
     <div class="table-container">
       <table class="medal-table">
-            <thead>
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th>W-L</th>
+            <th>Trajectory</th>
+            <th>🥇 Exp. Gold</th>
+            <th>Δ Shift</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${teamList.map(t => {
+            const teamKey = normName(t.team);
+            const rec = records[teamKey] || { w: 0, l: 0 };
+            const info = getNOCInfo(t.team);
+
+            let traj = '<span class="pill-status pill-on-track">On Track</span>';
+            if (rec.l >= 2) traj = '<span class="pill-status pill-at-risk">At Risk</span>';
+            else if (rec.l === 1) traj = '<span class="pill-status pill-contested">Contested</span>';
+
+            const deltaBadge = calculateDeltaBadge(t.gold, t.initial_gold, rec);
+
+            return `
               <tr>
-                <th>Team</th>
-                <th>W-L</th>
-                <th>Trajectory</th>
-                <th>🥇 Exp. Gold</th>
-                <th>Δ Shift</th>
+                <td>
+                  <div class="team-cell">
+                    <span class="rank-num">${t.rank || '-'}</span>
+                    <span class="team-flag">${info.flag}</span>
+                    <span style="font-weight: 600;">${t.team}</span>
+                  </div>
+                </td>
+                <td style="font-weight: 700;">${rec.w}-${rec.l}</td>
+                <td>${traj}</td>
+                <td class="col-gold">${t.gold || '-'}</td>
+                <td style="white-space: nowrap;">${deltaBadge}</td>
               </tr>
-            </thead>
-            <tbody>
-              ${teamList.map(t => {
-                const teamKey = normName(t.team);
-                const rec = records[teamKey] || { w: 0, l: 0 };
-                const info = getNOCInfo(t.team);
-
-                let traj = '<span class="pill-status pill-on-track">On Track</span>';
-                if (rec.l >= 2) traj = '<span class="pill-status pill-at-risk">At Risk</span>';
-                else if (rec.l === 1) traj = '<span class="pill-status pill-contested">Contested</span>';
-
-                const deltaBadge = calculateDeltaBadge(t.gold, t.initial_gold, rec);
-
-                return `
-                  <tr>
-                    <td>
-                      <div class="team-cell">
-                        <span class="rank-num">${t.rank || '-'}</span>
-                        <span class="team-flag">${info.flag}</span>
-                        <span style="font-weight: 600;">${t.team}</span>
-                      </div>
-                    </td>
-                    <td style="font-weight: 700;">${rec.w}-${rec.l}</td>
-                    <td>${traj}</td>
-                    <td class="col-gold">${t.gold || '-'}</td>
-                    <td style="white-space: nowrap;">${deltaBadge}</td>
-                  </tr>
-                `;
-              }).join('')}
-            </tbody>
+            `;
+          }).join('')}
+        </tbody>
       </table>
     </div>
   `;
