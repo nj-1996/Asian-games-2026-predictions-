@@ -505,9 +505,16 @@
     };
 
     function normName(name) {
-      if (!name || typeof name !== 'string') return "";
-      return name.trim().toLowerCase().replace(/^ir\s+/, "").replace(/\s+/g, " ");
+  if (!name || typeof name !== 'string') return "";
+  return name.trim().toLowerCase()
+    .replace(/\s*\(host\)/gi, "")
+    .replace(/^republic of korea/gi, "korea")
+    .replace(/^south korea/gi, "korea")
+    .replace(/^ir\s+/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
     }
+    
 
     function getNOCInfo(teamName) {
       if (!teamName || typeof teamName !== 'string') return { code: "", flag: "🏳️", name: "" };
