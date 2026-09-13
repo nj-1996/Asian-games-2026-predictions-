@@ -9,40 +9,61 @@ let appData = {
   womenPredictions: []
 };
 
-// --- High-Performance Direct Fetcher ---
-async function fetchDirectJson(filename) {
+// --- Fast Concurrent Multi-Path Resolver ---
+// Requests all candidate paths simultaneously and returns the first valid 200 OK
+async function fetchFastJson(paths) {
+  const fetchAttempt = async (p) => {
+    const res = await fetch(`${p}?t=${Date.now()}`);
+    if (!res.ok) throw new Error(`404: ${p}`);
+    const data = await res.json();
+    if (!data) throw new Error(`Empty: ${p}`);
+    return data;
+  };
+
   try {
-    const res = await fetch(`${filename}?t=${Date.now()}`);
-    if (res.ok) {
-      const data = await res.json();
-      if (data) return data;
-    }
+    return await Promise.any(paths.map(p => fetchAttempt(p)));
   } catch (e) {
-    console.warn(`Failed to fetch ${filename}:`, e);
+    // If every candidate path returns 404, gracefully return null
+    return null;
   }
-  return null;
 }
 
-// --- Parallelized Data Loader ---
+// --- Parallelized Tournament Data Loader ---
 async function loadAllData() {
   try {
-    // Concurrently fetch all JSON resources to eliminate waterfall latency
     const [menTrackerRaw, womenTrackerRaw, predRaw] = await Promise.all([
-      fetchDirectJson('tracker_men.json'),
-      fetchDirectJson('tracker_women.json'),
-      fetchDirectJson('predictions.json')
+      fetchFastJson([
+        'data/basketball/tracker_men.json',
+        'data/tracker_men.json',
+        'tracker_men.json'
+      ]),
+      fetchFastJson([
+        'data/basketball/tracker_women.json',
+        'data/tracker_women.json',
+        'tracker_women.json'
+      ]),
+      fetchFastJson([
+        'data/basketball/predictions.json',
+        'data/predictions.json',
+        'predictions.json',
+        'data/basketball/predictions_men.json'
+      ])
     ]);
 
     appData.menMatches = extractList(menTrackerRaw);
     appData.womenMatches = extractList(womenTrackerRaw);
 
-    // Support both combined predictions schema and standalone format
+    // Support combined predictions format or standalone files
     if (predRaw && !Array.isArray(predRaw) && (predRaw.men || predRaw.women)) {
       appData.menPredictions = extractList(predRaw.men);
       appData.womenPredictions = extractList(predRaw.women);
     } else {
       appData.menPredictions = extractList(predRaw);
-      const womenPredRaw = await fetchDirectJson('predictions_women.json');
+      const womenPredRaw = await fetchFastJson([
+        'data/basketball/predictions_women.json',
+        'data/predictions_women.json',
+        'predictions_women.json'
+      ]);
       appData.womenPredictions = extractList(womenPredRaw);
     }
   } catch (err) {
@@ -68,7 +89,6 @@ async function triggerGitHubWorkflowIfAvailable() {
   const repo = 'nj-1996/Asian-games-2026-predictions-';
   let token = localStorage.getItem('gh_sync_token');
 
-  // Request Personal Access Token on first use; store in browser localStorage
   if (!token && confirm("Trigger GitHub Scraper Action directly?\n\nTap OK to enter your Personal Access Token (stored only on your phone), or Cancel to just re-fetch latest data.")) {
     token = prompt("Paste your GitHub Personal Access Token (classic with 'repo' or fine-grained with 'actions:write'):");
     if (token && token.trim()) {
@@ -106,15 +126,15 @@ async function handleManualSync() {
   const indicator = document.getElementById('sync-indicator');
   const label = document.getElementById('sync-label');
 
-  // 1. Enter Fetching State
+  // 1. Enter Syncing State
   btn.classList.add('is-syncing');
   btn.classList.remove('is-success');
   if (indicator) indicator.style.display = 'none';
 
-  // Trigger remote GitHub Actions workflow run via API
+  // Trigger remote GitHub Actions runner
   await triggerGitHubWorkflowIfAvailable();
 
-  // 2. Countdown Timer (14 seconds to allow scraper execution & commit)
+  // 2. Countdown Timer (14s scraper runtime window)
   let remainingSeconds = 14;
   label.innerHTML = `<span class="sync-spin-icon">🔄</span> Fetching (${remainingSeconds}s)...`;
 
@@ -127,11 +147,10 @@ async function handleManualSync() {
     }
   }, 1000);
 
-  // Wait 14 seconds for scraping/generation
   await new Promise(r => setTimeout(r, 14000));
   clearInterval(timer);
 
-  // 3. Reload latest datasets concurrently with cache-busting
+  // 3. Reload latest datasets concurrently
   label.innerHTML = `<span class="sync-spin-icon">🔄</span> Reloading...`;
   await loadAllData();
 
@@ -141,7 +160,6 @@ async function handleManualSync() {
   label.innerHTML = `✓ Synced`;
   showToast("✅ Fetch complete! Dashboard updated.");
 
-  // Reset to idle state after 3 seconds
   setTimeout(() => {
     btn.classList.remove('is-success');
     label.innerHTML = `Live Sync`;
