@@ -34,9 +34,9 @@
       padding-bottom: 40px;
     }
 
-    /* --- Header & Navigation --- */
+    /* --- App Header & Navigation --- */
     header {
-      background: rgba(19, 28, 46, 0.85);
+      background: rgba(19, 28, 46, 0.9);
       backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
@@ -55,7 +55,6 @@
     .header-title {
       font-size: 1.05rem;
       font-weight: 800;
-      letter-spacing: -0.01em;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -351,7 +350,7 @@
     .col-bronze { color: var(--accent-bronze); font-weight: 800; }
     .col-total { font-weight: 800; color: #fff; }
 
-    /* --- Probability Delta Badges --- */
+    /* --- Delta Badges --- */
     .delta-badge {
       display: inline-block;
       font-size: 0.68rem;
@@ -365,7 +364,6 @@
     .delta-neg { background: rgba(244, 63, 94, 0.18); color: #fb7185; }
     .delta-zero { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
 
-    /* --- Trajectory Badges --- */
     .pill-status {
       font-size: 0.68rem;
       font-weight: 700;
@@ -376,7 +374,6 @@
     .pill-contested { background: rgba(250, 204, 21, 0.15); color: #facc15; }
     .pill-at-risk { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
 
-    /* --- Calibration KPI Grid --- */
     .accuracy-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -418,6 +415,18 @@
       color: var(--text-muted);
       font-size: 0.85rem;
     }
+
+    .error-box {
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: #fb7185;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      margin-bottom: 14px;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -433,9 +442,9 @@
     </div>
     <div class="nav-controls">
       <div class="tab-group">
-        <button class="nav-btn active" onclick="setTab('matches')">Matches</button>
-        <button class="nav-btn" onclick="setTab('predictions')">Predictions</button>
-        <button class="nav-btn" onclick="setTab('calibration')">Calibration</button>
+        <button class="nav-btn active" id="tab-matches" onclick="setTab('matches')">Matches</button>
+        <button class="nav-btn" id="tab-predictions" onclick="setTab('predictions')">Predictions</button>
+        <button class="nav-btn" id="tab-calibration" onclick="setTab('calibration')">Calibration</button>
       </div>
       <div class="gender-group">
         <button class="gender-btn active" id="btn-men" onclick="setGender('men')">Men</button>
@@ -449,7 +458,21 @@
   </main>
 
   <script>
-    // --- NOC & Country Mapping ---
+    // --- Mobile Error Boundary ---
+    window.onerror = function(msg, url, line) {
+      const el = document.getElementById('content-cards');
+      if (el) {
+        el.innerHTML = `
+          <div class="error-box">
+            <strong>⚠️ JavaScript Runtime Error:</strong><br>${msg}<br>
+            <small style="color:var(--text-muted);">Line ${line} in ${url ? url.split('/').pop() : 'script'}</small>
+          </div>
+        `;
+      }
+      return false;
+    };
+
+    // --- Country / NOC Catalog ---
     const NOC_MAP = {
       "bahrain": { code: "BRN", flag: "🇧🇭", name: "Bahrain" },
       "china": { code: "CHN", flag: "🇨🇳", name: "China" },
@@ -478,16 +501,16 @@
       "thailand": { code: "THA", flag: "🇹🇭", name: "Thailand" },
       "united arab emirates": { code: "UAE", flag: "🇦🇪", name: "UAE" },
       "uae": { code: "UAE", flag: "🇦🇪", name: "UAE" },
-      "uzbekistan": { code: "UZB", flag: "UZ", name: "Uzbekistan" }
+      "uzbekistan": { code: "UZB", flag: "🇺🇿", name: "Uzbekistan" }
     };
 
     function normName(name) {
-      if (!name) return "";
+      if (!name || typeof name !== 'string') return "";
       return name.trim().toLowerCase().replace(/^ir\s+/, "").replace(/\s+/g, " ");
     }
 
     function getNOCInfo(teamName) {
-      if (!teamName) return { code: "", flag: "🏳️", name: "" };
+      if (!teamName || typeof teamName !== 'string') return { code: "", flag: "🏳️", name: "" };
       const raw = teamName.trim().toLowerCase();
       const norm = normName(teamName);
       return NOC_MAP[raw] || NOC_MAP[norm] || {
@@ -495,6 +518,18 @@
         flag: "🏀",
         name: teamName
       };
+    }
+
+    function extractList(raw) {
+      if (!raw) return [];
+      if (Array.isArray(raw)) return raw;
+      if (raw && typeof raw === 'object') {
+        if (Array.isArray(raw.matches)) return raw.matches;
+        if (Array.isArray(raw.teams)) return raw.teams;
+        if (Array.isArray(raw.predictions)) return raw.predictions;
+        if (Array.isArray(raw.data)) return raw.data;
+      }
+      return [];
     }
 
     // --- State Storage ---
@@ -507,7 +542,6 @@
       womenPredictions: []
     };
 
-    // --- Timestamp & Timezone Formatter ---
     function formatMatchTime(dateStr, timeStr) {
       if (!dateStr || !timeStr || timeStr === "TBD" || timeStr === "00:00") {
         if (dateStr) {
@@ -546,37 +580,58 @@
       }
     }
 
-    // --- Resilient Data Loader with Fallbacks & Cache Busting ---
-    async function fetchJsonSafe(url) {
-      try {
-        const res = await fetch(`${url}?t=${Date.now()}`);
-        if (!res.ok) return null;
-        return await res.json();
-      } catch (e) {
-        return null;
+    // --- Resilient Fetch Prober ---
+    async function fetchJsonAnywhere(paths) {
+      for (const path of paths) {
+        try {
+          const res = await fetch(`${path}?t=${Date.now()}`);
+          if (res.ok) {
+            const parsed = await res.json();
+            if (parsed) return parsed;
+          }
+        } catch (e) {}
       }
+      return null;
     }
 
     async function loadAllData() {
       try {
-        const [mMatches, wMatches, mPreds1, mPreds2, wPreds] = await Promise.allSettled([
-          fetchJsonSafe('data/basketball/tracker_men.json'),
-          fetchJsonSafe('data/basketball/tracker_women.json'),
-          fetchJsonSafe('data/basketball/predictions_men.json'),
-          fetchJsonSafe('data/basketball/predictions.json'),
-          fetchJsonSafe('data/basketball/predictions_women.json')
+        // 1. Load Match Trackers
+        const menTrackerRaw = await fetchJsonAnywhere([
+          'data/basketball/tracker_men.json',
+          'tracker_men.json',
+          'data/tracker_men.json'
+        ]);
+        appData.menMatches = extractList(menTrackerRaw);
+
+        const womenTrackerRaw = await fetchJsonAnywhere([
+          'data/basketball/tracker_women.json',
+          'tracker_women.json',
+          'data/tracker_women.json'
+        ]);
+        appData.womenMatches = extractList(womenTrackerRaw);
+
+        // 2. Load Predictions
+        const predRaw = await fetchJsonAnywhere([
+          'data/basketball/predictions.json',
+          'predictions.json',
+          'data/predictions.json',
+          'data/basketball/predictions_men.json'
         ]);
 
-        const getVal = (res) => (res && res.status === 'fulfilled' && res.value) ? res.value : null;
-
-        appData.menMatches = getVal(mMatches) || [];
-        appData.womenMatches = getVal(wMatches) || [];
-
-        // Check predictions_men.json first, fallback to predictions.json
-        appData.menPredictions = getVal(mPreds1) || getVal(mPreds2) || [];
-        appData.womenPredictions = getVal(wPreds) || [];
+        if (predRaw && !Array.isArray(predRaw) && (predRaw.men || predRaw.women)) {
+          appData.menPredictions = extractList(predRaw.men);
+          appData.womenPredictions = extractList(predRaw.women);
+        } else {
+          appData.menPredictions = extractList(predRaw);
+          const womenPredRaw = await fetchJsonAnywhere([
+            'data/basketball/predictions_women.json',
+            'predictions_women.json'
+          ]);
+          appData.womenPredictions = extractList(womenPredRaw);
+        }
       } catch (err) {
-        console.error("Data load error:", err);
+        console.error("Load failed:", err);
       } finally {
         renderView();
       }
@@ -586,7 +641,7 @@
     function setTab(tab) {
       currentTab = tab;
       document.querySelectorAll('.nav-btn').forEach(b => {
-        b.classList.toggle('active', b.getAttribute('onclick').includes(tab));
+        b.classList.toggle('active', b.id === `tab-${tab}`);
       });
       renderView();
     }
@@ -598,9 +653,11 @@
       renderView();
     }
 
-    // --- View Router ---
+    // --- Router ---
     function renderView() {
       const container = document.getElementById('content-cards');
+      if (!container) return;
+
       const matches = currentGender === 'men' ? appData.menMatches : appData.womenMatches;
       const predictions = currentGender === 'men' ? appData.menPredictions : appData.womenPredictions;
 
@@ -613,14 +670,16 @@
       }
     }
 
-    // --- 1. Matches View ---
+    // --- 1. Matches Tab ---
     function renderMatchesView(container, matches) {
-      if (!matches || matches.length === 0) {
+      const list = extractList(matches);
+      if (!list || list.length === 0) {
         container.innerHTML = '<div class="empty-state">No matches scheduled or recorded yet for this category.</div>';
         return;
       }
 
-      container.innerHTML = matches.map(m => {
+      container.innerHTML = list.map(m => {
+        if (!m) return '';
         const p1Info = getNOCInfo(m.player1);
         const p2Info = getNOCInfo(m.player2);
         const p1Norm = normName(m.player1);
@@ -655,14 +714,14 @@
             <div class="match-body">
               <div class="team-box">
                 <span class="team-flag">${p1Info.flag}</span>
-                <span class="team-name ${isP1Winner ? 'winner' : ''}">${m.player1}</span>
-                <span class="noc-tag">${p1Info.code}</span>
+                <span class="team-name ${isP1Winner ? 'winner' : ''}">${m.player1 || 'TBD'}</span>
+                ${p1Info.code ? `<span class="noc-tag">${p1Info.code}</span>` : ''}
               </div>
               <div class="score-box">${scoreString}</div>
               <div class="team-box team-right">
                 <span class="team-flag">${p2Info.flag}</span>
-                <span class="team-name ${isP2Winner ? 'winner' : ''}">${m.player2}</span>
-                <span class="noc-tag">${p2Info.code}</span>
+                <span class="team-name ${isP2Winner ? 'winner' : ''}">${m.player2 || 'TBD'}</span>
+                ${p2Info.code ? `<span class="noc-tag">${p2Info.code}</span>` : ''}
               </div>
             </div>
           </div>
@@ -670,29 +729,30 @@
       }).join('');
     }
 
-    // --- 2. Predictions & Overall Medal Tally View ---
+    // --- 2. Predictions Tab ---
     function resolveProjectedPodium(teams) {
-      if (!teams || teams.length === 0) return null;
+      const list = extractList(teams);
+      if (list.length === 0) return null;
       const parseVal = (v) => parseFloat(v) || 0;
-      const pool = [...teams];
+      const pool = [...list];
 
       pool.sort((a, b) => parseVal(b.gold) - parseVal(a.gold));
-      const gold = pool.shift();
+      const gold = pool.shift() || null;
 
       pool.sort((a, b) => parseVal(b.silver) - parseVal(a.silver));
-      const silver = pool.shift();
+      const silver = pool.shift() || null;
 
       pool.sort((a, b) => parseVal(b.bronze) - parseVal(a.bronze));
-      const bronze = pool.shift();
+      const bronze = pool.shift() || null;
 
       return { gold, silver, bronze };
     }
 
     function renderPodiumHtml(title, podium) {
       if (!podium || !podium.gold) return '';
-      const gInfo = getNOCInfo(podium.gold.team);
-      const sInfo = getNOCInfo(podium.silver.team);
-      const bInfo = getNOCInfo(podium.bronze.team);
+      const gInfo = getNOCInfo(podium.gold ? podium.gold.team : '');
+      const sInfo = getNOCInfo(podium.silver ? podium.silver.team : '');
+      const bInfo = getNOCInfo(podium.bronze ? podium.bronze.team : '');
 
       return `
         <div class="tally-header" style="margin-top: 10px;">
@@ -702,20 +762,20 @@
           <div class="podium-card silver-card">
             <span class="podium-badge">🥈 Silver</span>
             <div class="podium-flag">${sInfo.flag}</div>
-            <div class="podium-team">${podium.silver.team}</div>
-            <div class="podium-prob">${podium.silver.silver} Exp.</div>
+            <div class="podium-team">${podium.silver ? podium.silver.team : 'TBD'}</div>
+            <div class="podium-prob">${podium.silver ? (podium.silver.silver || '-') : '-'} Exp.</div>
           </div>
           <div class="podium-card gold-card">
             <span class="podium-badge">🥇 Gold</span>
             <div class="podium-flag">${gInfo.flag}</div>
-            <div class="podium-team">${podium.gold.team}</div>
-            <div class="podium-prob">${podium.gold.gold} Exp.</div>
+            <div class="podium-team">${podium.gold ? podium.gold.team : 'TBD'}</div>
+            <div class="podium-prob">${podium.gold ? (podium.gold.gold || '-') : '-'} Exp.</div>
           </div>
           <div class="podium-card bronze-card">
             <span class="podium-badge">🥉 Bronze</span>
             <div class="podium-flag">${bInfo.flag}</div>
-            <div class="podium-team">${podium.bronze.team}</div>
-            <div class="podium-prob">${podium.bronze.bronze} Exp.</div>
+            <div class="podium-team">${podium.bronze ? podium.bronze.team : 'TBD'}</div>
+            <div class="podium-prob">${podium.bronze ? (podium.bronze.bronze || '-') : '-'} Exp.</div>
           </div>
         </div>
       `;
@@ -729,17 +789,17 @@
 
       eventList.forEach(ev => {
         if (!ev.podium) return;
-        if (ev.podium.gold) {
+        if (ev.podium.gold && ev.podium.gold.team) {
           ensureEntry(ev.podium.gold.team);
           tally[ev.podium.gold.team].gold += 1;
           tally[ev.podium.gold.team].total += 1;
         }
-        if (ev.podium.silver) {
+        if (ev.podium.silver && ev.podium.silver.team) {
           ensureEntry(ev.podium.silver.team);
           tally[ev.podium.silver.team].silver += 1;
           tally[ev.podium.silver.team].total += 1;
         }
-        if (ev.podium.bronze) {
+        if (ev.podium.bronze && ev.podium.bronze.team) {
           ensureEntry(ev.podium.bronze.team);
           tally[ev.podium.bronze.team].bronze += 1;
           tally[ev.podium.bronze.team].total += 1;
@@ -802,8 +862,8 @@
       const womenPodium = resolveProjectedPodium(womenPreds);
 
       const allEvents = [];
-      if (menPodium) allEvents.push({ eventName: "Men's 5x5", podium: menPodium });
-      if (womenPodium) allEvents.push({ eventName: "Women's 5x5", podium: womenPodium });
+      if (menPodium) allEvents.push({ eventName: "Men's Tournament", podium: menPodium });
+      if (womenPodium) allEvents.push({ eventName: "Women's Tournament", podium: womenPodium });
 
       const tallyHtml = renderSportMedalTally(allEvents);
 
@@ -811,13 +871,13 @@
       const activeTitle = activeGender === 'men' ? "Men's Tournament" : "Women's Tournament";
       const podiumHtml = renderPodiumHtml(activeTitle, activePodium);
 
-      const activeList = activeGender === 'men' ? menPreds : womenPreds;
+      const activeList = extractList(activeGender === 'men' ? menPreds : womenPreds);
       let tableHtml = '';
 
-      if (activeList && activeList.length > 0) {
+      if (activeList.length > 0) {
         tableHtml = `
           <div class="tally-header" style="margin-top: 14px;">
-            <span>📊 Monte Carlo Simulation Probabilities (50k Iterations)</span>
+            <span>📊 Monte Carlo Simulation Probabilities</span>
           </div>
           <div class="table-container">
             <table class="medal-table">
@@ -854,13 +914,13 @@
           </div>
         `;
       } else {
-        tableHtml = '<div class="empty-state">No simulation data loaded for this category.</div>';
+        tableHtml = '<div class="empty-state">No simulation projections available for this category yet.</div>';
       }
 
       container.innerHTML = tallyHtml + podiumHtml + tableHtml;
     }
 
-    // --- 3. Calibration View with Probability Delta ---
+    // --- 3. Calibration Tab ---
     function calculateDeltaBadge(currentVal, initialVal, records) {
       let cur = parseFloat(currentVal) || 0;
       let diff = 0;
@@ -877,21 +937,24 @@
     }
 
     function renderCalibrationView(container, teams, matches) {
-      if (!teams || teams.length === 0) {
-        container.innerHTML = '<div class="empty-state">Simulation predictions not found.</div>';
+      const teamList = extractList(teams);
+      const matchList = extractList(matches);
+
+      if (teamList.length === 0) {
+        container.innerHTML = '<div class="empty-state">Simulation predictions not found to calibrate against.</div>';
         return;
       }
 
       const rankMap = {};
-      teams.forEach(t => { rankMap[normName(t.team)] = t.rank; });
+      teamList.forEach(t => { rankMap[normName(t.team)] = t.rank; });
 
       const records = {};
       let finishedCount = 0;
       let favoriteHits = 0;
       const upsets = [];
 
-      (matches || []).forEach(m => {
-        if (m.status !== 'Finished' || !m.winner) return;
+      matchList.forEach(m => {
+        if (!m || m.status !== 'Finished' || !m.winner) return;
         finishedCount++;
 
         const p1Norm = normName(m.player1);
@@ -945,7 +1008,7 @@
           <div class="kpi-card">
             <div class="kpi-title">Calibration</div>
             <div class="kpi-val" style="color: #60a5fa;">${alignmentStatus}</div>
-            <div class="kpi-sub">50k Sim Alignment</div>
+            <div class="kpi-sub">Sim Alignment</div>
           </div>
         </div>
       `;
@@ -966,7 +1029,7 @@
               </tr>
             </thead>
             <tbody>
-              ${teams.map(t => {
+              ${teamList.map(t => {
                 const teamKey = normName(t.team);
                 const rec = records[teamKey] || { w: 0, l: 0 };
                 const info = getNOCInfo(t.team);
@@ -1025,7 +1088,7 @@
       container.innerHTML = kpiHtml + tableHtml + upsetsHtml;
     }
 
-    // --- Initialize ---
+    // --- Init ---
     loadAllData();
   </script>
 </body>
