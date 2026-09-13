@@ -34,7 +34,7 @@
       padding-bottom: 40px;
     }
 
-    /* --- App Header & Navigation --- */
+    /* --- Header & Navigation --- */
     header {
       background: rgba(19, 28, 46, 0.85);
       backdrop-filter: blur(12px);
@@ -478,7 +478,7 @@
       "thailand": { code: "THA", flag: "🇹🇭", name: "Thailand" },
       "united arab emirates": { code: "UAE", flag: "🇦🇪", name: "UAE" },
       "uae": { code: "UAE", flag: "🇦🇪", name: "UAE" },
-      "uzbekistan": { code: "UZB", flag: "🇺🇿", name: "Uzbekistan" }
+      "uzbekistan": { code: "UZB", flag: "UZ", name: "Uzbekistan" }
     };
 
     function normName(name) {
@@ -546,7 +546,7 @@
       }
     }
 
-    // --- Data Loaders (With Cache Busting) ---
+    // --- Resilient Data Loader with Fallbacks & Cache Busting ---
     async function fetchJsonSafe(url) {
       try {
         const res = await fetch(`${url}?t=${Date.now()}`);
@@ -558,20 +558,28 @@
     }
 
     async function loadAllData() {
-      const [mMatches, wMatches, mPreds1, mPreds2, wPreds] = await Promise.all([
-        fetchJsonSafe('data/basketball/tracker_men.json'),
-        fetchJsonSafe('data/basketball/tracker_women.json'),
-        fetchJsonSafe('data/basketball/predictions_men.json'),
-        fetchJsonSafe('data/basketball/predictions.json'),
-        fetchJsonSafe('data/basketball/predictions_women.json')
-      ]);
+      try {
+        const [mMatches, wMatches, mPreds1, mPreds2, wPreds] = await Promise.allSettled([
+          fetchJsonSafe('data/basketball/tracker_men.json'),
+          fetchJsonSafe('data/basketball/tracker_women.json'),
+          fetchJsonSafe('data/basketball/predictions_men.json'),
+          fetchJsonSafe('data/basketball/predictions.json'),
+          fetchJsonSafe('data/basketball/predictions_women.json')
+        ]);
 
-      appData.menMatches = mMatches || [];
-      appData.womenMatches = wMatches || [];
-      appData.menPredictions = mPreds1 || mPreds2 || [];
-      appData.womenPredictions = wPreds || [];
+        const getVal = (res) => (res && res.status === 'fulfilled' && res.value) ? res.value : null;
 
-      renderView();
+        appData.menMatches = getVal(mMatches) || [];
+        appData.womenMatches = getVal(wMatches) || [];
+
+        // Check predictions_men.json first, fallback to predictions.json
+        appData.menPredictions = getVal(mPreds1) || getVal(mPreds2) || [];
+        appData.womenPredictions = getVal(wPreds) || [];
+      } catch (err) {
+        console.error("Data load error:", err);
+      } finally {
+        renderView();
+      }
     }
 
     // --- Navigation Handlers ---
@@ -608,7 +616,7 @@
     // --- 1. Matches View ---
     function renderMatchesView(container, matches) {
       if (!matches || matches.length === 0) {
-        container.innerHTML = '<div class="empty-state">No matches scheduled or recorded yet.</div>';
+        container.innerHTML = '<div class="empty-state">No matches scheduled or recorded yet for this category.</div>';
         return;
       }
 
