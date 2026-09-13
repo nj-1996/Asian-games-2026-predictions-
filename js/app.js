@@ -93,7 +93,7 @@ async function triggerGitHubWorkflowIfAvailable() {
 
   try {
     // Attempt triggering common workflow files (tracker.yml, scrape.yml, or main.yml)
-    const workflowFiles = ['tracker.yml', 'scrape.yml', 'main.yml'];
+    const workflowFiles = ['tracker_cron.yml'];
     let triggered = false;
 
     for (const wf of workflowFiles) {
