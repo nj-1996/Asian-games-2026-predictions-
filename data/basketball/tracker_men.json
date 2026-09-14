@@ -179,19 +179,19 @@
     },
     {
       "round": "Men Group C G 5",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-14",
       "time": "10:00",
       "player1": "Bahrain",
       "player2": "Kazakhstan",
-      "score": "vs",
+      "score": "33 - 19",
       "winner": ""
     },
     {
       "round": "Men Group C G 6",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-14",
       "time": "13:00",
       "player1": "China",
