@@ -1,3 +1,98 @@
+// --- Robust Flag Resolver ---
+const FLAG_REGISTRY = {
+  'china': '🇨🇳', 'chn': '🇨🇳', "people's republic of china": '🇨🇳',
+  'japan': '🇯🇵', 'jpn': '🇯🇵',
+  'korea': '🇰🇷', 'south korea': '🇰🇷', 'kor': '🇰🇷', 'republic of korea': '🇰🇷',
+  'north korea': '🇰🇵', 'prk': '🇰🇵', 'dpr korea': '🇰🇵',
+  'chinese taipei': '🇹🇼', 'taiwan': '🇹🇼', 'tpe': '🇹🇼',
+  'hong kong': '🇭🇰', 'hong kong, china': '🇭🇰', 'hkg': '🇭🇰',
+  'macau': '🇲🇴', 'macao': '🇲🇴', 'mac': '🇲🇴',
+  'mongolia': '🇲🇳', 'mgl': '🇲🇳',
+  'philippines': '🇵🇭', 'phi': '🇵🇭', 'gilas': '🇵🇭',
+  'indonesia': '🇮🇩', 'ina': '🇮🇩', 'idn': '🇮🇩',
+  'thailand': '🇹🇭', 'tha': '🇹🇭',
+  'malaysia': '🇲🇾', 'mas': '🇲🇾',
+  'singapore': '🇸🇬', 'sgp': '🇸🇬',
+  'vietnam': '🇻🇳', 'vie': '🇻🇳',
+  'india': '🇮🇳', 'ind': '🇮🇳',
+  'kazakhstan': '🇰🇿', 'kaz': '🇰🇿',
+  'uzbekistan': '🇺🇿', 'uzb': '🇺🇿',
+  'turkmenistan': '🇹🇲', 'tkm': '🇹🇲',
+  'iran': '🇮🇷', 'ir iran': '🇮🇷', 'iri': '🇮🇷',
+  'jordan': '🇯🇴', 'jor': '🇯🇴',
+  'lebanon': '🇱🇧', 'lbn': '🇱🇧',
+  'saudi arabia': '🇸🇦', 'ksa': '🇸🇦',
+  'qatar': '🇶🇦', 'qat': '🇶🇦',
+  'bahrain': '🇧🇭', 'brn': '🇧🇭',
+  'kuwait': '🇰🇼', 'kuw': '🇰🇼',
+  'united arab emirates': '🇦🇪', 'uae': '🇦🇪',
+  'syria': '🇸🇾', 'syr': '🇸🇾',
+  'iraq': '🇮🇶', 'irq': '🇮🇶',
+  'palestine': '🇵🇸', 'ple': '🇵🇸',
+  'guam': '🇬🇺', 'gum': '🇬🇺'
+};
+
+const SORTED_FLAG_KEYS = Object.keys(FLAG_REGISTRY).sort((a, b) => b.length - a.length);
+
+function getFlagEmoji(teamName) {
+  if (typeof window.getFlag === 'function') return window.getFlag(teamName);
+  if (!teamName || typeof teamName !== 'string') return '🏀';
+
+  const norm = teamName.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!norm) return '🏀';
+
+  if (FLAG_REGISTRY[norm]) return FLAG_REGISTRY[norm];
+
+  for (const key of SORTED_FLAG_KEYS) {
+    if (key.length <= 3) {
+      const regex = new RegExp(`\\b${key}\\b`, 'i');
+      if (regex.test(norm)) return FLAG_REGISTRY[key];
+    } else {
+      if (norm.includes(key)) return FLAG_REGISTRY[key];
+    }
+  }
+  return '🏀';
+}
+
+// --- Team Name Normalizer for Model Cross-Referencing ---
+function cleanTeamName(name) {
+  if (!name || typeof name !== 'string') return '';
+  let n = name.toLowerCase()
+    .replace(/\(host\)/gi, '')
+    .replace(/people's republic of/gi, '')
+    .replace(/republic of/gi, '')
+    .replace(/dpr/gi, '')
+    .replace(/^ir\s+/gi, '')
+    .replace(/[^a-z0-9]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (n.includes('korea') && !n.includes('north')) return 'korea';
+  if (n.includes('iran')) return 'iran';
+  if (n.includes('taipei') || n.includes('taiwan')) return 'chinese taipei';
+  if (n.includes('china')) return 'china';
+  if (n.includes('japan')) return 'japan';
+  if (n.includes('philippine')) return 'philippines';
+  return n;
+}
+
+// --- Universal Percentage/Probability Value Parser ---
+function parseStatNumber(val) {
+  if (val == null) return 0;
+  if (typeof val === 'object') {
+    val = val.pct || val.prob || val.value || val.val || val.rate || 0;
+  }
+  if (typeof val === 'string') {
+    val = val.replace('%', '').trim();
+  }
+  let num = parseFloat(val);
+  if (isNaN(num)) return 0;
+  if (num > 0 && num <= 1) {
+    num = num * 100;
+  }
+  return Math.round(num);
+}
+
 // --- Timezone State & Formatter ---
 let currentTimezone = localStorage.getItem('app_tz') || 'IST';
 
@@ -16,11 +111,9 @@ function formatMatchTime(timeStr) {
   const match = timeStr.match(/(\d{1,2}):(\d{2})/);
   if (!match) return timeStr;
 
-  if (currentTimezone === 'JST') {
-    return `${timeStr} JST`;
-  }
+  if (currentTimezone === 'JST') return `${timeStr} JST`;
 
-  // Convert JST (UTC+9) -> IST (UTC+5:30): subtract 3 hours 30 mins
+  // JST (UTC+9) -> IST (UTC+5:30): subtract 3h 30m
   let h = parseInt(match[1], 10);
   let m = parseInt(match[2], 10);
 
@@ -30,86 +123,11 @@ function formatMatchTime(timeStr) {
     h -= 1;
   }
   h -= 3;
-  if (h < 0) {
-    h += 24;
-  }
+  if (h < 0) h += 24;
 
   const pad = (n) => String(n).padStart(2, '0');
   return `${pad(h)}:${pad(m)} IST`;
 }
-
-// --- Flag Resolver ---
-
-// --- Robust Flag Resolver ---
-const FLAG_REGISTRY = {
-  // East Asia
-  'china': '🇨🇳', 'chn': '🇨🇳', "people's republic of china": '🇨🇳',
-  'japan': '🇯🇵', 'jpn': '🇯🇵',
-  'korea': '🇰🇷', 'south korea': '🇰🇷', 'kor': '🇰🇷', 'republic of korea': '🇰🇷',
-  'north korea': '🇰🇵', 'prk': '🇰🇵', 'dpr korea': '🇰🇵',
-  'chinese taipei': '🇹🇼', 'taiwan': '🇹🇼', 'tpe': '🇹🇼',
-  'hong kong': '🇭🇰', 'hong kong, china': '🇭🇰', 'hkg': '🇭🇰',
-  'macau': '🇲🇴', 'macao': '🇲🇴', 'mac': '🇲🇴',
-  'mongolia': '🇲🇳', 'mgl': '🇲🇳',
-
-  // Southeast Asia
-  'philippines': '🇵🇭', 'phi': '🇵🇭', 'gilas': '🇵🇭',
-  'indonesia': '🇮🇩', 'ina': '🇮🇩', 'idn': '🇮🇩',
-  'thailand': '🇹🇭', 'tha': '🇹🇭',
-  'malaysia': '🇲🇾', 'mas': '🇲🇾',
-  'singapore': '🇸🇬', 'sgp': '🇸🇬',
-  'vietnam': '🇻🇳', 'vie': '🇻🇳',
-
-  // South & Central Asia
-  'india': '🇮🇳', 'ind': '🇮🇳',
-  'kazakhstan': '🇰🇿', 'kaz': '🇰🇿',
-  'uzbekistan': '🇺🇿', 'uzb': '🇺🇿',
-  'turkmenistan': '🇹🇲', 'tkm': '🇹🇲',
-
-  // West Asia & Middle East
-  'iran': '🇮🇷', 'ir iran': '🇮🇷', 'iri': '🇮🇷',
-  'jordan': '🇯🇴', 'jor': '🇯🇴',
-  'lebanon': '🇱🇧', 'lbn': '🇱🇧',
-  'saudi arabia': '🇸🇦', 'ksa': '🇸🇦',
-  'qatar': '🇶🇦', 'qat': '🇶🇦',
-  'bahrain': '🇧🇭', 'brn': '🇧🇭',
-  'kuwait': '🇰🇼', 'kuw': '🇰🇼',
-  'united arab emirates': '🇦🇪', 'uae': '🇦🇪',
-  'syria': '🇸🇾', 'syr': '🇸🇾',
-  'iraq': '🇮🇶', 'irq': '🇮🇶',
-  'palestine': '🇵🇸', 'ple': '🇵🇸',
-
-  // Oceania affiliate / FIBA Asia
-  'guam': '🇬🇺', 'gum': '🇬🇺'
-};
-
-// Pre-sorted by string length descending to prevent prefix/substring collisions
-const SORTED_FLAG_KEYS = Object.keys(FLAG_REGISTRY).sort((a, b) => b.length - a.length);
-
-function getFlagEmoji(teamName) {
-  if (typeof window.getFlag === 'function') return window.getFlag(teamName);
-  if (!teamName || typeof teamName !== 'string') return '🏀';
-
-  const norm = teamName.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
-  if (!norm) return '🏀';
-
-  // 1. Direct exact lookup
-  if (FLAG_REGISTRY[norm]) return FLAG_REGISTRY[norm];
-
-  // 2. Longest-substring match with word boundary safety
-  for (const key of SORTED_FLAG_KEYS) {
-    if (key.length <= 3) {
-      // For short codes (IND, INA, KOR), enforce exact word boundary
-      const regex = new RegExp(`\\b${key}\\b`, 'i');
-      if (regex.test(norm)) return FLAG_REGISTRY[key];
-    } else {
-      if (norm.includes(key)) return FLAG_REGISTRY[key];
-    }
-  }
-
-  return '🏀';
-}
-
 
 // --- Universal Match Object Normalizer ---
 function parseMatchData(m) {
@@ -172,14 +190,11 @@ function setMatchesSubView(subView) {
 function renderMatchesView(container, matches) {
   const pillsHeader = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; gap:8px;">
-      <!-- Sub-view Navigation -->
       <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); gap:3px; flex:1;">
         <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'schedule' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'schedule' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('schedule')">📋 Schedule</button>
         <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'standings' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'standings' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('standings')">📊 Standings</button>
         <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'bracket' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'bracket' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('bracket')">🌳 Bracket</button>
       </div>
-
-      <!-- Timezone Segmented Toggle -->
       <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); gap:2px;">
         <button style="padding:6px 9px; font-size:0.75rem; font-weight:700; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${currentTimezone === 'IST' ? '#38bdf8' : 'transparent'}; color:${currentTimezone === 'IST' ? '#0f172a' : '#94a3b8'};" onclick="setTimezone('IST')">IST</button>
         <button style="padding:6px 9px; font-size:0.75rem; font-weight:700; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${currentTimezone === 'JST' ? '#38bdf8' : 'transparent'}; color:${currentTimezone === 'JST' ? '#0f172a' : '#94a3b8'};" onclick="setTimezone('JST')">JST</button>
@@ -214,7 +229,8 @@ function renderScheduleAndHero(matches) {
 
   const liveMatch = parsed.find(m => m.status.toLowerCase().includes('live'));
   const upcomingMatches = parsed.filter(m => !m.isFinished && !m.status.toLowerCase().includes('live'));
-  const heroTarget = liveMatch || upcomingMatches[0] || parsed[0];
+  const upcomingWithTeams = upcomingMatches.filter(m => m.t1 !== 'TBD' && m.t2 !== 'TBD');
+  const heroTarget = liveMatch || upcomingWithTeams[0] || upcomingMatches[0] || parsed[0];
 
   let heroHtml = '';
   if (heroTarget) {
@@ -283,7 +299,6 @@ function renderStandingsTable(matches) {
 
   matches.forEach(rawMatch => {
     const m = parseMatchData(rawMatch);
-
     const grpMatch = m.stage.match(/Group\s+[A-Za-z0-9]+/i) || m.stage.match(/Pool\s+[A-Za-z0-9]+/i);
     const grpName = grpMatch ? grpMatch[0] : (m.stage.toLowerCase().includes('group') ? m.stage : null);
 
@@ -458,7 +473,18 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     return;
   }
 
-  const sorted = [...preds].sort((a, b) => (b.gold_prob || b.gold || 0) - (a.gold_prob || a.gold || 0));
+  const getProb = (obj, keys) => {
+    for (const k of keys) {
+      if (obj && obj[k] != null && obj[k] !== '') return obj[k];
+    }
+    return 0;
+  };
+
+  const sorted = [...preds].sort((a, b) => {
+    const gA = parseStatNumber(getProb(a, ['gold', 'gold_prob', 'gold_pct', 'p_gold']));
+    const gB = parseStatNumber(getProb(b, ['gold', 'gold_prob', 'gold_pct', 'p_gold']));
+    return gB - gA;
+  });
 
   container.innerHTML = `
     <div style="margin-bottom:1rem; text-align:center; font-size:0.8rem; color:#94a3b8;">
@@ -466,17 +492,21 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     </div>
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
       ${sorted.map(p => {
-        const team = p.team || p.country || 'Unknown';
-        const gold = Math.round((p.gold_prob || p.gold || 0) * 100);
-        const silver = Math.round((p.silver_prob || p.silver || 0) * 100);
-        const bronze = Math.round((p.bronze_prob || p.bronze || 0) * 100);
-        const total = gold + silver + bronze;
+        const rawTeam = p.team || p.country || p.name || 'Unknown';
+        const team = rawTeam.replace(/\(host\)/gi, '').trim();
+        const isHost = rawTeam.toLowerCase().includes('host');
+
+        const gold = parseStatNumber(getProb(p, ['gold', 'gold_prob', 'gold_pct', 'p_gold']));
+        const silver = parseStatNumber(getProb(p, ['silver', 'silver_prob', 'silver_pct', 'p_silver']));
+        const bronze = parseStatNumber(getProb(p, ['bronze', 'bronze_prob', 'bronze_pct', 'p_bronze']));
+        const rawTotal = getProb(p, ['podium', 'total', 'podium_prob']);
+        const total = rawTotal ? parseStatNumber(rawTotal) : (gold + silver + bronze);
 
         return `
           <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
               <div style="font-weight:700; font-size:1rem; display:flex; align-items:center; gap:0.5rem;">
-                <span>${getFlagEmoji(team)}</span> <span>${team}</span>
+                <span>${getFlagEmoji(team)}</span> <span>${team}${isHost ? ' (Host)' : ''}</span>
               </div>
               <span style="font-size:0.75rem; color:#38bdf8; font-weight:700;">Podium: ${total}%</span>
             </div>
@@ -516,26 +546,34 @@ function renderCalibrationView(container, predictions, matches) {
 
   const rankMap = {};
   (predictions || []).forEach((p, idx) => {
-    rankMap[p.team || p.country] = idx + 1;
+    const rawName = p.team || p.country || p.name || '';
+    const cleaned = cleanTeamName(rawName);
+    if (cleaned) rankMap[cleaned] = idx + 1;
   });
 
   finished.forEach(m => {
     const s1 = Number(m.s1);
     const s2 = Number(m.s2);
-    const r1 = rankMap[m.t1] || 99;
-    const r2 = rankMap[m.t2] || 99;
+    if (isNaN(s1) || isNaN(s2)) return;
+
+    const c1 = cleanTeamName(m.t1);
+    const c2 = cleanTeamName(m.t2);
+    const r1 = rankMap[c1] || 99;
+    const r2 = rankMap[c2] || 99;
+
+    const actualWinner = m.winner ? m.winner.trim() : (s1 > s2 ? m.t1 : m.t2);
+    const actualLoser = actualWinner.toLowerCase() === m.t1.toLowerCase() ? m.t2 : m.t1;
 
     if (r1 !== r2) {
       evaluatedMatches++;
       const fav = r1 < r2 ? m.t1 : m.t2;
-      const actualWinner = m.winner ? m.winner : (s1 > s2 ? m.t1 : m.t2);
 
-      if (fav.toLowerCase() === actualWinner.toLowerCase()) {
+      if (cleanTeamName(actualWinner) === cleanTeamName(fav)) {
         correctFavorites++;
       } else {
         upsetLogs.push({
           winner: actualWinner,
-          loser: actualWinner.toLowerCase() === m.t1.toLowerCase() ? m.t2 : m.t1,
+          loser: actualLoser,
           score: `${s1} - ${s2}`
         });
       }
