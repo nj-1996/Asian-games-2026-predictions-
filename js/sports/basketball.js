@@ -54,7 +54,7 @@ function getFlagEmoji(teamName) {
   return '🏀';
 }
 
-// --- Team Name Normalizer for Model Cross-Referencing ---
+// --- Team Name Normalizer ---
 function cleanTeamName(name) {
   if (!name || typeof name !== 'string') return '';
   let n = name.toLowerCase()
@@ -76,7 +76,7 @@ function cleanTeamName(name) {
   return n;
 }
 
-// --- Universal Percentage/Probability Value Parser ---
+// --- Value Parsers ---
 function parseStatNumber(val) {
   if (val == null) return 0;
   if (typeof val === 'object') {
@@ -91,6 +91,26 @@ function parseStatNumber(val) {
     num = num * 100;
   }
   return Math.round(num);
+}
+
+function parseMedalExp(val) {
+  if (val == null) return 0;
+  if (typeof val === 'object') {
+    val = val.pct || val.prob || val.value || val.val || 0;
+  }
+  if (typeof val === 'string') {
+    val = val.replace('%', '').trim();
+  }
+  let num = parseFloat(val);
+  if (isNaN(num)) return 0;
+  if (num > 1) num = num / 100; // Convert 45.2% to 0.452 expected medals
+  return num;
+}
+
+function formatMedal(val) {
+  if (val == null || isNaN(val) || val === 0) return '0.0';
+  if (Number.isInteger(val)) return String(val);
+  return val.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
 }
 
 // --- Timezone State & Formatter ---
@@ -113,7 +133,6 @@ function formatMatchTime(timeStr) {
 
   if (currentTimezone === 'JST') return `${timeStr} JST`;
 
-  // JST (UTC+9) -> IST (UTC+5:30): subtract 3h 30m
   let h = parseInt(match[1], 10);
   let m = parseInt(match[2], 10);
 
@@ -129,7 +148,7 @@ function formatMatchTime(timeStr) {
   return `${pad(h)}:${pad(m)} IST`;
 }
 
-// --- Universal Match Object Normalizer ---
+// --- Universal Match Normalizer ---
 function parseMatchData(m) {
   if (!m) return { t1: 'TBD', t2: 'TBD', s1: '-', s2: '-', status: '', time: '', stage: '', isFinished: false, winner: '' };
 
@@ -174,8 +193,9 @@ function parseMatchData(m) {
   };
 }
 
-// --- Sub-Navigation State ---
+// --- Sub-Navigation States ---
 let activeMatchesSubView = 'schedule';
+let activePredictionsSubView = 'table'; // 'table' | 'odds'
 
 function setMatchesSubView(subView) {
   activeMatchesSubView = subView;
@@ -186,7 +206,15 @@ function setMatchesSubView(subView) {
   }
 }
 
-// --- Main Matches Router ---
+function setPredictionsSubView(subView) {
+  activePredictionsSubView = subView;
+  const container = document.getElementById('content-cards');
+  if (container) {
+    renderPredictionsView(container, appData.menPredictions, appData.womenPredictions, currentGender);
+  }
+}
+
+// --- Matches Router ---
 function renderMatchesView(container, matches) {
   const pillsHeader = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; gap:8px;">
@@ -293,7 +321,7 @@ function renderScheduleAndHero(matches) {
   return heroHtml + cardsHtml;
 }
 
-// --- Group Standings ---
+// --- FIBA Standings Engine ---
 function renderStandingsTable(matches) {
   const groups = {};
 
@@ -461,12 +489,111 @@ function renderKnockoutBracket(matches) {
   `;
 }
 
-// --- Predictions View ---
+// --- Predictions View & Full Medal Table Engine ---
 function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
+  const pillsHeader = `
+    <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); margin-bottom:1.25rem; gap:3px;">
+      <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activePredictionsSubView === 'table' ? '#2563eb' : 'transparent'}; color:${activePredictionsSubView === 'table' ? '#fff' : '#94a3b8'};" onclick="setPredictionsSubView('table')">🏅 Projected Medal Table</button>
+      <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activePredictionsSubView === 'odds' ? '#2563eb' : 'transparent'}; color:${activePredictionsSubView === 'odds' ? '#fff' : '#94a3b8'};" onclick="setPredictionsSubView('odds')">🎯 Division Odds</button>
+    </div>
+  `;
+
+  if (activePredictionsSubView === 'table') {
+    // 1. Build Aggregate Medal Table across all disciplines/divisions
+    const tableMap = {};
+
+    const ingestList = (list) => {
+      if (!Array.isArray(list)) return;
+      list.forEach(p => {
+        const rawName = p.team || p.country || p.name || '';
+        if (!rawName) return;
+        const cleaned = cleanTeamName(rawName);
+        const displayName = rawName.replace(/\(host\)/gi, '').trim();
+
+        if (!tableMap[cleaned]) {
+          tableMap[cleaned] = {
+            name: displayName,
+            isHost: rawName.toLowerCase().includes('host'),
+            gold: 0,
+            silver: 0,
+            bronze: 0,
+            total: 0
+          };
+        }
+
+        const g = parseMedalExp(p.gold || p.gold_prob || p.gold_pct || p.expected_gold);
+        const s = parseMedalExp(p.silver || p.silver_prob || p.silver_pct || p.expected_silver);
+        const b = parseMedalExp(p.bronze || p.bronze_prob || p.bronze_pct || p.expected_bronze);
+
+        tableMap[cleaned].gold += g;
+        tableMap[cleaned].silver += s;
+        tableMap[cleaned].bronze += b;
+        tableMap[cleaned].total += (g + s + b);
+      });
+    };
+
+    ingestList(menPreds);
+    ingestList(womenPreds);
+
+    const sortedTable = Object.values(tableMap).sort((a, b) => {
+      if (Math.abs(b.gold - a.gold) > 0.001) return b.gold - a.gold;
+      if (Math.abs(b.silver - a.silver) > 0.001) return b.silver - a.silver;
+      if (Math.abs(b.bronze - a.bronze) > 0.001) return b.bronze - a.bronze;
+      return b.total - a.total;
+    });
+
+    if (sortedTable.length === 0) {
+      container.innerHTML = `
+        ${pillsHeader}
+        <div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">
+          No prediction model outputs available to construct medal table.
+        </div>`;
+      return;
+    }
+
+    const tableHtml = `
+      <div style="margin-bottom:1rem; text-align:center; font-size:0.75rem; color:#94a3b8;">
+        Official projected medal tally across 50,000 Monte Carlo runs (Men + Women). Ranked by 🥇 Gold $\\rightarrow$ 🥈 Silver $\\rightarrow$ 🥉 Bronze.
+      </div>
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
+          <thead>
+            <tr style="color:#94a3b8; font-size:0.75rem; border-bottom:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.15);">
+              <th style="padding:0.7rem 0.5rem; text-align:left;"># Nation</th>
+              <th style="padding:0.7rem 0.4rem; color:#facc15;">🥇 Gold</th>
+              <th style="padding:0.7rem 0.4rem; color:#cbd5e1;">🥈 Silver</th>
+              <th style="padding:0.7rem 0.4rem; color:#f59e0b;">🥉 Bronze</th>
+              <th style="padding:0.7rem 0.5rem; font-weight:700; color:#38bdf8;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${sortedTable.map((t, idx) => `
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${idx < 3 ? 'rgba(59,130,246,0.03)' : 'transparent'};">
+                <td style="padding:0.65rem 0.5rem; text-align:left; font-weight:${idx < 3 ? '700' : '400'};">
+                  <span style="display:inline-block; width:18px; font-weight:700; color:${idx === 0 ? '#facc15' : idx === 1 ? '#cbd5e1' : idx === 2 ? '#f59e0b' : '#94a3b8'};">${idx + 1}</span>
+                  ${getFlagEmoji(t.name)} ${t.name}${t.isHost ? ' (Host)' : ''}
+                </td>
+                <td style="padding:0.65rem 0.4rem; font-family:monospace; font-weight:${t.gold > 0.5 ? '700' : '400'}; color:#facc15;">${formatMedal(t.gold)}</td>
+                <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#cbd5e1;">${formatMedal(t.silver)}</td>
+                <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#f59e0b;">${formatMedal(t.bronze)}</td>
+                <td style="padding:0.65rem 0.5rem; font-family:monospace; font-weight:700; color:#38bdf8;">${formatMedal(t.total)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    container.innerHTML = `${pillsHeader}${tableHtml}`;
+    return;
+  }
+
+  // 2. Render Division Odds Cards
   const preds = currentGender === 'men' ? menPreds : womenPreds;
 
   if (!preds || preds.length === 0) {
     container.innerHTML = `
+      ${pillsHeader}
       <div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">
         No simulation projection models available for this division.
       </div>`;
@@ -486,8 +613,8 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     return gB - gA;
   });
 
-  container.innerHTML = `
-    <div style="margin-bottom:1rem; text-align:center; font-size:0.8rem; color:#94a3b8;">
+  const cardsHtml = `
+    <div style="margin-bottom:1rem; text-align:center; font-size:0.75rem; color:#94a3b8;">
       Monte Carlo simulation (50,000 runs) weighted by FIBA Rank, MoV, and Host Boost.
     </div>
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
@@ -525,6 +652,8 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
       }).join('')}
     </div>
   `;
+
+  container.innerHTML = `${pillsHeader}${cardsHtml}`;
 }
 
 // --- Calibration View ---
