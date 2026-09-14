@@ -9,7 +9,7 @@ function getFlagEmoji(teamName) {
     'japan': '🇯🇵', 'jpn': '🇯🇵',
     'philippines': '🇵🇭', 'phi': '🇵🇭',
     'korea': '🇰🇷', 'south korea': '🇰🇷', 'kor': '🇰🇷',
-    'iran': '🇮🇷', 'iri': '🇮🇷',
+    'iran': '🇮🇷', 'iri': '🇮🇷', 'ir iran': '🇮🇷',
     'jordan': '🇯🇴', 'jor': '🇯🇴',
     'lebanon': '🇱🇧', 'lbn': '🇱🇧',
     'chinese taipei': '🇹🇼', 'taiwan': '🇹🇼', 'tpe': '🇹🇼',
@@ -21,7 +21,13 @@ function getFlagEmoji(teamName) {
     'hong kong': '🇭🇰', 'hkg': '🇭🇰',
     'bahrain': '🇧🇭', 'brn': '🇧🇭',
     'mongolia': '🇲🇳', 'mgl': '🇲🇳',
-    'qatar': '🇶🇦', 'qat': '🇶🇦'
+    'qatar': '🇶🇦', 'qat': '🇶🇦',
+    'syria': '🇸🇾', 'syr': '🇸🇾',
+    'uae': '🇦🇪', 'united arab emirates': '🇦🇪',
+    'kuwait': '🇰🇼', 'kuw': '🇰🇼',
+    'guam': '🇬🇺', 'gum': '🇬🇺',
+    'malaysia': '🇲🇾', 'mas': '🇲🇾',
+    'singapore': '🇸🇬', 'sgp': '🇸🇬'
   };
 
   for (const [key, emoji] of Object.entries(flagMap)) {
@@ -32,21 +38,21 @@ function getFlagEmoji(teamName) {
 
 // --- Universal Match Object Normalizer ---
 function parseMatchData(m) {
-  if (!m) return { t1: 'TBD', t2: 'TBD', s1: '-', s2: '-', status: '', time: '', stage: '', isFinished: false };
+  if (!m) return { t1: 'TBD', t2: 'TBD', s1: '-', s2: '-', status: '', time: '', stage: '', isFinished: false, winner: '' };
 
-  // Resolve team 1
-  let t1 = m.team1 || m.team_1 || m.teamA || m.team_a || m.home || m.home_team || m.homeTeam || '';
+  // 1. Resolve Team 1 (Scraper uses player1)
+  let t1 = m.player1 || m.player_1 || m.team1 || m.team_1 || m.teamA || m.team_a || m.home || m.home_team || '';
   if (!t1 && Array.isArray(m.teams) && m.teams.length > 0) t1 = m.teams[0];
   if (typeof t1 === 'object' && t1 !== null) t1 = t1.name || t1.team || 'TBD';
   t1 = String(t1 || 'TBD').trim();
 
-  // Resolve team 2
-  let t2 = m.team2 || m.team_2 || m.teamB || m.team_b || m.away || m.away_team || m.awayTeam || '';
+  // 2. Resolve Team 2 (Scraper uses player2)
+  let t2 = m.player2 || m.player_2 || m.team2 || m.team_2 || m.teamB || m.team_b || m.away || m.away_team || '';
   if (!t2 && Array.isArray(m.teams) && m.teams.length > 1) t2 = m.teams[1];
   if (typeof t2 === 'object' && t2 !== null) t2 = t2.name || t2.team || 'TBD';
   t2 = String(t2 || 'TBD').trim();
 
-  // Resolve scores (handles separate score1/score2 or "53 - 59" string)
+  // 3. Resolve Scores (Scraper uses "score": "53 - 59")
   let s1 = m.score1 != null ? m.score1 : (m.score_a != null ? m.score_a : (m.home_score != null ? m.home_score : null));
   let s2 = m.score2 != null ? m.score2 : (m.score_b != null ? m.score_b : (m.away_score != null ? m.away_score : null));
 
@@ -60,6 +66,7 @@ function parseMatchData(m) {
   s1 = s1 != null && s1 !== '' ? String(s1) : '-';
   s2 = s2 != null && s2 !== '' ? String(s2) : '-';
 
+  // 4. Status & Stage (Scraper uses "round": "Men Group B G 1")
   const status = String(m.status || m.state || '').trim();
   const lowerStatus = status.toLowerCase();
   const isFinished = lowerStatus.includes('final') || lowerStatus.includes('finished') || (s1 !== '-' && s2 !== '-' && !lowerStatus.includes('live'));
@@ -70,8 +77,9 @@ function parseMatchData(m) {
     s1,
     s2,
     status,
-    time: m.time || m.match_time || m.start_time || m.date || '',
-    stage: m.stage || m.group || m.round || 'Group Stage',
+    time: m.time || m.date || '',
+    stage: m.round || m.stage || m.group || 'Group Stage',
+    winner: m.winner || '',
     isFinished
   };
 }
@@ -149,15 +157,15 @@ function renderScheduleAndHero(matches) {
           </div>
         </div>
         <div style="font-size:0.8rem; color:#94a3b8;">
-          ${heroTarget.time || 'Scheduled'} • ${heroTarget.stage}
+          ${heroTarget.time} • ${heroTarget.stage}
         </div>
       </div>
     `;
   }
 
   const cardsHtml = parsed.map(m => {
-    const t1Win = m.isFinished && Number(m.s1) > Number(m.s2);
-    const t2Win = m.isFinished && Number(m.s2) > Number(m.s1);
+    const t1Win = m.winner ? m.winner.toLowerCase() === m.t1.toLowerCase() : (m.isFinished && Number(m.s1) > Number(m.s2));
+    const t2Win = m.winner ? m.winner.toLowerCase() === m.t2.toLowerCase() : (m.isFinished && Number(m.s2) > Number(m.s1));
 
     return `
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem; display:flex; justify-content:space-between; align-items:center;">
@@ -191,9 +199,12 @@ function renderStandingsTable(matches) {
 
   matches.forEach(rawMatch => {
     const m = parseMatchData(rawMatch);
-    if (!m.stage.toLowerCase().includes('group') && !m.stage.toLowerCase().includes('pool')) return;
 
-    const grpName = m.stage.trim();
+    // Extract cleanly e.g. "Group B" from "Men Group B G 1"
+    const grpMatch = m.stage.match(/Group\s+[A-Za-z0-9]+/i) || m.stage.match(/Pool\s+[A-Za-z0-9]+/i);
+    const grpName = grpMatch ? grpMatch[0] : (m.stage.toLowerCase().includes('group') ? m.stage : null);
+
+    if (!grpName) return;
     if (!groups[grpName]) groups[grpName] = {};
 
     if (m.t1 !== 'TBD' && m.t2 !== 'TBD') {
@@ -214,7 +225,9 @@ function renderStandingsTable(matches) {
         groups[grpName][m.t2].pf += s2;
         groups[grpName][m.t2].pa += s1;
 
-        if (s1 > s2) {
+        const t1Won = m.winner ? m.winner.toLowerCase() === m.t1.toLowerCase() : s1 > s2;
+
+        if (t1Won) {
           groups[grpName][m.t1].w += 1;
           groups[grpName][m.t1].pts += 2;
           groups[grpName][m.t2].l += 1;
@@ -305,8 +318,8 @@ function renderKnockoutBracket(matches) {
     const s1 = match ? match.s1 : '-';
     const s2 = match ? match.s2 : '-';
     const isFinished = match ? match.isFinished : false;
-    const t1Win = isFinished && Number(s1) > Number(s2);
-    const t2Win = isFinished && Number(s2) > Number(s1);
+    const t1Win = match && match.winner ? match.winner.toLowerCase() === t1.toLowerCase() : (isFinished && Number(s1) > Number(s2));
+    const t2Win = match && match.winner ? match.winner.toLowerCase() === t2.toLowerCase() : (isFinished && Number(s2) > Number(s1));
 
     return `
       <div class="bracket-match-card">
@@ -431,14 +444,14 @@ function renderCalibrationView(container, predictions, matches) {
     if (r1 !== r2) {
       evaluatedMatches++;
       const fav = r1 < r2 ? m.t1 : m.t2;
-      const actualWinner = s1 > s2 ? m.t1 : m.t2;
+      const actualWinner = m.winner ? m.winner : (s1 > s2 ? m.t1 : m.t2);
 
-      if (fav === actualWinner) {
+      if (fav.toLowerCase() === actualWinner.toLowerCase()) {
         correctFavorites++;
       } else {
         upsetLogs.push({
           winner: actualWinner,
-          loser: actualWinner === m.t1 ? m.t2 : m.t1,
+          loser: actualWinner.toLowerCase() === m.t1.toLowerCase() ? m.t2 : m.t1,
           score: `${s1} - ${s2}`
         });
       }
