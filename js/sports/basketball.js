@@ -452,7 +452,7 @@ function renderStandingsTable(matches) {
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; margin-bottom:1.5rem; overflow-x:auto;">
         <div style="padding:0.75rem 1rem; font-weight:700; font-size:0.9rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between;">
           <span>${grpKey}</span>
-          <span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 advance</span>
+          <span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 + best 2 3rd advance</span>
         </div>
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
           <thead>
