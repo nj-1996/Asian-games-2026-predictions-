@@ -1,3 +1,41 @@
+// --- Flag Resolver Fallback ---
+function getFlagEmoji(teamName) {
+  if (typeof window.getFlag === 'function') return window.getFlag(teamName);
+  if (!teamName || typeof teamName !== 'string') return '🏀';
+
+  const norm = teamName.toLowerCase().trim();
+  const flagMap = {
+    'china': '🇨🇳', 'chn': '🇨🇳',
+    'japan': '🇯🇵', 'jpn': '🇯🇵',
+    'philippines': '🇵🇭', 'phi': '🇵🇭',
+    'korea': '🇰🇷', 'south korea': '🇰🇷', 'kor': '🇰🇷',
+    'iran': '🇮🇷', 'iri': '🇮🇷',
+    'jordan': '🇯🇴', 'jor': '🇯🇴',
+    'lebanon': '🇱🇧', 'lbn': '🇱🇧',
+    'chinese taipei': '🇹🇼', 'taiwan': '🇹🇼', 'tpe': '🇹🇼',
+    'saudi arabia': '🇸🇦', 'ksa': '🇸🇦',
+    'kazakhstan': '🇰🇿', 'kaz': '🇰🇿',
+    'india': '🇮🇳', 'ind': '🇮🇳',
+    'indonesia': '🇮🇩', 'ina': '🇮🇩',
+    'thailand': '🇹🇭', 'tha': '🇹🇭',
+    'hong kong': '🇭🇰', 'hkg': '🇭🇰',
+    'bahrain': '🇧🇭', 'brn': '🇧🇭',
+    'mongolia': '🇲🇳', 'mgl': '🇲🇳',
+    'qatar': '🇶🇦', 'qat': '🇶🇦',
+    'syria': '🇸🇾', 'syr': '🇸🇾',
+    'uae': '🇦🇪', 'united arab emirates': '🇦🇪',
+    'kuwait': '🇰🇼', 'kuw': '🇰🇼',
+    'guam': '🇬🇺', 'gum': '🇬🇺',
+    'malaysia': '🇲🇾', 'mas': '🇲🇾',
+    'singapore': '🇸🇬', 'sgp': '🇸🇬'
+  };
+
+  for (const [key, emoji] of Object.entries(flagMap)) {
+    if (norm.includes(key)) return emoji;
+  }
+  return '🏀';
+}
+
 // --- Basketball Sub-View State ---
 let activeMatchesSubView = 'schedule'; // 'schedule' | 'standings' | 'bracket'
 
@@ -44,9 +82,6 @@ function renderMatchesView(container, matches) {
 
 // --- Next Match Hero Banner & Schedule List ---
 function renderScheduleAndHero(matches) {
-  const now = new Date();
-  
-  // Identify live or upcoming matches for hero banner
   const liveMatch = matches.find(m => (m.status || '').toLowerCase().includes('live'));
   const upcomingMatches = matches
     .filter(m => {
@@ -90,7 +125,6 @@ function renderScheduleAndHero(matches) {
     `;
   }
 
-  // Render cards list
   const cardsHtml = matches.map(m => {
     const t1 = m.team1 || m.home_team || 'TBD';
     const t2 = m.team2 || m.away_team || 'TBD';
@@ -126,7 +160,7 @@ function renderScheduleAndHero(matches) {
   return heroHtml + cardsHtml;
 }
 
-// --- FIBA Official Group Standings Engine ---
+// --- FIBA Group Standings Engine ---
 function renderStandingsTable(matches) {
   const groups = {};
 
@@ -160,9 +194,9 @@ function renderStandingsTable(matches) {
 
       if (s1 > s2) {
         groups[grpName][t1].w += 1;
-        groups[grpName][t1].pts += 2; // FIBA: 2 pts for Win
+        groups[grpName][t1].pts += 2;
         groups[grpName][t2].l += 1;
-        groups[grpName][t2].pts += 1; // FIBA: 1 pt for Loss
+        groups[grpName][t2].pts += 1;
       } else {
         groups[grpName][t2].w += 1;
         groups[grpName][t2].pts += 2;
@@ -364,7 +398,6 @@ function renderCalibrationView(container, predictions, matches) {
     return;
   }
 
-  // Calculate prediction win rates against actual match results
   const finished = matches.filter(m => {
     const s = (m.status || '').toLowerCase();
     return (s.includes('final') || s.includes('finished')) && m.score1 != null && m.score2 != null;
