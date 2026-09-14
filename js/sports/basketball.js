@@ -93,7 +93,7 @@ function parseStatNumber(val) {
   return Math.round(num);
 }
 
-// --- Timezone State & Formatter ---
+// --- Timezone State & Combined Date-Time Formatter ---
 let currentTimezone = localStorage.getItem('app_tz') || 'IST';
 
 function setTimezone(tz) {
@@ -106,31 +106,71 @@ function setTimezone(tz) {
   }
 }
 
-function formatMatchTime(timeStr) {
-  if (!timeStr || typeof timeStr !== 'string') return '';
-  const match = timeStr.match(/(\d{1,2}):(\d{2})/);
-  if (!match) return timeStr;
-
-  if (currentTimezone === 'JST') return `${timeStr} JST`;
-
-  let h = parseInt(match[1], 10);
-  let m = parseInt(match[2], 10);
-
-  m -= 30;
-  if (m < 0) {
-    m += 60;
-    h -= 1;
-  }
-  h -= 3;
-  if (h < 0) h += 24;
-
+function formatMatchDateTime(dateStr, timeStr) {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const pad = (n) => String(n).padStart(2, '0');
-  return `${pad(h)}:${pad(m)} IST`;
+
+  if (!dateStr && !timeStr) return '';
+
+  // If time is missing, format just the date
+  if (!timeStr) {
+    const parts = dateStr.split('-').map(Number);
+    if (parts.length >= 3) {
+      return `${months[parts[1] - 1]} ${parts[2]}`;
+    }
+    return dateStr;
+  }
+
+  const timeMatch = timeStr.match(/(\d{1,2}):(\d{2})/);
+  if (!timeMatch) return `${dateStr ? dateStr + ' ' : ''}${timeStr}`;
+
+  let hour = parseInt(timeMatch[1], 10);
+  let minute = parseInt(timeMatch[2], 10);
+
+  // If date is missing, format just the time
+  if (!dateStr) {
+    if (currentTimezone === 'IST') {
+      minute -= 30;
+      if (minute < 0) { minute += 60; hour -= 1; }
+      hour -= 3;
+      if (hour < 0) hour += 24;
+    }
+    return `${pad(hour)}:${pad(minute)} ${currentTimezone}`;
+  }
+
+  // Parse YYYY-MM-DD
+  const dateParts = dateStr.split('-').map(Number);
+  if (dateParts.length < 3) {
+    return `${dateStr} ${timeStr}`;
+  }
+
+  let year = dateParts[0];
+  let month = dateParts[1] - 1;
+  let day = dateParts[2];
+
+  if (currentTimezone === 'IST') {
+    minute -= 30;
+    if (minute < 0) {
+      minute += 60;
+      hour -= 1;
+    }
+    hour -= 3;
+    if (hour < 0) {
+      hour += 24;
+      // Rollover to previous day
+      const prevDate = new Date(year, month, day - 1);
+      year = prevDate.getFullYear();
+      month = prevDate.getMonth();
+      day = prevDate.getDate();
+    }
+  }
+
+  return `${months[month]} ${day}, ${pad(hour)}:${pad(minute)} ${currentTimezone}`;
 }
 
 // --- Universal Match Normalizer ---
 function parseMatchData(m) {
-  if (!m) return { t1: 'TBD', t2: 'TBD', s1: '-', s2: '-', status: '', time: '', stage: '', isFinished: false, winner: '' };
+  if (!m) return { t1: 'TBD', t2: 'TBD', s1: '-', s2: '-', status: '', time: '', date: '', stage: '', isFinished: false, winner: '' };
 
   let t1 = m.player1 || m.player_1 || m.team1 || m.team_1 || m.teamA || m.team_a || m.home || m.home_team || '';
   if (!t1 && Array.isArray(m.teams) && m.teams.length > 0) t1 = m.teams[0];
@@ -175,7 +215,7 @@ function parseMatchData(m) {
 
 // --- Sub-Navigation States ---
 let activeMatchesSubView = 'schedule';
-let activePredictionsSubView = 'table'; // 'table' | 'odds'
+let activePredictionsSubView = 'table';
 
 function setMatchesSubView(subView) {
   activeMatchesSubView = subView;
@@ -243,7 +283,7 @@ function renderScheduleAndHero(matches) {
   let heroHtml = '';
   if (heroTarget) {
     const isLive = heroTarget.status.toLowerCase().includes('live');
-    const displayTime = heroTarget.time ? formatMatchTime(heroTarget.time) : (heroTarget.date || 'Scheduled');
+    const displayDateTime = formatMatchDateTime(heroTarget.date, heroTarget.time) || heroTarget.status || 'Scheduled';
 
     heroHtml = `
       <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.8)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center;">
@@ -264,7 +304,7 @@ function renderScheduleAndHero(matches) {
           </div>
         </div>
         <div style="font-size:0.8rem; color:#94a3b8;">
-          ${displayTime} • ${heroTarget.stage}
+          ${displayDateTime} • ${heroTarget.stage}
         </div>
       </div>
     `;
@@ -273,13 +313,13 @@ function renderScheduleAndHero(matches) {
   const cardsHtml = parsed.map(m => {
     const t1Win = m.winner ? m.winner.toLowerCase() === m.t1.toLowerCase() : (m.isFinished && Number(m.s1) > Number(m.s2));
     const t2Win = m.winner ? m.winner.toLowerCase() === m.t2.toLowerCase() : (m.isFinished && Number(m.s2) > Number(m.s1));
-    const displayTime = m.time ? formatMatchTime(m.time) : (m.date || m.status);
+    const displayDateTime = formatMatchDateTime(m.date, m.time) || m.status || '';
 
     return `
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem; display:flex; justify-content:space-between; align-items:center;">
         <div style="flex:1;">
           <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.4rem;">
-            ${m.stage} • ${displayTime}
+            ${m.stage} • ${displayDateTime}
           </div>
           <div style="display:flex; flex-direction:column; gap:0.25rem;">
             <div style="display:flex; align-items:center; gap:0.5rem; font-weight:${t1Win ? '700' : '500'}; color:${t1Win ? '#38bdf8' : 'inherit'};">
@@ -426,14 +466,14 @@ function renderKnockoutBracket(matches) {
     const isFinished = match ? match.isFinished : false;
     const t1Win = match && match.winner ? match.winner.toLowerCase() === t1.toLowerCase() : (isFinished && Number(s1) > Number(s2));
     const t2Win = match && match.winner ? match.winner.toLowerCase() === t2.toLowerCase() : (isFinished && Number(s2) > Number(s1));
-    const displayTime = match && match.time ? formatMatchTime(match.time) : (match ? match.status : 'Scheduled');
+    const displayDateTime = match ? (formatMatchDateTime(match.date, match.time) || match.status || 'Scheduled') : 'Scheduled';
 
     return `
       <div class="bracket-match-card">
         <div class="bracket-match-header">
           <span>${title}</span>
           ${medalType ? `<span class="bracket-medal-badge medal-${medalType}">${medalType.toUpperCase()}</span>` : ''}
-          <span>${displayTime}</span>
+          <span>${displayDateTime}</span>
         </div>
         <div class="bracket-team-row ${t1Win ? 'winner' : ''}">
           <div class="bracket-team-info"><span>${getFlagEmoji(t1)}</span> <span>${t1}</span></div>
@@ -486,7 +526,6 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
       return 0;
     };
 
-    // Allocate 1 Gold, 1 Silver, 1 Bronze based on top simulation finish rank
     const projectPodium = (list) => {
       if (!Array.isArray(list) || list.length === 0) return [];
       const sorted = [...list].sort((a, b) => {
