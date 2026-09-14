@@ -385,12 +385,17 @@ function renderScheduleAndHero(matches) {
   return heroHtml + cardsHtml;
 }
 
-// --- FIBA Standings Engine ---
+ // --- FIBA Standings Engine ---
 function renderStandingsTable(matches) {
+  const parsedMatches = matches.map(m => parseMatchData(m));
+  const groupMatches = parsedMatches.filter(m => /group|pool/i.test(m.stage));
+  
+  // Badges only activate when every scheduled group match has concluded
+  const allGroupFinished = groupMatches.length > 0 && groupMatches.every(m => m.isFinished);
+
   const groups = {};
 
-  matches.forEach(rawMatch => {
-    const m = parseMatchData(rawMatch);
+  parsedMatches.forEach(m => {
     const grpMatch = m.stage.match(/Group\s+[A-Za-z0-9]+/i) || m.stage.match(/Pool\s+[A-Za-z0-9]+/i);
     const grpName = grpMatch ? grpMatch[0] : (m.stage.toLowerCase().includes('group') ? m.stage : null);
 
@@ -440,6 +445,47 @@ function renderStandingsTable(matches) {
     return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No group stage data available.</div>`;
   }
 
+  // Determine Q, q, and E statuses across groups
+  const statusMap = {};
+  if (allGroupFinished) {
+    const thirdPlaceTeams = [];
+
+    groupKeys.forEach(grpKey => {
+      const sorted = Object.values(groups[grpKey]).sort((a, b) => {
+        if (b.pts !== a.pts) return b.pts - a.pts;
+        if (b.diff !== a.diff) return b.diff - a.diff;
+        return b.pf - a.pf;
+      });
+
+      sorted.forEach((team, idx) => {
+        if (idx < 2) {
+          statusMap[team.name] = 'Q'; // Direct qualifier
+        } else if (idx === 2) {
+          thirdPlaceTeams.push(team);
+        } else {
+          statusMap[team.name] = 'E'; // 4th place eliminated
+        }
+      });
+    });
+
+    // Rank 3rd-place teams: top 2 get 'q' (wildcard), remainder 'E'
+    thirdPlaceTeams.sort((a, b) => {
+      if (b.pts !== a.pts) return b.pts - a.pts;
+      if (b.diff !== a.diff) return b.diff - a.diff;
+      return b.pf - a.pf;
+    });
+
+    thirdPlaceTeams.forEach((team, idx) => {
+      statusMap[team.name] = idx < 2 ? 'q' : 'E';
+    });
+  }
+
+  const badgeStyles = {
+    'Q': 'background:rgba(34,197,94,0.18); color:#4ade80; border:1px solid rgba(74,222,128,0.35);',
+    'q': 'background:rgba(56,189,248,0.18); color:#38bdf8; border:1px solid rgba(56,189,248,0.35);',
+    'E': 'background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(248,113,113,0.25);'
+  };
+
   return groupKeys.map(grpKey => {
     const teams = Object.values(groups[grpKey]).sort((a, b) => {
       if (b.pts !== a.pts) return b.pts - a.pts;
@@ -447,11 +493,15 @@ function renderStandingsTable(matches) {
       return b.pf - a.pf;
     });
 
+    const headerNote = allGroupFinished
+      ? '<span style="font-size:0.75rem;"><strong style="color:#4ade80;">Q</strong> Qualified &nbsp;•&nbsp; <strong style="color:#38bdf8;">q</strong> Wildcard &nbsp;•&nbsp; <strong style="color:#f87171;">E</strong> Eliminated</span>'
+      : '<span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 + best 2 3rd advance</span>';
+
     return `
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; margin-bottom:1.5rem; overflow-x:auto;">
-        <div style="padding:0.75rem 1rem; font-weight:700; font-size:0.9rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between;">
+        <div style="padding:0.75rem 1rem; font-weight:700; font-size:0.9rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center;">
           <span>${grpKey}</span>
-          <span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 + best 2 3rd advance</span>
+          ${headerNote}
         </div>
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
           <thead>
@@ -465,25 +515,34 @@ function renderStandingsTable(matches) {
             </tr>
           </thead>
           <tbody>
-            ${teams.map((t, idx) => `
-              <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${idx < 2 ? 'rgba(59,130,246,0.04)' : 'transparent'};">
-                <td style="padding:0.6rem 0.5rem; text-align:left; font-weight:${idx < 2 ? '700' : '400'};">
-                  <span style="display:inline-block; width:16px; color:${idx < 2 ? '#38bdf8' : 'inherit'};">${idx + 1}</span>
-                  ${getFlagEmoji(t.name)} ${t.name}
-                </td>
-                <td style="padding:0.6rem 0.3rem;">${t.gp}</td>
-                <td style="padding:0.6rem 0.3rem; color:#4ade80;">${t.w}</td>
-                <td style="padding:0.6rem 0.3rem; color:#f87171;">${t.l}</td>
-                <td style="padding:0.6rem 0.3rem; font-family:monospace; color:${t.diff > 0 ? '#4ade80' : t.diff < 0 ? '#f87171' : 'inherit'};">${t.diff > 0 ? '+' + t.diff : t.diff}</td>
-                <td style="padding:0.6rem 0.5rem; font-weight:700; color:#38bdf8;">${t.pts}</td>
-              </tr>
-            `).join('')}
+            ${teams.map((t, idx) => {
+              const badge = statusMap[t.name];
+              const badgeHtml = badge
+                ? `<span style="display:inline-block; font-size:0.65rem; font-weight:800; padding:1px 5px; border-radius:4px; margin-left:6px; vertical-align:middle; ${badgeStyles[badge]}">${badge}</span>`
+                : '';
+              const isEliminated = badge === 'E';
+
+              return `
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.03); opacity:${isEliminated ? '0.75' : '1'}; background:${idx < 2 ? 'rgba(59,130,246,0.04)' : 'transparent'};">
+                  <td style="padding:0.6rem 0.5rem; text-align:left; font-weight:${idx < 2 ? '700' : '400'};">
+                    <span style="display:inline-block; width:16px; color:${idx < 2 ? '#38bdf8' : 'inherit'};">${idx + 1}</span>
+                    ${getFlagEmoji(t.name)} ${t.name} ${badgeHtml}
+                  </td>
+                  <td style="padding:0.6rem 0.3rem;">${t.gp}</td>
+                  <td style="padding:0.6rem 0.3rem; color:#4ade80;">${t.w}</td>
+                  <td style="padding:0.6rem 0.3rem; color:#f87171;">${t.l}</td>
+                  <td style="padding:0.6rem 0.3rem; font-family:monospace; color:${t.diff > 0 ? '#4ade80' : t.diff < 0 ? '#f87171' : 'inherit'};">${t.diff > 0 ? '+' + t.diff : t.diff}</td>
+                  <td style="padding:0.6rem 0.5rem; font-weight:700; color:#38bdf8;">${t.pts}</td>
+                </tr>
+              `;
+            }).join('')}
           </tbody>
         </table>
       </div>
     `;
   }).join('');
 }
+ 
 
 // --- Knockout Bracket Engine ---
 function renderKnockoutBracket(matches) {
