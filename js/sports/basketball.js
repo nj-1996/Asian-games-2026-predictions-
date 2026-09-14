@@ -1,670 +1,445 @@
-// --- Sub-View State ---
-let matchesSubTab = 'fixtures'; // 'fixtures' | 'standings'
+// --- Basketball Sub-View State ---
+let activeMatchesSubView = 'schedule'; // 'schedule' | 'standings' | 'bracket'
 
-function setMatchesSubTab(subTab) {
-  matchesSubTab = subTab;
+// --- View Switcher ---
+function setMatchesSubView(subView) {
+  activeMatchesSubView = subView;
   const container = document.getElementById('content-cards');
-  const matches = currentGender === 'men' ? appData.menMatches : appData.womenMatches;
-  renderMatchesView(container, matches);
-}
-
-// --- Match Status & Finish State Helper ---
-function isMatchFinished(m) {
-  if (!m) return false;
-  if (m.status === 'Finished') return true;
-  if (m.state && m.state.toLowerCase().includes('offi')) return true;
-  if (m.winner && m.winner.trim() !== '') return true;
-  return false;
-}
-
-// --- Next Match Finder & Hero Countdown Banner ---
-function renderNextMatchHeroHtml(matches) {
-  const upcoming = matches.find(m => m && !isMatchFinished(m) && m.player1 && !/^(tbd|tba)$/i.test(m.player1))
-                || matches.find(m => m && !isMatchFinished(m));
-
-  if (!upcoming) return '';
-
-  const p1Info = getNOCInfo(upcoming.player1);
-  const p2Info = getNOCInfo(upcoming.player2);
-
-  let countdownText = 'Upcoming';
-  let isLive = upcoming.status === 'Live' || (upcoming.state && upcoming.state.toLowerCase().includes('live'));
-
-  if (isLive) {
-    countdownText = '🔥 Live Now';
-  } else if (upcoming.date && upcoming.time && upcoming.time !== 'TBD') {
-    try {
-      const matchEpoch = new Date(`${upcoming.date}T${upcoming.time}:00+09:00`).getTime();
-      const diffMs = matchEpoch - Date.now();
-
-      if (diffMs <= 0) {
-        countdownText = '🔥 In Progress / Starting Soon';
-        isLive = true;
-      } else {
-        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-        const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-        if (diffHrs >= 24) {
-          const days = Math.floor(diffHrs / 24);
-          const remHrs = diffHrs % 24;
-          countdownText = `in ${days}d ${remHrs}h`;
-        } else if (diffHrs > 0) {
-          countdownText = `in ${diffHrs}h ${diffMins}m`;
-        } else {
-          countdownText = `in ${diffMins}m`;
-        }
-      }
-    } catch (e) {}
+  if (container) {
+    const matches = currentGender === 'men' ? appData.menMatches : appData.womenMatches;
+    renderMatchesView(container, matches);
   }
+}
 
-  return `
-    <div class="next-match-hero">
-      <div class="next-match-label">
-        <span>⏱️ Next Tip-Off • ${upcoming.round || 'Basketball'}</span>
-        <span class="countdown-timer ${isLive ? 'is-live' : ''}">${countdownText}</span>
-      </div>
-      <div class="next-match-teams">
-        <span>${p1Info.flag} ${upcoming.player1 || 'TBD'}</span>
-        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">VS</span>
-        <span>${upcoming.player2 || 'TBD'} ${p2Info.flag}</span>
-      </div>
+// --- Main Matches Router ---
+function renderMatchesView(container, matches) {
+  const pillsHeader = `
+    <div class="subnav-pills" style="display:flex; gap:0.5rem; justify-content:center; margin-bottom:1rem; flex-wrap:wrap;">
+      <button class="subnav-pill ${activeMatchesSubView === 'schedule' ? 'active' : ''}" onclick="setMatchesSubView('schedule')">📋 Schedule & Scores</button>
+      <button class="subnav-pill ${activeMatchesSubView === 'standings' ? 'active' : ''}" onclick="setMatchesSubView('standings')">📊 Group Standings</button>
+      <button class="subnav-pill ${activeMatchesSubView === 'bracket' ? 'active' : ''}" onclick="setMatchesSubView('bracket')">🌳 Bracket</button>
     </div>
   `;
-}
 
-// --- Group Standings Calculator (FIBA Standard: 2pts Win / 1pt Loss) ---
-function calculateGroupStandings(matches) {
-  const groups = {};
-
-  const ensureTeam = (groupKey, teamName) => {
-    if (!groups[groupKey]) groups[groupKey] = {};
-    if (!groups[groupKey][teamName]) {
-      groups[groupKey][teamName] = {
-        team: teamName,
-        gp: 0,
-        w: 0,
-        l: 0,
-        pf: 0,
-        pa: 0,
-        diff: 0,
-        pts: 0
-      };
-    }
-    return groups[groupKey][teamName];
-  };
-
-  matches.forEach(m => {
-    if (!m || !m.round) return;
-
-    const p1 = (m.player1 || '').trim();
-    const p2 = (m.player2 || '').trim();
-    if (!p1 || !p2 || /^(tbd|tba)$/i.test(p1) || /^(tbd|tba)$/i.test(p2)) return;
-
-    const isKnockout = /(quarter|semi|final|classification|bronze|gold|placement)/i.test(m.round);
-    if (isKnockout) return;
-
-    const groupMatch = m.round.match(/Group\s+([A-D])/i);
-    if (!groupMatch) return;
-    const groupKey = `Group ${groupMatch[1].toUpperCase()}`;
-
-    const t1 = ensureTeam(groupKey, p1);
-    const t2 = ensureTeam(groupKey, p2);
-
-    if (isMatchFinished(m)) {
-      t1.gp++;
-      t2.gp++;
-
-      let s1 = 0, s2 = 0;
-      const scoreParts = (m.score || "").match(/(\d+)\s*[-:]\s*(\d+)/);
-      if (scoreParts) {
-        s1 = parseInt(scoreParts[1], 10);
-        s2 = parseInt(scoreParts[2], 10);
-        t1.pf += s1;
-        t1.pa += s2;
-        t2.pf += s2;
-        t2.pa += s1;
-      }
-
-      const p1Norm = normName(m.player1);
-      const p2Norm = normName(m.player2);
-      const winNorm = normName(m.winner);
-
-      if (winNorm === p1Norm || s1 > s2) {
-        t1.w++;
-        t1.pts += 2;
-        t2.l++;
-        t2.pts += 1;
-      } else if (winNorm === p2Norm || s2 > s1) {
-        t2.w++;
-        t2.pts += 2;
-        t1.l++;
-        t1.pts += 1;
-      }
-    }
-  });
-
-  const result = {};
-  Object.keys(groups).sort().forEach(gKey => {
-    const list = Object.values(groups[gKey]).map(t => {
-      t.diff = t.pf - t.pa;
-      return t;
-    });
-
-    list.sort((a, b) => {
-      if (b.pts !== a.pts) return b.pts - a.pts;
-      if (b.diff !== a.diff) return b.diff - a.diff;
-      return b.pf - a.pf;
-    });
-
-    result[gKey] = list;
-  });
-
-  return result;
-}
-
-// --- Render Standings View ---
-function renderStandingsTablesHtml(matches) {
-  const groups = calculateGroupStandings(matches);
-  const groupKeys = Object.keys(groups);
-
-  if (groupKeys.length === 0) {
-    return '<div class="empty-state">No group stage data available.</div>';
+  if (!matches || matches.length === 0) {
+    container.innerHTML = `
+      ${pillsHeader}
+      <div style="text-align:center; padding:3rem 1rem; color:var(--text-muted, #94a3b8);">
+        No matches scheduled or recorded yet for this category.
+      </div>`;
+    return;
   }
 
-  return groupKeys.map(gKey => {
-    const teams = groups[gKey];
-    return `
-      <div class="group-title">
-        <span>🏀</span> ${gKey}
-      </div>
-      <div class="table-container">
-        <table class="medal-table standings-table">
-          <thead>
-            <tr>
-              <th style="width: 42%;">Team</th>
-              <th>GP</th>
-              <th>W</th>
-              <th>L</th>
-              <th>PF</th>
-              <th>PA</th>
-              <th>+/-</th>
-              <th style="font-weight: 800; color: #fff;">PTS</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${teams.map((t, idx) => {
-              const info = getNOCInfo(t.team);
-              const diffClass = t.diff > 0 ? 'diff-pos' : (t.diff < 0 ? 'diff-neg' : 'diff-zero');
-              const diffStr = t.diff > 0 ? `+${t.diff}` : `${t.diff}`;
-              const isQualifying = idx < 2;
+  let contentHtml = '';
+  if (activeMatchesSubView === 'schedule') {
+    contentHtml = renderScheduleAndHero(matches);
+  } else if (activeMatchesSubView === 'standings') {
+    contentHtml = renderStandingsTable(matches);
+  } else if (activeMatchesSubView === 'bracket') {
+    contentHtml = renderKnockoutBracket(matches);
+  }
 
-              return `
-                <tr>
-                  <td>
-                    <div class="team-cell">
-                      <span class="rank-num">${idx + 1}</span>
-                      <span class="team-flag">${info.flag}</span>
-                      <span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        ${isQualifying ? '<span class="qualify-dot"></span>' : ''}${t.team}
-                      </span>
-                    </div>
-                  </td>
-                  <td>${t.gp}</td>
-                  <td style="color:#4ade80; font-weight:700;">${t.w}</td>
-                  <td style="color:#fb7185;">${t.l}</td>
-                  <td>${t.pf}</td>
-                  <td>${t.pa}</td>
-                  <td class="${diffClass}">${diffStr}</td>
-                  <td style="font-weight: 800; color: var(--accent-blue);">${t.pts}</td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
+  container.innerHTML = `${pillsHeader}${contentHtml}`;
+}
+
+// --- Next Match Hero Banner & Schedule List ---
+function renderScheduleAndHero(matches) {
+  const now = new Date();
+  
+  // Identify live or upcoming matches for hero banner
+  const liveMatch = matches.find(m => (m.status || '').toLowerCase().includes('live'));
+  const upcomingMatches = matches
+    .filter(m => {
+      const s = (m.status || '').toLowerCase();
+      return !s.includes('final') && !s.includes('finished') && !s.includes('live');
+    })
+    .sort((a, b) => new Date(a.date || a.timestamp || 0) - new Date(b.date || b.timestamp || 0));
+
+  const heroTarget = liveMatch || upcomingMatches[0];
+  let heroHtml = '';
+
+  if (heroTarget) {
+    const isLive = (heroTarget.status || '').toLowerCase().includes('live');
+    const t1 = heroTarget.team1 || heroTarget.home_team || 'TBD';
+    const t2 = heroTarget.team2 || heroTarget.away_team || 'TBD';
+    const s1 = heroTarget.score1 != null ? heroTarget.score1 : '-';
+    const s2 = heroTarget.score2 != null ? heroTarget.score2 : '-';
+
+    heroHtml = `
+      <div class="hero-card" style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.7)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center;">
+        <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.2rem 0.6rem; border-radius:9999px; background:${isLive ? 'rgba(239,68,68,0.2)' : 'rgba(59,130,246,0.2)'}; color:${isLive ? '#ef4444' : '#60a5fa'}; margin-bottom:0.75rem;">
+          ${isLive ? '🔴 LIVE NOW' : '⏳ NEXT TIP-OFF'}
+        </div>
+        <div style="display:flex; justify-content:space-around; align-items:center; margin:0.75rem 0;">
+          <div style="flex:1;">
+            <div style="font-size:1.8rem;">${getFlagEmoji(t1)}</div>
+            <div style="font-weight:700; font-size:1.1rem; margin-top:0.25rem;">${t1}</div>
+          </div>
+          <div style="font-family:monospace; font-size:1.6rem; font-weight:800; min-width:80px;">
+            ${isLive ? `${s1} : ${s2}` : 'VS'}
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:1.8rem;">${getFlagEmoji(t2)}</div>
+            <div style="font-weight:700; font-size:1.1rem; margin-top:0.25rem;">${t2}</div>
+          </div>
+        </div>
+        <div style="font-size:0.8rem; color:var(--text-muted, #94a3b8);">
+          ${heroTarget.time || heroTarget.date || 'Scheduled'} • ${heroTarget.group || heroTarget.stage || 'Asian Games'}
+        </div>
       </div>
     `;
-  }).join('') + `
-    <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: -12px; margin-bottom: 16px; padding-left: 4px;">
-      🟢 Top 2 teams advance to Quarterfinals • FIBA Points: Win = 2, Loss = 1
-    </div>
-  `;
-}
-
-// --- Matches Tab (Fixtures + Standings Sub-Nav + Hero Countdown) ---
-function renderMatchesView(container, matches) {
-  const list = extractList(matches);
-
-  const subNavHtml = `
-    <div class="sub-nav-bar">
-      <button class="sub-nav-btn ${matchesSubTab === 'fixtures' ? 'active' : ''}" onclick="setMatchesSubTab('fixtures')">
-        📋 Schedule & Scores
-      </button>
-      <button class="sub-nav-btn ${matchesSubTab === 'standings' ? 'active' : ''}" onclick="setMatchesSubTab('standings')">
-        📊 Group Standings
-      </button>
-    </div>
-  `;
-
-  if (matchesSubTab === 'standings') {
-    container.innerHTML = subNavHtml + renderStandingsTablesHtml(list);
-    return;
   }
 
-  if (!list || list.length === 0) {
-    container.innerHTML = subNavHtml + '<div class="empty-state">No matches scheduled or recorded yet for this category.</div>';
-    return;
-  }
-
-  const heroHtml = renderNextMatchHeroHtml(list);
-
-  const matchesHtml = list.map(m => {
-    if (!m) return '';
-    const p1Info = getNOCInfo(m.player1);
-    const p2Info = getNOCInfo(m.player2);
-    const p1Norm = normName(m.player1);
-    const p2Norm = normName(m.player2);
-    const winNorm = normName(m.winner);
-
-    const isP1Winner = isMatchFinished(m) && winNorm && winNorm === p1Norm;
-    const isP2Winner = isMatchFinished(m) && winNorm && winNorm === p2Norm;
-
-    let stateBadgeClass = 'state-start';
-    let stateText = m.state || (isMatchFinished(m) ? 'Official' : 'Start List');
-    if (isMatchFinished(m) || stateText.toLowerCase().includes('official')) {
-      stateBadgeClass = 'state-official';
-      stateText = 'OFFI';
-    } else if (m.status === 'Live' || stateText.toLowerCase().includes('live')) {
-      stateBadgeClass = 'state-live';
-      stateText = 'LIVE';
-    } else {
-      stateText = 'START';
-    }
-
-    const timeString = formatMatchTime(m.date, m.time);
-    const scoreString = m.score && m.score !== '' ? m.score : 'vs';
+  // Render cards list
+  const cardsHtml = matches.map(m => {
+    const t1 = m.team1 || m.home_team || 'TBD';
+    const t2 = m.team2 || m.away_team || 'TBD';
+    const s1 = m.score1 != null ? m.score1 : '-';
+    const s2 = m.score2 != null ? m.score2 : '-';
+    const isFinished = (m.status || '').toLowerCase().includes('final') || (m.status || '').toLowerCase().includes('finished');
+    const t1Win = isFinished && Number(s1) > Number(s2);
+    const t2Win = isFinished && Number(s2) > Number(s1);
 
     return `
-      <div class="match-card">
-        <div class="match-top">
-          <span class="match-round">${m.round || 'Basketball Match'}</span>
-          <span class="state-badge ${stateBadgeClass}">${stateText}</span>
+      <div class="match-card" style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem; display:flex; justify-content:space-between; align-items:center;">
+        <div style="flex:1;">
+          <div style="font-size:0.75rem; color:var(--text-muted, #94a3b8); margin-bottom:0.4rem;">
+            ${m.stage || m.group || 'Group Stage'} • ${m.time || m.status || ''}
+          </div>
+          <div style="display:flex; flex-direction:column; gap:0.25rem;">
+            <div style="display:flex; align-items:center; gap:0.5rem; font-weight:${t1Win ? '700' : '500'}; color:${t1Win ? '#38bdf8' : 'inherit'};">
+              <span>${getFlagEmoji(t1)}</span> <span>${t1}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.5rem; font-weight:${t2Win ? '700' : '500'}; color:${t2Win ? '#38bdf8' : 'inherit'};">
+              <span>${getFlagEmoji(t2)}</span> <span>${t2}</span>
+            </div>
+          </div>
         </div>
-        <div class="match-time">${timeString}</div>
-        <div class="match-body">
-          <div class="team-box">
-            <span class="team-flag">${p1Info.flag}</span>
-            <span class="team-name ${isP1Winner ? 'winner' : ''}">${m.player1 || 'TBD'}</span>
-            ${p1Info.code ? `<span class="noc-tag">${p1Info.code}</span>` : ''}
-          </div>
-          <div class="score-box">${scoreString}</div>
-          <div class="team-box team-right">
-            <span class="team-flag">${p2Info.flag}</span>
-            <span class="team-name ${isP2Winner ? 'winner' : ''}">${m.player2 || 'TBD'}</span>
-            ${p2Info.code ? `<span class="noc-tag">${p2Info.code}</span>` : ''}
-          </div>
+        <div style="font-family:monospace; font-size:1.1rem; font-weight:700; text-align:right; min-width:48px;">
+          <div>${s1}</div>
+          <div>${s2}</div>
         </div>
       </div>
     `;
   }).join('');
 
-  container.innerHTML = subNavHtml + heroHtml + matchesHtml;
+  return heroHtml + cardsHtml;
 }
 
-// --- Predictions & Projected Podium Calculations ---
-function resolveProjectedPodium(teams) {
-  const list = extractList(teams);
-  if (list.length === 0) return null;
-  const parseVal = (v) => parseFloat(v) || 0;
-  const pool = [...list];
+// --- FIBA Official Group Standings Engine ---
+function renderStandingsTable(matches) {
+  const groups = {};
 
-  pool.sort((a, b) => parseVal(b.gold) - parseVal(a.gold));
-  const gold = pool.shift() || null;
+  matches.forEach(m => {
+    const rawGrp = m.group || m.stage || '';
+    if (!rawGrp.toLowerCase().includes('group')) return;
+    const grpName = rawGrp.trim();
+    if (!groups[grpName]) groups[grpName] = {};
 
-  pool.sort((a, b) => parseVal(b.silver) - parseVal(a.silver));
-  const silver = pool.shift() || null;
+    const t1 = m.team1 || m.home_team;
+    const t2 = m.team2 || m.away_team;
+    if (!t1 || !t2) return;
 
-  pool.sort((a, b) => parseVal(b.bronze) - parseVal(a.bronze));
-  const bronze = pool.shift() || null;
+    [t1, t2].forEach(team => {
+      if (!groups[grpName][team]) {
+        groups[grpName][team] = { name: team, gp: 0, w: 0, l: 0, pts: 0, pf: 0, pa: 0, diff: 0 };
+      }
+    });
 
-  return { gold, silver, bronze };
-}
+    const isFinished = (m.status || '').toLowerCase().includes('final') || (m.status || '').toLowerCase().includes('finished');
+    if (isFinished && m.score1 != null && m.score2 != null) {
+      const s1 = Number(m.score1);
+      const s2 = Number(m.score2);
 
-function renderPodiumHtml(title, podium) {
-  if (!podium || !podium.gold) return '';
-  const gInfo = getNOCInfo(podium.gold ? podium.gold.team : '');
-  const sInfo = getNOCInfo(podium.silver ? podium.silver.team : '');
-  const bInfo = getNOCInfo(podium.bronze ? podium.bronze.team : '');
+      groups[grpName][t1].gp += 1;
+      groups[grpName][t2].gp += 1;
+      groups[grpName][t1].pf += s1;
+      groups[grpName][t1].pa += s2;
+      groups[grpName][t2].pf += s2;
+      groups[grpName][t2].pa += s1;
 
-  return `
-    <div class="tally-header" style="margin-top: 10px;">
-      <span>🏅 Projected Podium • ${title}</span>
-    </div>
-    <div class="podium-spotlight">
-      <div class="podium-card silver-card">
-        <span class="podium-badge">🥈 Silver</span>
-        <div class="podium-flag">${sInfo.flag}</div>
-        <div class="podium-team">${podium.silver ? podium.silver.team : 'TBD'}</div>
-        <div class="podium-prob">${podium.silver ? (podium.silver.silver || '-') : '-'} Exp.</div>
-      </div>
-      <div class="podium-card gold-card">
-        <span class="podium-badge">🥇 Gold</span>
-        <div class="podium-flag">${gInfo.flag}</div>
-        <div class="podium-team">${podium.gold ? podium.gold.team : 'TBD'}</div>
-        <div class="podium-prob">${podium.gold ? (podium.gold.gold || '-') : '-'} Exp.</div>
-      </div>
-      <div class="podium-card bronze-card">
-        <span class="podium-badge">🥉 Bronze</span>
-        <div class="podium-flag">${bInfo.flag}</div>
-        <div class="podium-team">${podium.bronze ? podium.bronze.team : 'TBD'}</div>
-        <div class="podium-prob">${podium.bronze ? (podium.bronze.bronze || '-') : '-'} Exp.</div>
-      </div>
-    </div>
-  `;
-}
+      if (s1 > s2) {
+        groups[grpName][t1].w += 1;
+        groups[grpName][t1].pts += 2; // FIBA: 2 pts for Win
+        groups[grpName][t2].l += 1;
+        groups[grpName][t2].pts += 1; // FIBA: 1 pt for Loss
+      } else {
+        groups[grpName][t2].w += 1;
+        groups[grpName][t2].pts += 2;
+        groups[grpName][t1].l += 1;
+        groups[grpName][t1].pts += 1;
+      }
 
-function renderSportMedalTally(eventList) {
-  const tally = {};
-  const ensureEntry = (team) => {
-    if (!tally[team]) tally[team] = { team, gold: 0, silver: 0, bronze: 0, total: 0 };
-  };
-
-  eventList.forEach(ev => {
-    if (!ev.podium) return;
-    if (ev.podium.gold && ev.podium.gold.team) {
-      ensureEntry(ev.podium.gold.team);
-      tally[ev.podium.gold.team].gold += 1;
-      tally[ev.podium.gold.team].total += 1;
-    }
-    if (ev.podium.silver && ev.podium.silver.team) {
-      ensureEntry(ev.podium.silver.team);
-      tally[ev.podium.silver.team].silver += 1;
-      tally[ev.podium.silver.team].total += 1;
-    }
-    if (ev.podium.bronze && ev.podium.bronze.team) {
-      ensureEntry(ev.podium.bronze.team);
-      tally[ev.podium.bronze.team].bronze += 1;
-      tally[ev.podium.bronze.team].total += 1;
+      groups[grpName][t1].diff = groups[grpName][t1].pf - groups[grpName][t1].pa;
+      groups[grpName][t2].diff = groups[grpName][t2].pf - groups[grpName][t2].pa;
     }
   });
 
-  const sorted = Object.values(tally).sort((a, b) => {
-    if (b.gold !== a.gold) return b.gold - a.gold;
-    if (b.silver !== a.silver) return b.silver - a.silver;
-    if (b.bronze !== a.bronze) return b.bronze - a.bronze;
-    return b.total - a.total;
-  });
+  const groupKeys = Object.keys(groups).sort();
+  if (groupKeys.length === 0) {
+    return `<div style="text-align:center; padding:2rem; color:var(--text-muted, #94a3b8);">No group stage data available.</div>`;
+  }
 
-  if (sorted.length === 0) return '';
+  return groupKeys.map(grpKey => {
+    const teams = Object.values(groups[grpKey]).sort((a, b) => {
+      if (b.pts !== a.pts) return b.pts - a.pts;
+      if (b.diff !== a.diff) return b.diff - a.diff;
+      return b.pf - a.pf;
+    });
 
-  return `
-    <div class="tally-header">
-      <span>🏆 Basketball Projected Medal Table</span>
-      <span style="font-size: 0.7rem; color: var(--accent-blue);">${eventList.length} Events Combined</span>
-    </div>
-    <div class="table-container">
-      <table class="medal-table">
-        <thead>
-          <tr>
-            <th style="width: 45%;">Country / NOC</th>
-            <th>🥇</th>
-            <th>🥈</th>
-            <th>🥉</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${sorted.map((row, idx) => {
-            const info = getNOCInfo(row.team);
-            return `
-              <tr>
-                <td>
-                  <div class="team-cell">
-                    <span class="rank-num">${idx + 1}</span>
-                    <span class="team-flag">${info.flag}</span>
-                    <span style="font-weight: 700;">${row.team}</span>
-                    ${info.code ? `<span class="noc-tag">${info.code}</span>` : ''}
-                  </div>
-                </td>
-                <td class="col-gold">${row.gold}</td>
-                <td class="col-silver">${row.silver}</td>
-                <td class="col-bronze">${row.bronze}</td>
-                <td class="col-total">${row.total}</td>
-              </tr>
-            `;
-          }).join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
-
-function renderPredictionsView(container, menPreds, womenPreds, activeGender) {
-  const menPodium = resolveProjectedPodium(menPreds);
-  const womenPodium = resolveProjectedPodium(womenPreds);
-
-  const allEvents = [];
-  if (menPodium) allEvents.push({ eventName: "Men's Tournament", podium: menPodium });
-  if (womenPodium) allEvents.push({ eventName: "Women's Tournament", podium: womenPodium });
-
-  const tallyHtml = renderSportMedalTally(allEvents);
-
-  const activePodium = activeGender === 'men' ? menPodium : womenPodium;
-  const activeTitle = activeGender === 'men' ? "Men's Tournament" : "Women's Tournament";
-  const podiumHtml = renderPodiumHtml(activeTitle, activePodium);
-
-  const activeList = extractList(activeGender === 'men' ? menPreds : womenPreds);
-  let tableHtml = '';
-
-  if (activeList.length > 0) {
-    tableHtml = `
-      <div class="tally-header" style="margin-top: 14px;">
-        <span>📊 Monte Carlo Simulation Probabilities</span>
-      </div>
-      <div class="table-container">
-        <table class="medal-table">
+    return `
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; margin-bottom:1.5rem; overflow-x:auto;">
+        <div style="padding:0.75rem 1rem; font-weight:700; font-size:0.9rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between;">
+          <span>${grpKey}</span>
+          <span style="font-size:0.75rem; color:var(--text-muted, #94a3b8); font-weight:400;">Top 2 advance</span>
+        </div>
+        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
           <thead>
-            <tr>
-              <th>Team</th>
-              <th>🥇 Gold</th>
-              <th>🥈 Silver</th>
-              <th>🥉 Bronze</th>
-              <th>Medal</th>
+            <tr style="color:var(--text-muted, #94a3b8); font-size:0.75rem; border-bottom:1px solid rgba(255,255,255,0.05);">
+              <th style="padding:0.6rem 0.5rem; text-align:left;"># Team</th>
+              <th style="padding:0.6rem 0.3rem;">GP</th>
+              <th style="padding:0.6rem 0.3rem;">W</th>
+              <th style="padding:0.6rem 0.3rem;">L</th>
+              <th style="padding:0.6rem 0.3rem;">PF</th>
+              <th style="padding:0.6rem 0.3rem;">PA</th>
+              <th style="padding:0.6rem 0.3rem;">DIFF</th>
+              <th style="padding:0.6rem 0.5rem; font-weight:700; color:var(--text-main, #f8fafc);">PTS</th>
             </tr>
           </thead>
           <tbody>
-            ${activeList.map(t => {
-              const info = getNOCInfo(t.team);
-              return `
-                <tr>
-                  <td>
-                    <div class="team-cell">
-                      <span class="rank-num">${t.rank || '-'}</span>
-                      <span class="team-flag">${info.flag}</span>
-                      <span style="font-weight: 600;">${t.team}</span>
-                    </div>
-                  </td>
-                  <td class="col-gold">${t.gold || '-'}</td>
-                  <td class="col-silver">${t.silver || '-'}</td>
-                  <td class="col-bronze">${t.bronze || '-'}</td>
-                  <td style="font-weight: 800; color: #60a5fa;">${t.podium || '-'}</td>
-                </tr>
-              `;
-            }).join('')}
+            ${teams.map((t, idx) => `
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${idx < 2 ? 'rgba(59,130,246,0.04)' : 'transparent'};">
+                <td style="padding:0.6rem 0.5rem; text-align:left; font-weight:${idx < 2 ? '700' : '400'};">
+                  <span style="display:inline-block; width:16px; color:${idx < 2 ? '#38bdf8' : 'inherit'};">${idx + 1}</span>
+                  ${getFlagEmoji(t.name)} ${t.name}
+                </td>
+                <td style="padding:0.6rem 0.3rem;">${t.gp}</td>
+                <td style="padding:0.6rem 0.3rem; color:#4ade80;">${t.w}</td>
+                <td style="padding:0.6rem 0.3rem; color:#f87171;">${t.l}</td>
+                <td style="padding:0.6rem 0.3rem;">${t.pf}</td>
+                <td style="padding:0.6rem 0.3rem;">${t.pa}</td>
+                <td style="padding:0.6rem 0.3rem; font-family:monospace; color:${t.diff > 0 ? '#4ade80' : t.diff < 0 ? '#f87171' : 'inherit'};">${t.diff > 0 ? '+' + t.diff : t.diff}</td>
+                <td style="padding:0.6rem 0.5rem; font-weight:700; color:#38bdf8;">${t.pts}</td>
+              </tr>
+            `).join('')}
           </tbody>
         </table>
       </div>
     `;
-  } else {
-    tableHtml = '<div class="empty-state">No simulation projections available for this category yet.</div>';
-  }
-
-  container.innerHTML = tallyHtml + podiumHtml + tableHtml;
+  }).join('');
 }
 
-// --- Calibration, Delta & Predictive Alignment ---
-function calculateDeltaBadge(currentVal, initialVal, records) {
-  let cur = parseFloat(currentVal) || 0;
-  let diff = 0;
+// --- Knockout Bracket Engine ---
+function renderKnockoutBracket(matches) {
+  const getStage = (m) => ((m.stage || m.round || m.group || '') + ' ' + (m.status || '')).toLowerCase();
 
-  if (initialVal !== undefined && initialVal !== null && initialVal !== "") {
-    diff = +(cur - (parseFloat(initialVal) || 0)).toFixed(1);
-  } else if (records) {
-    diff = +((records.w * 2.8) - (records.l * 3.5)).toFixed(1);
-  }
+  const qfMatches = matches.filter(m => getStage(m).includes('quarter') || getStage(m).includes('qf'));
+  const sfMatches = matches.filter(m => getStage(m).includes('semi') || getStage(m).includes('sf'));
+  const finalMatch = matches.find(m => getStage(m).includes('gold') || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
+  const bronzeMatch = matches.find(m => getStage(m).includes('bronze') || getStage(m).includes('3rd'));
 
-  if (diff > 0) return `<span class="delta-badge delta-pos">+${diff}%</span>`;
-  if (diff < 0) return `<span class="delta-badge delta-neg">${diff}%</span>`;
-  return `<span class="delta-badge delta-zero">0.0%</span>`;
+  const defaultQF = [
+    { title: 'QF 1', t1: '1st Group A', t2: '2nd Group B' },
+    { title: 'QF 2', t1: '1st Group C', t2: '2nd Group D' },
+    { title: 'QF 3', t1: '1st Group B', t2: '2nd Group A' },
+    { title: 'QF 4', t1: '1st Group D', t2: '2nd Group C' }
+  ];
+
+  const renderSlot = (title, match, fallback, medalType = null) => {
+    const t1 = match ? (match.team1 || match.home_team || 'TBD') : fallback.t1;
+    const t2 = match ? (match.team2 || match.away_team || 'TBD') : fallback.t2;
+    const s1 = match && match.score1 != null ? match.score1 : '-';
+    const s2 = match && match.score2 != null ? match.score2 : '-';
+    const isFinished = match && ((match.status || '').toLowerCase().includes('final') || (match.status || '').toLowerCase().includes('finished'));
+    const t1Win = isFinished && Number(s1) > Number(s2);
+    const t2Win = isFinished && Number(s2) > Number(s1);
+
+    const f1 = getFlagEmoji(t1);
+    const f2 = getFlagEmoji(t2);
+
+    return `
+      <div class="bracket-match-card">
+        <div class="bracket-match-header">
+          <span>${title}</span>
+          ${medalType ? `<span class="bracket-medal-badge medal-${medalType}">${medalType.toUpperCase()}</span>` : ''}
+          <span>${match ? (match.time || match.status || '') : 'Scheduled'}</span>
+        </div>
+        <div class="bracket-team-row ${t1Win ? 'winner' : ''}">
+          <div class="bracket-team-info"><span>${f1}</span> <span>${t1}</span></div>
+          <span class="bracket-score">${s1}</span>
+        </div>
+        <div class="bracket-team-row ${t2Win ? 'winner' : ''}">
+          <div class="bracket-team-info"><span>${f2}</span> <span>${t2}</span></div>
+          <span class="bracket-score">${s2}</span>
+        </div>
+      </div>
+    `;
+  };
+
+  return `
+    <div class="bracket-wrapper">
+      <div class="bracket-container">
+        <!-- Quarterfinals -->
+        <div class="bracket-round">
+          <div class="bracket-round-header">Quarterfinals</div>
+          ${[0, 1, 2, 3].map(i => renderSlot(`QF ${i + 1}`, qfMatches[i], defaultQF[i])).join('')}
+        </div>
+
+        <!-- Semifinals -->
+        <div class="bracket-round">
+          <div class="bracket-round-header">Semifinals</div>
+          ${renderSlot('SF 1', sfMatches[0], { t1: 'Winner QF 1', t2: 'Winner QF 2' })}
+          ${renderSlot('SF 2', sfMatches[1], { t1: 'Winner QF 3', t2: 'Winner QF 4' })}
+        </div>
+
+        <!-- Medal Matches -->
+        <div class="bracket-round">
+          <div class="bracket-round-header">Medal Matches</div>
+          ${renderSlot('Gold Medal', finalMatch, { t1: 'Winner SF 1', t2: 'Winner SF 2' }, 'gold')}
+          ${renderSlot('Bronze Medal', bronzeMatch, { t1: 'Loser SF 1', t2: 'Loser SF 2' }, 'bronze')}
+        </div>
+      </div>
+    </div>
+  `;
 }
 
-function renderCalibrationView(container, teams, matches) {
-  const teamList = extractList(teams);
-  const matchList = extractList(matches);
+// --- Predictions View ---
+function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
+  const preds = currentGender === 'men' ? menPreds : womenPreds;
 
-  if (teamList.length === 0) {
-    container.innerHTML = '<div class="empty-state">Simulation predictions not found to calibrate against.</div>';
+  if (!preds || preds.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:3rem 1rem; color:var(--text-muted, #94a3b8);">
+        No simulation projection models available for this division.
+      </div>`;
     return;
   }
 
+  const sorted = [...preds].sort((a, b) => (b.gold_prob || b.gold || 0) - (a.gold_prob || a.gold || 0));
+
+  container.innerHTML = `
+    <div style="margin-bottom:1rem; text-align:center; font-size:0.8rem; color:var(--text-muted, #94a3b8);">
+      Monte Carlo simulation (50,000 runs) weighted by FIBA Rank, MoV, and Host Boost.
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
+      ${sorted.map(p => {
+        const team = p.team || p.country || 'Unknown';
+        const gold = Math.round((p.gold_prob || p.gold || 0) * 100);
+        const silver = Math.round((p.silver_prob || p.silver || 0) * 100);
+        const bronze = Math.round((p.bronze_prob || p.bronze || 0) * 100);
+        const total = gold + silver + bronze;
+
+        return `
+          <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+              <div style="font-weight:700; font-size:1rem; display:flex; align-items:center; gap:0.5rem;">
+                <span>${getFlagEmoji(team)}</span> <span>${team}</span>
+              </div>
+              <span style="font-size:0.75rem; color:#38bdf8; font-weight:700;">Podium: ${total}%</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.4rem;">
+              <span>🥇 Gold: <strong>${gold}%</strong></span>
+              <span>🥈 Silver: <strong>${silver}%</strong></span>
+              <span>🥉 Bronze: <strong>${bronze}%</strong></span>
+            </div>
+            <div style="height:6px; width:100%; background:rgba(255,255,255,0.06); border-radius:999px; overflow:hidden; display:flex;">
+              <div style="width:${gold}%; background:#eab308;"></div>
+              <div style="width:${silver}%; background:#94a3b8;"></div>
+              <div style="width:${bronze}%; background:#d97706;"></div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+// --- Model Calibration View ---
+function renderCalibrationView(container, predictions, matches) {
+  if (!matches || matches.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:3rem 1rem; color:var(--text-muted, #94a3b8);">
+        Awaiting completed matches to evaluate prediction calibration.
+      </div>`;
+    return;
+  }
+
+  // Calculate prediction win rates against actual match results
+  const finished = matches.filter(m => {
+    const s = (m.status || '').toLowerCase();
+    return (s.includes('final') || s.includes('finished')) && m.score1 != null && m.score2 != null;
+  });
+
+  let correctFavorites = 0;
+  let evaluatedMatches = 0;
+  const upsetLogs = [];
+
   const rankMap = {};
-  teamList.forEach(t => { rankMap[normName(t.team)] = t.rank; });
+  (predictions || []).forEach((p, idx) => {
+    rankMap[p.team || p.country] = idx + 1;
+  });
 
-  const records = {};
-  let finishedCount = 0;
-  const upsets = [];
+  finished.forEach(m => {
+    const t1 = m.team1 || m.home_team;
+    const t2 = m.team2 || m.away_team;
+    const s1 = Number(m.score1);
+    const s2 = Number(m.score2);
+    const r1 = rankMap[t1] || 99;
+    const r2 = rankMap[t2] || 99;
 
-  matchList.forEach(m => {
-    if (!m || !isMatchFinished(m) || !m.winner) return;
-    finishedCount++;
-
-    const p1Norm = normName(m.player1);
-    const p2Norm = normName(m.player2);
-    const wNorm = normName(m.winner);
-
-    records[p1Norm] = records[p1Norm] || { w: 0, l: 0 };
-    records[p2Norm] = records[p2Norm] || { w: 0, l: 0 };
-
-    if (wNorm === p1Norm) {
-      records[p1Norm].w++;
-      records[p2Norm].l++;
-    } else {
-      records[p2Norm].w++;
-      records[p1Norm].l++;
-    }
-
-    const r1 = rankMap[p1Norm] || 99;
-    const r2 = rankMap[p2Norm] || 99;
-
-    // Any match where the lower-ranked team defeated the favorite is logged as an upset
     if (r1 !== r2) {
-      const favNorm = r1 < r2 ? p1Norm : p2Norm;
-      if (wNorm !== favNorm) {
-        upsets.push({
-          winner: m.winner,
-          loser: wNorm === p1Norm ? m.player2 : m.player1,
-          score: m.score,
-          round: m.round
+      evaluatedMatches++;
+      const fav = r1 < r2 ? t1 : t2;
+      const actualWinner = s1 > s2 ? t1 : t2;
+
+      if (fav === actualWinner) {
+        correctFavorites++;
+      } else {
+        upsetLogs.push({
+          winner: actualWinner,
+          loser: actualWinner === t1 ? t2 : t1,
+          score: `${s1} - ${s2}`,
+          upsetSeed: Math.max(r1, r2)
         });
       }
     }
   });
 
-  // Strict whole-tournament calibration: 16 total - 6 upsets = 10 expected outcomes (10/16 = 63%)
-  const favoriteHits = Math.max(0, finishedCount - upsets.length);
-  const accuracy = finishedCount > 0 ? Math.round((favoriteHits / finishedCount) * 100) : 100;
-  const alignmentStatus = accuracy >= 75 ? 'Optimal' : (accuracy >= 50 ? 'Moderate' : 'Volatile');
+  const accuracy = evaluatedMatches > 0 ? Math.round((correctFavorites / evaluatedMatches) * 100) : '--';
 
-  let kpiHtml = `
-    <div class="accuracy-grid">
-      <div class="kpi-card">
-        <div class="kpi-title">Model Accuracy</div>
-        <div class="kpi-val">${accuracy}%</div>
-        <div class="kpi-sub">${favoriteHits}/${finishedCount} favorites won</div>
+  container.innerHTML = `
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+        <div style="font-size:0.75rem; color:var(--text-muted, #94a3b8); margin-bottom:0.25rem;">Favorite Accuracy</div>
+        <div style="font-size:1.6rem; font-weight:800; color:#38bdf8;">${accuracy}%</div>
+        <div style="font-size:0.7rem; color:var(--text-muted, #94a3b8);">${correctFavorites}/${evaluatedMatches} correct</div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-title">Upsets Logged</div>
-        <div class="kpi-val" style="color: ${upsets.length > 0 ? '#fb7185' : '#4ade80'};">${upsets.length}</div>
-        <div class="kpi-sub">${upsets.length === 0 ? 'No deviations' : 'Underdog wins'}</div>
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+        <div style="font-size:0.75rem; color:var(--text-muted, #94a3b8); margin-bottom:0.25rem;">Completed Matches</div>
+        <div style="font-size:1.6rem; font-weight:800; color:#4ade80;">${finished.length}</div>
+        <div style="font-size:0.7rem; color:var(--text-muted, #94a3b8);">Evaluated</div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-title">Calibration</div>
-        <div class="kpi-val" style="color: #60a5fa;">${alignmentStatus}</div>
-        <div class="kpi-sub">Sim Alignment</div>
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+        <div style="font-size:0.75rem; color:var(--text-muted, #94a3b8); margin-bottom:0.25rem;">Upsets Recorded</div>
+        <div style="font-size:1.6rem; font-weight:800; color:#f87171;">${upsetLogs.length}</div>
+        <div style="font-size:0.7rem; color:var(--text-muted, #94a3b8);">Underdog victories</div>
       </div>
     </div>
-  `;
 
-  let tableHtml = `
-    <div class="tally-header">
-      <span>Live Tracking vs Pre-Tournament Model</span>
-    </div>
-    <div class="table-container">
-      <table class="medal-table">
-        <thead>
-          <tr>
-            <th>Team</th>
-            <th>W-L</th>
-            <th>Trajectory</th>
-            <th>🥇 Exp. Gold</th>
-            <th>Δ Shift</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${teamList.map(t => {
-            const teamKey = normName(t.team);
-            const rec = records[teamKey] || { w: 0, l: 0 };
-            const info = getNOCInfo(t.team);
-
-            let traj = '<span class="pill-status pill-on-track">On Track</span>';
-            if (rec.l >= 2) traj = '<span class="pill-status pill-at-risk">At Risk</span>';
-            else if (rec.l === 1) traj = '<span class="pill-status pill-contested">Contested</span>';
-
-            const deltaBadge = calculateDeltaBadge(t.gold, t.initial_gold, rec);
-
-            return `
-              <tr>
-                <td>
-                  <div class="team-cell">
-                    <span class="rank-num">${t.rank || '-'}</span>
-                    <span class="team-flag">${info.flag}</span>
-                    <span style="font-weight: 600;">${t.team}</span>
-                  </div>
-                </td>
-                <td style="font-weight: 700;">${rec.w}-${rec.l}</td>
-                <td>${traj}</td>
-                <td class="col-gold">${t.gold || '-'}</td>
-                <td style="white-space: nowrap;">${deltaBadge}</td>
-              </tr>
-            `;
-          }).join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  let upsetsHtml = '';
-  if (upsets.length > 0) {
-    upsetsHtml = `
-      <div style="margin-top: 14px;">
-        <div class="tally-header">
-          <span style="color: var(--badge-danger);">⚠️ Logged Upsets (Model Deviations)</span>
-        </div>
-        ${upsets.map(u => {
-          const winInfo = getNOCInfo(u.winner);
-          const loseInfo = getNOCInfo(u.loser);
-          return `
-            <div class="match-card" style="border-left: 3px solid var(--badge-danger); padding: 10px 14px;">
-              <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
-                <span><strong>${winInfo.flag} ${u.winner}</strong> def. ${loseInfo.flag} ${u.loser}</span>
-                <span style="font-weight: 800; color: #fb7185;">${u.score}</span>
-              </div>
-              <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px;">${u.round}</div>
+    ${upsetLogs.length > 0 ? `
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem;">
+        <div style="font-size:0.85rem; font-weight:700; margin-bottom:0.75rem; color:#f87171;">⚡ Upset Tracker</div>
+        ${upsetLogs.map(u => `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.85rem;">
+            <div>
+              <span style="color:#4ade80; font-weight:700;">${getFlagEmoji(u.winner)} ${u.winner}</span>
+              <span style="color:var(--text-muted, #94a3b8);"> def. </span>
+              <span style="color:#94a3b8;">${getFlagEmoji(u.loser)} ${u.loser}</span>
             </div>
-          `;
-        }).join('')}
+            <span style="font-family:monospace; font-weight:700;">${u.score}</span>
+          </div>
+        `).join('')}
       </div>
-    `;
-  }
-
-  container.innerHTML = kpiHtml + tableHtml + upsetsHtml;
+    ` : ''}
+  `;
 }
