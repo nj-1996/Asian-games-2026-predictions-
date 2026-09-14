@@ -54,7 +54,7 @@ function getFlagEmoji(teamName) {
   return '🏀';
 }
 
-// --- Team Name Normalizer ---
+// --- Team Name Normalizer for Calibration Indexing ---
 function cleanTeamName(name) {
   if (!name || typeof name !== 'string') return '';
   let n = name.toLowerCase()
@@ -76,7 +76,7 @@ function cleanTeamName(name) {
   return n;
 }
 
-// --- Team Display Name Formatter ---
+// --- Universal Team Display Name Formatter ---
 function formatTeamDisplayName(name) {
   const str = String(name || 'TBD').trim();
   const lower = str.toLowerCase();
@@ -88,7 +88,6 @@ function formatTeamDisplayName(name) {
 
   return str;
 }
-
 
 // --- Value Parsers ---
 function parseStatNumber(val) {
@@ -126,7 +125,6 @@ function formatMatchDateTime(dateStr, timeStr) {
 
   if (!dateStr && !timeStr) return '';
 
-  // If time is missing, format just the date
   if (!timeStr) {
     const parts = dateStr.split('-').map(Number);
     if (parts.length >= 3) {
@@ -141,7 +139,6 @@ function formatMatchDateTime(dateStr, timeStr) {
   let hour = parseInt(timeMatch[1], 10);
   let minute = parseInt(timeMatch[2], 10);
 
-  // If date is missing, format just the time
   if (!dateStr) {
     if (currentTimezone === 'IST') {
       minute -= 30;
@@ -152,7 +149,6 @@ function formatMatchDateTime(dateStr, timeStr) {
     return `${pad(hour)}:${pad(minute)} ${currentTimezone}`;
   }
 
-  // Parse YYYY-MM-DD
   const dateParts = dateStr.split('-').map(Number);
   if (dateParts.length < 3) {
     return `${dateStr} ${timeStr}`;
@@ -171,7 +167,6 @@ function formatMatchDateTime(dateStr, timeStr) {
     hour -= 3;
     if (hour < 0) {
       hour += 24;
-      // Rollover to previous day
       const prevDate = new Date(year, month, day - 1);
       year = prevDate.getFullYear();
       month = prevDate.getMonth();
@@ -183,21 +178,8 @@ function formatMatchDateTime(dateStr, timeStr) {
 }
 
 // --- Universal Match Normalizer ---
-// --- Universal Match Normalizer ---
 function parseMatchData(m) {
   if (!m) return { t1: 'TBD', t2: 'TBD', s1: '-', s2: '-', status: '', time: '', date: '', stage: '', isFinished: false, winner: '' };
-    const formatTeamDisplayName = (name) => {
-    const str = String(name || 'TBD').trim();
-    const lower = str.toLowerCase();
-    
-    if (lower === 'korea' || lower === 'republic of korea' || lower === 'kor') return 'South Korea';
-    if (lower.includes('dpr') || lower === 'north korea' || lower === 'prk') return 'North Korea';
-    if (lower === 'ir iran' || lower === 'iran, islamic republic of') return 'Iran'; // optional: omit if you prefer "IR Iran"
-    if (lower.includes('hong kong')) return 'Hong Kong';
-    
-    return str;
-  };
-
 
   let t1 = m.player1 || m.player_1 || m.team1 || m.team_1 || m.teamA || m.team_a || m.home || m.home_team || '';
   if (!t1 && Array.isArray(m.teams) && m.teams.length > 0) t1 = m.teams[0];
@@ -241,7 +223,6 @@ function parseMatchData(m) {
     isFinished
   };
 }
-
 
 // --- Sub-Navigation States ---
 let activeMatchesSubView = 'schedule';
@@ -582,7 +563,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
       const rawName = predObj.team || predObj.country || predObj.name || '';
       if (!rawName) return;
       const cleaned = cleanTeamName(rawName);
-      const displayName = rawName.replace(/\(host\)/gi, '').trim();
+      const displayName = formatTeamDisplayName(rawName.replace(/\(host\)/gi, '').trim());
 
       if (!tableMap[cleaned]) {
         tableMap[cleaned] = {
@@ -698,7 +679,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
       ${sorted.map(p => {
         const rawTeam = p.team || p.country || p.name || 'Unknown';
-        const team = rawTeam.replace(/\(host\)/gi, '').trim();
+        const team = formatTeamDisplayName(rawTeam.replace(/\(host\)/gi, '').trim());
         const isHost = rawTeam.toLowerCase().includes('host');
 
         const gold = parseStatNumber(getProb(p, ['gold', 'gold_prob', 'gold_pct', 'p_gold']));
