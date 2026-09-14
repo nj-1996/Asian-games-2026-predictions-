@@ -1,3 +1,43 @@
+// --- Timezone State & Formatter ---
+let currentTimezone = localStorage.getItem('app_tz') || 'IST';
+
+function setTimezone(tz) {
+  currentTimezone = tz;
+  localStorage.setItem('app_tz', tz);
+  const container = document.getElementById('content-cards');
+  if (container) {
+    const matches = currentGender === 'men' ? appData.menMatches : appData.womenMatches;
+    renderMatchesView(container, matches);
+  }
+}
+
+function formatMatchTime(timeStr) {
+  if (!timeStr || typeof timeStr !== 'string') return '';
+  const match = timeStr.match(/(\d{1,2}):(\d{2})/);
+  if (!match) return timeStr;
+
+  if (currentTimezone === 'JST') {
+    return `${timeStr} JST`;
+  }
+
+  // Convert JST (UTC+9) -> IST (UTC+5:30): subtract 3 hours 30 mins
+  let h = parseInt(match[1], 10);
+  let m = parseInt(match[2], 10);
+
+  m -= 30;
+  if (m < 0) {
+    m += 60;
+    h -= 1;
+  }
+  h -= 3;
+  if (h < 0) {
+    h += 24;
+  }
+
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(h)}:${pad(m)} IST`;
+}
+
 // --- Flag Resolver ---
 function getFlagEmoji(teamName) {
   if (typeof window.getFlag === 'function') return window.getFlag(teamName);
@@ -40,19 +80,16 @@ function getFlagEmoji(teamName) {
 function parseMatchData(m) {
   if (!m) return { t1: 'TBD', t2: 'TBD', s1: '-', s2: '-', status: '', time: '', stage: '', isFinished: false, winner: '' };
 
-  // 1. Resolve Team 1 (Scraper uses player1)
   let t1 = m.player1 || m.player_1 || m.team1 || m.team_1 || m.teamA || m.team_a || m.home || m.home_team || '';
   if (!t1 && Array.isArray(m.teams) && m.teams.length > 0) t1 = m.teams[0];
   if (typeof t1 === 'object' && t1 !== null) t1 = t1.name || t1.team || 'TBD';
   t1 = String(t1 || 'TBD').trim();
 
-  // 2. Resolve Team 2 (Scraper uses player2)
   let t2 = m.player2 || m.player_2 || m.team2 || m.team_2 || m.teamB || m.team_b || m.away || m.away_team || '';
   if (!t2 && Array.isArray(m.teams) && m.teams.length > 1) t2 = m.teams[1];
   if (typeof t2 === 'object' && t2 !== null) t2 = t2.name || t2.team || 'TBD';
   t2 = String(t2 || 'TBD').trim();
 
-  // 3. Resolve Scores (Scraper uses "score": "53 - 59")
   let s1 = m.score1 != null ? m.score1 : (m.score_a != null ? m.score_a : (m.home_score != null ? m.home_score : null));
   let s2 = m.score2 != null ? m.score2 : (m.score_b != null ? m.score_b : (m.away_score != null ? m.away_score : null));
 
@@ -66,7 +103,6 @@ function parseMatchData(m) {
   s1 = s1 != null && s1 !== '' ? String(s1) : '-';
   s2 = s2 != null && s2 !== '' ? String(s2) : '-';
 
-  // 4. Status & Stage (Scraper uses "round": "Men Group B G 1")
   const status = String(m.status || m.state || '').trim();
   const lowerStatus = status.toLowerCase();
   const isFinished = lowerStatus.includes('final') || lowerStatus.includes('finished') || (s1 !== '-' && s2 !== '-' && !lowerStatus.includes('live'));
@@ -77,7 +113,8 @@ function parseMatchData(m) {
     s1,
     s2,
     status,
-    time: m.time || m.date || '',
+    time: m.time || '',
+    date: m.date || '',
     stage: m.round || m.stage || m.group || 'Group Stage',
     winner: m.winner || '',
     isFinished
@@ -99,10 +136,19 @@ function setMatchesSubView(subView) {
 // --- Main Matches Router ---
 function renderMatchesView(container, matches) {
   const pillsHeader = `
-    <div style="display:flex; background:rgba(15,23,42,0.6); padding:4px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); margin-bottom:1.25rem; gap:4px;">
-      <button style="flex:1; padding:8px 4px; font-size:0.8rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'schedule' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'schedule' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('schedule')">📋 Schedule</button>
-      <button style="flex:1; padding:8px 4px; font-size:0.8rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'standings' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'standings' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('standings')">📊 Standings</button>
-      <button style="flex:1; padding:8px 4px; font-size:0.8rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'bracket' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'bracket' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('bracket')">🌳 Bracket</button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; gap:8px;">
+      <!-- Sub-view Navigation -->
+      <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); gap:3px; flex:1;">
+        <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'schedule' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'schedule' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('schedule')">📋 Schedule</button>
+        <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'standings' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'standings' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('standings')">📊 Standings</button>
+        <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'bracket' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'bracket' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('bracket')">🌳 Bracket</button>
+      </div>
+
+      <!-- Timezone Segmented Toggle -->
+      <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); gap:2px;">
+        <button style="padding:6px 9px; font-size:0.75rem; font-weight:700; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${currentTimezone === 'IST' ? '#38bdf8' : 'transparent'}; color:${currentTimezone === 'IST' ? '#0f172a' : '#94a3b8'};" onclick="setTimezone('IST')">IST</button>
+        <button style="padding:6px 9px; font-size:0.75rem; font-weight:700; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${currentTimezone === 'JST' ? '#38bdf8' : 'transparent'}; color:${currentTimezone === 'JST' ? '#0f172a' : '#94a3b8'};" onclick="setTimezone('JST')">JST</button>
+      </div>
     </div>
   `;
 
@@ -138,6 +184,8 @@ function renderScheduleAndHero(matches) {
   let heroHtml = '';
   if (heroTarget) {
     const isLive = heroTarget.status.toLowerCase().includes('live');
+    const displayTime = heroTarget.time ? formatMatchTime(heroTarget.time) : (heroTarget.date || 'Scheduled');
+
     heroHtml = `
       <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.8)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center;">
         <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.2rem 0.65rem; border-radius:9999px; background:${isLive ? 'rgba(239,68,68,0.2)' : 'rgba(59,130,246,0.2)'}; color:${isLive ? '#ef4444' : '#60a5fa'}; margin-bottom:0.75rem;">
@@ -157,7 +205,7 @@ function renderScheduleAndHero(matches) {
           </div>
         </div>
         <div style="font-size:0.8rem; color:#94a3b8;">
-          ${heroTarget.time} • ${heroTarget.stage}
+          ${displayTime} • ${heroTarget.stage}
         </div>
       </div>
     `;
@@ -166,12 +214,13 @@ function renderScheduleAndHero(matches) {
   const cardsHtml = parsed.map(m => {
     const t1Win = m.winner ? m.winner.toLowerCase() === m.t1.toLowerCase() : (m.isFinished && Number(m.s1) > Number(m.s2));
     const t2Win = m.winner ? m.winner.toLowerCase() === m.t2.toLowerCase() : (m.isFinished && Number(m.s2) > Number(m.s1));
+    const displayTime = m.time ? formatMatchTime(m.time) : (m.date || m.status);
 
     return `
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem; display:flex; justify-content:space-between; align-items:center;">
         <div style="flex:1;">
           <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.4rem;">
-            ${m.stage} • ${m.time || m.status}
+            ${m.stage} • ${displayTime}
           </div>
           <div style="display:flex; flex-direction:column; gap:0.25rem;">
             <div style="display:flex; align-items:center; gap:0.5rem; font-weight:${t1Win ? '700' : '500'}; color:${t1Win ? '#38bdf8' : 'inherit'};">
@@ -200,7 +249,6 @@ function renderStandingsTable(matches) {
   matches.forEach(rawMatch => {
     const m = parseMatchData(rawMatch);
 
-    // Extract cleanly e.g. "Group B" from "Men Group B G 1"
     const grpMatch = m.stage.match(/Group\s+[A-Za-z0-9]+/i) || m.stage.match(/Pool\s+[A-Za-z0-9]+/i);
     const grpName = grpMatch ? grpMatch[0] : (m.stage.toLowerCase().includes('group') ? m.stage : null);
 
@@ -320,13 +368,14 @@ function renderKnockoutBracket(matches) {
     const isFinished = match ? match.isFinished : false;
     const t1Win = match && match.winner ? match.winner.toLowerCase() === t1.toLowerCase() : (isFinished && Number(s1) > Number(s2));
     const t2Win = match && match.winner ? match.winner.toLowerCase() === t2.toLowerCase() : (isFinished && Number(s2) > Number(s1));
+    const displayTime = match && match.time ? formatMatchTime(match.time) : (match ? match.status : 'Scheduled');
 
     return `
       <div class="bracket-match-card">
         <div class="bracket-match-header">
           <span>${title}</span>
           ${medalType ? `<span class="bracket-medal-badge medal-${medalType}">${medalType.toUpperCase()}</span>` : ''}
-          <span>${match ? (match.time || match.status) : 'Scheduled'}</span>
+          <span>${displayTime}</span>
         </div>
         <div class="bracket-team-row ${t1Win ? 'winner' : ''}">
           <div class="bracket-team-info"><span>${getFlagEmoji(t1)}</span> <span>${t1}</span></div>
