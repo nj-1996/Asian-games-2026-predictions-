@@ -493,9 +493,8 @@ function renderStandingsTable(matches) {
       return b.pf - a.pf;
     });
 
-    const headerNote = allGroupFinished
-      ? '<span style="font-size:0.75rem;"><strong style="color:#4ade80;">Q</strong> Qualified &nbsp;•&nbsp; <strong style="color:#38bdf8;">q</strong> Wildcard &nbsp;•&nbsp; <strong style="color:#f87171;">E</strong> Eliminated</span>'
-      : '<span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 + best 2 3rd advance</span>';
+        const headerNote = '<span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 + best 2 3rd advance</span>';
+
 
     return `
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; margin-bottom:1.5rem; overflow-x:auto;">
