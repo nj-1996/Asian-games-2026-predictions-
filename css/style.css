@@ -610,8 +610,28 @@ button.sync-status.is-success {
 /* --- Knockout Bracket Layout --- */
 .bracket-wrapper {
   overflow-x: auto;
-  padding: 1rem 0.5rem 2rem;
+  padding: 1rem 0.5rem 1.5rem;
   -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Custom mobile-friendly scrollbar indicator */
+.bracket-wrapper::-webkit-scrollbar {
+  height: 5px;
+}
+
+.bracket-wrapper::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+}
+
+.bracket-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.4);
+  border-radius: 999px;
+}
+
+.bracket-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.7);
 }
 
 .bracket-container {
@@ -702,4 +722,3 @@ button.sync-status.is-success {
 
 .medal-gold { background: rgba(234, 179, 8, 0.2); color: #facc15; }
 .medal-bronze { background: rgba(217, 119, 6, 0.2); color: #f59e0b; }
-
