@@ -76,6 +76,20 @@ function cleanTeamName(name) {
   return n;
 }
 
+// --- Team Display Name Formatter ---
+function formatTeamDisplayName(name) {
+  const str = String(name || 'TBD').trim();
+  const lower = str.toLowerCase();
+
+  if (lower === 'korea' || lower === 'republic of korea' || lower === 'kor') return 'South Korea';
+  if (lower.includes('dpr') || lower === 'north korea' || lower === 'prk') return 'North Korea';
+  if (lower === 'ir iran' || lower === 'iran, islamic republic of') return 'Iran';
+  if (lower.includes('hong kong')) return 'Hong Kong';
+
+  return str;
+}
+
+
 // --- Value Parsers ---
 function parseStatNumber(val) {
   if (val == null) return 0;
