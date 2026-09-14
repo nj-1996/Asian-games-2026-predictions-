@@ -39,42 +39,77 @@ function formatMatchTime(timeStr) {
 }
 
 // --- Flag Resolver ---
+
+// --- Robust Flag Resolver ---
+const FLAG_REGISTRY = {
+  // East Asia
+  'china': '🇨🇳', 'chn': '🇨🇳', "people's republic of china": '🇨🇳',
+  'japan': '🇯🇵', 'jpn': '🇯🇵',
+  'korea': '🇰🇷', 'south korea': '🇰🇷', 'kor': '🇰🇷', 'republic of korea': '🇰🇷',
+  'north korea': '🇰🇵', 'prk': '🇰🇵', 'dpr korea': '🇰🇵',
+  'chinese taipei': '🇹🇼', 'taiwan': '🇹🇼', 'tpe': '🇹🇼',
+  'hong kong': '🇭🇰', 'hong kong, china': '🇭🇰', 'hkg': '🇭🇰',
+  'macau': '🇲🇴', 'macao': '🇲🇴', 'mac': '🇲🇴',
+  'mongolia': '🇲🇳', 'mgl': '🇲🇳',
+
+  // Southeast Asia
+  'philippines': '🇵🇭', 'phi': '🇵🇭', 'gilas': '🇵🇭',
+  'indonesia': '🇮🇩', 'ina': '🇮🇩', 'idn': '🇮🇩',
+  'thailand': '🇹🇭', 'tha': '🇹🇭',
+  'malaysia': '🇲🇾', 'mas': '🇲🇾',
+  'singapore': '🇸🇬', 'sgp': '🇸🇬',
+  'vietnam': '🇻🇳', 'vie': '🇻🇳',
+
+  // South & Central Asia
+  'india': '🇮🇳', 'ind': '🇮🇳',
+  'kazakhstan': '🇰🇿', 'kaz': '🇰🇿',
+  'uzbekistan': '🇺🇿', 'uzb': '🇺🇿',
+  'turkmenistan': '🇹🇲', 'tkm': '🇹🇲',
+
+  // West Asia & Middle East
+  'iran': '🇮🇷', 'ir iran': '🇮🇷', 'iri': '🇮🇷',
+  'jordan': '🇯🇴', 'jor': '🇯🇴',
+  'lebanon': '🇱🇧', 'lbn': '🇱🇧',
+  'saudi arabia': '🇸🇦', 'ksa': '🇸🇦',
+  'qatar': '🇶🇦', 'qat': '🇶🇦',
+  'bahrain': '🇧🇭', 'brn': '🇧🇭',
+  'kuwait': '🇰🇼', 'kuw': '🇰🇼',
+  'united arab emirates': '🇦🇪', 'uae': '🇦🇪',
+  'syria': '🇸🇾', 'syr': '🇸🇾',
+  'iraq': '🇮🇶', 'irq': '🇮🇶',
+  'palestine': '🇵🇸', 'ple': '🇵🇸',
+
+  // Oceania affiliate / FIBA Asia
+  'guam': '🇬🇺', 'gum': '🇬🇺'
+};
+
+// Pre-sorted by string length descending to prevent prefix/substring collisions
+const SORTED_FLAG_KEYS = Object.keys(FLAG_REGISTRY).sort((a, b) => b.length - a.length);
+
 function getFlagEmoji(teamName) {
   if (typeof window.getFlag === 'function') return window.getFlag(teamName);
   if (!teamName || typeof teamName !== 'string') return '🏀';
 
-  const norm = teamName.toLowerCase().trim();
-  const flagMap = {
-    'china': '🇨🇳', 'chn': '🇨🇳',
-    'japan': '🇯🇵', 'jpn': '🇯🇵',
-    'philippines': '🇵🇭', 'phi': '🇵🇭',
-    'korea': '🇰🇷', 'south korea': '🇰🇷', 'kor': '🇰🇷',
-    'iran': '🇮🇷', 'iri': '🇮🇷', 'ir iran': '🇮🇷',
-    'jordan': '🇯🇴', 'jor': '🇯🇴',
-    'lebanon': '🇱🇧', 'lbn': '🇱🇧',
-    'chinese taipei': '🇹🇼', 'taiwan': '🇹🇼', 'tpe': '🇹🇼',
-    'saudi arabia': '🇸🇦', 'ksa': '🇸🇦',
-    'kazakhstan': '🇰🇿', 'kaz': '🇰🇿',
-    'india': '🇮🇳', 'ind': '🇮🇳',
-    'indonesia': '🇮🇩', 'ina': '🇮🇩',
-    'thailand': '🇹🇭', 'tha': '🇹🇭',
-    'hong kong': '🇭🇰', 'hkg': '🇭🇰',
-    'bahrain': '🇧🇭', 'brn': '🇧🇭',
-    'mongolia': '🇲🇳', 'mgl': '🇲🇳',
-    'qatar': '🇶🇦', 'qat': '🇶🇦',
-    'syria': '🇸🇾', 'syr': '🇸🇾',
-    'uae': '🇦🇪', 'united arab emirates': '🇦🇪',
-    'kuwait': '🇰🇼', 'kuw': '🇰🇼',
-    'guam': '🇬🇺', 'gum': '🇬🇺',
-    'malaysia': '🇲🇾', 'mas': '🇲🇾',
-    'singapore': '🇸🇬', 'sgp': '🇸🇬'
-  };
+  const norm = teamName.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!norm) return '🏀';
 
-  for (const [key, emoji] of Object.entries(flagMap)) {
-    if (norm.includes(key)) return emoji;
+  // 1. Direct exact lookup
+  if (FLAG_REGISTRY[norm]) return FLAG_REGISTRY[norm];
+
+  // 2. Longest-substring match with word boundary safety
+  for (const key of SORTED_FLAG_KEYS) {
+    if (key.length <= 3) {
+      // For short codes (IND, INA, KOR), enforce exact word boundary
+      const regex = new RegExp(`\\b${key}\\b`, 'i');
+      if (regex.test(norm)) return FLAG_REGISTRY[key];
+    } else {
+      if (norm.includes(key)) return FLAG_REGISTRY[key];
+    }
   }
+
   return '🏀';
 }
+
 
 // --- Universal Match Object Normalizer ---
 function parseMatchData(m) {
