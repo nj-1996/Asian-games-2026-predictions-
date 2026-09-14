@@ -122,7 +122,6 @@ function formatStageName(stageStr) {
   return s;
 }
 
-
 // --- Value Parsers ---
 function parseStatNumber(val) {
   if (val == null) return 0;
@@ -496,16 +495,21 @@ function renderKnockoutBracket(matches) {
   const finalMatch = parsed.find(m => getStage(m).includes('gold') || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
   const bronzeMatch = parsed.find(m => getStage(m).includes('bronze') || getStage(m).includes('3rd'));
 
+  // Match by game number if present (e.g., "Game 2"), otherwise fall back to array order
+  const getGame = (list, num) => list.find(m => new RegExp(`game\\s*${num}`, 'i').test(m.stage)) || list[num - 1];
+
+  // Default placeholders adapted for 3-group + 2-wildcard format
   const defaultQF = [
     { title: 'QF 1', t1: '1st Group A', t2: '2nd Group B' },
-    { title: 'QF 2', t1: '1st Group C', t2: '2nd Group D' },
-    { title: 'QF 3', t1: '1st Group B', t2: '2nd Group A' },
-    { title: 'QF 4', t1: '1st Group D', t2: '2nd Group C' }
+    { title: 'QF 2', t1: '1st Group C', t2: 'Wildcard 2' },
+    { title: 'QF 3', t1: '1st Game Winner', t2: '2nd Group A' },
+    { title: 'QF 4', t1: '1st Group B', t2: 'Wildcard 1' }
   ];
 
   const renderSlot = (title, match, fallback, medalType = null) => {
-    const t1 = match ? match.t1 : fallback.t1;
-    const t2 = match ? match.t2 : fallback.t2;
+    // TBD Protection: keep descriptive fallback placeholder until confirmed country names arrive
+    const t1 = (match && match.t1 && match.t1 !== 'TBD') ? match.t1 : fallback.t1;
+    const t2 = (match && match.t2 && match.t2 !== 'TBD') ? match.t2 : fallback.t2;
     const s1 = match ? match.s1 : '-';
     const s2 = match ? match.s2 : '-';
     const isFinished = match ? match.isFinished : false;
@@ -537,12 +541,12 @@ function renderKnockoutBracket(matches) {
       <div class="bracket-container">
         <div class="bracket-round">
           <div class="bracket-round-header">Quarterfinals</div>
-          ${[0, 1, 2, 3].map(i => renderSlot(`QF ${i + 1}`, qfMatches[i], defaultQF[i])).join('')}
+          ${[0, 1, 2, 3].map(i => renderSlot(`QF ${i + 1}`, getGame(qfMatches, i + 1), defaultQF[i])).join('')}
         </div>
         <div class="bracket-round">
           <div class="bracket-round-header">Semifinals</div>
-          ${renderSlot('SF 1', sfMatches[0], { t1: 'Winner QF 1', t2: 'Winner QF 2' })}
-          ${renderSlot('SF 2', sfMatches[1], { t1: 'Winner QF 3', t2: 'Winner QF 4' })}
+          ${renderSlot('SF 1', getGame(sfMatches, 1), { t1: 'Winner QF 1', t2: 'Winner QF 2' })}
+          ${renderSlot('SF 2', getGame(sfMatches, 2), { t1: 'Winner QF 3', t2: 'Winner QF 4' })}
         </div>
         <div class="bracket-round">
           <div class="bracket-round-header">Medal Matches</div>
