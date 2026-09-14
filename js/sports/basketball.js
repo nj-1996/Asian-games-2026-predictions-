@@ -93,26 +93,6 @@ function parseStatNumber(val) {
   return Math.round(num);
 }
 
-function parseMedalExp(val) {
-  if (val == null) return 0;
-  if (typeof val === 'object') {
-    val = val.pct || val.prob || val.value || val.val || 0;
-  }
-  if (typeof val === 'string') {
-    val = val.replace('%', '').trim();
-  }
-  let num = parseFloat(val);
-  if (isNaN(num)) return 0;
-  if (num > 1) num = num / 100; // Convert 45.2% to 0.452 expected medals
-  return num;
-}
-
-function formatMedal(val) {
-  if (val == null || isNaN(val) || val === 0) return '0.0';
-  if (Number.isInteger(val)) return String(val);
-  return val.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
-}
-
 // --- Timezone State & Formatter ---
 let currentTimezone = localStorage.getItem('app_tz') || 'IST';
 
@@ -489,7 +469,7 @@ function renderKnockoutBracket(matches) {
   `;
 }
 
-// --- Predictions View & Full Medal Table Engine ---
+// --- Predictions View & Simplified 6-Medal Tournament Table ---
 function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
   const pillsHeader = `
     <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); margin-bottom:1.25rem; gap:3px;">
@@ -499,46 +479,63 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
   `;
 
   if (activePredictionsSubView === 'table') {
-    // 1. Build Aggregate Medal Table across all disciplines/divisions
-    const tableMap = {};
-
-    const ingestList = (list) => {
-      if (!Array.isArray(list)) return;
-      list.forEach(p => {
-        const rawName = p.team || p.country || p.name || '';
-        if (!rawName) return;
-        const cleaned = cleanTeamName(rawName);
-        const displayName = rawName.replace(/\(host\)/gi, '').trim();
-
-        if (!tableMap[cleaned]) {
-          tableMap[cleaned] = {
-            name: displayName,
-            isHost: rawName.toLowerCase().includes('host'),
-            gold: 0,
-            silver: 0,
-            bronze: 0,
-            total: 0
-          };
-        }
-
-        const g = parseMedalExp(p.gold || p.gold_prob || p.gold_pct || p.expected_gold);
-        const s = parseMedalExp(p.silver || p.silver_prob || p.silver_pct || p.expected_silver);
-        const b = parseMedalExp(p.bronze || p.bronze_prob || p.bronze_pct || p.expected_bronze);
-
-        tableMap[cleaned].gold += g;
-        tableMap[cleaned].silver += s;
-        tableMap[cleaned].bronze += b;
-        tableMap[cleaned].total += (g + s + b);
-      });
+    const getProb = (obj, keys) => {
+      for (const k of keys) {
+        if (obj && obj[k] != null && obj[k] !== '') return obj[k];
+      }
+      return 0;
     };
 
-    ingestList(menPreds);
-    ingestList(womenPreds);
+    // Allocate 1 Gold, 1 Silver, 1 Bronze based on top simulation finish rank
+    const projectPodium = (list) => {
+      if (!Array.isArray(list) || list.length === 0) return [];
+      const sorted = [...list].sort((a, b) => {
+        const gA = parseStatNumber(getProb(a, ['gold', 'gold_prob', 'gold_pct', 'p_gold']));
+        const gB = parseStatNumber(getProb(b, ['gold', 'gold_prob', 'gold_pct', 'p_gold']));
+        if (gB !== gA) return gB - gA;
+        const sA = parseStatNumber(getProb(a, ['silver', 'silver_prob', 'silver_pct', 'p_silver']));
+        const sB = parseStatNumber(getProb(b, ['silver', 'silver_prob', 'silver_pct', 'p_silver']));
+        if (sB !== sA) return sB - sA;
+        return parseStatNumber(getProb(b, ['bronze', 'bronze_prob', 'bronze_pct', 'p_bronze'])) -
+               parseStatNumber(getProb(a, ['bronze', 'bronze_prob', 'bronze_pct', 'p_bronze']));
+      });
+
+      const res = [];
+      if (sorted[0]) res.push({ team: sorted[0], medal: 'gold' });
+      if (sorted[1]) res.push({ team: sorted[1], medal: 'silver' });
+      if (sorted[2]) res.push({ team: sorted[2], medal: 'bronze' });
+      return res;
+    };
+
+    const tableMap = {};
+    const recordMedal = (predObj, medalType) => {
+      if (!predObj) return;
+      const rawName = predObj.team || predObj.country || predObj.name || '';
+      if (!rawName) return;
+      const cleaned = cleanTeamName(rawName);
+      const displayName = rawName.replace(/\(host\)/gi, '').trim();
+
+      if (!tableMap[cleaned]) {
+        tableMap[cleaned] = {
+          name: displayName,
+          isHost: rawName.toLowerCase().includes('host'),
+          gold: 0,
+          silver: 0,
+          bronze: 0,
+          total: 0
+        };
+      }
+      tableMap[cleaned][medalType] += 1;
+      tableMap[cleaned].total += 1;
+    };
+
+    projectPodium(menPreds).forEach(item => recordMedal(item.team, item.medal));
+    projectPodium(womenPreds).forEach(item => recordMedal(item.team, item.medal));
 
     const sortedTable = Object.values(tableMap).sort((a, b) => {
-      if (Math.abs(b.gold - a.gold) > 0.001) return b.gold - a.gold;
-      if (Math.abs(b.silver - a.silver) > 0.001) return b.silver - a.silver;
-      if (Math.abs(b.bronze - a.bronze) > 0.001) return b.bronze - a.bronze;
+      if (b.gold !== a.gold) return b.gold - a.gold;
+      if (b.silver !== a.silver) return b.silver - a.silver;
+      if (b.bronze !== a.bronze) return b.bronze - a.bronze;
       return b.total - a.total;
     });
 
@@ -546,14 +543,19 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
       container.innerHTML = `
         ${pillsHeader}
         <div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">
-          No prediction model outputs available to construct medal table.
+          No prediction models available to construct medal table.
         </div>`;
       return;
     }
 
+    const totalGold = sortedTable.reduce((sum, t) => sum + t.gold, 0);
+    const totalSilver = sortedTable.reduce((sum, t) => sum + t.silver, 0);
+    const totalBronze = sortedTable.reduce((sum, t) => sum + t.bronze, 0);
+    const grandTotal = totalGold + totalSilver + totalBronze;
+
     const tableHtml = `
       <div style="margin-bottom:1rem; text-align:center; font-size:0.75rem; color:#94a3b8;">
-        Official projected medal tally across 50,000 Monte Carlo runs (Men + Women). Ranked by 🥇 Gold $\\rightarrow$ 🥈 Silver $\\rightarrow$ 🥉 Bronze.
+        Projected distribution of all <strong>6 tournament medals</strong> (Men's & Women's 5x5) based on top simulation finishes.
       </div>
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; overflow-x:auto;">
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
@@ -573,12 +575,19 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
                   <span style="display:inline-block; width:18px; font-weight:700; color:${idx === 0 ? '#facc15' : idx === 1 ? '#cbd5e1' : idx === 2 ? '#f59e0b' : '#94a3b8'};">${idx + 1}</span>
                   ${getFlagEmoji(t.name)} ${t.name}${t.isHost ? ' (Host)' : ''}
                 </td>
-                <td style="padding:0.65rem 0.4rem; font-family:monospace; font-weight:${t.gold > 0.5 ? '700' : '400'}; color:#facc15;">${formatMedal(t.gold)}</td>
-                <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#cbd5e1;">${formatMedal(t.silver)}</td>
-                <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#f59e0b;">${formatMedal(t.bronze)}</td>
-                <td style="padding:0.65rem 0.5rem; font-family:monospace; font-weight:700; color:#38bdf8;">${formatMedal(t.total)}</td>
+                <td style="padding:0.65rem 0.4rem; font-family:monospace; font-weight:${t.gold > 0 ? '700' : '400'}; color:#facc15;">${t.gold}</td>
+                <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#cbd5e1;">${t.silver}</td>
+                <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#f59e0b;">${t.bronze}</td>
+                <td style="padding:0.65rem 0.5rem; font-family:monospace; font-weight:700; color:#38bdf8;">${t.total}</td>
               </tr>
             `).join('')}
+            <tr style="border-top:1px solid rgba(255,255,255,0.12); background:rgba(0,0,0,0.25); font-weight:700; font-size:0.8rem;">
+              <td style="padding:0.65rem 0.5rem; text-align:left; color:#94a3b8;">Total Medals Awarded</td>
+              <td style="padding:0.65rem 0.4rem; color:#facc15;">${totalGold}</td>
+              <td style="padding:0.65rem 0.4rem; color:#cbd5e1;">${totalSilver}</td>
+              <td style="padding:0.65rem 0.4rem; color:#f59e0b;">${totalBronze}</td>
+              <td style="padding:0.65rem 0.5rem; color:#38bdf8;">${grandTotal}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -588,7 +597,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     return;
   }
 
-  // 2. Render Division Odds Cards
+  // Division Odds Cards View
   const preds = currentGender === 'men' ? menPreds : womenPreds;
 
   if (!preds || preds.length === 0) {
