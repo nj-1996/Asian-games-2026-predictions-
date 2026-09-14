@@ -172,12 +172,18 @@ function formatMatchDateTime(dateStr, timeStr) {
 // --- Universal Match Normalizer ---
 function parseMatchData(m) {
   if (!m) return { t1: 'TBD', t2: 'TBD', s1: '-', s2: '-', status: '', time: '', date: '', stage: '', isFinished: false, winner: '' };
-
-  const formatTeamDisplayName = (name) => {
+    const formatTeamDisplayName = (name) => {
     const str = String(name || 'TBD').trim();
-    if (str.toLowerCase() === 'korea') return 'South Korea';
+    const lower = str.toLowerCase();
+    
+    if (lower === 'korea' || lower === 'republic of korea' || lower === 'kor') return 'South Korea';
+    if (lower.includes('dpr') || lower === 'north korea' || lower === 'prk') return 'North Korea';
+    if (lower === 'ir iran' || lower === 'iran, islamic republic of') return 'Iran'; // optional: omit if you prefer "IR Iran"
+    if (lower.includes('hong kong')) return 'Hong Kong';
+    
     return str;
   };
+
 
   let t1 = m.player1 || m.player_1 || m.team1 || m.team_1 || m.teamA || m.team_a || m.home || m.home_team || '';
   if (!t1 && Array.isArray(m.teams) && m.teams.length > 0) t1 = m.teams[0];
