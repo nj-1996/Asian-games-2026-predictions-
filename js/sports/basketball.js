@@ -252,7 +252,7 @@ function parseMatchData(m) {
     status,
     time: m.time || '',
     date: m.date || '',
-    stage: m.round || m.stage || m.group || 'Group Stage',
+    stage: formatStageName(m.round || m.stage || m.group || 'Group Stage'),
     winner,
     isFinished
   };
