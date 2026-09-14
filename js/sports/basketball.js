@@ -560,7 +560,7 @@ function renderKnockoutBracket(matches) {
   const defaultQF = [
     { title: 'QF 1', t1: '1st Group A', t2: '2nd Group B' },
     { title: 'QF 2', t1: '1st Group C', t2: 'Wildcard 2' },
-    { title: 'QF 3', t1: '1st Game Winner', t2: '2nd Group A' },
+    { title: 'QF 3', t1: '2nd Group C', t2: '2nd Group A' },
     { title: 'QF 4', t1: '1st Group B', t2: 'Wildcard 1' }
   ];
 
