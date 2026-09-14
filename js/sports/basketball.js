@@ -89,6 +89,40 @@ function formatTeamDisplayName(name) {
   return str;
 }
 
+// --- Stage & Round Display Formatter ---
+function formatStageName(stageStr) {
+  if (!stageStr || typeof stageStr !== 'string') return 'Group Stage';
+  const s = stageStr.replace(/^(men|women)\s+/i, '').trim();
+
+  // Quarterfinals (e.g. "1/4 G 2" -> "Quarterfinals • Game 2")
+  if (/1\/4|quarter|qf/i.test(s)) {
+    const g = s.match(/g\s*(\d+)/i);
+    return g ? `Quarterfinals • Game ${g[1]}` : 'Quarterfinals';
+  }
+
+  // Semifinals (e.g. "1/2 G 1" -> "Semifinals • Game 1")
+  if (/1\/2|semi|sf/i.test(s)) {
+    const g = s.match(/g\s*(\d+)/i);
+    return g ? `Semifinals • Game ${g[1]}` : 'Semifinals';
+  }
+
+  // Medal matches
+  if (/bronze|3rd/i.test(s)) return 'Bronze Medal Match';
+  if (/gold|final/i.test(s)) return 'Gold Medal Match';
+
+  // Group stage matches (e.g. "Group B G 1" -> "Group B • Game 1")
+  const grp = s.match(/(group|pool)\s+([a-z0-9]+)/i);
+  const g = s.match(/g\s*(\d+)/i);
+  if (grp && g) {
+    return `Group ${grp[2].toUpperCase()} • Game ${g[1]}`;
+  } else if (grp) {
+    return `Group ${grp[2].toUpperCase()}`;
+  }
+
+  return s;
+}
+
+
 // --- Value Parsers ---
 function parseStatNumber(val) {
   if (val == null) return 0;
