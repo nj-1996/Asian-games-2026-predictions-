@@ -169,18 +169,25 @@ function formatMatchDateTime(dateStr, timeStr) {
 }
 
 // --- Universal Match Normalizer ---
+// --- Universal Match Normalizer ---
 function parseMatchData(m) {
   if (!m) return { t1: 'TBD', t2: 'TBD', s1: '-', s2: '-', status: '', time: '', date: '', stage: '', isFinished: false, winner: '' };
+
+  const formatTeamDisplayName = (name) => {
+    const str = String(name || 'TBD').trim();
+    if (str.toLowerCase() === 'korea') return 'South Korea';
+    return str;
+  };
 
   let t1 = m.player1 || m.player_1 || m.team1 || m.team_1 || m.teamA || m.team_a || m.home || m.home_team || '';
   if (!t1 && Array.isArray(m.teams) && m.teams.length > 0) t1 = m.teams[0];
   if (typeof t1 === 'object' && t1 !== null) t1 = t1.name || t1.team || 'TBD';
-  t1 = String(t1 || 'TBD').trim();
+  t1 = formatTeamDisplayName(t1);
 
   let t2 = m.player2 || m.player_2 || m.team2 || m.team_2 || m.teamB || m.team_b || m.away || m.away_team || '';
   if (!t2 && Array.isArray(m.teams) && m.teams.length > 1) t2 = m.teams[1];
   if (typeof t2 === 'object' && t2 !== null) t2 = t2.name || t2.team || 'TBD';
-  t2 = String(t2 || 'TBD').trim();
+  t2 = formatTeamDisplayName(t2);
 
   let s1 = m.score1 != null ? m.score1 : (m.score_a != null ? m.score_a : (m.home_score != null ? m.home_score : null));
   let s2 = m.score2 != null ? m.score2 : (m.score_b != null ? m.score_b : (m.away_score != null ? m.away_score : null));
@@ -199,6 +206,8 @@ function parseMatchData(m) {
   const lowerStatus = status.toLowerCase();
   const isFinished = lowerStatus.includes('final') || lowerStatus.includes('finished') || (s1 !== '-' && s2 !== '-' && !lowerStatus.includes('live'));
 
+  let winner = m.winner ? formatTeamDisplayName(m.winner) : '';
+
   return {
     t1,
     t2,
@@ -208,10 +217,11 @@ function parseMatchData(m) {
     time: m.time || '',
     date: m.date || '',
     stage: m.round || m.stage || m.group || 'Group Stage',
-    winner: m.winner || '',
+    winner,
     isFinished
   };
 }
+
 
 // --- Sub-Navigation States ---
 let activeMatchesSubView = 'schedule';
