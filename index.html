@@ -14,15 +14,16 @@
 <body>
 
   <header>
-    <div class="header-top">
-      <div class="header-title">
-        <span>🏀</span> Asian Games 2026
-      </div>
-      <button class="sync-status" id="live-sync-btn" onclick="handleManualSync()">
-        <span class="sync-dot" id="sync-indicator"></span>
-        <span id="sync-label">Live Sync</span>
-      </button>
-    </div>
+    <div class="header-title">
+  <span class="event-name">Asian Games</span>
+  <div class="sport-select-wrap">
+    <select id="sport-select" class="sport-dropdown" onchange="handleSportChange(this.value)">
+      <option value="basketball" selected>🏀 Basketball</option>
+      <option value="football">⚽ Football</option>
+    </select>
+  </div>
+</div>
+
     <div class="nav-controls">
       <div class="tab-group">
         <button class="nav-btn active" id="tab-matches" onclick="setTab('matches')">Matches</button>
