@@ -1,4 +1,5 @@
 // --- Application State ---
+let currentSport = localStorage.getItem('app_sport') || 'basketball';
 let currentTab = 'matches';
 let currentGender = 'men';
 let isSyncing = false;
@@ -29,22 +30,25 @@ async function fetchFastJson(paths) {
 // --- Parallelized Tournament Data Loader ---
 async function loadAllData() {
   try {
+    const sport = currentSport;
+
     const [menTrackerRaw, womenTrackerRaw, predRaw] = await Promise.all([
       fetchFastJson([
-        'data/basketball/tracker_men.json',
-        'data/tracker_men.json',
-        'tracker_men.json'
+        `data/${sport}/tracker_men.json`,
+        `data/${sport}/tracker.json`,
+        `data/tracker_men.json`,
+        `tracker_men.json`
       ]),
       fetchFastJson([
-        'data/basketball/tracker_women.json',
-        'data/tracker_women.json',
-        'tracker_women.json'
+        `data/${sport}/tracker_women.json`,
+        `data/tracker_women.json`,
+        `tracker_women.json`
       ]),
       fetchFastJson([
-        'data/basketball/predictions.json',
-        'data/predictions.json',
-        'predictions.json',
-        'data/basketball/predictions_men.json'
+        `data/${sport}/predictions.json`,
+        `data/${sport}/predictions_men.json`,
+        `data/predictions.json`,
+        `predictions.json`
       ])
     ]);
 
@@ -57,9 +61,9 @@ async function loadAllData() {
     } else {
       appData.menPredictions = extractList(predRaw);
       const womenPredRaw = await fetchFastJson([
-        'data/basketball/predictions_women.json',
-        'data/predictions_women.json',
-        'predictions_women.json'
+        `data/${sport}/predictions_women.json`,
+        `data/predictions_women.json`,
+        `predictions_women.json`
       ]);
       appData.womenPredictions = extractList(womenPredRaw);
     }
@@ -235,6 +239,13 @@ async function handleManualSync() {
 }
 
 // --- Navigation Handlers ---
+async function handleSportChange(sport) {
+  if (sport === currentSport) return;
+  currentSport = sport;
+  localStorage.setItem('app_sport', sport);
+  await loadAllData();
+}
+
 function setTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.nav-btn').forEach(b => {
@@ -268,4 +279,9 @@ function renderView() {
 }
 
 // --- Initialize App ---
+document.addEventListener('DOMContentLoaded', () => {
+  const sportSelect = document.getElementById('sport-select');
+  if (sportSelect) sportSelect.value = currentSport;
+});
+
 loadAllData();
