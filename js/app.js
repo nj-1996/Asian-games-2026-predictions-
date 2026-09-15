@@ -278,6 +278,48 @@ function renderView() {
   }
 }
 
+// --- Sport Engine Registry & Universal Dispatchers ---
+window.SPORT_ENGINES = window.SPORT_ENGINES || {};
+
+// Register baseline basketball engine from loaded global functions
+window.SPORT_ENGINES['basketball'] = {
+  icon: '🏀',
+  renderStandingsTable: typeof renderStandingsTable === 'function' ? renderStandingsTable : null,
+  renderKnockoutBracket: typeof renderKnockoutBracket === 'function' ? renderKnockoutBracket : null
+};
+
+// Universal Standings Dispatcher
+window.renderStandingsTable = function(matches) {
+  const engine = window.SPORT_ENGINES[currentSport] || window.SPORT_ENGINES['basketball'];
+  if (engine && typeof engine.renderStandingsTable === 'function') {
+    return engine.renderStandingsTable(matches);
+  }
+  return '<div class="empty-state">Standings view not available for this sport.</div>';
+};
+
+// Universal Bracket Dispatcher
+window.renderKnockoutBracket = function(matches) {
+  const engine = window.SPORT_ENGINES[currentSport] || window.SPORT_ENGINES['basketball'];
+  if (engine && typeof engine.renderKnockoutBracket === 'function') {
+    return engine.renderKnockoutBracket(matches);
+  }
+  return '<div class="empty-state">Bracket view not available for this sport.</div>';
+};
+
+// Universal Sport Icon & Flag Fallback Dispatcher
+if (typeof getFlagEmoji === 'function') {
+  const _baseGetFlagEmoji = getFlagEmoji;
+  const isNationalFlag = (str) => typeof str === 'string' && /[\uD83C][\uDDE6-\uDDFF]/.test(str);
+
+  window.getFlagEmoji = function(teamName) {
+    const resolved = _baseGetFlagEmoji(teamName);
+    if (isNationalFlag(resolved)) return resolved;
+
+    const engine = window.SPORT_ENGINES[currentSport] || window.SPORT_ENGINES['basketball'];
+    return engine && engine.icon ? engine.icon : '🏅';
+  };
+}
+
 // --- Initialize App ---
 document.addEventListener('DOMContentLoaded', () => {
   const sportSelect = document.getElementById('sport-select');
