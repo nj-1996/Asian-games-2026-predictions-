@@ -52,13 +52,14 @@ header {
 .header-title {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .event-name {
-  font-size: 0.95rem;
+  font-size: 1.12rem;
   font-weight: 800;
-  color: var(--text-main);
+  color: #ffffff;
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
@@ -71,45 +72,48 @@ header {
 .sport-dropdown {
   appearance: none;
   -webkit-appearance: none;
-  background: #080b12;
-  color: var(--text-main);
+  background: rgba(59, 130, 246, 0.12);
+  color: #93c5fd;
   font-family: inherit;
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   font-weight: 700;
-  border: 1px solid var(--card-border);
+  border: 1px solid rgba(59, 130, 246, 0.35);
   border-radius: 8px;
-  padding: 5px 24px 5px 9px;
+  padding: 6px 26px 6px 10px;
   cursor: pointer;
   outline: none;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .sport-dropdown:focus,
 .sport-dropdown:active {
+  background: rgba(59, 130, 246, 0.22);
   border-color: var(--accent-blue);
+  color: #ffffff;
 }
 
 .sport-select-wrap::after {
   content: "";
   position: absolute;
-  right: 9px;
+  right: 10px;
   pointer-events: none;
   width: 0;
   height: 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 5px solid var(--text-muted);
+  border-top: 5px solid #60a5fa;
 }
 
 @media (max-width: 380px) {
   .event-name {
-    font-size: 0.85rem;
+    font-size: 0.98rem;
   }
   .sport-dropdown {
-    font-size: 0.72rem;
-    padding: 4px 20px 4px 7px;
+    font-size: 0.78rem;
+    padding: 5px 22px 5px 8px;
   }
 }
+
 
 
 .sync-status {
