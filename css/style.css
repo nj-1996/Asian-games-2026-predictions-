@@ -48,14 +48,69 @@ header {
   align-items: center;
   margin-bottom: 12px;
 }
-
+/* --- Header & Sport Switcher --- */
 .header-title {
-  font-size: 1.05rem;
-  font-weight: 800;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
+
+.event-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.sport-select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sport-dropdown {
+  appearance: none;
+  -webkit-appearance: none;
+  background: #080b12;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 5px 24px 5px 9px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.sport-dropdown:focus,
+.sport-dropdown:active {
+  border-color: var(--accent-blue);
+}
+
+.sport-select-wrap::after {
+  content: "";
+  position: absolute;
+  right: 9px;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--text-muted);
+}
+
+@media (max-width: 380px) {
+  .event-name {
+    font-size: 0.85rem;
+  }
+  .sport-dropdown {
+    font-size: 0.72rem;
+    padding: 4px 20px 4px 7px;
+  }
+}
+
 
 .sync-status {
   font-size: 0.7rem;
