@@ -321,9 +321,18 @@ if (typeof getFlagEmoji === 'function') {
 }
 
 // --- Initialize App ---
-document.addEventListener('DOMContentLoaded', () => {
+function initSportSync() {
   const sportSelect = document.getElementById('sport-select');
-  if (sportSelect) sportSelect.value = currentSport;
-});
+  if (sportSelect) {
+    sportSelect.value = currentSport;
+  }
+}
+
+// Synchronize UI immediately since DOM is already parsed by the dynamic loader
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSportSync);
+} else {
+  initSportSync();
+}
 
 loadAllData();
