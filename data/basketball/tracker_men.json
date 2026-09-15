@@ -202,7 +202,7 @@
     {
       "round": "Men 1/4 G 3",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-16",
       "time": "10:00",
       "player1": "Jordan",
@@ -213,7 +213,7 @@
     {
       "round": "Men 1/4 G 4",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-16",
       "time": "13:00",
       "player1": "IR Iran",
@@ -224,7 +224,7 @@
     {
       "round": "Men 1/4 G 2",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-16",
       "time": "16:00",
       "player1": "China",
@@ -235,7 +235,7 @@
     {
       "round": "Men 1/4 G 1",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-16",
       "time": "19:20",
       "player1": "Chinese Taipei",
