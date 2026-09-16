@@ -2,7 +2,10 @@
 // Asian Games 2026: Football Engine (Men: Groups A-D | Women: Groups E-G)
 // ==========================================================================
 
-const footballEngine = {
+window.SPORT_ENGINES = window.SPORT_ENGINES || {};
+window.SPORT_ENGINES['football'] = {
+  icon: '⚽',
+
   // --- Standings Calculator & Table Generator ---
   renderStandingsTable(matches) {
     const parsedMatches = matches.map(m => parseMatchData(m));
@@ -240,3 +243,6 @@ const footballEngine = {
     `;
   }
 };
+};
+window.footballEngine = window.SPORT_ENGINES['football'];
+
