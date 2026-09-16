@@ -1,0 +1,62 @@
+[
+  {
+    "stage": "Group E",
+    "team1": "Japan",
+    "team2": "Vietnam",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-21",
+    "time": "16:00"
+  },
+  {
+    "stage": "Group E",
+    "team1": "Nepal",
+    "team2": "Bangladesh",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-21",
+    "time": "19:30"
+  },
+  {
+    "stage": "Group F",
+    "team1": "China",
+    "team2": "Uzbekistan",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-22",
+    "time": "16:00"
+  },
+  {
+    "stage": "Group F",
+    "team1": "Chinese Taipei",
+    "team2": "Thailand",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-22",
+    "time": "19:30"
+  },
+  {
+    "stage": "Group G",
+    "team1": "South Korea",
+    "team2": "Philippines",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-23",
+    "time": "16:00"
+  },
+  {
+    "stage": "Group G",
+    "team1": "Hong Kong",
+    "team2": "India",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-23",
+    "time": "19:30"
+  }
+]
