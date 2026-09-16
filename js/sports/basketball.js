@@ -247,7 +247,17 @@ function parseMatchData(m) {
   const lowerStatus = status.toLowerCase();
   const isFinished = lowerStatus.includes('final') || lowerStatus.includes('finished') || (s1 !== '-' && s2 !== '-' && !lowerStatus.includes('live'));
 
-  let winner = m.winner ? formatTeamDisplayName(m.winner) : '';
+    // Derive winner primarily from numeric scores; use m.winner for ties/shootouts
+  let winner = '';
+  const num1 = parseFloat(s1);
+  const num2 = parseFloat(s2);
+  if (!isNaN(num1) && !isNaN(num2)) {
+    if (num1 > num2) winner = t1;
+    else if (num2 > num1) winner = t2;
+    else if (m.winner) winner = formatTeamDisplayName(m.winner);
+  } else if (m.winner) {
+    winner = formatTeamDisplayName(m.winner);
+  }
 
   return {
     t1,
@@ -261,6 +271,7 @@ function parseMatchData(m) {
     winner,
     isFinished
   };
+
 }
 
 // --- Sub-Navigation States ---
