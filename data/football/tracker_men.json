@@ -1,92 +1,324 @@
-[
-  {
-    "stage": "Group A",
-    "team1": "Japan",
-    "team2": "Qatar",
-    "score1": null,
-    "score2": null,
-    "status": "Scheduled",
-    "date": "2026-09-19",
-    "time": "16:00"
-  },
-  {
-    "stage": "Group A",
-    "team1": "China",
-    "team2": "Jordan",
-    "score1": null,
-    "score2": null,
-    "status": "Scheduled",
-    "date": "2026-09-19",
-    "time": "19:30"
-  },
-  {
-    "stage": "Group B",
-    "team1": "South Korea",
-    "team2": "Bahrain",
-    "score1": null,
-    "score2": null,
-    "status": "Scheduled",
-    "date": "2026-09-20",
-    "time": "16:00"
-  },
-  {
-    "stage": "Group B",
-    "team1": "Thailand",
-    "team2": "Malaysia",
-    "score1": null,
-    "score2": null,
-    "status": "Scheduled",
-    "date": "2026-09-20",
-    "time": "19:30"
-  },
-  {
-    "stage": "Group C",
-    "team1": "Uzbekistan",
-    "team2": "Hong Kong",
-    "score1": null,
-    "score2": null,
-    "status": "Scheduled",
-    "date": "2026-09-21",
-    "time": "16:00"
-  },
-  {
-    "stage": "Group C",
-    "team1": "Vietnam",
-    "team2": "India",
-    "score1": null,
-    "score2": null,
-    "status": "Scheduled",
-    "date": "2026-09-21",
-    "time": "19:30"
-  },
-  {
-    "stage": "Group D",
-    "team1": "Saudi Arabia",
-    "team2": "Iran",
-    "score1": null,
-    "score2": null,
-    "status": "Scheduled",
-    "date": "2026-09-22",
-    "time": "16:00"
-  },
-  {
-    "stage": "Group D",
-    "team1": "Iran",
-    "team2": "Indonesia",
-    "score1": null,
-    "score2": null,
-    "status": "Scheduled",
-    "date": "2026-09-25",
-    "time": "19:30"
-  },
-  {
-    "stage": "Group D",
-    "team1": "Indonesia",
-    "team2": "Saudi Arabia",
-    "score1": null,
-    "score2": null,
-    "status": "Scheduled",
-    "date": "2026-09-28",
-    "time": "19:30"
-  }
-]
+{
+  "sport": "Football (Men)",
+  "matches": [
+    {
+      "round": "Men Gr.C",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-15",
+      "time": "15:30",
+      "player1": "Uzbekistan",
+      "player2": "Philippines",
+      "score": "5 - 1",
+      "winner": "Uzbekistan"
+    },
+    {
+      "round": "Men Gr.C",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-15",
+      "time": "19:00",
+      "player1": "Vietnam",
+      "player2": "Kuwait",
+      "score": "1 - 1",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.D",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-15",
+      "time": "19:30",
+      "player1": "Qatar",
+      "player2": "Korea",
+      "score": "1 - 4",
+      "winner": "Korea"
+    },
+    {
+      "round": "Men Gr.B",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-16",
+      "time": "14:00",
+      "player1": "UA Emirates",
+      "player2": "IR Iran",
+      "score": "1 - 3",
+      "winner": "IR Iran"
+    },
+    {
+      "round": "Men Gr.A",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-16",
+      "time": "16:00",
+      "player1": "Thailand",
+      "player2": "Kyrgyzstan",
+      "score": "3 - 2",
+      "winner": "Thailand"
+    },
+    {
+      "round": "Men Gr.B",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-16",
+      "time": "19:00",
+      "player1": "China",
+      "player2": "DPR Korea",
+      "score": "2 - 1",
+      "winner": "China"
+    },
+    {
+      "round": "Men Gr.A",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-16",
+      "time": "19:30",
+      "player1": "Japan",
+      "player2": "Hong Kong, China",
+      "score": "2 - 0",
+      "winner": "Japan"
+    },
+    {
+      "round": "Men Gr.C",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-18",
+      "time": "15:30",
+      "player1": "Philippines",
+      "player2": "Vietnam",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.C",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-18",
+      "time": "19:00",
+      "player1": "Kuwait",
+      "player2": "Uzbekistan",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.D",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-18",
+      "time": "19:30",
+      "player1": "Saudi Arabia",
+      "player2": "Qatar",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.B",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-20",
+      "time": "14:00",
+      "player1": "IR Iran",
+      "player2": "China",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.A",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-20",
+      "time": "16:00",
+      "player1": "Hong Kong, China",
+      "player2": "Thailand",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.B",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-20",
+      "time": "19:00",
+      "player1": "DPR Korea",
+      "player2": "UA Emirates",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.A",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-20",
+      "time": "19:30",
+      "player1": "Kyrgyzstan",
+      "player2": "Japan",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.C",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-22",
+      "time": "14:00",
+      "player1": "Philippines",
+      "player2": "Kuwait",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.C",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-22",
+      "time": "14:00",
+      "player1": "Vietnam",
+      "player2": "Uzbekistan",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.D",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-22",
+      "time": "19:00",
+      "player1": "Korea",
+      "player2": "Saudi Arabia",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.B",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-23",
+      "time": "14:30",
+      "player1": "China",
+      "player2": "UA Emirates",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.B",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-23",
+      "time": "14:30",
+      "player1": "IR Iran",
+      "player2": "DPR Korea",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.A",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-23",
+      "time": "19:30",
+      "player1": "Japan",
+      "player2": "Thailand",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men Gr.A",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-23",
+      "time": "19:30",
+      "player1": "Kyrgyzstan",
+      "player2": "Hong Kong, China",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men 1/4",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-25",
+      "time": "14:00",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men 1/4",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-25",
+      "time": "19:30",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men 1/4",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-26",
+      "time": "15:00",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men 1/4",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-26",
+      "time": "19:30",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men 1/2",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-30",
+      "time": "15:00",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men 1/2",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-30",
+      "time": "19:30",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men F 3rd Place Match",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-10-03",
+      "time": "15:00",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men F Final",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-10-03",
+      "time": "19:30",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
+      "winner": ""
+    }
+  ]
+}
