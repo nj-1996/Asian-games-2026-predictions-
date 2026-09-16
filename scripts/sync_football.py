@@ -178,8 +178,8 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
 
 def main():
     # Football group stages typically kick off earlier than other sports
-    start_date = datetime(2026, 9, 15)
-    dates = [(start_date + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(22)]
+    start_date = datetime(2026, 9, 14)
+    dates = [(start_date + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(23)]
 
     all_men = []
     all_women = []
