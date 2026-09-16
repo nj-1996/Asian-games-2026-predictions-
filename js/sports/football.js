@@ -243,6 +243,5 @@ window.SPORT_ENGINES['football'] = {
     `;
   }
 };
-};
 window.footballEngine = window.SPORT_ENGINES['football'];
 
