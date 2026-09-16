@@ -1,0 +1,92 @@
+[
+  {
+    "stage": "Group A",
+    "team1": "Japan",
+    "team2": "Qatar",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-19",
+    "time": "16:00"
+  },
+  {
+    "stage": "Group A",
+    "team1": "China",
+    "team2": "Jordan",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-19",
+    "time": "19:30"
+  },
+  {
+    "stage": "Group B",
+    "team1": "South Korea",
+    "team2": "Bahrain",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-20",
+    "time": "16:00"
+  },
+  {
+    "stage": "Group B",
+    "team1": "Thailand",
+    "team2": "Malaysia",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-20",
+    "time": "19:30"
+  },
+  {
+    "stage": "Group C",
+    "team1": "Uzbekistan",
+    "team2": "Hong Kong",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-21",
+    "time": "16:00"
+  },
+  {
+    "stage": "Group C",
+    "team1": "Vietnam",
+    "team2": "India",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-21",
+    "time": "19:30"
+  },
+  {
+    "stage": "Group D",
+    "team1": "Saudi Arabia",
+    "team2": "Iran",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-22",
+    "time": "16:00"
+  },
+  {
+    "stage": "Group D",
+    "team1": "Iran",
+    "team2": "Indonesia",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-25",
+    "time": "19:30"
+  },
+  {
+    "stage": "Group D",
+    "team1": "Indonesia",
+    "team2": "Saudi Arabia",
+    "score1": null,
+    "score2": null,
+    "status": "Scheduled",
+    "date": "2026-09-28",
+    "time": "19:30"
+  }
+]
