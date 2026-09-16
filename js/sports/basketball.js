@@ -101,8 +101,8 @@ function formatStageName(stageStr) {
   if (!stageStr || typeof stageStr !== 'string') return 'Group Stage';
   let s = stageStr.replace(/^(men|women)\s+/i, '').trim();
 
-  // Normalize "Gr.C", "Gr. C", "Gr C" to "Group C"
-  s = s.replace(/^gr\.?\s*([a-z0-9]+)/i, 'Group $1');
+  // Normalize "Gr.C", "Gr. C", "Gr C" to "Group C" (does NOT match "Group")
+  s = s.replace(/^gr(?:\.|\s+)\s*([a-z0-9]+)/i, 'Group $1');
 
   if (/1\/4|quarter|qf/i.test(s)) {
     const g = s.match(/g\s*(\d+)/i);
@@ -119,10 +119,10 @@ function formatStageName(stageStr) {
 
   const grp = s.match(/(?:group|pool)\s+([a-z0-9]+)/i);
   const g = s.match(/(?:game|g)\s*(\d+)/i);
-  if (grp && g) {
-    return `Group ${grp[1].toUpperCase()} • Game ${g[1]}`;
-  } else if (grp) {
-    return `Group ${grp[1].toUpperCase()}`;
+
+  if (grp && grp[1].toLowerCase() !== 'stage') {
+    const groupLetter = grp[1].toUpperCase();
+    return g ? `Group ${groupLetter} • Game ${g[1]}` : `Group ${groupLetter}`;
   }
 
   return s;
@@ -410,7 +410,7 @@ function renderStandingsTable(matches) {
 
   parsedMatches.forEach(m => {
     const grpMatch = m.stage.match(/Group\s+[A-Za-z0-9]+/i) || m.stage.match(/Pool\s+[A-Za-z0-9]+/i);
-    const grpName = grpMatch ? grpMatch[0] : (m.stage.toLowerCase().includes('group') ? m.stage : null);
+    const grpName = grpMatch ? grpMatch[0] : null;
 
     if (!grpName) return;
     if (!groups[grpName]) groups[grpName] = {};
@@ -853,13 +853,15 @@ function renderCalibrationView(container, predictions, matches) {
     const s2 = Number(m.s2);
     if (isNaN(s1) || isNaN(s2)) return;
 
+    if (s1 === s2 && !m.winner) return;
+
     const c1 = cleanTeamName(m.t1);
     const c2 = cleanTeamName(m.t2);
     const r1 = rankMap[c1] || 99;
     const r2 = rankMap[c2] || 99;
 
     const actualWinner = m.winner ? m.winner.trim() : (s1 > s2 ? m.t1 : m.t2);
-    const actualLoser = actualWinner.toLowerCase() === m.t1.toLowerCase() ? m.t2 : m.t1;
+    const actualLoser = cleanTeamName(actualWinner) === c1 ? m.t2 : m.t1;
 
     if (r1 !== r2) {
       evaluatedMatches++;
