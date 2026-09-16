@@ -160,10 +160,14 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
         elif away.get("Winner"):
             winner = away_name
 
-        round_name = m.get("UnitDescS") or m.get("UnitDescA") or m.get("PhaseDescS", "Group Stage")
+                round_raw = m.get("UnitDescS") or m.get("UnitDescA") or m.get("PhaseDescS", "Group Stage")
+
+        # Convert "Men Gr.C" or "Gr.C" into "Group C"
+        clean_round = re.sub(r'^(?:men|women)\s+gr\.?\s*([a-z0-9]+)', r'Group \1', round_raw, flags=re.IGNORECASE)
+        clean_round = re.sub(r'^gr\.?\s*([a-z0-9]+)', r'Group \1', clean_round, flags=re.IGNORECASE)
 
         output.append({
-            "round": round_name,
+            "round": clean_round,
             "status": status,
             "state": state_desc,
             "date": match_date,
@@ -173,6 +177,7 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
             "score": score_str,
             "winner": winner
         })
+
     return output
 
 
