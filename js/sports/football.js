@@ -67,8 +67,11 @@ window.SPORT_ENGINES['football'] = {
       return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No football group data available.</div>`;
     }
 
-    // Identify tournament branch: Women's uses groups E, F, G; Men's uses A, B, C, D
-    const isWomenDivision = groupKeys.some(k => /group\s+[efg]/i.test(k));
+    // Identify division: Women's uses groups E, F, G; Men's uses A, B, C, D
+    const isWomenDivision = (typeof currentGender !== 'undefined' && currentGender === 'women') ||
+                            (window.currentGender === 'women') ||
+                            groupKeys.some(k => /group\s+[efg]/i.test(k));
+
     const statusMap = {};
 
     if (allGroupFinished) {
@@ -175,7 +178,9 @@ window.SPORT_ENGINES['football'] = {
 
     const getGame = (list, num) => list.find(m => new RegExp(`game\\s*${num}|qf\\s*${num}`, 'i').test(m.stage)) || list[num - 1];
 
-    const isWomen = parsed.some(m => /group\s+[efg]/i.test(m.stage));
+    const isWomen = (typeof currentGender !== 'undefined' && currentGender === 'women') ||
+                    (window.currentGender === 'women') ||
+                    parsed.some(m => /group\s+[efg]/i.test(m.stage));
 
     // Default seedings
     const defaultQF = isWomen
@@ -198,8 +203,10 @@ window.SPORT_ENGINES['football'] = {
       const s1 = match ? match.s1 : '-';
       const s2 = match ? match.s2 : '-';
       const isFinished = match ? match.isFinished : false;
-      const t1Win = match && match.winner ? match.winner.toLowerCase() === t1.toLowerCase() : (isFinished && Number(s1) > Number(s2));
-      const t2Win = match && match.winner ? match.winner.toLowerCase() === t2.toLowerCase() : (isFinished && Number(s2) > Number(s1));
+
+      const cWinner = match && match.winner ? cleanTeamName(match.winner) : '';
+      const t1Win = cWinner ? cWinner === cleanTeamName(t1) : (isFinished && Number(s1) > Number(s2));
+      const t2Win = cWinner ? cWinner === cleanTeamName(t2) : (isFinished && Number(s2) > Number(s1));
       const displayDateTime = match ? (formatMatchDateTime(match.date, match.time) || match.status || 'Scheduled') : 'Scheduled';
 
       return `
@@ -244,4 +251,3 @@ window.SPORT_ENGINES['football'] = {
   }
 };
 window.footballEngine = window.SPORT_ENGINES['football'];
-
