@@ -1,0 +1,130 @@
+{
+  "sport": "Football",
+  "simulation_model": "Monte Carlo (50,000 Runs)",
+  "weighting": "FIFA world rankings + 2023 Asian Games + 2023 AFC Asian Cup / AFC U-23 + Goal Differential",
+  "home_pitch_boost": "+0.35 goals (Japan)",
+  "men": [
+    {
+      "rank": 1,
+      "team": "Japan (Host)",
+      "gold": "33.8%",
+      "silver": "25.2%",
+      "bronze": "18.4%",
+      "podium": "77.4%"
+    },
+    {
+      "rank": 2,
+      "team": "Republic of Korea",
+      "gold": "29.6%",
+      "silver": "24.1%",
+      "bronze": "18.1%",
+      "podium": "71.8%"
+    },
+    {
+      "rank": 3,
+      "team": "Uzbekistan",
+      "gold": "12.4%",
+      "silver": "15.3%",
+      "bronze": "17.5%",
+      "podium": "45.2%"
+    },
+    {
+      "rank": 4,
+      "team": "Saudi Arabia",
+      "gold": "8.8%",
+      "silver": "12.1%",
+      "bronze": "14.7%",
+      "podium": "35.6%"
+    },
+    {
+      "rank": 5,
+      "team": "Qatar",
+      "gold": "6.7%",
+      "silver": "9.8%",
+      "bronze": "13.2%",
+      "podium": "29.7%"
+    },
+    {
+      "rank": 6,
+      "team": "IR Iran",
+      "gold": "4.2%",
+      "silver": "6.9%",
+      "bronze": "9.8%",
+      "podium": "20.9%"
+    },
+    {
+      "rank": 7,
+      "team": "Jordan",
+      "gold": "2.4%",
+      "silver": "3.9%",
+      "bronze": "5.1%",
+      "podium": "11.4%"
+    },
+    {
+      "rank": 8,
+      "team": "China",
+      "gold": "2.1%",
+      "silver": "2.7%",
+      "bronze": "3.2%",
+      "podium": "8.0%"
+    }
+  ],
+  "women": [
+    {
+      "rank": 1,
+      "team": "Japan (Host)",
+      "gold": "42.4%",
+      "silver": "25.8%",
+      "bronze": "15.6%",
+      "podium": "83.8%"
+    },
+    {
+      "rank": 2,
+      "team": "DPR Korea",
+      "gold": "26.1%",
+      "silver": "27.7%",
+      "bronze": "20.1%",
+      "podium": "73.9%"
+    },
+    {
+      "rank": 3,
+      "team": "China",
+      "gold": "15.8%",
+      "silver": "22.3%",
+      "bronze": "24.1%",
+      "podium": "62.2%"
+    },
+    {
+      "rank": 4,
+      "team": "Republic of Korea",
+      "gold": "10.9%",
+      "silver": "16.2%",
+      "bronze": "21.8%",
+      "podium": "48.9%"
+    },
+    {
+      "rank": 5,
+      "team": "Uzbekistan",
+      "gold": "2.8%",
+      "silver": "4.1%",
+      "bronze": "8.9%",
+      "podium": "15.8%"
+    },
+    {
+      "rank": 6,
+      "team": "Philippines",
+      "gold": "1.2%",
+      "silver": "2.8%",
+      "bronze": "6.2%",
+      "podium": "10.2%"
+    },
+    {
+      "rank": 7,
+      "team": "Vietnam",
+      "gold": "0.8%",
+      "silver": "1.1%",
+      "bronze": "3.3%",
+      "podium": "5.2%"
+    }
+  ]
+}
