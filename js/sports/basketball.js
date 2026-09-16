@@ -1,3 +1,7 @@
+// ==========================================================================
+// Asian Games 2026: Basketball Engine & Core Presentation Logic
+// ==========================================================================
+
 // --- Robust Flag Resolver ---
 const FLAG_REGISTRY = {
   'china': '🇨🇳', 'chn': '🇨🇳', "people's republic of china": '🇨🇳',
@@ -35,11 +39,14 @@ const FLAG_REGISTRY = {
 const SORTED_FLAG_KEYS = Object.keys(FLAG_REGISTRY).sort((a, b) => b.length - a.length);
 
 function getFlagEmoji(teamName) {
+  const activeSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
+  const defaultIcon = (window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport]?.icon) || (activeSport === 'football' ? '⚽' : '🏀');
+
   if (typeof window.getFlag === 'function') return window.getFlag(teamName);
-  if (!teamName || typeof teamName !== 'string') return '🏀';
+  if (!teamName || typeof teamName !== 'string') return defaultIcon;
 
   const norm = teamName.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
-  if (!norm) return '🏀';
+  if (!norm) return defaultIcon;
 
   if (FLAG_REGISTRY[norm]) return FLAG_REGISTRY[norm];
 
@@ -51,7 +58,7 @@ function getFlagEmoji(teamName) {
       if (norm.includes(key)) return FLAG_REGISTRY[key];
     }
   }
-  return '🏀';
+  return defaultIcon;
 }
 
 // --- Team Name Normalizer for Calibration Indexing ---
@@ -94,23 +101,19 @@ function formatStageName(stageStr) {
   if (!stageStr || typeof stageStr !== 'string') return 'Group Stage';
   const s = stageStr.replace(/^(men|women)\s+/i, '').trim();
 
-  // Quarterfinals (e.g. "1/4 G 2" -> "Quarterfinals • Game 2")
   if (/1\/4|quarter|qf/i.test(s)) {
     const g = s.match(/g\s*(\d+)/i);
     return g ? `Quarterfinals • Game ${g[1]}` : 'Quarterfinals';
   }
 
-  // Semifinals (e.g. "1/2 G 1" -> "Semifinals • Game 1")
   if (/1\/2|semi|sf/i.test(s)) {
     const g = s.match(/g\s*(\d+)/i);
     return g ? `Semifinals • Game ${g[1]}` : 'Semifinals';
   }
 
-  // Medal matches
   if (/bronze|3rd/i.test(s)) return 'Bronze Medal Match';
   if (/gold|final/i.test(s)) return 'Gold Medal Match';
 
-  // Group stage matches (e.g. "Group B G 1" -> "Group B • Game 1")
   const grp = s.match(/(group|pool)\s+([a-z0-9]+)/i);
   const g = s.match(/g\s*(\d+)/i);
   if (grp && g) {
@@ -304,12 +307,19 @@ function renderMatchesView(container, matches) {
   }
 
   let contentHtml = '';
+  const activeSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
+  const engine = window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport];
+
   if (activeMatchesSubView === 'schedule') {
     contentHtml = renderScheduleAndHero(matches);
   } else if (activeMatchesSubView === 'standings') {
-    contentHtml = renderStandingsTable(matches);
+    contentHtml = (engine && typeof engine.renderStandingsTable === 'function')
+      ? engine.renderStandingsTable(matches)
+      : renderStandingsTable(matches);
   } else if (activeMatchesSubView === 'bracket') {
-    contentHtml = renderKnockoutBracket(matches);
+    contentHtml = (engine && typeof engine.renderKnockoutBracket === 'function')
+      ? engine.renderKnockoutBracket(matches)
+      : renderKnockoutBracket(matches);
   }
 
   container.innerHTML = `${pillsHeader}${contentHtml}`;
@@ -328,11 +338,13 @@ function renderScheduleAndHero(matches) {
   if (heroTarget) {
     const isLive = heroTarget.status.toLowerCase().includes('live');
     const displayDateTime = formatMatchDateTime(heroTarget.date, heroTarget.time) || heroTarget.status || 'Scheduled';
+    const activeSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
+    const upcomingLabel = activeSport === 'football' ? '⏳ NEXT KICK-OFF' : '⏳ NEXT TIP-OFF';
 
     heroHtml = `
       <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.8)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center;">
         <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.2rem 0.65rem; border-radius:9999px; background:${isLive ? 'rgba(239,68,68,0.2)' : 'rgba(59,130,246,0.2)'}; color:${isLive ? '#ef4444' : '#60a5fa'}; margin-bottom:0.75rem;">
-          ${isLive ? '🔴 LIVE NOW' : '⏳ NEXT TIP-OFF'}
+          ${isLive ? '🔴 LIVE NOW' : upcomingLabel}
         </div>
         <div style="display:flex; justify-content:space-around; align-items:center; margin:0.75rem 0;">
           <div style="flex:1;">
@@ -385,14 +397,12 @@ function renderScheduleAndHero(matches) {
   return heroHtml + cardsHtml;
 }
 
- // --- FIBA Standings Engine ---
+// --- FIBA Standings Engine ---
 function renderStandingsTable(matches) {
   const parsedMatches = matches.map(m => parseMatchData(m));
   const groupMatches = parsedMatches.filter(m => /group|pool/i.test(m.stage));
   
-  // Badges only activate when every scheduled group match has concluded
   const allGroupFinished = groupMatches.length > 0 && groupMatches.every(m => m.isFinished);
-
   const groups = {};
 
   parsedMatches.forEach(m => {
@@ -445,7 +455,6 @@ function renderStandingsTable(matches) {
     return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No group stage data available.</div>`;
   }
 
-  // Determine Q, q, and E statuses across groups
   const statusMap = {};
   if (allGroupFinished) {
     const thirdPlaceTeams = [];
@@ -459,16 +468,15 @@ function renderStandingsTable(matches) {
 
       sorted.forEach((team, idx) => {
         if (idx < 2) {
-          statusMap[team.name] = 'Q'; // Direct qualifier
+          statusMap[team.name] = 'Q';
         } else if (idx === 2) {
           thirdPlaceTeams.push(team);
         } else {
-          statusMap[team.name] = 'E'; // 4th place eliminated
+          statusMap[team.name] = 'E';
         }
       });
     });
 
-    // Rank 3rd-place teams: top 2 get 'q' (wildcard), remainder 'E'
     thirdPlaceTeams.sort((a, b) => {
       if (b.pts !== a.pts) return b.pts - a.pts;
       if (b.diff !== a.diff) return b.diff - a.diff;
@@ -493,8 +501,7 @@ function renderStandingsTable(matches) {
       return b.pf - a.pf;
     });
 
-        const headerNote = '<span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 + best 2 3rd advance</span>';
-
+    const headerNote = '<span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 + best 2 3rd advance</span>';
 
     return `
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; margin-bottom:1.5rem; overflow-x:auto;">
@@ -541,7 +548,6 @@ function renderStandingsTable(matches) {
     `;
   }).join('');
 }
- 
 
 // --- Knockout Bracket Engine ---
 function renderKnockoutBracket(matches) {
@@ -553,10 +559,8 @@ function renderKnockoutBracket(matches) {
   const finalMatch = parsed.find(m => getStage(m).includes('gold') || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
   const bronzeMatch = parsed.find(m => getStage(m).includes('bronze') || getStage(m).includes('3rd'));
 
-  // Match by game number if present (e.g., "Game 2"), otherwise fall back to array order
   const getGame = (list, num) => list.find(m => new RegExp(`game\\s*${num}`, 'i').test(m.stage)) || list[num - 1];
 
-  // Default placeholders adapted for 3-group + 2-wildcard format
   const defaultQF = [
     { title: 'QF 1', t1: '1st Group A', t2: '2nd Group B' },
     { title: 'QF 2', t1: '1st Group C', t2: 'Wildcard 2' },
@@ -565,7 +569,6 @@ function renderKnockoutBracket(matches) {
   ];
 
   const renderSlot = (title, match, fallback, medalType = null) => {
-    // TBD Protection: keep descriptive fallback placeholder until confirmed country names arrive
     const t1 = (match && match.t1 && match.t1 !== 'TBD') ? match.t1 : fallback.t1;
     const t2 = (match && match.t2 && match.t2 !== 'TBD') ? match.t2 : fallback.t2;
     const s1 = match ? match.s1 : '-';
@@ -743,7 +746,6 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     return;
   }
 
-  // Division Odds Cards View
   const preds = currentGender === 'men' ? menPreds : womenPreds;
 
   if (!preds || preds.length === 0) {
@@ -902,3 +904,11 @@ function renderCalibrationView(container, predictions, matches) {
     ` : ''}
   `;
 }
+
+// --- Sport Engine Registry Assignment ---
+window.SPORT_ENGINES = window.SPORT_ENGINES || {};
+window.SPORT_ENGINES['basketball'] = {
+  icon: '🏀',
+  renderStandingsTable,
+  renderKnockoutBracket
+};
