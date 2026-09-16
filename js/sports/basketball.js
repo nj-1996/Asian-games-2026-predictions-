@@ -621,6 +621,8 @@ function renderKnockoutBracket(matches) {
 
 // --- Predictions View & Simplified 6-Medal Tournament Table ---
 function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
+  const activeSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
+
   const pillsHeader = `
     <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); margin-bottom:1.25rem; gap:3px;">
       <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activePredictionsSubView === 'table' ? '#2563eb' : 'transparent'}; color:${activePredictionsSubView === 'table' ? '#fff' : '#94a3b8'};" onclick="setPredictionsSubView('table')">🏅 Projected Medal Table</button>
@@ -702,9 +704,11 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     const totalBronze = sortedTable.reduce((sum, t) => sum + t.bronze, 0);
     const grandTotal = totalGold + totalSilver + totalBronze;
 
+    const divisionLabel = activeSport === 'football' ? "Men's U-23 & Women's Senior" : "Men's & Women's 5x5";
+
     const tableHtml = `
       <div style="margin-bottom:1rem; text-align:center; font-size:0.75rem; color:#94a3b8;">
-        Projected distribution of all <strong>6 tournament medals</strong> (Men's & Women's 5x5) based on top simulation finishes.
+        Projected distribution of all <strong>6 tournament medals</strong> (${divisionLabel}) based on top simulation finishes.
       </div>
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; overflow-x:auto;">
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
@@ -770,9 +774,13 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     return gB - gA;
   });
 
+  const modelDesc = activeSport === 'football'
+    ? "Monte Carlo simulation (50,000 runs) weighted by FIFA Rank, AFC Asian Cup, Asiad form, and Host Boost."
+    : "Monte Carlo simulation (50,000 runs) weighted by FIBA Rank, MoV, and Host Boost.";
+
   const cardsHtml = `
     <div style="margin-bottom:1rem; text-align:center; font-size:0.75rem; color:#94a3b8;">
-      Monte Carlo simulation (50,000 runs) weighted by FIBA Rank, MoV, and Host Boost.
+      ${modelDesc}
     </div>
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
       ${sorted.map(p => {
