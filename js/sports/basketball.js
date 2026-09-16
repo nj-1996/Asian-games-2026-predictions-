@@ -909,6 +909,101 @@ function renderCalibrationView(container, predictions, matches) {
         <div style="font-size:1.6rem; font-weight:800; color:#f87171;">${upsetLogs.length}</div>
         <div style="font-size:0.7rem; color:#94a3b8;">Underdog victories</div>
       </div>
+// --- Calibration View ---
+function renderCalibrationView(container, predictions, matches) {
+  if (!matches || matches.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">
+        Awaiting completed matches to evaluate prediction calibration.
+      </div>`;
+    return;
+  }
+
+  const parsed = matches.map(m => parseMatchData(m));
+  const finished = parsed.filter(m => m.isFinished && m.s1 !== '-' && m.s2 !== '-');
+
+  let correctFavorites = 0;
+  let evaluatedMatches = 0;
+  const upsetLogs = [];
+
+  const rankMap = {};
+  (predictions || []).forEach((p, idx) => {
+    const rawName = p.team || p.country || p.name || '';
+    const cleaned = cleanTeamName(rawName);
+    if (cleaned) rankMap[cleaned] = idx + 1;
+  });
+
+  finished.forEach(m => {
+    const s1 = Number(m.s1);
+    const s2 = Number(m.s2);
+    if (isNaN(s1) || isNaN(s2)) return;
+
+    // Determine real match winner and loser based on scores
+    let actualWinner = '';
+    let actualLoser = '';
+    let winScore = 0;
+    let loseScore = 0;
+
+    if (s1 > s2) {
+      actualWinner = m.t1;
+      actualLoser = m.t2;
+      winScore = s1;
+      loseScore = s2;
+    } else if (s2 > s1) {
+      actualWinner = m.t2;
+      actualLoser = m.t1;
+      winScore = s2;
+      loseScore = s1;
+    } else if (m.winner) {
+      // Tiebreak / penalty shootout
+      actualWinner = m.winner.trim();
+      actualLoser = cleanTeamName(actualWinner) === cleanTeamName(m.t1) ? m.t2 : m.t1;
+      winScore = s1;
+      loseScore = s2;
+    } else {
+      return; // Skip drawn group matches
+    }
+
+    const c1 = cleanTeamName(m.t1);
+    const c2 = cleanTeamName(m.t2);
+    const r1 = rankMap[c1] || 99;
+    const r2 = rankMap[c2] || 99;
+
+    if (r1 !== r2) {
+      evaluatedMatches++;
+      const fav = r1 < r2 ? m.t1 : m.t2;
+
+      if (cleanTeamName(actualWinner) === cleanTeamName(fav)) {
+        correctFavorites++;
+      } else {
+        upsetLogs.push({
+          winner: actualWinner,
+          loser: actualLoser,
+          score: `${winScore} - ${loseScore}`
+        });
+      }
+    }
+  });
+
+  const accuracy = evaluatedMatches > 0 ? Math.round((correctFavorites / evaluatedMatches) * 100) : '--';
+
+  container.innerHTML = `
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+        <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Favorite Accuracy</div>
+        <div style="font-size:1.6rem; font-weight:800; color:#38bdf8;">${accuracy}%</div>
+        <div style="font-size:0.7rem; color:#94a3b8;">${correctFavorites}/${evaluatedMatches} correct</div>
+      </div>
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+        <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Completed Matches</div>
+        <div style="font-size:1.6rem; font-weight:800; color:#4ade80;">${finished.length}</div>
+        <div style="font-size:0.7rem; color:#94a3b8;">Evaluated</div>
+      </div>
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+        <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Upsets Recorded</div>
+        <div style="font-size:1.6rem; font-weight:800; color:#f87171;">${upsetLogs.length}</div>
+        <div style="font-size:0.7rem; color:#94a3b8;">Underdog victories</div>
+      </div>
     </div>
 
     ${upsetLogs.length > 0 ? `
@@ -928,6 +1023,7 @@ function renderCalibrationView(container, predictions, matches) {
     ` : ''}
   `;
 }
+
 
 // --- Sport Engine Registry Assignment ---
 window.SPORT_ENGINES = window.SPORT_ENGINES || {};
