@@ -4,7 +4,7 @@
     {
       "round": "Women Group A G 1",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-17",
       "time": "13:00",
       "player1": "Indonesia",
@@ -15,7 +15,7 @@
     {
       "round": "Women Group B G 1",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-17",
       "time": "16:00",
       "player1": "Philippines",
@@ -26,7 +26,7 @@
     {
       "round": "Women Group B G 2",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-17",
       "time": "19:00",
       "player1": "Japan",
