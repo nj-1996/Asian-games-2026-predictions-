@@ -99,7 +99,10 @@ function formatTeamDisplayName(name) {
 // --- Stage & Round Display Formatter ---
 function formatStageName(stageStr) {
   if (!stageStr || typeof stageStr !== 'string') return 'Group Stage';
-  const s = stageStr.replace(/^(men|women)\s+/i, '').trim();
+  let s = stageStr.replace(/^(men|women)\s+/i, '').trim();
+
+  // Normalize "Gr.C", "Gr. C", "Gr C" to "Group C"
+  s = s.replace(/^gr\.?\s*([a-z0-9]+)/i, 'Group $1');
 
   if (/1\/4|quarter|qf/i.test(s)) {
     const g = s.match(/g\s*(\d+)/i);
@@ -114,12 +117,12 @@ function formatStageName(stageStr) {
   if (/bronze|3rd/i.test(s)) return 'Bronze Medal Match';
   if (/gold|final/i.test(s)) return 'Gold Medal Match';
 
-  const grp = s.match(/(group|pool)\s+([a-z0-9]+)/i);
-  const g = s.match(/g\s*(\d+)/i);
+  const grp = s.match(/(?:group|pool)\s+([a-z0-9]+)/i);
+  const g = s.match(/(?:game|g)\s*(\d+)/i);
   if (grp && g) {
-    return `Group ${grp[2].toUpperCase()} • Game ${g[1]}`;
+    return `Group ${grp[1].toUpperCase()} • Game ${g[1]}`;
   } else if (grp) {
-    return `Group ${grp[2].toUpperCase()}`;
+    return `Group ${grp[1].toUpperCase()}`;
   }
 
   return s;
