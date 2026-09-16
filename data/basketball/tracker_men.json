@@ -201,24 +201,24 @@
     },
     {
       "round": "Men 1/4 G 3",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-16",
       "time": "10:00",
       "player1": "Jordan",
       "player2": "Korea",
-      "score": "vs",
-      "winner": ""
+      "score": "80 - 114",
+      "winner": "Korea"
     },
     {
       "round": "Men 1/4 G 4",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-16",
       "time": "13:00",
       "player1": "IR Iran",
       "player2": "Bahrain",
-      "score": "vs",
+      "score": "21 - 15",
       "winner": ""
     },
     {
@@ -260,7 +260,7 @@
       "state": "Scheduled",
       "date": "2026-09-18",
       "time": "19:20",
-      "player1": "TBD",
+      "player1": "Korea",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
