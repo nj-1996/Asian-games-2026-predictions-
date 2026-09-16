@@ -909,6 +909,8 @@ function renderCalibrationView(container, predictions, matches) {
 
   const accuracy = evaluatedMatches > 0 ? Math.round((correctFavorites / evaluatedMatches) * 100) : '--';
 
+    const skippedCount = finished.length - evaluatedMatches;
+
   container.innerHTML = `
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
@@ -919,7 +921,7 @@ function renderCalibrationView(container, predictions, matches) {
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
         <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Completed Matches</div>
         <div style="font-size:1.6rem; font-weight:800; color:#4ade80;">${finished.length}</div>
-        <div style="font-size:0.7rem; color:#94a3b8;">Evaluated</div>
+        <div style="font-size:0.7rem; color:#94a3b8;">${evaluatedMatches} evaluated (${skippedCount} neutral)</div>
       </div>
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
         <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Upsets Recorded</div>
@@ -945,6 +947,7 @@ function renderCalibrationView(container, predictions, matches) {
     ` : ''}
   `;
 }
+
 
 // --- Sport Engine Registry Assignment ---
 window.SPORT_ENGINES = window.SPORT_ENGINES || {};
