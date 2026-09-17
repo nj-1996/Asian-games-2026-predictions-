@@ -212,13 +212,20 @@ def main():
 
     os.makedirs("data/football", exist_ok=True)
 
-    with open("data/football/tracker_men.json", "w", encoding="utf-8") as f:
-        json.dump({"sport": "Football (Men)", "matches": all_men}, f, indent=2, ensure_ascii=False)
-    print(f"Saved {len(all_men)} Men's football fixtures.")
+    # Fail-safe: Only write if new matches were actually scraped
+    if len(all_men) > 0:
+        with open("data/football/tracker_men.json", "w", encoding="utf-8") as f:
+            json.dump({"sport": "Football (Men)", "matches": all_men}, f, indent=2, ensure_ascii=False)
+        print(f"Saved {len(all_men)} Men's football fixtures.")
+    else:
+        print("⚠️ No Men's fixtures returned from API. Preserving existing tracker_men.json.")
 
-    with open("data/football/tracker_women.json", "w", encoding="utf-8") as f:
-        json.dump({"sport": "Football (Women)", "matches": all_women}, f, indent=2, ensure_ascii=False)
-    print(f"Saved {len(all_women)} Women's football fixtures.")
+    if len(all_women) > 0:
+        with open("data/football/tracker_women.json", "w", encoding="utf-8") as f:
+            json.dump({"sport": "Football (Women)", "matches": all_women}, f, indent=2, ensure_ascii=False)
+        print(f"Saved {len(all_women)} Women's football fixtures.")
+    else:
+        print("⚠️ No Women's fixtures returned from API. Preserving existing tracker_women.json.")
 
 
 if __name__ == "__main__":
