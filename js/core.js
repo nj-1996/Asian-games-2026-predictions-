@@ -33,6 +33,7 @@ window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 
 // --- Universal Flag Registry & Resolver ---
 const FLAG_REGISTRY = {
+  // East Asia
   'china': '🇨🇳', 'chn': '🇨🇳', "people's republic of china": '🇨🇳',
   'japan': '🇯🇵', 'jpn': '🇯🇵',
   'korea': '🇰🇷', 'south korea': '🇰🇷', 'kor': '🇰🇷', 'republic of korea': '🇰🇷',
@@ -41,16 +42,38 @@ const FLAG_REGISTRY = {
   'hong kong': '🇭🇰', 'hong kong, china': '🇭🇰', 'hkg': '🇭🇰',
   'macau': '🇲🇴', 'macao': '🇲🇴', 'mac': '🇲🇴',
   'mongolia': '🇲🇳', 'mgl': '🇲🇳',
+
+  // Southeast Asia
   'philippines': '🇵🇭', 'phi': '🇵🇭', 'gilas': '🇵🇭',
   'indonesia': '🇮🇩', 'ina': '🇮🇩', 'idn': '🇮🇩',
   'thailand': '🇹🇭', 'tha': '🇹🇭',
   'malaysia': '🇲🇾', 'mas': '🇲🇾',
   'singapore': '🇸🇬', 'sgp': '🇸🇬',
   'vietnam': '🇻🇳', 'vie': '🇻🇳',
+  'myanmar': '🇲🇲', 'mmr': '🇲🇲', 'burma': '🇲🇲',
+  'cambodia': '🇰🇭', 'cam': '🇰🇭', 'khm': '🇰🇭',
+  'laos': '🇱🇦', 'lao': '🇱🇦',
+  'brunei': '🇧🇳', 'bru': '🇧🇳',
+  'timor-leste': '🇹🇱', 'timor leste': '🇹🇱', 'tls': '🇹🇱',
+
+  // South Asia
   'india': '🇮🇳', 'ind': '🇮🇳',
+  'bangladesh': '🇧🇩', 'ban': '🇧🇩', 'bgd': '🇧🇩',
+  'pakistan': '🇵🇰', 'pak': '🇵🇰',
+  'sri lanka': '🇱🇰', 'sri': '🇱🇰', 'lka': '🇱🇰',
+  'nepal': '🇳🇵', 'nep': '🇳🇵', 'npl': '🇳🇵',
+  'maldives': '🇲🇻', 'mdv': '🇲🇻',
+  'bhutan': '🇧🇹', 'bhu': '🇧🇹', 'btn': '🇧🇹',
+  'afghanistan': '🇦🇫', 'afg': '🇦🇫',
+
+  // Central Asia
   'kazakhstan': '🇰🇿', 'kaz': '🇰🇿',
   'uzbekistan': '🇺🇿', 'uzb': '🇺🇿',
+  'kyrgyzstan': '🇰🇬', 'kgz': '🇰🇬', 'kyrgyz republic': '🇰🇬',
+  'tajikistan': '🇹🇯', 'tjk': '🇹🇯',
   'turkmenistan': '🇹🇲', 'tkm': '🇹🇲',
+
+  // West Asia / Middle East
   'iran': '🇮🇷', 'ir iran': '🇮🇷', 'iri': '🇮🇷',
   'jordan': '🇯🇴', 'jor': '🇯🇴',
   'lebanon': '🇱🇧', 'lbn': '🇱🇧',
@@ -58,10 +81,12 @@ const FLAG_REGISTRY = {
   'qatar': '🇶🇦', 'qat': '🇶🇦',
   'bahrain': '🇧🇭', 'brn': '🇧🇭',
   'kuwait': '🇰🇼', 'kuw': '🇰🇼',
-  'united arab emirates': '🇦🇪', 'uae': '🇦🇪',
+  'united arab emirates': '🇦🇪', 'uae': '🇦🇪', 'ua emirates': '🇦🇪', 'are': '🇦🇪',
   'syria': '🇸🇾', 'syr': '🇸🇾',
   'iraq': '🇮🇶', 'irq': '🇮🇶',
   'palestine': '🇵🇸', 'ple': '🇵🇸',
+  'oman': '🇴🇲', 'oma': '🇴🇲', 'omn': '🇴🇲',
+  'yemen': '🇾🇪', 'yem': '🇾🇪',
   'guam': '🇬🇺', 'gum': '🇬🇺'
 };
 
