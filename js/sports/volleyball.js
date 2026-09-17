@@ -4,37 +4,110 @@
 
 window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 
-// Official Asian Games 2026 Men's Preliminary Pools
-const VOLLEYBALL_KNOWN_POOLS = {
-  // Pool A
-  'japan': 'Pool A', 'pakistan': 'Pool A', 'kazakhstan': 'Pool A', 'uzbekistan': 'Pool A',
-  // Pool B
-  'ir iran': 'Pool B', 'iran': 'Pool B', 'indonesia': 'Pool B', 'thailand': 'Pool B', 'kyrgyzstan': 'Pool B',
-  // Pool C
-  'qatar': 'Pool C', 'india': 'Pool C', 'vietnam': 'Pool C', 'hong kong, china': 'Pool C', 'hong kong': 'Pool C',
-  // Pool D
-  'china': 'Pool D', 'korea': 'Pool D', 'south korea': 'Pool D', 'chinese taipei': 'Pool D', 'philippines': 'Pool D'
-};
+// Dynamic partition of preliminary round-robin fixtures into isolated pools
+function buildVolleyballPools(matches) {
+  const prelimMatches = [];
+  const teamAdj = {};
+  const teamDisplayNames = {};
 
-function resolveVolleyballPool(m) {
-  const roundStr = (m.round || m.stage || '').toString();
-  
-  // 1. Direct match if the scraper contains "Pool X" or "Group X"
-  const directMatch = roundStr.match(/(?:Group|Pool)\s+([A-Za-z0-9]+)/i);
-  if (directMatch) return `Pool ${directMatch[1].toUpperCase()}`;
+  function registerTeam(t) {
+    const key = t.toLowerCase();
+    if (!teamAdj[key]) teamAdj[key] = new Set();
+    if (!teamDisplayNames[key]) teamDisplayNames[key] = t;
+  }
 
-  // Exclude classification and knockout games
-  const isKnockoutOrPlacement = /(?:place|medal|final|semi|quarter|qf|sf)/i.test(roundStr);
-  if (isKnockoutOrPlacement) return null;
+  matches.forEach(rawM => {
+    const m = typeof parseMatchData === 'function' ? parseMatchData(rawM) : rawM;
+    const t1 = (m.t1 || m.player1 || rawM.player1 || '').toString().trim();
+    const t2 = (m.t2 || m.player2 || rawM.player2 || '').toString().trim();
 
-  // 2. Lookup known seeds
-  const t1 = (m.player1 || m.t1 || '').toString().trim().toLowerCase();
-  const t2 = (m.player2 || m.t2 || '').toString().trim().toLowerCase();
+    if (!t1 || !t2 || t1 === 'TBD' || t2 === 'TBD') return;
 
-  if (VOLLEYBALL_KNOWN_POOLS[t1]) return VOLLEYBALL_KNOWN_POOLS[t1];
-  if (VOLLEYBALL_KNOWN_POOLS[t2]) return VOLLEYBALL_KNOWN_POOLS[t2];
+    const roundStr = (m.stage || m.round || rawM.round || '').toString().toLowerCase();
+    // Exclude knockout and classification fixtures from pool formation
+    if (/(?:place|medal|final|semi|quarter|qf|sf)/.test(roundStr)) return;
 
-  return null;
+    prelimMatches.push({ m, rawM, t1, t2, roundStr });
+    registerTeam(t1);
+    registerTeam(t2);
+    teamAdj[t1.toLowerCase()].add(t2.toLowerCase());
+    teamAdj[t2.toLowerCase()].add(t1.toLowerCase());
+  });
+
+  // Breadth-First Search to isolate connected components
+  const visited = new Set();
+  const components = [];
+
+  Object.keys(teamAdj).forEach(teamKey => {
+    if (visited.has(teamKey)) return;
+    const comp = [];
+    const queue = [teamKey];
+    visited.add(teamKey);
+
+    while (queue.length > 0) {
+      const curr = queue.shift();
+      comp.push(curr);
+      teamAdj[curr].forEach(neighbor => {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          queue.push(neighbor);
+        }
+      });
+    }
+    components.push(comp);
+  });
+
+  // Assign standard pool designations (Pool A, Pool B, etc.)
+  const poolAssignments = {};
+  const usedPools = new Set();
+  const unassignedComps = [];
+
+  components.forEach(comp => {
+    const compSet = new Set(comp);
+    let detectedPool = null;
+
+    // 1. Direct label check from fixture metadata
+    for (const item of prelimMatches) {
+      if (compSet.has(item.t1.toLowerCase())) {
+        const match = item.roundStr.match(/(?:pool|group)\s+([a-d0-9]+)/i);
+        if (match) {
+          detectedPool = `Pool ${match[1].toUpperCase()}`;
+          break;
+        }
+      }
+    }
+
+    // 2. Anchor seeded nations if metadata is generic (e.g. "Match 1")
+    if (!detectedPool) {
+      if (compSet.has('japan')) detectedPool = 'Pool A';
+      else if (compSet.has('thailand') || compSet.has('ir iran') || compSet.has('iran')) detectedPool = 'Pool B';
+      else if (compSet.has('vietnam') || compSet.has('qatar') || compSet.has('india')) detectedPool = 'Pool C';
+      else if (compSet.has('china') || compSet.has('korea') || compSet.has('south korea') || compSet.has('chinese taipei')) detectedPool = 'Pool D';
+    }
+
+    if (detectedPool && !usedPools.has(detectedPool)) {
+      poolAssignments[detectedPool] = comp;
+      usedPools.add(detectedPool);
+    } else {
+      unassignedComps.push(comp);
+    }
+  });
+
+  const availablePoolNames = ['Pool A', 'Pool B', 'Pool C', 'Pool D', 'Pool E', 'Pool F'];
+  unassignedComps.forEach(comp => {
+    const nextPool = availablePoolNames.find(p => !usedPools.has(p)) || `Pool ${usedPools.size + 1}`;
+    poolAssignments[nextPool] = comp;
+    usedPools.add(nextPool);
+  });
+
+  const teamToPool = {};
+  Object.entries(poolAssignments).forEach(([poolName, teamList]) => {
+    teamList.forEach(teamKey => {
+      teamToPool[teamKey] = poolName;
+    });
+  });
+
+  return { prelimMatches, teamToPool, poolAssignments, teamDisplayNames };
 }
 
 window.SPORT_ENGINES['volleyball'] = {
@@ -46,28 +119,35 @@ window.SPORT_ENGINES['volleyball'] = {
       return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No group stage data available.</div>`;
     }
 
+    const { prelimMatches, teamToPool, poolAssignments, teamDisplayNames } = buildVolleyballPools(matches);
+    const poolKeys = Object.keys(poolAssignments).sort();
+
+    if (poolKeys.length === 0) {
+      return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No group stage fixtures scheduled.</div>`;
+    }
+
+    // Initialize clean tables with zero ghost teams
     const groups = {};
-
-    // 1. Assign pools to matches
-    matches.forEach(rawM => {
-      const m = typeof parseMatchData === 'function' ? parseMatchData(rawM) : rawM;
-      const t1 = m.t1 || m.player1 || rawM.player1;
-      const t2 = m.t2 || m.player2 || rawM.player2;
-
-      if (!t1 || !t2 || t1 === 'TBD' || t2 === 'TBD') return;
-
-      const grpName = resolveVolleyballPool(m);
-      if (!grpName) return;
-
-      if (!groups[grpName]) groups[grpName] = {};
-
-      [t1, t2].forEach(team => {
-        if (!groups[grpName][team]) {
-          groups[grpName][team] = { name: team, gp: 0, w: 0, l: 0, pts: 0, sw: 0, sl: 0, diff: 0 };
-        }
+    poolKeys.forEach(poolName => {
+      groups[poolName] = {};
+      poolAssignments[poolName].forEach(teamKey => {
+        const displayName = teamDisplayNames[teamKey] || teamKey;
+        groups[poolName][displayName] = {
+          name: displayName,
+          gp: 0, w: 0, l: 0, pts: 0, sw: 0, sl: 0, diff: 0
+        };
       });
+    });
 
-      // Resolve score strings
+    // Score calculations
+    prelimMatches.forEach(({ m, rawM, t1, t2 }) => {
+      const poolName = teamToPool[t1.toLowerCase()];
+      if (!poolName || !groups[poolName]) return;
+
+      const team1Entry = groups[poolName][teamDisplayNames[t1.toLowerCase()]];
+      const team2Entry = groups[poolName][teamDisplayNames[t2.toLowerCase()]];
+      if (!team1Entry || !team2Entry) return;
+
       let s1 = m.s1 !== undefined && m.s1 !== '-' ? m.s1 : null;
       let s2 = m.s2 !== undefined && m.s2 !== '-' ? m.s2 : null;
       const scoreStr = (m.score || rawM.score || '').toString();
@@ -86,45 +166,40 @@ window.SPORT_ENGINES['volleyball'] = {
         const score1 = Number(s1);
         const score2 = Number(s2);
 
-        groups[grpName][t1].gp += 1;
-        groups[grpName][t2].gp += 1;
-        groups[grpName][t1].sw += score1;
-        groups[grpName][t1].sl += score2;
-        groups[grpName][t2].sw += score2;
-        groups[grpName][t2].sl += score1;
+        team1Entry.gp += 1;
+        team2Entry.gp += 1;
+        team1Entry.sw += score1;
+        team1Entry.sl += score2;
+        team2Entry.sw += score2;
+        team2Entry.sl += score1;
 
         // FIVB 3-2-1-0 Point System
         if (score1 > score2) {
-          groups[grpName][t1].w += 1;
-          groups[grpName][t2].l += 1;
+          team1Entry.w += 1;
+          team2Entry.l += 1;
           if (score2 === 2) {
-            groups[grpName][t1].pts += 2;
-            groups[grpName][t2].pts += 1;
+            team1Entry.pts += 2;
+            team2Entry.pts += 1;
           } else {
-            groups[grpName][t1].pts += 3;
+            team1Entry.pts += 3;
           }
         } else if (score2 > score1) {
-          groups[grpName][t2].w += 1;
-          groups[grpName][t1].l += 1;
+          team2Entry.w += 1;
+          team1Entry.l += 1;
           if (score1 === 2) {
-            groups[grpName][t2].pts += 2;
-            groups[grpName][t1].pts += 1;
+            team2Entry.pts += 2;
+            team1Entry.pts += 1;
           } else {
-            groups[grpName][t2].pts += 3;
+            team2Entry.pts += 3;
           }
         }
 
-        groups[grpName][t1].diff = groups[grpName][t1].sw - groups[grpName][t1].sl;
-        groups[grpName][t2].diff = groups[grpName][t2].sw - groups[grpName][t2].sl;
+        team1Entry.diff = team1Entry.sw - team1Entry.sl;
+        team2Entry.diff = team2Entry.sw - team2Entry.sl;
       }
     });
 
-    const groupKeys = Object.keys(groups).sort();
-    if (groupKeys.length === 0) {
-      return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No group stage data available.</div>`;
-    }
-
-    return groupKeys.map(grpKey => {
+    return poolKeys.map(grpKey => {
       const teams = Object.values(groups[grpKey]).sort((a, b) => 
         b.pts - a.pts || b.w - a.w || b.diff - a.diff || b.sw - a.sw || a.name.localeCompare(b.name)
       );
