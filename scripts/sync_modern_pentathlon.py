@@ -121,8 +121,8 @@ def parse_events(raw_items, gender="Men", date_str=""):
         if not is_target:
             continue
 
-        phase = item.get("PhaseDescS") or item.get("PhaseDesc") or item.get("Phase") or "Preliminary"
-        unit = item.get("UnitDescS") or item.get("UnitDesc") or item.get("UnitDescA") or ""
+        phase_raw = item.get("PhaseDescS") or item.get("PhaseDesc") or item.get("Phase") or "Preliminary"
+        unit_raw = item.get("UnitDescS") or item.get("UnitDesc") or item.get("UnitDescA") or ""
         status_raw = str(item.get("Status", "")).upper()
 
         if status_raw in ["OFFICIAL", "FINISHED", "UNCONFIRMED"]:
@@ -134,17 +134,40 @@ def parse_events(raw_items, gender="Men", date_str=""):
 
         ev_date, ev_time = extract_match_datetime(item, fallback_date=date_str)
         venue = item.get("VenueDesc") or item.get("Venue") or "Anjo Sports Park"
-        is_medal = bool(item.get("MedalFlag") or "medal" in unit.lower() or "final" in phase.lower() and "laser run" in unit.lower())
 
-        output.append({
-            "phase": phase,
-            "discipline": unit or phase,
+        # Differentiate Semi-Final Group A vs Group B by start hour
+        group = ""
+        phase_clean = phase_raw.strip()
+        if phase_clean.upper() == "SF" or "semi" in phase_clean.lower():
+            hour = int(ev_time.split(":")[0]) if ev_time and ":" in ev_time else 0
+            group = "Group A" if hour < 13 else "Group B"
+            phase_clean = f"Semi-final ({group})"
+        elif "seed" in phase_clean.lower():
+            phase_clean = "Fencing Seeding Round"
+        elif "final" in phase_clean.lower():
+            phase_clean = "Final"
+
+        discipline = unit_raw if unit_raw else phase_raw
+        is_medal = bool(
+            item.get("MedalFlag")
+            or "medal" in unit_raw.lower()
+            or ("final" in phase_clean.lower() and "laser run" in discipline.lower())
+        )
+        medal_desc = f"{gender}'s Individual & Team Medals" if is_medal else ""
+
+        event_payload = {
+            "round": phase_clean,
+            "phase": phase_clean,
+            "group": group,
+            "discipline": discipline,
             "status": status,
             "date": ev_date,
             "time": ev_time,
             "venue": venue,
-            "is_medal": is_medal
-        })
+            "is_medal": is_medal,
+            "medal_desc": medal_desc
+        }
+        output.append(event_payload)
 
     return output
 
@@ -167,14 +190,22 @@ def main():
 
     if len(all_men) > 0:
         with open("data/modern_pentathlon/tracker_men.json", "w", encoding="utf-8") as f:
-            json.dump({"sport": "Modern Pentathlon (Men)", "events": all_men}, f, indent=2, ensure_ascii=False)
+            json.dump({
+                "sport": "Modern Pentathlon (Men)",
+                "events": all_men,
+                "matches": all_men
+            }, f, indent=2, ensure_ascii=False)
         print(f"Saved {len(all_men)} Men's pentathlon sessions.")
     else:
         print("⚠️ No Men's sessions returned from API. Keeping existing tracker_men.json.")
 
     if len(all_women) > 0:
         with open("data/modern_pentathlon/tracker_women.json", "w", encoding="utf-8") as f:
-            json.dump({"sport": "Modern Pentathlon (Women)", "events": all_women}, f, indent=2, ensure_ascii=False)
+            json.dump({
+                "sport": "Modern Pentathlon (Women)",
+                "events": all_women,
+                "matches": all_women
+            }, f, indent=2, ensure_ascii=False)
         print(f"Saved {len(all_women)} Women's pentathlon sessions.")
     else:
         print("⚠️ No Women's sessions returned from API. Keeping existing tracker_women.json.")
