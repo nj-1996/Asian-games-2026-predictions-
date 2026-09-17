@@ -30,13 +30,13 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-            # Step 4: Execute parser script to fetch and format API data
+      # Step 4: Execute parser scripts to fetch and format API data
       - name: Run sync script
         run: |
           python scripts/sync_basketball.py
           python scripts/sync_football.py
           python scripts/sync_volleyball.py
-
+          python scripts/sync_modern_pentathlon.py
 
       # Step 5: Check in modified JSON files if scores changed
       - name: Commit and push updates
