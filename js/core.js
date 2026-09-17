@@ -367,23 +367,23 @@ function renderMatchesView(container, matches) {
   if (activeMatchesSubView === 'schedule') {
     contentHtml = renderScheduleAndHero(matches);
   } else if (activeMatchesSubView === 'standings') {
-    // Direct native route for basketball, otherwise check engine or fallback
+    // Directly call the embedded standalone functions, no object lookup needed
     if (activeSport === 'basketball') {
-      contentHtml = window.SPORT_ENGINES['basketball'].renderStandingsTable(matches);
+      contentHtml = renderBasketballStandings(matches);
     } else if (engine && typeof engine.renderStandingsTable === 'function') {
       contentHtml = engine.renderStandingsTable(matches);
     } else {
       contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Standings unavailable for this sport.</div>`;
     }
   } else if (activeMatchesSubView === 'bracket') {
-    // Direct native route for basketball, otherwise check engine or fallback
     if (activeSport === 'basketball') {
-      contentHtml = window.SPORT_ENGINES['basketball'].renderKnockoutBracket(matches);
+      contentHtml = renderBasketballBracket(matches);
     } else if (engine && typeof engine.renderKnockoutBracket === 'function') {
       contentHtml = engine.renderKnockoutBracket(matches);
     } else {
       contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Bracket unavailable for this sport.</div>`;
     }
+
   } else if (activeMatchesSubView === 'leaderboard' && hasLeaderboard) {
     contentHtml = engine.renderLeaderboard(matches);
   }
