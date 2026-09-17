@@ -208,3 +208,6 @@ window.SPORT_ENGINES['basketball'] = {
     `;
   }
 };
+
+window.basketballEngine = window.SPORT_ENGINES['basketball'];
+
