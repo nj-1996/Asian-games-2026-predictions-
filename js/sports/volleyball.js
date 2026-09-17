@@ -9,59 +9,84 @@ window.SPORT_ENGINES['volleyball'] = {
 
   // --- FIVB Standings Engine (3-2-1-0 Point System) ---
   renderStandingsTable(matches) {
-    const parsedMatches = matches.map(m => parseMatchData(m));
+    if (!matches || matches.length === 0) {
+      return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No group stage data available.</div>`;
+    }
+
     const groups = {};
 
-    parsedMatches.forEach(m => {
-      const grpMatch = m.stage.match(/Group\s+[A-Za-z0-9]+/i) || m.stage.match(/Pool\s+[A-Za-z0-9]+/i);
-      const grpName = grpMatch ? grpMatch[0] : null;
+    matches.forEach(rawM => {
+      // Support both parsed match helper or raw JSON match schema
+      const m = typeof parseMatchData === 'function' ? parseMatchData(rawM) : rawM;
+
+      const stageStr = (m.stage || m.round || rawM.round || '').toString();
+      const grpMatch = stageStr.match(/(?:Group|Pool)\s+[A-Za-z0-9]+/i);
+      const grpName = grpMatch ? grpMatch[0].replace(/group/i, 'Pool') : null;
 
       if (!grpName) return;
       if (!groups[grpName]) groups[grpName] = {};
 
-      if (m.t1 !== 'TBD' && m.t2 !== 'TBD') {
-        [m.t1, m.t2].forEach(team => {
+      const t1 = m.t1 || m.player1 || rawM.player1;
+      const t2 = m.t2 || m.player2 || rawM.player2;
+
+      if (t1 && t2 && t1 !== 'TBD' && t2 !== 'TBD') {
+        [t1, t2].forEach(team => {
           if (!groups[grpName][team]) {
             groups[grpName][team] = { name: team, gp: 0, w: 0, l: 0, pts: 0, sw: 0, sl: 0, diff: 0 };
           }
         });
 
-        if (m.isFinished && m.s1 !== '-' && m.s2 !== '-') {
-          const s1 = Number(m.s1);
-          const s2 = Number(m.s2);
+        // Resolve scores
+        let s1 = m.s1 !== undefined && m.s1 !== '-' ? m.s1 : null;
+        let s2 = m.s2 !== undefined && m.s2 !== '-' ? m.s2 : null;
+        const scoreStr = (m.score || rawM.score || '').toString();
 
-          groups[grpName][m.t1].gp += 1;
-          groups[grpName][m.t2].gp += 1;
-          groups[grpName][m.t1].sw += s1;
-          groups[grpName][m.t1].sl += s2;
-          groups[grpName][m.t2].sw += s2;
-          groups[grpName][m.t2].sl += s1;
+        if (s1 === null && scoreStr.includes('-') && !scoreStr.includes('vs')) {
+          const parts = scoreStr.split('-').map(s => s.trim());
+          if (!isNaN(parts[0]) && !isNaN(parts[1])) {
+            s1 = parts[0];
+            s2 = parts[1];
+          }
+        }
+
+        const isFinished = m.isFinished || (m.status && m.status.toLowerCase() === 'finished') || (rawM.status && rawM.status.toLowerCase() === 'finished');
+
+        if (isFinished && s1 !== null && s2 !== null) {
+          const score1 = Number(s1);
+          const score2 = Number(s2);
+
+          groups[grpName][t1].gp += 1;
+          groups[grpName][t2].gp += 1;
+          groups[grpName][t1].sw += score1;
+          groups[grpName][t1].sl += score2;
+          groups[grpName][t2].sw += score2;
+          groups[grpName][t2].sl += score1;
 
           // FIVB Point System:
           // 3-0 or 3-1: Winner 3 pts, Loser 0 pts
           // 3-2: Winner 2 pts, Loser 1 pt
-          if (s1 > s2) {
-            groups[grpName][m.t1].w += 1;
-            groups[grpName][m.t2].l += 1;
-            if (s2 === 2) {
-              groups[grpName][m.t1].pts += 2;
-              groups[grpName][m.t2].pts += 1;
+          if (score1 > score2) {
+            groups[grpName][t1].w += 1;
+            groups[grpName][t2].l += 1;
+            if (score2 === 2) {
+              groups[grpName][t1].pts += 2;
+              groups[grpName][t2].pts += 1;
             } else {
-              groups[grpName][m.t1].pts += 3;
+              groups[grpName][t1].pts += 3;
             }
-          } else if (s2 > s1) {
-            groups[grpName][m.t2].w += 1;
-            groups[grpName][m.t1].l += 1;
-            if (s1 === 2) {
-              groups[grpName][m.t2].pts += 2;
-              groups[grpName][m.t1].pts += 1;
+          } else if (score2 > score1) {
+            groups[grpName][t2].w += 1;
+            groups[grpName][t1].l += 1;
+            if (score1 === 2) {
+              groups[grpName][t2].pts += 2;
+              groups[grpName][t1].pts += 1;
             } else {
-              groups[grpName][m.t2].pts += 3;
+              groups[grpName][t2].pts += 3;
             }
           }
 
-          groups[grpName][m.t1].diff = groups[grpName][m.t1].sw - groups[grpName][m.t1].sl;
-          groups[grpName][m.t2].diff = groups[grpName][m.t2].sw - groups[grpName][m.t2].sl;
+          groups[grpName][t1].diff = groups[grpName][t1].sw - groups[grpName][t1].sl;
+          groups[grpName][t2].diff = groups[grpName][t2].sw - groups[grpName][t2].sl;
         }
       }
     });
@@ -98,7 +123,7 @@ window.SPORT_ENGINES['volleyball'] = {
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${idx < 2 ? 'rgba(59,130,246,0.04)' : 'transparent'};">
                   <td style="padding:0.6rem 0.5rem; text-align:left; font-weight:${idx < 2 ? '700' : '400'};">
                     <span style="display:inline-block; width:16px; color:${idx < 2 ? '#38bdf8' : 'inherit'};">${idx + 1}</span>
-                    ${getFlagEmoji(t.name)}${t.name}
+                    ${typeof getFlagEmoji === 'function' ? getFlagEmoji(t.name) : ''} ${t.name}
                   </td>
                   <td style="padding:0.6rem 0.3rem;">${t.gp}</td>
                   <td style="padding:0.6rem 0.3rem; color:#4ade80;">${t.w}</td>
@@ -118,15 +143,15 @@ window.SPORT_ENGINES['volleyball'] = {
 
   // --- Volleyball Knockout Bracket ---
   renderKnockoutBracket(matches) {
-    const parsed = matches.map(m => parseMatchData(m));
-    const getStage = (m) => (m.stage + ' ' + m.status).toLowerCase();
+    const list = matches || [];
+    const getStage = (m) => ((m.stage || m.round || '') + ' ' + (m.status || '')).toLowerCase();
 
-    const qfMatches = parsed.filter(m => getStage(m).includes('quarter') || getStage(m).includes('qf'));
-    const sfMatches = parsed.filter(m => getStage(m).includes('semi') || getStage(m).includes('sf'));
-    const finalMatch = parsed.find(m => getStage(m).includes('gold') || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
-    const bronzeMatch = parsed.find(m => getStage(m).includes('bronze') || getStage(m).includes('3rd'));
+    const qfMatches = list.filter(m => getStage(m).includes('quarter') || getStage(m).includes('qf'));
+    const sfMatches = list.filter(m => getStage(m).includes('semi') || getStage(m).includes('sf'));
+    const finalMatch = list.find(m => getStage(m).includes('gold') || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
+    const bronzeMatch = list.find(m => getStage(m).includes('bronze') || getStage(m).includes('3rd'));
 
-    const getGame = (list, num) => list.find(m => new RegExp(`game\\s*${num}`, 'i').test(m.stage)) || list[num - 1];
+    const getGame = (items, num) => items.find(m => new RegExp(`game\\s*${num}`, 'i').test(m.stage || m.round || '')) || items[num - 1];
 
     const defaultQF = [
       { title: 'QF 1', t1: '1st Pool A', t2: '2nd Pool B' },
@@ -136,28 +161,37 @@ window.SPORT_ENGINES['volleyball'] = {
     ];
 
     const renderSlot = (title, match, fallback, medalType = null) => {
-      const t1 = (match && match.t1 && match.t1 !== 'TBD') ? match.t1 : fallback.t1;
-      const t2 = (match && match.t2 && match.t2 !== 'TBD') ? match.t2 : fallback.t2;
-      const s1 = match ? match.s1 : '-';
-      const s2 = match ? match.s2 : '-';
-      const isFinished = match ? match.isFinished : false;
-      const t1Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t1) : (isFinished && Number(s1) > Number(s2));
-      const t2Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t2) : (isFinished && Number(s2) > Number(s1));
-      const displayDateTime = match ? (formatMatchDateTime(match.date, match.time) || match.status || 'Scheduled') : 'Scheduled';
+      const m = match ? (typeof parseMatchData === 'function' ? parseMatchData(match) : match) : null;
+      const t1 = (m && (m.t1 || m.player1) && (m.t1 || m.player1) !== 'TBD') ? (m.t1 || m.player1) : fallback.t1;
+      const t2 = (m && (m.t2 || m.player2) && (m.t2 || m.player2) !== 'TBD') ? (m.t2 || m.player2) : fallback.t2;
+
+      let s1 = m && m.s1 !== undefined ? m.s1 : '-';
+      let s2 = m && m.s2 !== undefined ? m.s2 : '-';
+      if (s1 === '-' && m && m.score && m.score.includes('-') && !m.score.includes('vs')) {
+        const parts = m.score.split('-').map(s => s.trim());
+        s1 = parts[0];
+        s2 = parts[1];
+      }
+
+      const isFinished = m ? (m.isFinished || (m.status && m.status.toLowerCase() === 'finished')) : false;
+      const t1Win = m && m.winner ? (typeof cleanTeamName === 'function' ? cleanTeamName(m.winner) === cleanTeamName(t1) : m.winner === t1) : (isFinished && Number(s1) > Number(s2));
+      const t2Win = m && m.winner ? (typeof cleanTeamName === 'function' ? cleanTeamName(m.winner) === cleanTeamName(t2) : m.winner === t2) : (isFinished && Number(s2) > Number(s1));
+
+      const dt = m ? (typeof formatMatchDateTime === 'function' ? formatMatchDateTime(m.date, m.time) : `${m.date} ${m.time}`) : 'Scheduled';
 
       return `
         <div class="bracket-match-card">
           <div class="bracket-match-header">
             <span>${title}</span>
             ${medalType ? `<span class="bracket-medal-badge medal-${medalType}">${medalType.toUpperCase()}</span>` : ''}
-            <span>${displayDateTime}</span>
+            <span>${dt || 'Scheduled'}</span>
           </div>
           <div class="bracket-team-row ${t1Win ? 'winner' : ''}">
-            <div class="bracket-team-info"><span>${getFlagEmoji(t1)}</span> <span>${t1}</span></div>
+            <div class="bracket-team-info"><span>${typeof getFlagEmoji === 'function' ? getFlagEmoji(t1) : ''}</span> <span>${t1}</span></div>
             <span class="bracket-score">${s1}</span>
           </div>
           <div class="bracket-team-row ${t2Win ? 'winner' : ''}">
-            <div class="bracket-team-info"><span>${getFlagEmoji(t2)}</span> <span>${t2}</span></div>
+            <div class="bracket-team-info"><span>${typeof getFlagEmoji === 'function' ? getFlagEmoji(t2) : ''}</span> <span>${t2}</span></div>
             <span class="bracket-score">${s2}</span>
           </div>
         </div>
