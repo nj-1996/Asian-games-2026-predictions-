@@ -902,4 +902,21 @@ window.SPORT_ENGINES['basketball'] = {
       </div>
     `;
   }
-};
+};// --- Global Sport Switcher ---
+function handleSportChange(sportKey) {
+  window.currentSport = sportKey;
+  localStorage.setItem('app_sport', sportKey);
+  
+  // Reset sub-views to default
+  if (typeof activeMatchesSubView !== 'undefined') activeMatchesSubView = 'schedule';
+  
+  // Re-initialize app data if available, otherwise reload page cleanly
+  if (typeof initApp === 'function') {
+    initApp();
+  } else {
+    window.location.reload();
+  }
+}
+
+
+
