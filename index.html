@@ -59,12 +59,14 @@
     (function() {
       const v = Date.now();
       const scripts = [
-        `js/core.js?v=${v}`,
-        `js/sports/basketball.js?v=${v}`,
-        `js/sports/football.js?v=${v}`,
-        `js/sports/volleyball.js?v=${v}`,
-        `js/app.js?v=${v}`
-      ];
+  `js/core.js?v=${v}`,
+  `js/sports/basketball.js?v=${v}`,
+  `js/sports/football.js?v=${v}`,
+  `js/sports/volleyball.js?v=${v}`,
+  `js/sports/modern_pentathlon.js?v=${v}`,
+  `js/app.js?v=${v}`
+];
+
 
       function loadNext(index) {
         if (index >= scripts.length) return;
