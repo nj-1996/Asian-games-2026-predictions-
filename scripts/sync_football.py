@@ -154,7 +154,7 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
         away_score = away.get("Result", "")
         score_str = f"{home_score} - {away_score}" if (home_score != "" and away_score != "") else "vs"
 
-                winner = ""
+        winner = ""
         try:
             h_val = float(home_score)
             a_val = float(away_score)
@@ -175,7 +175,6 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
         # Convert "Men Gr.C" or "Gr.C" into "Group C"
         clean_round = re.sub(r'^(?:men|women)\s+gr(?:\.|\s+)\s*([a-z0-9]+)', r'Group \1', round_raw, flags=re.IGNORECASE)
         clean_round = re.sub(r'^gr(?:\.|\s+)\s*([a-z0-9]+)', r'Group \1', clean_round, flags=re.IGNORECASE)
-
 
         output.append({
             "round": clean_round,
