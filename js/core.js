@@ -918,5 +918,42 @@ function handleSportChange(sportKey) {
   }
 }
 
+// --- Global App Navigation & State Handlers ---
+function setTab(tabName) {
+  if (typeof window.activeTab !== 'undefined') {
+    window.activeTab = tabName;
+  }
+  const container = document.getElementById('content-cards');
+  if (container && typeof renderCurrentView === 'function') {
+    renderCurrentView(container);
+  } else {
+    window.location.reload();
+  }
+}
+
+function setGender(gender) {
+  if (typeof currentGender !== 'undefined') {
+    currentGender = gender;
+  }
+  const container = document.getElementById('content-cards');
+  if (container && typeof renderCurrentView === 'function') {
+    renderCurrentView(container);
+  } else {
+    window.location.reload();
+  }
+}
+
+function handleSportChange(sportKey) {
+  window.currentSport = sportKey;
+  localStorage.setItem('app_sport', sportKey);
+  if (typeof activeMatchesSubView !== 'undefined') {
+    activeMatchesSubView = 'schedule';
+  }
+  if (typeof initApp === 'function') {
+    initApp();
+  } else {
+    window.location.reload();
+  }
+}
 
 
