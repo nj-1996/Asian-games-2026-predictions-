@@ -318,13 +318,14 @@ function setPredictionsSubView(subView) {
   }
 }
 
-// --- Matches Router (Bulletproof Self-Healing Version) ---
+// --- Matches Router (Direct Native Routing) ---
 function renderMatchesView(container, matches) {
   const rawSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
   const activeSport = String(rawSport).trim().toLowerCase();
+  
+  // Get engine from registry, with a native fallback for basketball
   const engine = window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport];
 
-  // Always enable tabs; use engine if available, otherwise fall back safely
   const hasStandings = true;
   const hasBracket = true;
   const hasLeaderboard = engine && typeof engine.renderLeaderboard === 'function';
@@ -366,18 +367,22 @@ function renderMatchesView(container, matches) {
   if (activeMatchesSubView === 'schedule') {
     contentHtml = renderScheduleAndHero(matches);
   } else if (activeMatchesSubView === 'standings') {
-    if (engine && typeof engine.renderStandingsTable === 'function') {
+    // Direct native route for basketball, otherwise check engine or fallback
+    if (activeSport === 'basketball') {
+      contentHtml = window.SPORT_ENGINES['basketball'].renderStandingsTable(matches);
+    } else if (engine && typeof engine.renderStandingsTable === 'function') {
       contentHtml = engine.renderStandingsTable(matches);
     } else {
-      // Fallback default standings table if engine method is missing
-      contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Standings view is currently loading or unavailable for this sport.</div>`;
+      contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Standings unavailable for this sport.</div>`;
     }
   } else if (activeMatchesSubView === 'bracket') {
-    if (engine && typeof engine.renderKnockoutBracket === 'function') {
+    // Direct native route for basketball, otherwise check engine or fallback
+    if (activeSport === 'basketball') {
+      contentHtml = window.SPORT_ENGINES['basketball'].renderKnockoutBracket(matches);
+    } else if (engine && typeof engine.renderKnockoutBracket === 'function') {
       contentHtml = engine.renderKnockoutBracket(matches);
     } else {
-      // Fallback default bracket view if engine method is missing
-      contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Bracket view is currently loading or unavailable for this sport.</div>`;
+      contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Bracket unavailable for this sport.</div>`;
     }
   } else if (activeMatchesSubView === 'leaderboard' && hasLeaderboard) {
     contentHtml = engine.renderLeaderboard(matches);
@@ -385,6 +390,7 @@ function renderMatchesView(container, matches) {
 
   container.innerHTML = `${pillsHeader}${contentHtml}`;
 }
+
 
 // --- Schedule & Hero Card ---
 function renderScheduleAndHero(matches) {
