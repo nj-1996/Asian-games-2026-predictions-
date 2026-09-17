@@ -4,11 +4,11 @@
 
 window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 
-const basketballEngine = {
+window.SPORT_ENGINES['basketball'] = {
   icon: '🏀',
 
-  // --- FIBA Standings Engine (2 pts Win, 1 pt Loss, DIFF = PF - PA) ---
-  renderStandingsTable: function(matches) {
+  // --- FIBA Standings Engine ---
+  renderStandingsTable(matches) {
     const parsedMatches = matches.map(m => parseMatchData(m));
     const groupMatches = parsedMatches.filter(m => /group|pool/i.test(m.stage));
     const allGroupFinished = groupMatches.length > 0 && groupMatches.every(m => m.isFinished);
@@ -140,7 +140,7 @@ const basketballEngine = {
   },
 
   // --- Basketball Knockout Bracket ---
-  renderKnockoutBracket: function(matches) {
+  renderKnockoutBracket(matches) {
     const parsed = matches.map(m => parseMatchData(m));
     const getStage = (m) => (m.stage + ' ' + m.status).toLowerCase();
 
@@ -209,7 +209,3 @@ const basketballEngine = {
     `;
   }
 };
-
-// Forcefully bind to global objects to prevent overwrite
-window.SPORT_ENGINES['basketball'] = basketballEngine;
-window.basketballEngine = basketballEngine;
