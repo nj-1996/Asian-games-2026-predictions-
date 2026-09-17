@@ -1,4 +1,291 @@
 {
   "sport": "Basketball (Men)",
-  "matches": []
+  "matches": [
+    {
+      "round": "Men Group B G 1",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-10",
+      "time": "10:00",
+      "player1": "IR Iran",
+      "player2": "Qatar",
+      "score": "53 - 59",
+      "winner": "Qatar"
+    },
+    {
+      "round": "Men Group B G 2",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-10",
+      "time": "13:00",
+      "player1": "Jordan",
+      "player2": "Chinese Taipei",
+      "score": "80 - 83",
+      "winner": "Chinese Taipei"
+    },
+    {
+      "round": "Men Group A G 1",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-10",
+      "time": "16:00",
+      "player1": "Korea",
+      "player2": "Saudi Arabia",
+      "score": "82 - 66",
+      "winner": "Korea"
+    },
+    {
+      "round": "Men Group A G 2",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-10",
+      "time": "19:00",
+      "player1": "Japan",
+      "player2": "Indonesia",
+      "score": "98 - 53",
+      "winner": "Japan"
+    },
+    {
+      "round": "Men Group C G 1",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-11",
+      "time": "10:00",
+      "player1": "China",
+      "player2": "Kazakhstan",
+      "score": "99 - 61",
+      "winner": "China"
+    },
+    {
+      "round": "Men Group C G 2",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-11",
+      "time": "13:00",
+      "player1": "Philippines",
+      "player2": "Bahrain",
+      "score": "85 - 89",
+      "winner": "Bahrain"
+    },
+    {
+      "round": "Men Group A G 3",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-11",
+      "time": "16:00",
+      "player1": "Indonesia",
+      "player2": "Korea",
+      "score": "48 - 102",
+      "winner": "Korea"
+    },
+    {
+      "round": "Men Group A G 4",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-11",
+      "time": "19:00",
+      "player1": "Saudi Arabia",
+      "player2": "Japan",
+      "score": "80 - 86",
+      "winner": "Japan"
+    },
+    {
+      "round": "Men Group B G 3",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-12",
+      "time": "10:00",
+      "player1": "Chinese Taipei",
+      "player2": "IR Iran",
+      "score": "69 - 72",
+      "winner": "IR Iran"
+    },
+    {
+      "round": "Men Group B G 4",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-12",
+      "time": "13:00",
+      "player1": "Qatar",
+      "player2": "Jordan",
+      "score": "65 - 76",
+      "winner": "Jordan"
+    },
+    {
+      "round": "Men Group C G 3",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-12",
+      "time": "16:00",
+      "player1": "Bahrain",
+      "player2": "China",
+      "score": "59 - 105",
+      "winner": "China"
+    },
+    {
+      "round": "Men Group C G 4",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-12",
+      "time": "19:00",
+      "player1": "Kazakhstan",
+      "player2": "Philippines",
+      "score": "78 - 109",
+      "winner": "Philippines"
+    },
+    {
+      "round": "Men Group B G 5",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-13",
+      "time": "10:00",
+      "player1": "IR Iran",
+      "player2": "Jordan",
+      "score": "81 - 68",
+      "winner": "IR Iran"
+    },
+    {
+      "round": "Men Group B G 6",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-13",
+      "time": "13:00",
+      "player1": "Chinese Taipei",
+      "player2": "Qatar",
+      "score": "91 - 69",
+      "winner": "Chinese Taipei"
+    },
+    {
+      "round": "Men Group A G 5",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-13",
+      "time": "16:00",
+      "player1": "Saudi Arabia",
+      "player2": "Indonesia",
+      "score": "100 - 89",
+      "winner": "Saudi Arabia"
+    },
+    {
+      "round": "Men Group A G 6",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-13",
+      "time": "19:00",
+      "player1": "Japan",
+      "player2": "Korea",
+      "score": "83 - 100",
+      "winner": "Korea"
+    },
+    {
+      "round": "Men Group C G 5",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-14",
+      "time": "10:00",
+      "player1": "Bahrain",
+      "player2": "Kazakhstan",
+      "score": "101 - 78",
+      "winner": "Bahrain"
+    },
+    {
+      "round": "Men Group C G 6",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-14",
+      "time": "13:00",
+      "player1": "China",
+      "player2": "Philippines",
+      "score": "105 - 61",
+      "winner": "China"
+    },
+    {
+      "round": "Men 1/4 G 3",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-16",
+      "time": "10:00",
+      "player1": "Jordan",
+      "player2": "Korea",
+      "score": "80 - 114",
+      "winner": "Korea"
+    },
+    {
+      "round": "Men 1/4 G 4",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-16",
+      "time": "13:00",
+      "player1": "IR Iran",
+      "player2": "Bahrain",
+      "score": "79 - 74",
+      "winner": "IR Iran"
+    },
+    {
+      "round": "Men 1/4 G 2",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-16",
+      "time": "16:00",
+      "player1": "China",
+      "player2": "Saudi Arabia",
+      "score": "87 - 78",
+      "winner": "China"
+    },
+    {
+      "round": "Men 1/4 G 1",
+      "status": "Finished",
+      "state": "Official",
+      "date": "2026-09-16",
+      "time": "19:20",
+      "player1": "Chinese Taipei",
+      "player2": "Japan",
+      "score": "78 - 85",
+      "winner": "Japan"
+    },
+    {
+      "round": "Men 1/2 G 2",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-18",
+      "time": "16:00",
+      "player1": "Korea",
+      "player2": "IR Iran",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men 1/2 G 1",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-18",
+      "time": "19:20",
+      "player1": "Japan",
+      "player2": "China",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men F BM",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-20",
+      "time": "16:40",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Men F GM",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-20",
+      "time": "19:40",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
+      "winner": ""
+    }
+  ]
 }
