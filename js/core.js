@@ -319,36 +319,27 @@ function setPredictionsSubView(subView) {
 }
 
 // --- Matches Router (Sport-Aware Dynamic Navigation) ---
+// --- Matches Router (Diagnostic Version) ---
 function renderMatchesView(container, matches) {
-  const activeSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
+  const rawSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
+  const activeSport = String(rawSport).trim().toLowerCase();
   const engine = window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport];
 
-    // If engine has loaded, use its explicit capabilities; otherwise fall back to tournament defaults
-  const isLoaded = Boolean(engine);
-  const hasStandings = isLoaded ? typeof engine.renderStandingsTable === 'function' : true;
-  const hasBracket = isLoaded ? typeof engine.renderKnockoutBracket === 'function' : true;
-  const hasLeaderboard = isLoaded ? typeof engine.renderLeaderboard === 'function' : false;
-
-  if (activeMatchesSubView === 'standings' && !hasStandings) {
-    activeMatchesSubView = hasLeaderboard ? 'leaderboard' : (hasBracket ? 'bracket' : 'schedule');
-  } else if (activeMatchesSubView === 'bracket' && !hasBracket) {
-    activeMatchesSubView = hasLeaderboard ? 'leaderboard' : 'schedule';
-  } else if (activeMatchesSubView === 'leaderboard' && !hasLeaderboard) {
-    activeMatchesSubView = 'schedule';
-  }
+  // Forcing tabs ON to unmask the silent error
+  const hasStandings = true;
+  const hasBracket = true;
+  const hasLeaderboard = false;
 
   const scheduleBtn = `
     <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'schedule' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'schedule' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('schedule')">📋 Schedule</button>
   `;
-  const standingsBtn = hasStandings ? `
+  const standingsBtn = `
     <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'standings' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'standings' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('standings')">📊 Standings</button>
-  ` : '';
-  const bracketBtn = hasBracket ? `
+  `;
+  const bracketBtn = `
     <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'bracket' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'bracket' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('bracket')">🌳 Bracket</button>
-  ` : '';
-  const leaderboardBtn = hasLeaderboard ? `
-    <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'leaderboard' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'leaderboard' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('leaderboard')">🏆 Results</button>
-  ` : '';
+  `;
+  const leaderboardBtn = '';
 
   const pillsHeader = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; gap:8px;">
@@ -366,23 +357,31 @@ function renderMatchesView(container, matches) {
   `;
 
   if (!matches || matches.length === 0) {
-    container.innerHTML = `
-      ${pillsHeader}
-      <div style="text-align:center; padding:3rem 1rem; color:var(--text-muted, #94a3b8);">
-        No matches scheduled or recorded yet for this category.
-      </div>`;
+    container.innerHTML = `${pillsHeader}<div style="text-align:center; padding:3rem 1rem; color:var(--text-muted, #94a3b8);">No matches scheduled or recorded yet for this category.</div>`;
     return;
   }
 
   let contentHtml = '';
   if (activeMatchesSubView === 'schedule') {
     contentHtml = renderScheduleAndHero(matches);
-  } else if (activeMatchesSubView === 'standings' && hasStandings) {
-    contentHtml = engine.renderStandingsTable(matches);
-  } else if (activeMatchesSubView === 'bracket' && hasBracket) {
-    contentHtml = engine.renderKnockoutBracket(matches);
-  } else if (activeMatchesSubView === 'leaderboard' && hasLeaderboard) {
-    contentHtml = engine.renderLeaderboard(matches);
+  } else if (activeMatchesSubView === 'standings') {
+    if (engine && typeof engine.renderStandingsTable === 'function') {
+      contentHtml = engine.renderStandingsTable(matches);
+    } else {
+      contentHtml = `<div style="padding:2rem; text-align:center; color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid #ef4444; border-radius:8px; margin:1rem;">
+        <strong>Engine Error:</strong> renderStandingsTable missing for "${activeSport}".<br><br>
+        <small>Currently Loaded Engines: ${Object.keys(window.SPORT_ENGINES || {}).join(', ') || 'None'}</small>
+      </div>`;
+    }
+  } else if (activeMatchesSubView === 'bracket') {
+    if (engine && typeof engine.renderKnockoutBracket === 'function') {
+      contentHtml = engine.renderKnockoutBracket(matches);
+    } else {
+      contentHtml = `<div style="padding:2rem; text-align:center; color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid #ef4444; border-radius:8px; margin:1rem;">
+        <strong>Engine Error:</strong> renderKnockoutBracket missing for "${activeSport}".<br><br>
+        <small>Currently Loaded Engines: ${Object.keys(window.SPORT_ENGINES || {}).join(', ') || 'None'}</small>
+      </div>`;
+    }
   }
 
   container.innerHTML = `${pillsHeader}${contentHtml}`;
