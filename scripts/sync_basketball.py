@@ -158,7 +158,7 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
         away_score = away.get("Result", "")
         score_str = f"{home_score} - {away_score}" if (home_score != "" and away_score != "") else "vs"
 
-                winner = ""
+        winner = ""
         try:
             h_val = float(home_score)
             a_val = float(away_score)
@@ -173,7 +173,6 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
                 winner = home_name
             elif a_win:
                 winner = away_name
-
 
         round_name = m.get("UnitDescS") or m.get("UnitDescA") or m.get("PhaseDescS", "Group Stage")
 
