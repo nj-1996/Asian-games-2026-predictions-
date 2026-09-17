@@ -35,6 +35,7 @@ jobs:
         run: |
           python scripts/sync_basketball.py
           python scripts/sync_football.py
+          python scripts/sync_volleyball.py
 
 
       # Step 5: Check in modified JSON files if scores changed
