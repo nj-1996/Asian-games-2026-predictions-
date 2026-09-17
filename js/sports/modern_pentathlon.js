@@ -14,70 +14,91 @@ function getDisciplineIcon(name) {
   return '🏅';
 }
 
+function renderPentathlonSessions(items) {
+  const list = Array.isArray(items) ? items : (items?.events || items?.matches || []);
+  if (!list || list.length === 0) {
+    return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No session timetable available.</div>`;
+  }
+
+  const phaseMap = {};
+  list.forEach(ev => {
+    let pName = ev.round || ev.phase || 'Competition Schedule';
+
+    // Auto-split morning vs afternoon semifinals if generic
+    if (ev.group && !pName.includes(ev.group)) {
+      pName = `${pName} (${ev.group})`;
+    } else if (pName === 'SF' || pName.toLowerCase() === 'semi-final') {
+      const hour = parseInt((ev.time || '00:00').split(':')[0], 10);
+      pName = hour < 13 ? 'Semi-final (Group A)' : 'Semi-final (Group B)';
+    }
+
+    if (!phaseMap[pName]) phaseMap[pName] = [];
+    phaseMap[pName].push(ev);
+  });
+
+  return Object.entries(phaseMap).map(([phaseHeader, sessions]) => `
+    <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow:hidden;">
+      <div style="padding:0.75rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); display:flex; justify-content:space-between; align-items:center;">
+        <span>${phaseHeader}</span>
+        <span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">${sessions[0]?.venue || 'Anjo Sports Park'}</span>
+      </div>
+      <div>
+        ${sessions.map(ev => {
+          const isFinished = ev.status === 'Official' || ev.status === 'Finished';
+          const isLive = ev.status === 'Live';
+          const disc = ev.discipline || ev.round || 'Session';
+          const icon = getDisciplineIcon(disc);
+          const medalLabel = ev.medal_desc || 'Medal Event';
+
+          return `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.8rem 1rem; border-bottom:1px solid rgba(255,255,255,0.03);">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span style="font-size:1.25rem; line-height:1;">${icon}</span>
+                <div>
+                  <div style="font-size:0.85rem; font-weight:600; color:#f8fafc;">${disc}</div>
+                  <div style="font-size:0.75rem; color:#94a3b8;">${ev.date} •${ev.time}</div>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                ${ev.is_medal ? `
+                  <span style="font-size:0.75rem; background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); padding:2px 6px; border-radius:4px; font-weight:600;">
+                    🥇 ${medalLabel}
+                  </span>
+                ` : ''}
+                <span style="font-size:0.75rem; font-weight:600; color:${isLive ? '#ef4444' : isFinished ? '#4ade80' : '#94a3b8'};">
+                  ${ev.status}
+                </span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
 window.SPORT_ENGINES['modern_pentathlon'] = {
   icon: '🎯',
 
-  // --- Session Timeline / Event Schedule ---
-  renderMatches(events) {
-    const list = (events && events.events) ? events.events : (Array.isArray(events) ? events : []);
-    if (list.length === 0) {
-      return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No session timetable available.</div>`;
-    }
-
-    const phases = {};
-    list.forEach(ev => {
-      const pName = ev.phase || 'Competition Schedule';
-      if (!phases[pName]) phases[pName] = [];
-      phases[pName].push(ev);
-    });
-
-    return Object.entries(phases).map(([phaseName, phaseEvents]) => `
-      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow:hidden;">
-        <div style="padding:0.75rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); display:flex; justify-content:space-between; align-items:center;">
-          <span>${phaseName}</span>
-          <span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">${phaseEvents[0]?.venue || 'Anjo Sports Park'}</span>
-        </div>
-        <div>
-          ${phaseEvents.map(ev => {
-            const isFinished = ev.status === 'Official' || ev.status === 'Finished';
-            const isLive = ev.status === 'Live';
-            const icon = getDisciplineIcon(ev.discipline);
-
-            return `
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.8rem 1rem; border-bottom:1px solid rgba(255,255,255,0.03);">
-                <div style="display:flex; align-items:center; gap:0.75rem;">
-                  <span style="font-size:1.2rem; line-height:1;">${icon}</span>
-                  <div>
-                    <div style="font-size:0.85rem; font-weight:600; color:#f8fafc;">${ev.discipline}</div>
-                    <div style="font-size:0.75rem; color:#94a3b8;">${ev.date} •${ev.time}</div>
-                  </div>
-                </div>
-                <div style="display:flex; align-items:center; gap:0.5rem;">
-                  ${ev.is_medal ? `<span style="font-size:0.75rem; background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); padding:2px 6px; border-radius:4px; font-weight:600;">Medal Event</span>` : ''}
-                  <span style="font-size:0.75rem; font-weight:600; color:${isLive ? '#ef4444' : isFinished ? '#4ade80' : '#94a3b8'};">
-                    ${ev.status}
-                  </span>
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    `).join('');
+  // --- Session Timeline / Matches Tab ---
+  renderMatches(data) {
+    return renderPentathlonSessions(data);
   },
 
-  // --- Leaderboard View (Individual & Team Standings) ---
+  // --- Leaderboard View / Standings Tab ---
   renderStandingsTable(data) {
     const athletes = (data && data.leaderboard) ? data.leaderboard : [];
+
     if (athletes.length === 0) {
       return `
-        <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:1.5rem; text-align:center;">
-          <div style="font-size:1.5rem; margin-bottom:0.5rem;">🎯 🤺 🏃 🏊</div>
-          <div style="font-weight:700; font-size:0.95rem; margin-bottom:0.25rem;">Modern Pentathlon Standings</div>
-          <div style="color:#94a3b8; font-size:0.8rem; max-width:400px; margin:0 auto;">
-            Official individual and team point standings will populate as scores for Fencing, Obstacle, Swimming, and Laser Run are registered.
+        <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:1.5rem; margin-bottom:1.5rem; text-align:center;">
+          <div style="font-size:1.8rem; margin-bottom:0.5rem;">🎯 🤺 🏃 🏊</div>
+          <div style="font-weight:700; font-size:1rem; margin-bottom:0.25rem;">Modern Pentathlon Leaderboard</div>
+          <div style="color:#94a3b8; font-size:0.82rem; max-width:440px; margin:0 auto; line-height:1.4;">
+            Individual and Team point classifications will automatically populate here once scores for Fencing, Obstacle, Swimming, and Laser Run are registered at Anjo Sports Park.
           </div>
         </div>
+        ${renderPentathlonSessions(data)}
       `;
     }
 
@@ -117,8 +138,8 @@ window.SPORT_ENGINES['modern_pentathlon'] = {
     `;
   },
 
-  // Pentathlon does not use a knockout tree
+  // --- Knockout Bracket Tab ---
   renderKnockoutBracket() {
-    return `<div style="text-align:center; padding:2rem; color:#94a3b8;">Modern Pentathlon uses cumulative points scoring instead of a knockout bracket. Check the Leaderboard tab for standings.</div>`;
+    return `<div style="text-align:center; padding:2rem; color:#94a3b8;">Modern Pentathlon uses cumulative point totals across phases rather than a knockout bracket. View the Matches tab for the session timetable.</div>`;
   }
 };
