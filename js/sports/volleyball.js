@@ -4,6 +4,39 @@
 
 window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 
+// Official Asian Games 2026 Men's Preliminary Pools
+const VOLLEYBALL_KNOWN_POOLS = {
+  // Pool A
+  'japan': 'Pool A', 'pakistan': 'Pool A', 'kazakhstan': 'Pool A', 'uzbekistan': 'Pool A',
+  // Pool B
+  'ir iran': 'Pool B', 'iran': 'Pool B', 'indonesia': 'Pool B', 'thailand': 'Pool B', 'kyrgyzstan': 'Pool B',
+  // Pool C
+  'qatar': 'Pool C', 'india': 'Pool C', 'vietnam': 'Pool C', 'hong kong, china': 'Pool C', 'hong kong': 'Pool C',
+  // Pool D
+  'china': 'Pool D', 'korea': 'Pool D', 'south korea': 'Pool D', 'chinese taipei': 'Pool D', 'philippines': 'Pool D'
+};
+
+function resolveVolleyballPool(m) {
+  const roundStr = (m.round || m.stage || '').toString();
+  
+  // 1. Direct match if the scraper contains "Pool X" or "Group X"
+  const directMatch = roundStr.match(/(?:Group|Pool)\s+([A-Za-z0-9]+)/i);
+  if (directMatch) return `Pool ${directMatch[1].toUpperCase()}`;
+
+  // Exclude classification and knockout games
+  const isKnockoutOrPlacement = /(?:place|medal|final|semi|quarter|qf|sf)/i.test(roundStr);
+  if (isKnockoutOrPlacement) return null;
+
+  // 2. Lookup known seeds
+  const t1 = (m.player1 || m.t1 || '').toString().trim().toLowerCase();
+  const t2 = (m.player2 || m.t2 || '').toString().trim().toLowerCase();
+
+  if (VOLLEYBALL_KNOWN_POOLS[t1]) return VOLLEYBALL_KNOWN_POOLS[t1];
+  if (VOLLEYBALL_KNOWN_POOLS[t2]) return VOLLEYBALL_KNOWN_POOLS[t2];
+
+  return null;
+}
+
 window.SPORT_ENGINES['volleyball'] = {
   icon: '🏐',
 
@@ -15,79 +48,74 @@ window.SPORT_ENGINES['volleyball'] = {
 
     const groups = {};
 
+    // 1. Assign pools to matches
     matches.forEach(rawM => {
-      // Support both parsed match helper or raw JSON match schema
       const m = typeof parseMatchData === 'function' ? parseMatchData(rawM) : rawM;
-
-      const stageStr = (m.stage || m.round || rawM.round || '').toString();
-      const grpMatch = stageStr.match(/(?:Group|Pool)\s+[A-Za-z0-9]+/i);
-      const grpName = grpMatch ? grpMatch[0].replace(/group/i, 'Pool') : null;
-
-      if (!grpName) return;
-      if (!groups[grpName]) groups[grpName] = {};
-
       const t1 = m.t1 || m.player1 || rawM.player1;
       const t2 = m.t2 || m.player2 || rawM.player2;
 
-      if (t1 && t2 && t1 !== 'TBD' && t2 !== 'TBD') {
-        [t1, t2].forEach(team => {
-          if (!groups[grpName][team]) {
-            groups[grpName][team] = { name: team, gp: 0, w: 0, l: 0, pts: 0, sw: 0, sl: 0, diff: 0 };
+      if (!t1 || !t2 || t1 === 'TBD' || t2 === 'TBD') return;
+
+      const grpName = resolveVolleyballPool(m);
+      if (!grpName) return;
+
+      if (!groups[grpName]) groups[grpName] = {};
+
+      [t1, t2].forEach(team => {
+        if (!groups[grpName][team]) {
+          groups[grpName][team] = { name: team, gp: 0, w: 0, l: 0, pts: 0, sw: 0, sl: 0, diff: 0 };
+        }
+      });
+
+      // Resolve score strings
+      let s1 = m.s1 !== undefined && m.s1 !== '-' ? m.s1 : null;
+      let s2 = m.s2 !== undefined && m.s2 !== '-' ? m.s2 : null;
+      const scoreStr = (m.score || rawM.score || '').toString();
+
+      if (s1 === null && scoreStr.includes('-') && !scoreStr.includes('vs')) {
+        const parts = scoreStr.split('-').map(s => s.trim());
+        if (!isNaN(parts[0]) && !isNaN(parts[1])) {
+          s1 = parts[0];
+          s2 = parts[1];
+        }
+      }
+
+      const isFinished = m.isFinished || (m.status && m.status.toLowerCase() === 'finished') || (rawM.status && rawM.status.toLowerCase() === 'finished');
+
+      if (isFinished && s1 !== null && s2 !== null) {
+        const score1 = Number(s1);
+        const score2 = Number(s2);
+
+        groups[grpName][t1].gp += 1;
+        groups[grpName][t2].gp += 1;
+        groups[grpName][t1].sw += score1;
+        groups[grpName][t1].sl += score2;
+        groups[grpName][t2].sw += score2;
+        groups[grpName][t2].sl += score1;
+
+        // FIVB 3-2-1-0 Point System
+        if (score1 > score2) {
+          groups[grpName][t1].w += 1;
+          groups[grpName][t2].l += 1;
+          if (score2 === 2) {
+            groups[grpName][t1].pts += 2;
+            groups[grpName][t2].pts += 1;
+          } else {
+            groups[grpName][t1].pts += 3;
           }
-        });
-
-        // Resolve scores
-        let s1 = m.s1 !== undefined && m.s1 !== '-' ? m.s1 : null;
-        let s2 = m.s2 !== undefined && m.s2 !== '-' ? m.s2 : null;
-        const scoreStr = (m.score || rawM.score || '').toString();
-
-        if (s1 === null && scoreStr.includes('-') && !scoreStr.includes('vs')) {
-          const parts = scoreStr.split('-').map(s => s.trim());
-          if (!isNaN(parts[0]) && !isNaN(parts[1])) {
-            s1 = parts[0];
-            s2 = parts[1];
+        } else if (score2 > score1) {
+          groups[grpName][t2].w += 1;
+          groups[grpName][t1].l += 1;
+          if (score1 === 2) {
+            groups[grpName][t2].pts += 2;
+            groups[grpName][t1].pts += 1;
+          } else {
+            groups[grpName][t2].pts += 3;
           }
         }
 
-        const isFinished = m.isFinished || (m.status && m.status.toLowerCase() === 'finished') || (rawM.status && rawM.status.toLowerCase() === 'finished');
-
-        if (isFinished && s1 !== null && s2 !== null) {
-          const score1 = Number(s1);
-          const score2 = Number(s2);
-
-          groups[grpName][t1].gp += 1;
-          groups[grpName][t2].gp += 1;
-          groups[grpName][t1].sw += score1;
-          groups[grpName][t1].sl += score2;
-          groups[grpName][t2].sw += score2;
-          groups[grpName][t2].sl += score1;
-
-          // FIVB Point System:
-          // 3-0 or 3-1: Winner 3 pts, Loser 0 pts
-          // 3-2: Winner 2 pts, Loser 1 pt
-          if (score1 > score2) {
-            groups[grpName][t1].w += 1;
-            groups[grpName][t2].l += 1;
-            if (score2 === 2) {
-              groups[grpName][t1].pts += 2;
-              groups[grpName][t2].pts += 1;
-            } else {
-              groups[grpName][t1].pts += 3;
-            }
-          } else if (score2 > score1) {
-            groups[grpName][t2].w += 1;
-            groups[grpName][t1].l += 1;
-            if (score1 === 2) {
-              groups[grpName][t2].pts += 2;
-              groups[grpName][t1].pts += 1;
-            } else {
-              groups[grpName][t2].pts += 3;
-            }
-          }
-
-          groups[grpName][t1].diff = groups[grpName][t1].sw - groups[grpName][t1].sl;
-          groups[grpName][t2].diff = groups[grpName][t2].sw - groups[grpName][t2].sl;
-        }
+        groups[grpName][t1].diff = groups[grpName][t1].sw - groups[grpName][t1].sl;
+        groups[grpName][t2].diff = groups[grpName][t2].sw - groups[grpName][t2].sl;
       }
     });
 
@@ -97,13 +125,15 @@ window.SPORT_ENGINES['volleyball'] = {
     }
 
     return groupKeys.map(grpKey => {
-      const teams = Object.values(groups[grpKey]).sort((a, b) => b.pts - a.pts || b.w - a.w || b.diff - a.diff || b.sw - a.sw);
+      const teams = Object.values(groups[grpKey]).sort((a, b) => 
+        b.pts - a.pts || b.w - a.w || b.diff - a.diff || b.sw - a.sw || a.name.localeCompare(b.name)
+      );
 
       return `
         <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; margin-bottom:1.5rem; overflow-x:auto;">
           <div style="padding:0.75rem 1rem; font-weight:700; font-size:0.9rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center;">
             <span>${grpKey}</span>
-            <span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 advance to Quarterfinals</span>
+            <span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 advance to Round of 12</span>
           </div>
           <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
             <thead>
