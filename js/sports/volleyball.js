@@ -4,7 +4,6 @@
 
 window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 
-// Dynamic partition of preliminary round-robin fixtures into isolated pools
 function buildVolleyballPools(matches) {
   const prelimMatches = [];
   const teamAdj = {};
@@ -24,7 +23,6 @@ function buildVolleyballPools(matches) {
     if (!t1 || !t2 || t1 === 'TBD' || t2 === 'TBD') return;
 
     const roundStr = (m.stage || m.round || rawM.round || '').toString().toLowerCase();
-    // Exclude knockout and classification fixtures from pool formation
     if (/(?:place|medal|final|semi|quarter|qf|sf)/.test(roundStr)) return;
 
     prelimMatches.push({ m, rawM, t1, t2, roundStr });
@@ -57,7 +55,11 @@ function buildVolleyballPools(matches) {
     components.push(comp);
   });
 
-  // Assign standard pool designations (Pool A, Pool B, etc.)
+  // Detect whether dataset represents Women's or Men's draw
+  const allTeamKeys = new Set(Object.keys(teamAdj));
+  const isWomen = allTeamKeys.has('nepal') || allTeamKeys.has('mongolia') ||
+                  document.querySelector('.gender-btn.active')?.textContent.toLowerCase().includes('women');
+
   const poolAssignments = {};
   const usedPools = new Set();
   const unassignedComps = [];
@@ -77,12 +79,29 @@ function buildVolleyballPools(matches) {
       }
     }
 
-    // 2. Anchor seeded nations if metadata is generic (e.g. "Match 1")
+    // 2. Division-specific anchors
     if (!detectedPool) {
-      if (compSet.has('japan')) detectedPool = 'Pool A';
-      else if (compSet.has('thailand') || compSet.has('ir iran') || compSet.has('iran')) detectedPool = 'Pool B';
-      else if (compSet.has('vietnam') || compSet.has('qatar') || compSet.has('india')) detectedPool = 'Pool C';
-      else if (compSet.has('china') || compSet.has('korea') || compSet.has('south korea') || compSet.has('chinese taipei')) detectedPool = 'Pool D';
+      if (isWomen) {
+        if (compSet.has('nepal') || (compSet.has('japan') && compSet.has('indonesia'))) {
+          detectedPool = 'Pool A';
+        } else if (compSet.has('china') || compSet.has('kazakhstan') || compSet.has('philippines')) {
+          detectedPool = 'Pool B';
+        } else if (compSet.has('thailand') || compSet.has('chinese taipei') || compSet.has('mongolia')) {
+          detectedPool = 'Pool C';
+        } else if (compSet.has('south korea') || compSet.has('korea') || compSet.has('vietnam') || compSet.has('qatar')) {
+          detectedPool = 'Pool D';
+        }
+      } else {
+        if (compSet.has('pakistan') || compSet.has('uzbekistan')) {
+          detectedPool = 'Pool A';
+        } else if (compSet.has('ir iran') || compSet.has('iran')) {
+          detectedPool = 'Pool B';
+        } else if (compSet.has('india') || (compSet.has('qatar') && compSet.has('vietnam'))) {
+          detectedPool = 'Pool C';
+        } else if (compSet.has('china') || compSet.has('chinese taipei')) {
+          detectedPool = 'Pool D';
+        }
+      }
     }
 
     if (detectedPool && !usedPools.has(detectedPool)) {
@@ -126,7 +145,6 @@ window.SPORT_ENGINES['volleyball'] = {
       return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No group stage fixtures scheduled.</div>`;
     }
 
-    // Initialize clean tables with zero ghost teams
     const groups = {};
     poolKeys.forEach(poolName => {
       groups[poolName] = {};
@@ -139,7 +157,6 @@ window.SPORT_ENGINES['volleyball'] = {
       });
     });
 
-    // Score calculations
     prelimMatches.forEach(({ m, rawM, t1, t2 }) => {
       const poolName = teamToPool[t1.toLowerCase()];
       if (!poolName || !groups[poolName]) return;
