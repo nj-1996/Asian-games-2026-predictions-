@@ -14,14 +14,13 @@ window.SPORT_ENGINES['football'] = {
 
     const groups = {};
 
-        parsedMatches.forEach(m => {
+    parsedMatches.forEach(m => {
       // Matches "Group C", "Pool C", "Gr.C", "Gr. C"
       const grpMatch = m.stage.match(/(?:group|pool|gr\.?)\s*([a-z0-9]+)/i);
       const grpName = grpMatch ? `Group ${grpMatch[1].toUpperCase()}` : null;
 
       if (!grpName) return;
       if (!groups[grpName]) groups[grpName] = {};
-
 
       if (m.t1 !== 'TBD' && m.t2 !== 'TBD') {
         [m.t1, m.t2].forEach(team => {
@@ -252,4 +251,3 @@ window.SPORT_ENGINES['football'] = {
     `;
   }
 };
-window.footballEngine = window.SPORT_ENGINES['football'];
