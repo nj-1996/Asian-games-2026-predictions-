@@ -365,16 +365,18 @@ function renderMatchesView(container, matches) {
   if (activeMatchesSubView === 'schedule') {
     contentHtml = renderScheduleAndHero(matches);
   } else if (activeMatchesSubView === 'standings') {
-    if (activeSport === 'basketball') {
-      contentHtml = window.SPORT_ENGINES['basketball'].renderStandingsTable(matches);
+    const basketballEngine = window.SPORT_ENGINES['basketball'];
+    if (activeSport === 'basketball' && basketballEngine && typeof basketballEngine.renderStandingsTable === 'function') {
+      contentHtml = basketballEngine.renderStandingsTable(matches);
     } else if (engine && typeof engine.renderStandingsTable === 'function') {
       contentHtml = engine.renderStandingsTable(matches);
     } else {
       contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Standings unavailable.</div>`;
     }
   } else if (activeMatchesSubView === 'bracket') {
-    if (activeSport === 'basketball') {
-      contentHtml = window.SPORT_ENGINES['basketball'].renderKnockoutBracket(matches);
+    const basketballEngine = window.SPORT_ENGINES['basketball'];
+    if (activeSport === 'basketball' && basketballEngine && typeof basketballEngine.renderKnockoutBracket === 'function') {
+      contentHtml = basketballEngine.renderKnockoutBracket(matches);
     } else if (engine && typeof engine.renderKnockoutBracket === 'function') {
       contentHtml = engine.renderKnockoutBracket(matches);
     } else {
