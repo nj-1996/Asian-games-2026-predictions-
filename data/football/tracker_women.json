@@ -2,7 +2,7 @@
   "sport": "Football (Women)",
   "matches": [
     {
-      "round": "Women Gr.G",
+      "round": "Group G",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-14",
@@ -13,7 +13,7 @@
       "winner": ""
     },
     {
-      "round": "Women Gr.E",
+      "round": "Group E",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-14",
@@ -24,7 +24,7 @@
       "winner": "Chinese Taipei"
     },
     {
-      "round": "Women Gr.F",
+      "round": "Group F",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-14",
@@ -35,7 +35,7 @@
       "winner": "DPR Korea"
     },
     {
-      "round": "Women Gr.G",
+      "round": "Group G",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-14",
@@ -46,7 +46,7 @@
       "winner": "China"
     },
     {
-      "round": "Women Gr.E",
+      "round": "Group E",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-14",
@@ -57,7 +57,7 @@
       "winner": "Japan"
     },
     {
-      "round": "Women Gr.F",
+      "round": "Group F",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-14",
@@ -68,73 +68,73 @@
       "winner": "Korea"
     },
     {
-      "round": "Women Gr.G",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "round": "Group G",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-17",
       "time": "14:00",
       "player1": "Uzbekistan",
       "player2": "China",
-      "score": "vs",
+      "score": "1 - 1",
       "winner": ""
     },
     {
-      "round": "Women Gr.E",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "round": "Group E",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-17",
       "time": "16:00",
       "player1": "Thailand",
       "player2": "Chinese Taipei",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 1",
+      "winner": "Chinese Taipei"
     },
     {
-      "round": "Women Gr.F",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "round": "Group F",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-17",
       "time": "16:00",
       "player1": "Bangladesh",
       "player2": "Korea",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 6",
+      "winner": "Korea"
     },
     {
-      "round": "Women Gr.G",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "round": "Group G",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-17",
       "time": "19:00",
       "player1": "Hong Kong, China",
       "player2": "Philippines",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 2",
+      "winner": "Philippines"
     },
     {
-      "round": "Women Gr.E",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "round": "Group E",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-17",
       "time": "19:30",
       "player1": "Vietnam",
       "player2": "Japan",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 8",
+      "winner": "Japan"
     },
     {
-      "round": "Women Gr.F",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "round": "Group F",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-17",
       "time": "19:30",
       "player1": "Myanmar",
       "player2": "DPR Korea",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 8",
+      "winner": "DPR Korea"
     },
     {
-      "round": "Women Gr.G",
+      "round": "Group G",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-21",
@@ -145,7 +145,7 @@
       "winner": ""
     },
     {
-      "round": "Women Gr.G",
+      "round": "Group G",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-21",
@@ -156,7 +156,7 @@
       "winner": ""
     },
     {
-      "round": "Women Gr.F",
+      "round": "Group F",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-21",
@@ -167,7 +167,7 @@
       "winner": ""
     },
     {
-      "round": "Women Gr.F",
+      "round": "Group F",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-21",
@@ -178,7 +178,7 @@
       "winner": ""
     },
     {
-      "round": "Women Gr.E",
+      "round": "Group E",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-21",
@@ -189,7 +189,7 @@
       "winner": ""
     },
     {
-      "round": "Women Gr.E",
+      "round": "Group E",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-21",

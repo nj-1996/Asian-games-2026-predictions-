@@ -2,7 +2,7 @@
   "sport": "Football (Men)",
   "matches": [
     {
-      "round": "Men Gr.C",
+      "round": "Group C",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-15",
@@ -13,7 +13,7 @@
       "winner": "Uzbekistan"
     },
     {
-      "round": "Men Gr.C",
+      "round": "Group C",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-15",
@@ -24,7 +24,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.D",
+      "round": "Group D",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-15",
@@ -35,7 +35,7 @@
       "winner": "Korea"
     },
     {
-      "round": "Men Gr.B",
+      "round": "Group B",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-16",
@@ -46,7 +46,7 @@
       "winner": "IR Iran"
     },
     {
-      "round": "Men Gr.A",
+      "round": "Group A",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-16",
@@ -57,7 +57,7 @@
       "winner": "Thailand"
     },
     {
-      "round": "Men Gr.B",
+      "round": "Group B",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-16",
@@ -68,7 +68,7 @@
       "winner": "China"
     },
     {
-      "round": "Men Gr.A",
+      "round": "Group A",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-16",
@@ -79,7 +79,7 @@
       "winner": "Japan"
     },
     {
-      "round": "Men Gr.C",
+      "round": "Group C",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-18",
@@ -90,7 +90,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.C",
+      "round": "Group C",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-18",
@@ -101,7 +101,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.D",
+      "round": "Group D",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-18",
@@ -112,7 +112,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.B",
+      "round": "Group B",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-20",
@@ -123,7 +123,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.A",
+      "round": "Group A",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-20",
@@ -134,7 +134,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.B",
+      "round": "Group B",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-20",
@@ -145,7 +145,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.A",
+      "round": "Group A",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-20",
@@ -156,7 +156,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.C",
+      "round": "Group C",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-22",
@@ -167,7 +167,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.C",
+      "round": "Group C",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-22",
@@ -178,7 +178,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.D",
+      "round": "Group D",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-22",
@@ -189,7 +189,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.B",
+      "round": "Group B",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-23",
@@ -200,7 +200,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.B",
+      "round": "Group B",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-23",
@@ -211,7 +211,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.A",
+      "round": "Group A",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-23",
@@ -222,7 +222,7 @@
       "winner": ""
     },
     {
-      "round": "Men Gr.A",
+      "round": "Group A",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-23",
