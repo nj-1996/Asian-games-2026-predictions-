@@ -1,5 +1,5 @@
 // ==========================================================================
-// Asian Games 2026: Basketball Sport Engine (FIBA Standings & Bracket Rules)
+// Asian Games 2026: Basketball Sport Engine
 // ==========================================================================
 
 window.SPORT_ENGINES = window.SPORT_ENGINES || {};
@@ -7,8 +7,10 @@ window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 window.SPORT_ENGINES['basketball'] = {
   icon: '🏀',
 
-  // --- FIBA Standings Engine ---
-  renderStandingsTable(matches) {
+  renderStandingsTable: function(matches) {
+    if (typeof parseMatchData !== 'function') {
+      return '<div style="padding:1rem; color:#ef4444; text-align:center;">Error: core.js functions not loaded yet.</div>';
+    }
     const parsedMatches = matches.map(m => parseMatchData(m));
     const groupMatches = parsedMatches.filter(m => /group|pool/i.test(m.stage));
     const allGroupFinished = groupMatches.length > 0 && groupMatches.every(m => m.isFinished);
@@ -64,32 +66,6 @@ window.SPORT_ENGINES['basketball'] = {
       return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No group stage data available.</div>`;
     }
 
-    const statusMap = {};
-    if (allGroupFinished) {
-      const thirdPlaceTeams = [];
-
-      groupKeys.forEach(grpKey => {
-        const sorted = Object.values(groups[grpKey]).sort((a, b) => b.pts - a.pts || b.diff - a.diff || b.pf - a.pf);
-
-        sorted.forEach((team, idx) => {
-          if (idx < 2) statusMap[team.name] = 'Q';
-          else if (idx === 2) thirdPlaceTeams.push(team);
-          else statusMap[team.name] = 'E';
-        });
-      });
-
-      thirdPlaceTeams.sort((a, b) => b.pts - a.pts || b.diff - a.diff || b.pf - a.pf);
-      thirdPlaceTeams.forEach((team, idx) => {
-        statusMap[team.name] = idx < 2 ? 'q' : 'E';
-      });
-    }
-
-    const badgeStyles = {
-      'Q': 'background:rgba(34,197,94,0.18); color:#4ade80; border:1px solid rgba(74,222,128,0.35);',
-      'q': 'background:rgba(56,189,248,0.18); color:#38bdf8; border:1px solid rgba(56,189,248,0.35);',
-      'E': 'background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(248,113,113,0.25);'
-    };
-
     return groupKeys.map(grpKey => {
       const teams = Object.values(groups[grpKey]).sort((a, b) => b.pts - a.pts || b.diff - a.diff || b.pf - a.pf);
 
@@ -111,27 +87,19 @@ window.SPORT_ENGINES['basketball'] = {
               </tr>
             </thead>
             <tbody>
-              ${teams.map((t, idx) => {
-                const badge = statusMap[t.name];
-                const badgeHtml = badge
-                  ? `<span style="display:inline-block; font-size:0.65rem; font-weight:800; padding:1px 5px; border-radius:4px; margin-left:6px; vertical-align:middle; ${badgeStyles[badge]}">${badge}</span>`
-                  : '';
-                const isEliminated = badge === 'E';
-
-                return `
-                  <tr style="border-bottom:1px solid rgba(255,255,255,0.03); opacity:${isEliminated ? '0.75' : '1'}; background:${idx < 2 ? 'rgba(59,130,246,0.04)' : 'transparent'};">
-                    <td style="padding:0.6rem 0.5rem; text-align:left; font-weight:${idx < 2 ? '700' : '400'};">
-                      <span style="display:inline-block; width:16px; color:${idx < 2 ? '#38bdf8' : 'inherit'};">${idx + 1}</span>
-                      ${getFlagEmoji(t.name)} ${t.name} ${badgeHtml}
-                    </td>
-                    <td style="padding:0.6rem 0.3rem;">${t.gp}</td>
-                    <td style="padding:0.6rem 0.3rem; color:#4ade80;">${t.w}</td>
-                    <td style="padding:0.6rem 0.3rem; color:#f87171;">${t.l}</td>
-                    <td style="padding:0.6rem 0.3rem; font-family:monospace; color:${t.diff > 0 ? '#4ade80' : t.diff < 0 ? '#f87171' : 'inherit'};">${t.diff > 0 ? '+' + t.diff : t.diff}</td>
-                    <td style="padding:0.6rem 0.5rem; font-weight:700; color:#38bdf8;">${t.pts}</td>
-                  </tr>
-                `;
-              }).join('')}
+              ${teams.map((t, idx) => `
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${idx < 2 ? 'rgba(59,130,246,0.04)' : 'transparent'};">
+                  <td style="padding:0.6rem 0.5rem; text-align:left; font-weight:${idx < 2 ? '700' : '400'};">
+                    <span style="display:inline-block; width:16px; color:${idx < 2 ? '#38bdf8' : 'inherit'};">${idx + 1}</span>
+                    ${getFlagEmoji(t.name)} ${t.name}
+                  </td>
+                  <td style="padding:0.6rem 0.3rem;">${t.gp}</td>
+                  <td style="padding:0.6rem 0.3rem; color:#4ade80;">${t.w}</td>
+                  <td style="padding:0.6rem 0.3rem; color:#f87171;">${t.l}</td>
+                  <td style="padding:0.6rem 0.3rem; font-family:monospace; color:${t.diff > 0 ? '#4ade80' : t.diff < 0 ? '#f87171' : 'inherit'};">${t.diff > 0 ? '+' + t.diff : t.diff}</td>
+                  <td style="padding:0.6rem 0.5rem; font-weight:700; color:#38bdf8;">${t.pts}</td>
+                </tr>
+              `).join('')}
             </tbody>
           </table>
         </div>
@@ -139,8 +107,10 @@ window.SPORT_ENGINES['basketball'] = {
     }).join('');
   },
 
-  // --- Basketball Knockout Bracket ---
-  renderKnockoutBracket(matches) {
+  renderKnockoutBracket: function(matches) {
+    if (typeof parseMatchData !== 'function') {
+      return '<div style="padding:1rem; color:#ef4444; text-align:center;">Error: core.js functions not loaded yet.</div>';
+    }
     const parsed = matches.map(m => parseMatchData(m));
     const getStage = (m) => (m.stage + ' ' + m.status).toLowerCase();
 
