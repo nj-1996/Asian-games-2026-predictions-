@@ -369,7 +369,7 @@ function renderMatchesView(container, matches) {
   } else if (activeMatchesSubView === 'standings') {
     // Directly call the embedded standalone functions, no object lookup needed
     if (activeSport === 'basketball') {
-      contentHtml = renderBasketballStandings(matches);
+      contentHtml = window.SPORT_ENGINES['basketball'].renderStandingsTable(matches);
     } else if (engine && typeof engine.renderStandingsTable === 'function') {
       contentHtml = engine.renderStandingsTable(matches);
     } else {
@@ -377,7 +377,7 @@ function renderMatchesView(container, matches) {
     }
   } else if (activeMatchesSubView === 'bracket') {
     if (activeSport === 'basketball') {
-      contentHtml = renderBasketballBracket(matches);
+      contentHtml = window.SPORT_ENGINES['basketball'].renderKnockoutBracket(matches);
     } else if (engine && typeof engine.renderKnockoutBracket === 'function') {
       contentHtml = engine.renderKnockoutBracket(matches);
     } else {
@@ -863,7 +863,7 @@ window.SPORT_ENGINES['basketball'] = {
       const s1 = match ? match.s1 : '-';
       const s2 = match ? match.s2 : '-';
       const isFinished = match ? match.isFinished : false;
-      const t1Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t1) : (isFinished && Number(s1) > Number(s2));
+      const t1Win = match && match.winner ? cleanTeamName(match.winner) === cleanTestName(t1) : (isFinished && Number(s1) > Number(s2));
       const t2Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t2) : (isFinished && Number(s2) > Number(s1));
       const displayDateTime = match ? (formatMatchDateTime(match.date, match.time) || match.status || 'Scheduled') : 'Scheduled';
 
@@ -908,4 +908,3 @@ window.SPORT_ENGINES['basketball'] = {
     `;
   }
 };
-
