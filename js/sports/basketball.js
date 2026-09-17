@@ -7,7 +7,7 @@ window.SPORT_ENGINES['basketball'] = {
   icon: '🏀',
 
   // --- FIBA Standings Engine (2 pts Win, 1 pt Loss, DIFF = PF - PA) ---
-  renderStandingsTable(matches) {
+  renderStandingsTable: function(matches) {
     const parsedMatches = matches.map(m => parseMatchData(m));
     const groupMatches = parsedMatches.filter(m => /group|pool/i.test(m.stage));
     const allGroupFinished = groupMatches.length > 0 && groupMatches.every(m => m.isFinished);
@@ -139,7 +139,7 @@ window.SPORT_ENGINES['basketball'] = {
   },
 
   // --- Basketball Knockout Bracket ---
-  renderKnockoutBracket(matches) {
+  renderKnockoutBracket: function(matches) {
     const parsed = matches.map(m => parseMatchData(m));
     const getStage = (m) => (m.stage + ' ' + m.status).toLowerCase();
 
