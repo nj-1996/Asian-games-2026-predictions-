@@ -2,121 +2,318 @@
   "sport": "Modern Pentathlon (Women)",
   "events": [
     {
+      "round": "Fencing Seeding Round",
       "phase": "Fencing Seeding Round",
+      "group": "",
       "discipline": "Fencing Seeding Round",
       "status": "Official",
       "date": "2026-09-16",
       "time": "10:00",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
-      "phase": "SF",
+      "round": "Semi-final (Group A)",
+      "phase": "Semi-final (Group A)",
+      "group": "Group A",
       "discipline": "Fencing Direct Elimination",
       "status": "Official",
       "date": "2026-09-17",
       "time": "10:00",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
-      "phase": "SF",
+      "round": "Semi-final (Group A)",
+      "phase": "Semi-final (Group A)",
+      "group": "Group A",
       "discipline": "Obstacle",
       "status": "Official",
       "date": "2026-09-17",
       "time": "10:20",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
-      "phase": "SF",
+      "round": "Semi-final (Group A)",
+      "phase": "Semi-final (Group A)",
+      "group": "Group A",
       "discipline": "Swimming",
       "status": "Official",
       "date": "2026-09-17",
       "time": "10:40",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
-      "phase": "SF",
+      "round": "Semi-final (Group A)",
+      "phase": "Semi-final (Group A)",
+      "group": "Group A",
       "discipline": "Laser Run",
       "status": "Official",
       "date": "2026-09-17",
       "time": "11:00",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": true,
+      "medal_desc": "Women's Individual & Team Medals"
     },
     {
-      "phase": "SF",
+      "round": "Semi-final (Group B)",
+      "phase": "Semi-final (Group B)",
+      "group": "Group B",
       "discipline": "Fencing Direct Elimination",
       "status": "Official",
       "date": "2026-09-17",
       "time": "15:00",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
-      "phase": "SF",
+      "round": "Semi-final (Group B)",
+      "phase": "Semi-final (Group B)",
+      "group": "Group B",
       "discipline": "Obstacle",
       "status": "Official",
       "date": "2026-09-17",
       "time": "15:20",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
-      "phase": "SF",
+      "round": "Semi-final (Group B)",
+      "phase": "Semi-final (Group B)",
+      "group": "Group B",
       "discipline": "Swimming",
       "status": "Official",
       "date": "2026-09-17",
       "time": "15:40",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
-      "phase": "SF",
+      "round": "Semi-final (Group B)",
+      "phase": "Semi-final (Group B)",
+      "group": "Group B",
       "discipline": "Laser Run",
       "status": "Official",
       "date": "2026-09-17",
       "time": "16:00",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": true,
+      "medal_desc": "Women's Individual & Team Medals"
     },
     {
+      "round": "Final",
       "phase": "Final",
+      "group": "",
       "discipline": "Fencing Direct Elimination",
       "status": "Scheduled",
       "date": "2026-09-20",
       "time": "10:00",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
+      "round": "Final",
       "phase": "Final",
+      "group": "",
       "discipline": "Obstacle",
       "status": "Scheduled",
       "date": "2026-09-20",
       "time": "10:20",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
+      "round": "Final",
       "phase": "Final",
+      "group": "",
       "discipline": "Swimming",
       "status": "Scheduled",
       "date": "2026-09-20",
       "time": "10:40",
       "venue": "Anjo Sports Park",
-      "is_medal": false
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
+      "round": "Final",
       "phase": "Final",
+      "group": "",
       "discipline": "Laser Run",
       "status": "Scheduled",
       "date": "2026-09-20",
       "time": "11:00",
       "venue": "Anjo Sports Park",
-      "is_medal": true
+      "is_medal": true,
+      "medal_desc": "Women's Individual & Team Medals"
+    }
+  ],
+  "matches": [
+    {
+      "round": "Fencing Seeding Round",
+      "phase": "Fencing Seeding Round",
+      "group": "",
+      "discipline": "Fencing Seeding Round",
+      "status": "Official",
+      "date": "2026-09-16",
+      "time": "10:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": ""
+    },
+    {
+      "round": "Semi-final (Group A)",
+      "phase": "Semi-final (Group A)",
+      "group": "Group A",
+      "discipline": "Fencing Direct Elimination",
+      "status": "Official",
+      "date": "2026-09-17",
+      "time": "10:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": ""
+    },
+    {
+      "round": "Semi-final (Group A)",
+      "phase": "Semi-final (Group A)",
+      "group": "Group A",
+      "discipline": "Obstacle",
+      "status": "Official",
+      "date": "2026-09-17",
+      "time": "10:20",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": ""
+    },
+    {
+      "round": "Semi-final (Group A)",
+      "phase": "Semi-final (Group A)",
+      "group": "Group A",
+      "discipline": "Swimming",
+      "status": "Official",
+      "date": "2026-09-17",
+      "time": "10:40",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": ""
+    },
+    {
+      "round": "Semi-final (Group A)",
+      "phase": "Semi-final (Group A)",
+      "group": "Group A",
+      "discipline": "Laser Run",
+      "status": "Official",
+      "date": "2026-09-17",
+      "time": "11:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": true,
+      "medal_desc": "Women's Individual & Team Medals"
+    },
+    {
+      "round": "Semi-final (Group B)",
+      "phase": "Semi-final (Group B)",
+      "group": "Group B",
+      "discipline": "Fencing Direct Elimination",
+      "status": "Official",
+      "date": "2026-09-17",
+      "time": "15:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": ""
+    },
+    {
+      "round": "Semi-final (Group B)",
+      "phase": "Semi-final (Group B)",
+      "group": "Group B",
+      "discipline": "Obstacle",
+      "status": "Official",
+      "date": "2026-09-17",
+      "time": "15:20",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": ""
+    },
+    {
+      "round": "Semi-final (Group B)",
+      "phase": "Semi-final (Group B)",
+      "group": "Group B",
+      "discipline": "Swimming",
+      "status": "Official",
+      "date": "2026-09-17",
+      "time": "15:40",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": ""
+    },
+    {
+      "round": "Semi-final (Group B)",
+      "phase": "Semi-final (Group B)",
+      "group": "Group B",
+      "discipline": "Laser Run",
+      "status": "Official",
+      "date": "2026-09-17",
+      "time": "16:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": true,
+      "medal_desc": "Women's Individual & Team Medals"
+    },
+    {
+      "round": "Final",
+      "phase": "Final",
+      "group": "",
+      "discipline": "Fencing Direct Elimination",
+      "status": "Scheduled",
+      "date": "2026-09-20",
+      "time": "10:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": ""
+    },
+    {
+      "round": "Final",
+      "phase": "Final",
+      "group": "",
+      "discipline": "Obstacle",
+      "status": "Scheduled",
+      "date": "2026-09-20",
+      "time": "10:20",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": ""
+    },
+    {
+      "round": "Final",
+      "phase": "Final",
+      "group": "",
+      "discipline": "Swimming",
+      "status": "Scheduled",
+      "date": "2026-09-20",
+      "time": "10:40",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": ""
+    },
+    {
+      "round": "Final",
+      "phase": "Final",
+      "group": "",
+      "discipline": "Laser Run",
+      "status": "Scheduled",
+      "date": "2026-09-20",
+      "time": "11:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": true,
+      "medal_desc": "Women's Individual & Team Medals"
     }
   ]
 }
