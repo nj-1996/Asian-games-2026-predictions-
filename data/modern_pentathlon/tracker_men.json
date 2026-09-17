@@ -1,4 +1,122 @@
 {
   "sport": "Modern Pentathlon (Men)",
-  "events": []
+  "events": [
+    {
+      "phase": "Fencing Seeding Round",
+      "discipline": "Fencing Seeding Round",
+      "status": "Official",
+      "date": "2026-09-16",
+      "time": "14:30",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "SF",
+      "discipline": "Fencing Direct Elimination",
+      "status": "Scheduled",
+      "date": "2026-09-18",
+      "time": "10:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "SF",
+      "discipline": "Obstacle",
+      "status": "Scheduled",
+      "date": "2026-09-18",
+      "time": "10:20",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "SF",
+      "discipline": "Swimming",
+      "status": "Scheduled",
+      "date": "2026-09-18",
+      "time": "10:40",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "SF",
+      "discipline": "Laser Run",
+      "status": "Scheduled",
+      "date": "2026-09-18",
+      "time": "11:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "SF",
+      "discipline": "Fencing Direct Elimination",
+      "status": "Scheduled",
+      "date": "2026-09-18",
+      "time": "15:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "SF",
+      "discipline": "Obstacle",
+      "status": "Scheduled",
+      "date": "2026-09-18",
+      "time": "15:20",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "SF",
+      "discipline": "Swimming",
+      "status": "Scheduled",
+      "date": "2026-09-18",
+      "time": "15:40",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "SF",
+      "discipline": "Laser Run",
+      "status": "Scheduled",
+      "date": "2026-09-18",
+      "time": "16:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "Final",
+      "discipline": "Fencing Direct Elimination",
+      "status": "Scheduled",
+      "date": "2026-09-20",
+      "time": "14:30",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "Final",
+      "discipline": "Obstacle",
+      "status": "Scheduled",
+      "date": "2026-09-20",
+      "time": "14:50",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "Final",
+      "discipline": "Swimming",
+      "status": "Scheduled",
+      "date": "2026-09-20",
+      "time": "15:10",
+      "venue": "Anjo Sports Park",
+      "is_medal": false
+    },
+    {
+      "phase": "Final",
+      "discipline": "Laser Run",
+      "status": "Scheduled",
+      "date": "2026-09-20",
+      "time": "15:30",
+      "venue": "Anjo Sports Park",
+      "is_medal": true
+    }
+  ]
 }
