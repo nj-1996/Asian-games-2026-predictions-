@@ -383,13 +383,75 @@ function renderMatchesView(container, matches) {
     } else {
       contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Bracket unavailable for this sport.</div>`;
     }
+// --- Matches Router ---
+function renderMatchesView(container, matches) {
+  const rawSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
+  const activeSport = String(rawSport).trim().toLowerCase();
+  const engine = window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport];
 
+  const hasStandings = true;
+  const hasBracket = true;
+  const hasLeaderboard = engine && typeof engine.renderLeaderboard === 'function';
+
+  const scheduleBtn = `
+    <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'schedule' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'schedule' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('schedule')">📋 Schedule</button>
+  `;
+  const standingsBtn = `
+    <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'standings' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'standings' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('standings')">📊 Standings</button>
+  `;
+  const bracketBtn = `
+    <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'bracket' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'bracket' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('bracket')">🌳 Bracket</button>
+  `;
+  const leaderboardBtn = hasLeaderboard ? `
+    <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'leaderboard' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'leaderboard' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('leaderboard')">🏆 Results</button>
+  ` : '';
+
+  const pillsHeader = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; gap:8px;">
+      <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); gap:3px; flex:1;">
+        ${scheduleBtn}
+        ${standingsBtn}
+        ${bracketBtn}
+        ${leaderboardBtn}
+      </div>
+      <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); gap:2px;">
+        <button style="padding:6px 9px; font-size:0.75rem; font-weight:700; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${currentTimezone === 'IST' ? '#38bdf8' : 'transparent'}; color:${currentTimezone === 'IST' ? '#0f172a' : '#94a3b8'};" onclick="setTimezone('IST')">IST</button>
+        <button style="padding:6px 9px; font-size:0.75rem; font-weight:700; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${currentTimezone === 'JST' ? '#38bdf8' : 'transparent'}; color:${currentTimezone === 'JST' ? '#0f172a' : '#94a3b8'};" onclick="setTimezone('JST')">JST</button>
+      </div>
+    </div>
+  `;
+
+  if (!matches || matches.length === 0) {
+    container.innerHTML = `${pillsHeader}<div style="text-align:center; padding:3rem 1rem; color:var(--text-muted, #94a3b8);">No matches scheduled or recorded yet for this category.</div>`;
+    return;
+  }
+
+  let contentHtml = '';
+  if (activeMatchesSubView === 'schedule') {
+    contentHtml = renderScheduleAndHero(matches);
+  } else if (activeMatchesSubView === 'standings') {
+    if (activeSport === 'basketball') {
+      contentHtml = window.SPORT_ENGINES['basketball'].renderStandingsTable(matches);
+    } else if (engine && typeof engine.renderStandingsTable === 'function') {
+      contentHtml = engine.renderStandingsTable(matches);
+    } else {
+      contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Standings unavailable.</div>`;
+    }
+  } else if (activeMatchesSubView === 'bracket') {
+    if (activeSport === 'basketball') {
+      contentHtml = window.SPORT_ENGINES['basketball'].renderKnockoutBracket(matches);
+    } else if (engine && typeof engine.renderKnockoutBracket === 'function') {
+      contentHtml = engine.renderKnockoutBracket(matches);
+    } else {
+      contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Bracket unavailable.</div>`;
+    }
   } else if (activeMatchesSubView === 'leaderboard' && hasLeaderboard) {
     contentHtml = engine.renderLeaderboard(matches);
   }
 
   container.innerHTML = `${pillsHeader}${contentHtml}`;
 }
+
 
 
 // --- Schedule & Hero Card ---
