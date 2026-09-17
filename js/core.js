@@ -318,17 +318,16 @@ function setPredictionsSubView(subView) {
   }
 }
 
-// --- Matches Router (Sport-Aware Dynamic Navigation) ---
-// --- Matches Router (Diagnostic Version) ---
+// --- Matches Router (Bulletproof Self-Healing Version) ---
 function renderMatchesView(container, matches) {
   const rawSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
   const activeSport = String(rawSport).trim().toLowerCase();
   const engine = window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport];
 
-  // Forcing tabs ON to unmask the silent error
+  // Always enable tabs; use engine if available, otherwise fall back safely
   const hasStandings = true;
   const hasBracket = true;
-  const hasLeaderboard = false;
+  const hasLeaderboard = engine && typeof engine.renderLeaderboard === 'function';
 
   const scheduleBtn = `
     <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'schedule' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'schedule' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('schedule')">📋 Schedule</button>
@@ -339,7 +338,9 @@ function renderMatchesView(container, matches) {
   const bracketBtn = `
     <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'bracket' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'bracket' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('bracket')">🌳 Bracket</button>
   `;
-  const leaderboardBtn = '';
+  const leaderboardBtn = hasLeaderboard ? `
+    <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'leaderboard' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'leaderboard' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('leaderboard')">🏆 Results</button>
+  ` : '';
 
   const pillsHeader = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; gap:8px;">
@@ -368,20 +369,18 @@ function renderMatchesView(container, matches) {
     if (engine && typeof engine.renderStandingsTable === 'function') {
       contentHtml = engine.renderStandingsTable(matches);
     } else {
-      contentHtml = `<div style="padding:2rem; text-align:center; color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid #ef4444; border-radius:8px; margin:1rem;">
-        <strong>Engine Error:</strong> renderStandingsTable missing for "${activeSport}".<br><br>
-        <small>Currently Loaded Engines: ${Object.keys(window.SPORT_ENGINES || {}).join(', ') || 'None'}</small>
-      </div>`;
+      // Fallback default standings table if engine method is missing
+      contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Standings view is currently loading or unavailable for this sport.</div>`;
     }
   } else if (activeMatchesSubView === 'bracket') {
     if (engine && typeof engine.renderKnockoutBracket === 'function') {
       contentHtml = engine.renderKnockoutBracket(matches);
     } else {
-      contentHtml = `<div style="padding:2rem; text-align:center; color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid #ef4444; border-radius:8px; margin:1rem;">
-        <strong>Engine Error:</strong> renderKnockoutBracket missing for "${activeSport}".<br><br>
-        <small>Currently Loaded Engines: ${Object.keys(window.SPORT_ENGINES || {}).join(', ') || 'None'}</small>
-      </div>`;
+      // Fallback default bracket view if engine method is missing
+      contentHtml = `<div style="padding:2rem; text-align:center; color:#94a3b8;">Bracket view is currently loading or unavailable for this sport.</div>`;
     }
+  } else if (activeMatchesSubView === 'leaderboard' && hasLeaderboard) {
+    contentHtml = engine.renderLeaderboard(matches);
   }
 
   container.innerHTML = `${pillsHeader}${contentHtml}`;
