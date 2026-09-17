@@ -323,9 +323,11 @@ function renderMatchesView(container, matches) {
   const activeSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
   const engine = window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport];
 
-  const hasStandings = engine && typeof engine.renderStandingsTable === 'function';
-  const hasBracket = engine && typeof engine.renderKnockoutBracket === 'function';
-  const hasLeaderboard = engine && typeof engine.renderLeaderboard === 'function';
+    // If engine has loaded, use its explicit capabilities; otherwise fall back to tournament defaults
+  const isLoaded = Boolean(engine);
+  const hasStandings = isLoaded ? typeof engine.renderStandingsTable === 'function' : true;
+  const hasBracket = isLoaded ? typeof engine.renderKnockoutBracket === 'function' : true;
+  const hasLeaderboard = isLoaded ? typeof engine.renderLeaderboard === 'function' : false;
 
   if (activeMatchesSubView === 'standings' && !hasStandings) {
     activeMatchesSubView = hasLeaderboard ? 'leaderboard' : (hasBracket ? 'bracket' : 'schedule');
