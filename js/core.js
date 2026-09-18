@@ -22,6 +22,7 @@ function extractList(raw) {
   if (Array.isArray(raw)) return raw;
   if (raw && typeof raw === 'object') {
     if (Array.isArray(raw.matches)) return raw.matches;
+    if (Array.isArray(raw.events)) return raw.events;
     if (Array.isArray(raw.teams)) return raw.teams;
     if (Array.isArray(raw.predictions)) return raw.predictions;
     if (Array.isArray(raw.data)) return raw.data;
@@ -404,7 +405,7 @@ const BASKETBALL_ENGINE = {
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${idx < 2 ? 'rgba(59,130,246,0.04)' : 'transparent'};">
                   <td style="padding:0.6rem 0.5rem; text-align:left; font-weight:${idx < 2 ? '700' : '400'};">
                     <span style="display:inline-block; width:16px; color:${idx < 2 ? '#38bdf8' : 'inherit'};">${idx + 1}</span>
-                    ${getFlagEmoji(t.name)} ${t.name}
+                    ${getFlagEmoji(t.name)}${t.name}
                   </td>
                   <td style="padding:0.6rem 0.3rem;">${t.gp}</td>
                   <td style="padding:0.6rem 0.3rem; color:#4ade80;">${t.w}</td>
@@ -522,8 +523,9 @@ function renderMatchesView(container, matches) {
     ? BASKETBALL_ENGINE
     : (window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport]);
 
+  const hasCustomMatches = engine && typeof engine.renderMatches === 'function';
   const hasStandings = engine && typeof engine.renderStandingsTable === 'function';
-  const hasBracket = engine && typeof engine.renderKnockoutBracket === 'function';
+  const hasBracket = engine && typeof engine.renderKnockoutBracket === 'function' && engine.hasBracket !== false;
   const hasLeaderboard = engine && typeof engine.renderLeaderboard === 'function';
 
   const scheduleBtn = `
@@ -532,9 +534,9 @@ function renderMatchesView(container, matches) {
   const standingsBtn = `
     <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'standings' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'standings' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('standings')">📊 Standings</button>
   `;
-  const bracketBtn = `
+  const bracketBtn = hasBracket ? `
     <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'bracket' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'bracket' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('bracket')">🌳 Bracket</button>
-  `;
+  ` : '';
   const leaderboardBtn = hasLeaderboard ? `
     <button style="flex:1; padding:7px 4px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${activeMatchesSubView === 'leaderboard' ? '#2563eb' : 'transparent'}; color:${activeMatchesSubView === 'leaderboard' ? '#fff' : '#94a3b8'};" onclick="setMatchesSubView('leaderboard')">🏆 Results</button>
   ` : '';
@@ -561,7 +563,11 @@ function renderMatchesView(container, matches) {
 
   let contentHtml = '';
   if (activeMatchesSubView === 'schedule') {
-    contentHtml = renderScheduleAndHero(matches);
+    if (hasCustomMatches) {
+      contentHtml = engine.renderMatches(matches);
+    } else {
+      contentHtml = renderScheduleAndHero(matches);
+    }
   } else if (activeMatchesSubView === 'standings') {
     if (hasStandings) {
       contentHtml = engine.renderStandingsTable(matches);
@@ -608,7 +614,7 @@ function renderScheduleAndHero(matches) {
             <div style="font-weight:700; font-size:1rem; margin-top:0.25rem;">${heroTarget.t1}</div>
           </div>
           <div style="font-family:monospace; font-size:1.6rem; font-weight:800; min-width:80px;">
-            ${heroTarget.s1 !== '-' ? `${heroTarget.s1} : ${heroTarget.s2}` : 'VS'}
+            ${heroTarget.s1 !== '-' ? `${heroTarget.s1} :${heroTarget.s2}` : 'VS'}
           </div>
           <div style="flex:1;">
             <div style="font-size:1.8rem;">${getFlagEmoji(heroTarget.t2)}</div>
@@ -756,8 +762,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
             ${sortedTable.map((t, idx) => `
               <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${idx < 3 ? 'rgba(59,130,246,0.03)' : 'transparent'};">
                 <td style="padding:0.65rem 0.5rem; text-align:left; font-weight:${idx < 3 ? '700' : '400'};">
-                  <span style="display:inline-block; width:18px; font-weight:700; color:${idx === 0 ? '#facc15' : idx === 1 ? '#cbd5e1' : idx === 2 ? '#f59e0b' : '#94a3b8'};">${idx + 1}</span>
-                  ${getFlagEmoji(t.name)} ${t.name}${t.isHost ? ' (Host)' : ''}
+                  <span style="display:inline-block; width:18px; font-weight:700; color:${idx === 0 ? '#facc15' : idx === 1 ? '#cbd5e1' : idx === 2 ? '#f59e0b' : '#94a3b8'};">${idx + 1}</span>${getFlagEmoji(t.name)} ${t.name}${t.isHost ? ' (Host)' : ''}
                 </td>
                 <td style="padding:0.65rem 0.4rem; font-family:monospace; font-weight:${t.gold > 0 ? '700' : '400'}; color:#facc15;">${t.gold}</td>
                 <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#cbd5e1;">${t.silver}</td>
