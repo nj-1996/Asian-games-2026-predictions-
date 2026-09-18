@@ -163,18 +163,18 @@
       "time": "16:00",
       "player1": "Vietnam",
       "player2": "Korea",
-      "score": "0 - 1",
+      "score": "1 - 2",
       "winner": "Korea"
     },
     {
       "round": "Match 17",
-      "status": "Live",
-      "state": "Running",
+      "status": "Upcoming",
+      "state": "Unofficial",
       "date": "2026-09-18",
       "time": "16:00",
       "player1": "Mongolia",
       "player2": "Kyrgyzstan",
-      "score": "2 - 0",
+      "score": "3 - 0",
       "winner": "Mongolia"
     },
     {

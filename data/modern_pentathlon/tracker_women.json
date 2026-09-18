@@ -2,8 +2,8 @@
   "sport": "Modern Pentathlon (Women)",
   "events": [
     {
-      "id": "fencing_seeding_round_fencing_seeding_round_2026-09-16_10:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.RANK.0001FE--",
+      "unit_code": "W.INDIVID-----------.RANK.0001FE--",
       "round": "Fencing Seeding Round",
       "phase": "Fencing Seeding Round",
       "group": "",
@@ -38,12 +38,252 @@
           "raw": "0",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "KIM Unju",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "WU Xiyao",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "FU Jing",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "ARBILON Princess Honey",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "MENG Xin",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "BANGUN Caroline",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "KAHRAMAONOVA Mehriniso",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "SHIN Sumin",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "CHSHEDROVA Diana",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "ABZALOVA Samira",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "JANG Haeun",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "UCHIDA Misaki",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "KAZBEKOVA Ayana",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "SUZUKI Yuri",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "ARANZADO Shyra Mae",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 19,
+          "name": "SEVILLA Juliana Shane",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 20,
+          "name": "PAISANSRISIN Parita",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 21,
+          "name": "YANO Yuho",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 22,
+          "name": "PETROVA Yuliana",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 23,
+          "name": "WITSAPHAN Chananan",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 24,
+          "name": "WAHYUNI Sri",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 25,
+          "name": "OSMANOVA Riana",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 26,
+          "name": "ALTHUWAINI Habari",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 27,
+          "name": "LIM Pei Yao",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 28,
+          "name": "LIU Hei Yu",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 29,
+          "name": "SHTUKINA Mariia",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 30,
+          "name": "QALBI Nurfa Inayah Nurul",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 31,
+          "name": "TRONGTORKIT Aphisaraporn",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 32,
+          "name": "ABD ALHUSSAIN Retaj",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 33,
+          "name": "KUMARI Gayani",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_fencing_direct_elimination_2026-09-17_10:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0001FE--",
+      "unit_code": "W.INDIVID-----------.SFNL.0001FE--",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -78,12 +318,124 @@
           "raw": "238",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "ARBILON Princess Honey",
+          "country": "",
+          "raw": "236",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "MENG Xin",
+          "country": "",
+          "raw": "230",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "SHIN Sumin",
+          "country": "",
+          "raw": "228",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "UCHIDA Misaki",
+          "country": "",
+          "raw": "226",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "PETROVA Yuliana",
+          "country": "",
+          "raw": "224",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "BANGUN Caroline",
+          "country": "",
+          "raw": "218",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "KAZBEKOVA Ayana",
+          "country": "",
+          "raw": "216",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "ARANZADO Shyra Mae",
+          "country": "",
+          "raw": "214",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ALTHUWAINI Habari",
+          "country": "",
+          "raw": "212",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "LIM Pei Yao",
+          "country": "",
+          "raw": "210",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "SHTUKINA Mariia",
+          "country": "",
+          "raw": "208",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "QALBI Nurfa Inayah Nurul",
+          "country": "",
+          "raw": "206",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "TRONGTORKIT Aphisaraporn",
+          "country": "",
+          "raw": "204",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ABD ALHUSSAIN Retaj",
+          "country": "",
+          "raw": "198",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_obstacle_2026-09-17_10:20",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0001OB00",
+      "unit_code": "W.INDIVID-----------.SFNL.0001OB00",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -118,12 +470,124 @@
           "raw": "353",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "BANGUN Caroline",
+          "country": "",
+          "raw": "349",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "KAZBEKOVA Ayana",
+          "country": "",
+          "raw": "339",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "SAITO Ayumu",
+          "country": "",
+          "raw": "337",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "PETROVA Yuliana",
+          "country": "",
+          "raw": "331",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SHIN Sumin",
+          "country": "",
+          "raw": "321",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "UCHIDA Misaki",
+          "country": "",
+          "raw": "318",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "QALBI Nurfa Inayah Nurul",
+          "country": "",
+          "raw": "311",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "ARBILON Princess Honey",
+          "country": "",
+          "raw": "309",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ARANZADO Shyra Mae",
+          "country": "",
+          "raw": "307",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "SHTUKINA Mariia",
+          "country": "",
+          "raw": "260",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "ALTHUWAINI Habari",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "ABD ALHUSSAIN Retaj",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "TRONGTORKIT Aphisaraporn",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "LIM Pei Yao",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_swimming_2026-09-17_10:40",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0001SW00",
+      "unit_code": "W.INDIVID-----------.SFNL.0001SW00",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -158,12 +622,124 @@
           "raw": "286",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "PETROVA Yuliana",
+          "country": "",
+          "raw": "285",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "QALBI Nurfa Inayah Nurul",
+          "country": "",
+          "raw": "284",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "FU Jing",
+          "country": "",
+          "raw": "280",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "SEONG Seungmin",
+          "country": "",
+          "raw": "274",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "MENG Xin",
+          "country": "",
+          "raw": "269",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "KAZBEKOVA Ayana",
+          "country": "",
+          "raw": "268",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "SAITO Ayumu",
+          "country": "",
+          "raw": "265",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "TRONGTORKIT Aphisaraporn",
+          "country": "",
+          "raw": "248",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ARANZADO Shyra Mae",
+          "country": "",
+          "raw": "241",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "LIM Pei Yao",
+          "country": "",
+          "raw": "241",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "SHTUKINA Mariia",
+          "country": "",
+          "raw": "230",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "ARBILON Princess Honey",
+          "country": "",
+          "raw": "215",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ABD ALHUSSAIN Retaj",
+          "country": "",
+          "raw": "52",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ALTHUWAINI Habari",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_laser_run_2026-09-17_11:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0001LR--",
+      "unit_code": "W.INDIVID-----------.SFNL.0001LR--",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -198,12 +774,124 @@
           "raw": "526",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "UCHIDA Misaki",
+          "country": "",
+          "raw": "524",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "SHIN Sumin",
+          "country": "",
+          "raw": "522",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "MENG Xin",
+          "country": "",
+          "raw": "511",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "SAITO Ayumu",
+          "country": "",
+          "raw": "508",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "PETROVA Yuliana",
+          "country": "",
+          "raw": "505",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "BANGUN Caroline",
+          "country": "",
+          "raw": "498",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "SEONG Seungmin",
+          "country": "",
+          "raw": "489",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "FU Jing",
+          "country": "",
+          "raw": "484",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "TRONGTORKIT Aphisaraporn",
+          "country": "",
+          "raw": "439",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "SHTUKINA Mariia",
+          "country": "",
+          "raw": "370",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "QALBI Nurfa Inayah Nurul",
+          "country": "",
+          "raw": "369",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "LIM Pei Yao",
+          "country": "",
+          "raw": "350",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ABD ALHUSSAIN Retaj",
+          "country": "",
+          "raw": "71",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ALTHUWAINI Habari",
+          "country": "",
+          "raw": "17",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_fencing_direct_elimination_2026-09-17_15:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0002FE--",
+      "unit_code": "W.INDIVID-----------.SFNL.0002FE--",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -238,12 +926,116 @@
           "raw": "238",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "YANO Yuho",
+          "country": "",
+          "raw": "236",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "WU Xiyao",
+          "country": "",
+          "raw": "230",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "KAHRAMAONOVA Mehriniso",
+          "country": "",
+          "raw": "228",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "JANG Haeun",
+          "country": "",
+          "raw": "226",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SEVILLA Juliana Shane",
+          "country": "",
+          "raw": "224",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "ABZALOVA Samira",
+          "country": "",
+          "raw": "218",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "SUZUKI Yuri",
+          "country": "",
+          "raw": "216",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "PAISANSRISIN Parita",
+          "country": "",
+          "raw": "214",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "WITSAPHAN Chananan",
+          "country": "",
+          "raw": "212",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "WAHYUNI Sri",
+          "country": "",
+          "raw": "210",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "OSMANOVA Riana",
+          "country": "",
+          "raw": "208",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "LIU Hei Yu",
+          "country": "",
+          "raw": "206",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "KUMARI Gayani",
+          "country": "",
+          "raw": "204",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_obstacle_2026-09-17_15:20",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0002OB00",
+      "unit_code": "W.INDIVID-----------.SFNL.0002OB00",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -278,12 +1070,116 @@
           "raw": "348",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "SUZUKI Yuri",
+          "country": "",
+          "raw": "344",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "KIM Unju",
+          "country": "",
+          "raw": "343",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "SEVILLA Juliana Shane",
+          "country": "",
+          "raw": "339",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "CHSHEDROVA Diana",
+          "country": "",
+          "raw": "329",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "WITSAPHAN Chananan",
+          "country": "",
+          "raw": "318",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "PAISANSRISIN Parita",
+          "country": "",
+          "raw": "314",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "ABZALOVA Samira",
+          "country": "",
+          "raw": "309",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "YANO Yuho",
+          "country": "",
+          "raw": "304",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "LIU Hei Yu",
+          "country": "",
+          "raw": "302",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "JANG Haeun",
+          "country": "",
+          "raw": "293",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "WAHYUNI Sri",
+          "country": "",
+          "raw": "283",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "KUMARI Gayani",
+          "country": "",
+          "raw": "261",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "OSMANOVA Riana",
+          "country": "",
+          "raw": "245",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_swimming_2026-09-17_15:40",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0002SW00",
+      "unit_code": "W.INDIVID-----------.SFNL.0002SW00",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -318,12 +1214,116 @@
           "raw": "295",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "CHSHEDROVA Diana",
+          "country": "",
+          "raw": "285",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "WU Xiyao",
+          "country": "",
+          "raw": "280",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "JANG Haeun",
+          "country": "",
+          "raw": "279",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "ZHANG Mingyu",
+          "country": "",
+          "raw": "276",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "KAHRAMAONOVA Mehriniso",
+          "country": "",
+          "raw": "274",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "ABZALOVA Samira",
+          "country": "",
+          "raw": "267",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "WAHYUNI Sri",
+          "country": "",
+          "raw": "266",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "KIM Unju",
+          "country": "",
+          "raw": "251",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "PAISANSRISIN Parita",
+          "country": "",
+          "raw": "249",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "OSMANOVA Riana",
+          "country": "",
+          "raw": "245",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "KUMARI Gayani",
+          "country": "",
+          "raw": "194",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "SEVILLA Juliana Shane",
+          "country": "",
+          "raw": "178",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "WITSAPHAN Chananan",
+          "country": "",
+          "raw": "178",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_laser_run_2026-09-17_16:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0002LR--",
+      "unit_code": "W.INDIVID-----------.SFNL.0002LR--",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -358,12 +1358,116 @@
           "raw": "543",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "SUZUKI Yuri",
+          "country": "",
+          "raw": "530",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "KAHRAMAONOVA Mehriniso",
+          "country": "",
+          "raw": "525",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "ABZALOVA Samira",
+          "country": "",
+          "raw": "525",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "ZHANG Mingyu",
+          "country": "",
+          "raw": "511",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "KIM Unju",
+          "country": "",
+          "raw": "503",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "WAHYUNI Sri",
+          "country": "",
+          "raw": "493",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "CHSHEDROVA Diana",
+          "country": "",
+          "raw": "492",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "PAISANSRISIN Parita",
+          "country": "",
+          "raw": "491",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "WU Xiyao",
+          "country": "",
+          "raw": "480",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "WITSAPHAN Chananan",
+          "country": "",
+          "raw": "419",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "KUMARI Gayani",
+          "country": "",
+          "raw": "354",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "LIU Hei Yu",
+          "country": "",
+          "raw": "333",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "OSMANOVA Riana",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "final_fencing_direct_elimination_2026-09-20_10:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.FNL-.0001FE--",
+      "unit_code": "W.INDIVID-----------.FNL-.0001FE--",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -377,8 +1481,8 @@
       "competitors": []
     },
     {
-      "id": "final_obstacle_2026-09-20_10:20",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.FNL-.0001OB00",
+      "unit_code": "W.INDIVID-----------.FNL-.0001OB00",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -392,8 +1496,8 @@
       "competitors": []
     },
     {
-      "id": "final_swimming_2026-09-20_10:40",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.FNL-.0001SW00",
+      "unit_code": "W.INDIVID-----------.FNL-.0001SW00",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -407,8 +1511,8 @@
       "competitors": []
     },
     {
-      "id": "final_laser_run_2026-09-20_11:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.FNL-.0001LR--",
+      "unit_code": "W.INDIVID-----------.FNL-.0001LR--",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -424,8 +1528,8 @@
   ],
   "matches": [
     {
-      "id": "fencing_seeding_round_fencing_seeding_round_2026-09-16_10:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.RANK.0001FE--",
+      "unit_code": "W.INDIVID-----------.RANK.0001FE--",
       "round": "Fencing Seeding Round",
       "phase": "Fencing Seeding Round",
       "group": "",
@@ -460,12 +1564,252 @@
           "raw": "0",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "KIM Unju",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "WU Xiyao",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "FU Jing",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "ARBILON Princess Honey",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "MENG Xin",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "BANGUN Caroline",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "KAHRAMAONOVA Mehriniso",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "SHIN Sumin",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "CHSHEDROVA Diana",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "ABZALOVA Samira",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "JANG Haeun",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "UCHIDA Misaki",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "KAZBEKOVA Ayana",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "SUZUKI Yuri",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "ARANZADO Shyra Mae",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 19,
+          "name": "SEVILLA Juliana Shane",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 20,
+          "name": "PAISANSRISIN Parita",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 21,
+          "name": "YANO Yuho",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 22,
+          "name": "PETROVA Yuliana",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 23,
+          "name": "WITSAPHAN Chananan",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 24,
+          "name": "WAHYUNI Sri",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 25,
+          "name": "OSMANOVA Riana",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 26,
+          "name": "ALTHUWAINI Habari",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 27,
+          "name": "LIM Pei Yao",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 28,
+          "name": "LIU Hei Yu",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 29,
+          "name": "SHTUKINA Mariia",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 30,
+          "name": "QALBI Nurfa Inayah Nurul",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 31,
+          "name": "TRONGTORKIT Aphisaraporn",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 32,
+          "name": "ABD ALHUSSAIN Retaj",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 33,
+          "name": "KUMARI Gayani",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_fencing_direct_elimination_2026-09-17_10:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0001FE--",
+      "unit_code": "W.INDIVID-----------.SFNL.0001FE--",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -500,12 +1844,124 @@
           "raw": "238",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "ARBILON Princess Honey",
+          "country": "",
+          "raw": "236",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "MENG Xin",
+          "country": "",
+          "raw": "230",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "SHIN Sumin",
+          "country": "",
+          "raw": "228",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "UCHIDA Misaki",
+          "country": "",
+          "raw": "226",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "PETROVA Yuliana",
+          "country": "",
+          "raw": "224",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "BANGUN Caroline",
+          "country": "",
+          "raw": "218",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "KAZBEKOVA Ayana",
+          "country": "",
+          "raw": "216",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "ARANZADO Shyra Mae",
+          "country": "",
+          "raw": "214",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ALTHUWAINI Habari",
+          "country": "",
+          "raw": "212",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "LIM Pei Yao",
+          "country": "",
+          "raw": "210",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "SHTUKINA Mariia",
+          "country": "",
+          "raw": "208",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "QALBI Nurfa Inayah Nurul",
+          "country": "",
+          "raw": "206",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "TRONGTORKIT Aphisaraporn",
+          "country": "",
+          "raw": "204",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ABD ALHUSSAIN Retaj",
+          "country": "",
+          "raw": "198",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_obstacle_2026-09-17_10:20",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0001OB00",
+      "unit_code": "W.INDIVID-----------.SFNL.0001OB00",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -540,12 +1996,124 @@
           "raw": "353",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "BANGUN Caroline",
+          "country": "",
+          "raw": "349",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "KAZBEKOVA Ayana",
+          "country": "",
+          "raw": "339",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "SAITO Ayumu",
+          "country": "",
+          "raw": "337",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "PETROVA Yuliana",
+          "country": "",
+          "raw": "331",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SHIN Sumin",
+          "country": "",
+          "raw": "321",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "UCHIDA Misaki",
+          "country": "",
+          "raw": "318",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "QALBI Nurfa Inayah Nurul",
+          "country": "",
+          "raw": "311",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "ARBILON Princess Honey",
+          "country": "",
+          "raw": "309",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ARANZADO Shyra Mae",
+          "country": "",
+          "raw": "307",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "SHTUKINA Mariia",
+          "country": "",
+          "raw": "260",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "ALTHUWAINI Habari",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "ABD ALHUSSAIN Retaj",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "TRONGTORKIT Aphisaraporn",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "LIM Pei Yao",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_swimming_2026-09-17_10:40",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0001SW00",
+      "unit_code": "W.INDIVID-----------.SFNL.0001SW00",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -580,12 +2148,124 @@
           "raw": "286",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "PETROVA Yuliana",
+          "country": "",
+          "raw": "285",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "QALBI Nurfa Inayah Nurul",
+          "country": "",
+          "raw": "284",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "FU Jing",
+          "country": "",
+          "raw": "280",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "SEONG Seungmin",
+          "country": "",
+          "raw": "274",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "MENG Xin",
+          "country": "",
+          "raw": "269",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "KAZBEKOVA Ayana",
+          "country": "",
+          "raw": "268",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "SAITO Ayumu",
+          "country": "",
+          "raw": "265",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "TRONGTORKIT Aphisaraporn",
+          "country": "",
+          "raw": "248",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ARANZADO Shyra Mae",
+          "country": "",
+          "raw": "241",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "LIM Pei Yao",
+          "country": "",
+          "raw": "241",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "SHTUKINA Mariia",
+          "country": "",
+          "raw": "230",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "ARBILON Princess Honey",
+          "country": "",
+          "raw": "215",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ABD ALHUSSAIN Retaj",
+          "country": "",
+          "raw": "52",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ALTHUWAINI Habari",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_laser_run_2026-09-17_11:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0001LR--",
+      "unit_code": "W.INDIVID-----------.SFNL.0001LR--",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -620,12 +2300,124 @@
           "raw": "526",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "UCHIDA Misaki",
+          "country": "",
+          "raw": "524",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "SHIN Sumin",
+          "country": "",
+          "raw": "522",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "MENG Xin",
+          "country": "",
+          "raw": "511",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "SAITO Ayumu",
+          "country": "",
+          "raw": "508",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "PETROVA Yuliana",
+          "country": "",
+          "raw": "505",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "BANGUN Caroline",
+          "country": "",
+          "raw": "498",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "SEONG Seungmin",
+          "country": "",
+          "raw": "489",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "FU Jing",
+          "country": "",
+          "raw": "484",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "TRONGTORKIT Aphisaraporn",
+          "country": "",
+          "raw": "439",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "SHTUKINA Mariia",
+          "country": "",
+          "raw": "370",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "QALBI Nurfa Inayah Nurul",
+          "country": "",
+          "raw": "369",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "LIM Pei Yao",
+          "country": "",
+          "raw": "350",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ABD ALHUSSAIN Retaj",
+          "country": "",
+          "raw": "71",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ALTHUWAINI Habari",
+          "country": "",
+          "raw": "17",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_fencing_direct_elimination_2026-09-17_15:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0002FE--",
+      "unit_code": "W.INDIVID-----------.SFNL.0002FE--",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -660,12 +2452,116 @@
           "raw": "238",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "YANO Yuho",
+          "country": "",
+          "raw": "236",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "WU Xiyao",
+          "country": "",
+          "raw": "230",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "KAHRAMAONOVA Mehriniso",
+          "country": "",
+          "raw": "228",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "JANG Haeun",
+          "country": "",
+          "raw": "226",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SEVILLA Juliana Shane",
+          "country": "",
+          "raw": "224",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "ABZALOVA Samira",
+          "country": "",
+          "raw": "218",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "SUZUKI Yuri",
+          "country": "",
+          "raw": "216",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "PAISANSRISIN Parita",
+          "country": "",
+          "raw": "214",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "WITSAPHAN Chananan",
+          "country": "",
+          "raw": "212",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "WAHYUNI Sri",
+          "country": "",
+          "raw": "210",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "OSMANOVA Riana",
+          "country": "",
+          "raw": "208",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "LIU Hei Yu",
+          "country": "",
+          "raw": "206",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "KUMARI Gayani",
+          "country": "",
+          "raw": "204",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_obstacle_2026-09-17_15:20",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0002OB00",
+      "unit_code": "W.INDIVID-----------.SFNL.0002OB00",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -700,12 +2596,116 @@
           "raw": "348",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "SUZUKI Yuri",
+          "country": "",
+          "raw": "344",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "KIM Unju",
+          "country": "",
+          "raw": "343",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "SEVILLA Juliana Shane",
+          "country": "",
+          "raw": "339",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "CHSHEDROVA Diana",
+          "country": "",
+          "raw": "329",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "WITSAPHAN Chananan",
+          "country": "",
+          "raw": "318",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "PAISANSRISIN Parita",
+          "country": "",
+          "raw": "314",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "ABZALOVA Samira",
+          "country": "",
+          "raw": "309",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "YANO Yuho",
+          "country": "",
+          "raw": "304",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "LIU Hei Yu",
+          "country": "",
+          "raw": "302",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "JANG Haeun",
+          "country": "",
+          "raw": "293",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "WAHYUNI Sri",
+          "country": "",
+          "raw": "283",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "KUMARI Gayani",
+          "country": "",
+          "raw": "261",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "OSMANOVA Riana",
+          "country": "",
+          "raw": "245",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_swimming_2026-09-17_15:40",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0002SW00",
+      "unit_code": "W.INDIVID-----------.SFNL.0002SW00",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -740,12 +2740,116 @@
           "raw": "295",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "CHSHEDROVA Diana",
+          "country": "",
+          "raw": "285",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "WU Xiyao",
+          "country": "",
+          "raw": "280",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "JANG Haeun",
+          "country": "",
+          "raw": "279",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "ZHANG Mingyu",
+          "country": "",
+          "raw": "276",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "KAHRAMAONOVA Mehriniso",
+          "country": "",
+          "raw": "274",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "ABZALOVA Samira",
+          "country": "",
+          "raw": "267",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "WAHYUNI Sri",
+          "country": "",
+          "raw": "266",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "KIM Unju",
+          "country": "",
+          "raw": "251",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "PAISANSRISIN Parita",
+          "country": "",
+          "raw": "249",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "OSMANOVA Riana",
+          "country": "",
+          "raw": "245",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "KUMARI Gayani",
+          "country": "",
+          "raw": "194",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "SEVILLA Juliana Shane",
+          "country": "",
+          "raw": "178",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "WITSAPHAN Chananan",
+          "country": "",
+          "raw": "178",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_laser_run_2026-09-17_16:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.SFNL.0002LR--",
+      "unit_code": "W.INDIVID-----------.SFNL.0002LR--",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -780,12 +2884,116 @@
           "raw": "543",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "SUZUKI Yuri",
+          "country": "",
+          "raw": "530",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "KAHRAMAONOVA Mehriniso",
+          "country": "",
+          "raw": "525",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "ABZALOVA Samira",
+          "country": "",
+          "raw": "525",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "ZHANG Mingyu",
+          "country": "",
+          "raw": "511",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "KIM Unju",
+          "country": "",
+          "raw": "503",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "WAHYUNI Sri",
+          "country": "",
+          "raw": "493",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "CHSHEDROVA Diana",
+          "country": "",
+          "raw": "492",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "PAISANSRISIN Parita",
+          "country": "",
+          "raw": "491",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "WU Xiyao",
+          "country": "",
+          "raw": "480",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "WITSAPHAN Chananan",
+          "country": "",
+          "raw": "419",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "KUMARI Gayani",
+          "country": "",
+          "raw": "354",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "LIU Hei Yu",
+          "country": "",
+          "raw": "333",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "OSMANOVA Riana",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "final_fencing_direct_elimination_2026-09-20_10:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.FNL-.0001FE--",
+      "unit_code": "W.INDIVID-----------.FNL-.0001FE--",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -799,8 +3007,8 @@
       "competitors": []
     },
     {
-      "id": "final_obstacle_2026-09-20_10:20",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.FNL-.0001OB00",
+      "unit_code": "W.INDIVID-----------.FNL-.0001OB00",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -814,8 +3022,8 @@
       "competitors": []
     },
     {
-      "id": "final_swimming_2026-09-20_10:40",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.FNL-.0001SW00",
+      "unit_code": "W.INDIVID-----------.FNL-.0001SW00",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -829,8 +3037,8 @@
       "competitors": []
     },
     {
-      "id": "final_laser_run_2026-09-20_11:00",
-      "unit_code": "",
+      "id": "W.INDIVID-----------.FNL-.0001LR--",
+      "unit_code": "W.INDIVID-----------.FNL-.0001LR--",
       "round": "Final",
       "phase": "Final",
       "group": "",

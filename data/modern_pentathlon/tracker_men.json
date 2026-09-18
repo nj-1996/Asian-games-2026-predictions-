@@ -2,8 +2,8 @@
   "sport": "Modern Pentathlon (Men)",
   "events": [
     {
-      "id": "fencing_seeding_round_fencing_seeding_round_2026-09-16_14:30",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.RANK.0001FE--",
+      "unit_code": "M.INDIVID-----------.RANK.0001FE--",
       "round": "Fencing Seeding Round",
       "phase": "Fencing Seeding Round",
       "group": "",
@@ -38,12 +38,276 @@
           "raw": "0",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "JUN Woongtae",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "GERMAN Samuel",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "SATO Taishu",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "CHEN Bailiang",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "YARED Michael Antoine",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "LEE Jonghyeon",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "LUO Shuai",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "KIM Youngha",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "TOMITA Yousuke",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "CHUVASHOV Lev",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "VARYOKHIN Tikhon",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "STADNIK Kirill",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "GODBOUT Joseph Anthony",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 19,
+          "name": "YOHUANG Phurit",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 20,
+          "name": "COMALING Michael Ver Anton",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 21,
+          "name": "SHINOKI Kaoru",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 22,
+          "name": "ANDRINO Gilbert",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 23,
+          "name": "LI Liuchang",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 24,
+          "name": "ALSUHAIBI Mohammad",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 25,
+          "name": "ABUSHABAB Omar",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 26,
+          "name": "ERKINBEKOV Atai",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 27,
+          "name": "MATULATUWA Samuel",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 28,
+          "name": "IFSAN Muhammad",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 29,
+          "name": "THATTHONG Pongkrit",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 30,
+          "name": "ABUSHABAB Abdallah",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 31,
+          "name": "AMARSANAA Bilegt",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 32,
+          "name": "SILVA Oshada",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 33,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 34,
+          "name": "AW Jian Ting",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 35,
+          "name": "ANSARI Tahir",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 36,
+          "name": "SHUM Chun Hei",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_fencing_direct_elimination_2026-09-18_10:00",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0001FE--",
+      "unit_code": "M.INDIVID-----------.SFNL.0001FE--",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -78,12 +342,132 @@
           "raw": "238",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "VARYOKHIN Tikhon",
+          "country": "",
+          "raw": "236",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "CHEN Bailiang",
+          "country": "",
+          "raw": "230",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "LUO Shuai",
+          "country": "",
+          "raw": "228",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "",
+          "raw": "226",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "",
+          "raw": "224",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "YOHUANG Phurit",
+          "country": "",
+          "raw": "218",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "COMALING Michael Ver Anton",
+          "country": "",
+          "raw": "216",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "SHINOKI Kaoru",
+          "country": "",
+          "raw": "214",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ANDRINO Gilbert",
+          "country": "",
+          "raw": "212",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "ERKINBEKOV Atai",
+          "country": "",
+          "raw": "210",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "IFSAN Muhammad",
+          "country": "",
+          "raw": "208",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "AW Jian Ting",
+          "country": "",
+          "raw": "206",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "SHUM Chun Hei",
+          "country": "",
+          "raw": "204",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ABUSHABAB Abdallah",
+          "country": "",
+          "raw": "198",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "",
+          "raw": "196",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_obstacle_2026-09-18_10:20",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0001OB00",
+      "unit_code": "M.INDIVID-----------.SFNL.0001OB00",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -118,12 +502,132 @@
           "raw": "377",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "VARYOKHIN Tikhon",
+          "country": "",
+          "raw": "377",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "LEE Jonghyeon",
+          "country": "",
+          "raw": "375",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "SEO Changwan",
+          "country": "",
+          "raw": "374",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "LUO Shuai",
+          "country": "",
+          "raw": "371",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "ABUSHABAB Abdallah",
+          "country": "",
+          "raw": "364",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "COMALING Michael Ver Anton",
+          "country": "",
+          "raw": "364",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "ABDRAIMOV Temirlan",
+          "country": "",
+          "raw": "364",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "SHINOKI Kaoru",
+          "country": "",
+          "raw": "362",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "YOHUANG Phurit",
+          "country": "",
+          "raw": "362",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "",
+          "raw": "355",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "SHUM Chun Hei",
+          "country": "",
+          "raw": "353",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "",
+          "raw": "341",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "",
+          "raw": "340",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "AW Jian Ting",
+          "country": "",
+          "raw": "327",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "ERKINBEKOV Atai",
+          "country": "",
+          "raw": "321",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_swimming_2026-09-18_10:40",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0001SW00",
+      "unit_code": "M.INDIVID-----------.SFNL.0001SW00",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -158,12 +662,132 @@
           "raw": "320",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "YOHUANG Phurit",
+          "country": "",
+          "raw": "317",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "SEO Changwan",
+          "country": "",
+          "raw": "314",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "LEE Jonghyeon",
+          "country": "",
+          "raw": "313",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "CHEN Bailiang",
+          "country": "",
+          "raw": "312",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SHINOKI Kaoru",
+          "country": "",
+          "raw": "312",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "COMALING Michael Ver Anton",
+          "country": "",
+          "raw": "312",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "VARYOKHIN Tikhon",
+          "country": "",
+          "raw": "309",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "LUO Shuai",
+          "country": "",
+          "raw": "309",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "AW Jian Ting",
+          "country": "",
+          "raw": "301",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "ABDRAIMOV Temirlan",
+          "country": "",
+          "raw": "295",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "ABUSHABAB Abdallah",
+          "country": "",
+          "raw": "293",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "IFSAN Muhammad",
+          "country": "",
+          "raw": "276",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ERKINBEKOV Atai",
+          "country": "",
+          "raw": "274",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ANDRINO Gilbert",
+          "country": "",
+          "raw": "269",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "",
+          "raw": "248",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_laser_run_2026-09-18_11:00",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0001LR--",
+      "unit_code": "M.INDIVID-----------.SFNL.0001LR--",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -198,12 +822,132 @@
           "raw": "621",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "",
+          "raw": "617",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "YOHUANG Phurit",
+          "country": "",
+          "raw": "610",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "COMALING Michael Ver Anton",
+          "country": "",
+          "raw": "607",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "LEE Jonghyeon",
+          "country": "",
+          "raw": "601",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SHINOKI Kaoru",
+          "country": "",
+          "raw": "601",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "VARYOKHIN Tikhon",
+          "country": "",
+          "raw": "598",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "ABDRAIMOV Temirlan",
+          "country": "",
+          "raw": "598",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "",
+          "raw": "592",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "CHEN Bailiang",
+          "country": "",
+          "raw": "588",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "ABUSHABAB Abdallah",
+          "country": "",
+          "raw": "581",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "IFSAN Muhammad",
+          "country": "",
+          "raw": "563",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "ERKINBEKOV Atai",
+          "country": "",
+          "raw": "522",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "",
+          "raw": "498",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "AW Jian Ting",
+          "country": "",
+          "raw": "483",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "SHUM Chun Hei",
+          "country": "",
+          "raw": "358",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_fencing_direct_elimination_2026-09-18_15:00",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0002FE--",
+      "unit_code": "M.INDIVID-----------.SFNL.0002FE--",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -238,12 +982,132 @@
           "raw": "238",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "YARED Michael Antoine",
+          "country": "",
+          "raw": "236",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "SATO Taishu",
+          "country": "",
+          "raw": "230",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "TOMITA Yousuke",
+          "country": "",
+          "raw": "228",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "STADNIK Kirill",
+          "country": "",
+          "raw": "226",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "LI Liuchang",
+          "country": "",
+          "raw": "224",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "KIM Youngha",
+          "country": "",
+          "raw": "218",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "CHUVASHOV Lev",
+          "country": "",
+          "raw": "216",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "GODBOUT Joseph Anthony",
+          "country": "",
+          "raw": "214",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ALSUHAIBI Mohammad",
+          "country": "",
+          "raw": "212",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "ABUSHABAB Omar",
+          "country": "",
+          "raw": "210",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "MATULATUWA Samuel",
+          "country": "",
+          "raw": "208",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "SILVA Oshada",
+          "country": "",
+          "raw": "206",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ANSARI Tahir",
+          "country": "",
+          "raw": "204",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "THATTHONG Pongkrit",
+          "country": "",
+          "raw": "198",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "AMARSANAA Bilegt",
+          "country": "",
+          "raw": "196",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_obstacle_2026-09-18_15:20",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0002OB00",
+      "unit_code": "M.INDIVID-----------.SFNL.0002OB00",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -278,12 +1142,132 @@
           "raw": "377",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "CHUVASHOV Lev",
+          "country": "",
+          "raw": "376",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "STADNIK Kirill",
+          "country": "",
+          "raw": "373",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "MATULATUWA Samuel",
+          "country": "",
+          "raw": "372",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "KIM Youngha",
+          "country": "",
+          "raw": "369",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SATO Taishu",
+          "country": "",
+          "raw": "353",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "THATTHONG Pongkrit",
+          "country": "",
+          "raw": "352",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "YARED Michael Antoine",
+          "country": "",
+          "raw": "345",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "GODBOUT Joseph Anthony",
+          "country": "",
+          "raw": "343",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "JUN Woongtae",
+          "country": "",
+          "raw": "342",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "AMARSANAA Bilegt",
+          "country": "",
+          "raw": "336",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "ANSARI Tahir",
+          "country": "",
+          "raw": "331",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "ABUSHABAB Omar",
+          "country": "",
+          "raw": "329",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ALSUHAIBI Mohammad",
+          "country": "",
+          "raw": "317",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "TOMITA Yousuke",
+          "country": "",
+          "raw": "303",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "SILVA Oshada",
+          "country": "",
+          "raw": "295",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_swimming_2026-09-18_15:40",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0002SW00",
+      "unit_code": "M.INDIVID-----------.SFNL.0002SW00",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -318,27 +1302,292 @@
           "raw": "321",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "AMARSANAA Bilegt",
+          "country": "",
+          "raw": "320",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "JUN Woongtae",
+          "country": "",
+          "raw": "319",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "TOMITA Yousuke",
+          "country": "",
+          "raw": "318",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "CHUVASHOV Lev",
+          "country": "",
+          "raw": "317",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "STADNIK Kirill",
+          "country": "",
+          "raw": "317",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "MA Yuang",
+          "country": "",
+          "raw": "316",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "SATO Taishu",
+          "country": "",
+          "raw": "312",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "THATTHONG Pongkrit",
+          "country": "",
+          "raw": "308",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ABUSHABAB Omar",
+          "country": "",
+          "raw": "303",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "GODBOUT Joseph Anthony",
+          "country": "",
+          "raw": "279",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "SILVA Oshada",
+          "country": "",
+          "raw": "278",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "GERMAN Samuel",
+          "country": "",
+          "raw": "247",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "YARED Michael Antoine",
+          "country": "",
+          "raw": "229",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ALSUHAIBI Mohammad",
+          "country": "",
+          "raw": "202",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "ANSARI Tahir",
+          "country": "",
+          "raw": "47",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_laser_run_2026-09-18_16:00",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0002LR--",
+      "unit_code": "M.INDIVID-----------.SFNL.0002LR--",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
       "discipline": "Laser Run",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "16:00",
       "venue": "Anjo Sports Park",
       "is_medal": false,
       "medal_desc": "",
-      "competitors": []
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "TOMITA Yousuke",
+          "country": "",
+          "raw": "646",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "SATO Taishu",
+          "country": "",
+          "raw": "631",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "JUN Woongtae",
+          "country": "",
+          "raw": "618",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "LI Liuchang",
+          "country": "",
+          "raw": "613",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "CHUVASHOV Lev",
+          "country": "",
+          "raw": "611",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "GERMAN Samuel",
+          "country": "",
+          "raw": "597",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "MA Yuang",
+          "country": "",
+          "raw": "594",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "GODBOUT Joseph Anthony",
+          "country": "",
+          "raw": "593",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "KIM Youngha",
+          "country": "",
+          "raw": "590",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "ABUSHABAB Omar",
+          "country": "",
+          "raw": "575",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "STADNIK Kirill",
+          "country": "",
+          "raw": "570",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "MATULATUWA Samuel",
+          "country": "",
+          "raw": "555",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "THATTHONG Pongkrit",
+          "country": "",
+          "raw": "538",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "AMARSANAA Bilegt",
+          "country": "",
+          "raw": "515",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "SILVA Oshada",
+          "country": "",
+          "raw": "513",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ALSUHAIBI Mohammad",
+          "country": "",
+          "raw": "471",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ANSARI Tahir",
+          "country": "",
+          "raw": "460",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "YARED Michael Antoine",
+          "country": "",
+          "raw": "436",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
-      "id": "final_fencing_direct_elimination_2026-09-20_14:30",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.FNL-.0001FE--",
+      "unit_code": "M.INDIVID-----------.FNL-.0001FE--",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -352,8 +1601,8 @@
       "competitors": []
     },
     {
-      "id": "final_obstacle_2026-09-20_14:50",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.FNL-.0001OB00",
+      "unit_code": "M.INDIVID-----------.FNL-.0001OB00",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -367,8 +1616,8 @@
       "competitors": []
     },
     {
-      "id": "final_swimming_2026-09-20_15:10",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.FNL-.0001SW00",
+      "unit_code": "M.INDIVID-----------.FNL-.0001SW00",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -382,8 +1631,8 @@
       "competitors": []
     },
     {
-      "id": "final_laser_run_2026-09-20_15:30",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.FNL-.0001LR--",
+      "unit_code": "M.INDIVID-----------.FNL-.0001LR--",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -399,8 +1648,8 @@
   ],
   "matches": [
     {
-      "id": "fencing_seeding_round_fencing_seeding_round_2026-09-16_14:30",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.RANK.0001FE--",
+      "unit_code": "M.INDIVID-----------.RANK.0001FE--",
       "round": "Fencing Seeding Round",
       "phase": "Fencing Seeding Round",
       "group": "",
@@ -435,12 +1684,276 @@
           "raw": "0",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "JUN Woongtae",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "GERMAN Samuel",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "SATO Taishu",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "CHEN Bailiang",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "YARED Michael Antoine",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "LEE Jonghyeon",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "LUO Shuai",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "KIM Youngha",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "TOMITA Yousuke",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "CHUVASHOV Lev",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "VARYOKHIN Tikhon",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "STADNIK Kirill",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "GODBOUT Joseph Anthony",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 19,
+          "name": "YOHUANG Phurit",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 20,
+          "name": "COMALING Michael Ver Anton",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 21,
+          "name": "SHINOKI Kaoru",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 22,
+          "name": "ANDRINO Gilbert",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 23,
+          "name": "LI Liuchang",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 24,
+          "name": "ALSUHAIBI Mohammad",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 25,
+          "name": "ABUSHABAB Omar",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 26,
+          "name": "ERKINBEKOV Atai",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 27,
+          "name": "MATULATUWA Samuel",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 28,
+          "name": "IFSAN Muhammad",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 29,
+          "name": "THATTHONG Pongkrit",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 30,
+          "name": "ABUSHABAB Abdallah",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 31,
+          "name": "AMARSANAA Bilegt",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 32,
+          "name": "SILVA Oshada",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 33,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 34,
+          "name": "AW Jian Ting",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 35,
+          "name": "ANSARI Tahir",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 36,
+          "name": "SHUM Chun Hei",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_fencing_direct_elimination_2026-09-18_10:00",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0001FE--",
+      "unit_code": "M.INDIVID-----------.SFNL.0001FE--",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -475,12 +1988,132 @@
           "raw": "238",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "VARYOKHIN Tikhon",
+          "country": "",
+          "raw": "236",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "CHEN Bailiang",
+          "country": "",
+          "raw": "230",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "LUO Shuai",
+          "country": "",
+          "raw": "228",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "",
+          "raw": "226",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "",
+          "raw": "224",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "YOHUANG Phurit",
+          "country": "",
+          "raw": "218",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "COMALING Michael Ver Anton",
+          "country": "",
+          "raw": "216",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "SHINOKI Kaoru",
+          "country": "",
+          "raw": "214",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ANDRINO Gilbert",
+          "country": "",
+          "raw": "212",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "ERKINBEKOV Atai",
+          "country": "",
+          "raw": "210",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "IFSAN Muhammad",
+          "country": "",
+          "raw": "208",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "AW Jian Ting",
+          "country": "",
+          "raw": "206",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "SHUM Chun Hei",
+          "country": "",
+          "raw": "204",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ABUSHABAB Abdallah",
+          "country": "",
+          "raw": "198",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "",
+          "raw": "196",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_obstacle_2026-09-18_10:20",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0001OB00",
+      "unit_code": "M.INDIVID-----------.SFNL.0001OB00",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -515,12 +2148,132 @@
           "raw": "377",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "VARYOKHIN Tikhon",
+          "country": "",
+          "raw": "377",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "LEE Jonghyeon",
+          "country": "",
+          "raw": "375",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "SEO Changwan",
+          "country": "",
+          "raw": "374",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "LUO Shuai",
+          "country": "",
+          "raw": "371",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "ABUSHABAB Abdallah",
+          "country": "",
+          "raw": "364",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "COMALING Michael Ver Anton",
+          "country": "",
+          "raw": "364",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "ABDRAIMOV Temirlan",
+          "country": "",
+          "raw": "364",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "SHINOKI Kaoru",
+          "country": "",
+          "raw": "362",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "YOHUANG Phurit",
+          "country": "",
+          "raw": "362",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "",
+          "raw": "355",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "SHUM Chun Hei",
+          "country": "",
+          "raw": "353",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "",
+          "raw": "341",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "",
+          "raw": "340",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "AW Jian Ting",
+          "country": "",
+          "raw": "327",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "ERKINBEKOV Atai",
+          "country": "",
+          "raw": "321",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_swimming_2026-09-18_10:40",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0001SW00",
+      "unit_code": "M.INDIVID-----------.SFNL.0001SW00",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -555,12 +2308,132 @@
           "raw": "320",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "YOHUANG Phurit",
+          "country": "",
+          "raw": "317",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "SEO Changwan",
+          "country": "",
+          "raw": "314",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "LEE Jonghyeon",
+          "country": "",
+          "raw": "313",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "CHEN Bailiang",
+          "country": "",
+          "raw": "312",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SHINOKI Kaoru",
+          "country": "",
+          "raw": "312",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "COMALING Michael Ver Anton",
+          "country": "",
+          "raw": "312",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "VARYOKHIN Tikhon",
+          "country": "",
+          "raw": "309",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "LUO Shuai",
+          "country": "",
+          "raw": "309",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "AW Jian Ting",
+          "country": "",
+          "raw": "301",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "ABDRAIMOV Temirlan",
+          "country": "",
+          "raw": "295",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "ABUSHABAB Abdallah",
+          "country": "",
+          "raw": "293",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "IFSAN Muhammad",
+          "country": "",
+          "raw": "276",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ERKINBEKOV Atai",
+          "country": "",
+          "raw": "274",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ANDRINO Gilbert",
+          "country": "",
+          "raw": "269",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "",
+          "raw": "248",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_a)_laser_run_2026-09-18_11:00",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0001LR--",
+      "unit_code": "M.INDIVID-----------.SFNL.0001LR--",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -595,12 +2468,132 @@
           "raw": "621",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "",
+          "raw": "617",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "YOHUANG Phurit",
+          "country": "",
+          "raw": "610",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "COMALING Michael Ver Anton",
+          "country": "",
+          "raw": "607",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "LEE Jonghyeon",
+          "country": "",
+          "raw": "601",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SHINOKI Kaoru",
+          "country": "",
+          "raw": "601",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "VARYOKHIN Tikhon",
+          "country": "",
+          "raw": "598",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "ABDRAIMOV Temirlan",
+          "country": "",
+          "raw": "598",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "",
+          "raw": "592",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "CHEN Bailiang",
+          "country": "",
+          "raw": "588",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "ABUSHABAB Abdallah",
+          "country": "",
+          "raw": "581",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "IFSAN Muhammad",
+          "country": "",
+          "raw": "563",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "ERKINBEKOV Atai",
+          "country": "",
+          "raw": "522",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "",
+          "raw": "498",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "AW Jian Ting",
+          "country": "",
+          "raw": "483",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "SHUM Chun Hei",
+          "country": "",
+          "raw": "358",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_fencing_direct_elimination_2026-09-18_15:00",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0002FE--",
+      "unit_code": "M.INDIVID-----------.SFNL.0002FE--",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -635,12 +2628,132 @@
           "raw": "238",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "YARED Michael Antoine",
+          "country": "",
+          "raw": "236",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "SATO Taishu",
+          "country": "",
+          "raw": "230",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "TOMITA Yousuke",
+          "country": "",
+          "raw": "228",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "STADNIK Kirill",
+          "country": "",
+          "raw": "226",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "LI Liuchang",
+          "country": "",
+          "raw": "224",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "KIM Youngha",
+          "country": "",
+          "raw": "218",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "CHUVASHOV Lev",
+          "country": "",
+          "raw": "216",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "GODBOUT Joseph Anthony",
+          "country": "",
+          "raw": "214",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ALSUHAIBI Mohammad",
+          "country": "",
+          "raw": "212",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "ABUSHABAB Omar",
+          "country": "",
+          "raw": "210",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "MATULATUWA Samuel",
+          "country": "",
+          "raw": "208",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "SILVA Oshada",
+          "country": "",
+          "raw": "206",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ANSARI Tahir",
+          "country": "",
+          "raw": "204",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "THATTHONG Pongkrit",
+          "country": "",
+          "raw": "198",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "AMARSANAA Bilegt",
+          "country": "",
+          "raw": "196",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_obstacle_2026-09-18_15:20",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0002OB00",
+      "unit_code": "M.INDIVID-----------.SFNL.0002OB00",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -675,12 +2788,132 @@
           "raw": "377",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "CHUVASHOV Lev",
+          "country": "",
+          "raw": "376",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "STADNIK Kirill",
+          "country": "",
+          "raw": "373",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "MATULATUWA Samuel",
+          "country": "",
+          "raw": "372",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "KIM Youngha",
+          "country": "",
+          "raw": "369",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "SATO Taishu",
+          "country": "",
+          "raw": "353",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "THATTHONG Pongkrit",
+          "country": "",
+          "raw": "352",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "YARED Michael Antoine",
+          "country": "",
+          "raw": "345",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "GODBOUT Joseph Anthony",
+          "country": "",
+          "raw": "343",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "JUN Woongtae",
+          "country": "",
+          "raw": "342",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "AMARSANAA Bilegt",
+          "country": "",
+          "raw": "336",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "ANSARI Tahir",
+          "country": "",
+          "raw": "331",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "ABUSHABAB Omar",
+          "country": "",
+          "raw": "329",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ALSUHAIBI Mohammad",
+          "country": "",
+          "raw": "317",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "TOMITA Yousuke",
+          "country": "",
+          "raw": "303",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "SILVA Oshada",
+          "country": "",
+          "raw": "295",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_swimming_2026-09-18_15:40",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0002SW00",
+      "unit_code": "M.INDIVID-----------.SFNL.0002SW00",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -715,27 +2948,292 @@
           "raw": "321",
           "points": "-",
           "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "AMARSANAA Bilegt",
+          "country": "",
+          "raw": "320",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "JUN Woongtae",
+          "country": "",
+          "raw": "319",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "TOMITA Yousuke",
+          "country": "",
+          "raw": "318",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "CHUVASHOV Lev",
+          "country": "",
+          "raw": "317",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "STADNIK Kirill",
+          "country": "",
+          "raw": "317",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "MA Yuang",
+          "country": "",
+          "raw": "316",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "SATO Taishu",
+          "country": "",
+          "raw": "312",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "THATTHONG Pongkrit",
+          "country": "",
+          "raw": "308",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "ABUSHABAB Omar",
+          "country": "",
+          "raw": "303",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "GODBOUT Joseph Anthony",
+          "country": "",
+          "raw": "279",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "SILVA Oshada",
+          "country": "",
+          "raw": "278",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "GERMAN Samuel",
+          "country": "",
+          "raw": "247",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "YARED Michael Antoine",
+          "country": "",
+          "raw": "229",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ALSUHAIBI Mohammad",
+          "country": "",
+          "raw": "202",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "ANSARI Tahir",
+          "country": "",
+          "raw": "47",
+          "points": "-",
+          "total_pts": "-"
         }
       ]
     },
     {
-      "id": "semi-final_(group_b)_laser_run_2026-09-18_16:00",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.SFNL.0002LR--",
+      "unit_code": "M.INDIVID-----------.SFNL.0002LR--",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
       "discipline": "Laser Run",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "16:00",
       "venue": "Anjo Sports Park",
       "is_medal": false,
       "medal_desc": "",
-      "competitors": []
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "TOMITA Yousuke",
+          "country": "",
+          "raw": "646",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "SATO Taishu",
+          "country": "",
+          "raw": "631",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "JUN Woongtae",
+          "country": "",
+          "raw": "618",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 4,
+          "name": "LI Liuchang",
+          "country": "",
+          "raw": "613",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 5,
+          "name": "CHUVASHOV Lev",
+          "country": "",
+          "raw": "611",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 6,
+          "name": "GERMAN Samuel",
+          "country": "",
+          "raw": "597",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 7,
+          "name": "MA Yuang",
+          "country": "",
+          "raw": "594",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 8,
+          "name": "GODBOUT Joseph Anthony",
+          "country": "",
+          "raw": "593",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 9,
+          "name": "KIM Youngha",
+          "country": "",
+          "raw": "590",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 10,
+          "name": "ABUSHABAB Omar",
+          "country": "",
+          "raw": "575",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 11,
+          "name": "STADNIK Kirill",
+          "country": "",
+          "raw": "570",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 12,
+          "name": "MATULATUWA Samuel",
+          "country": "",
+          "raw": "555",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 13,
+          "name": "THATTHONG Pongkrit",
+          "country": "",
+          "raw": "538",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 14,
+          "name": "AMARSANAA Bilegt",
+          "country": "",
+          "raw": "515",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 15,
+          "name": "SILVA Oshada",
+          "country": "",
+          "raw": "513",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 16,
+          "name": "ALSUHAIBI Mohammad",
+          "country": "",
+          "raw": "471",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 17,
+          "name": "ANSARI Tahir",
+          "country": "",
+          "raw": "460",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 18,
+          "name": "YARED Michael Antoine",
+          "country": "",
+          "raw": "436",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
-      "id": "final_fencing_direct_elimination_2026-09-20_14:30",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.FNL-.0001FE--",
+      "unit_code": "M.INDIVID-----------.FNL-.0001FE--",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -749,8 +3247,8 @@
       "competitors": []
     },
     {
-      "id": "final_obstacle_2026-09-20_14:50",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.FNL-.0001OB00",
+      "unit_code": "M.INDIVID-----------.FNL-.0001OB00",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -764,8 +3262,8 @@
       "competitors": []
     },
     {
-      "id": "final_swimming_2026-09-20_15:10",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.FNL-.0001SW00",
+      "unit_code": "M.INDIVID-----------.FNL-.0001SW00",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -779,8 +3277,8 @@
       "competitors": []
     },
     {
-      "id": "final_laser_run_2026-09-20_15:30",
-      "unit_code": "",
+      "id": "M.INDIVID-----------.FNL-.0001LR--",
+      "unit_code": "M.INDIVID-----------.FNL-.0001LR--",
       "round": "Final",
       "phase": "Final",
       "group": "",
