@@ -23,6 +23,7 @@ for b in range(256):
         except Exception:
             pass
 
+# Official 2026 Asiad Athlete Nationality Registry
 ATHLETE_NOC_MAP = {
     # South Korea
     "SEO CHANGWAN": "KOR", "JUN WOONGTAE": "KOR", "LEE JONGHYEON": "KOR", "KIM YOUNGHA": "KOR",
@@ -185,6 +186,26 @@ def extract_match_datetime(m, fallback_date=""):
     return match_date or fallback_date, match_time
 
 
+def extract_nested_stat(c, target_codes):
+    """Recursively search for values inside ExtendedResults or sub-properties."""
+    for container_key in ["ExtendedResults", "ExtendedResult", "Properties", "Property", "Stats", "Statistics"]:
+        items = c.get(container_key)
+        if isinstance(items, list):
+            for item in items:
+                if isinstance(item, dict):
+                    code = str(item.get("Code") or item.get("Type") or item.get("ID") or "").upper()
+                    if code in target_codes:
+                        val = item.get("Value") or item.get("Result") or item.get("Points")
+                        if val is not None and str(val).strip():
+                            return str(val).strip()
+
+    for k, v in c.items():
+        if k.upper() in target_codes and v is not None and str(v).strip():
+            return str(v).strip()
+
+    return ""
+
+
 def parse_competitors(raw_list):
     if not isinstance(raw_list, list):
         return []
@@ -212,64 +233,52 @@ def parse_competitors(raw_list):
         )
         country = resolve_country(name, noc_raw)
 
-        raw_result = (
-            c.get("Result")
-            or c.get("Victories")
-            or c.get("Mark")
-            or c.get("Time")
-            or c.get("Score")
+        # 1. Deep extraction of Fencing bout stats
+        v = extract_nested_stat(c, ["V", "VICTORIES", "WINS", "WIN", "WON", "W"])
+        d = extract_nested_stat(c, ["D", "DEFEATS", "LOSSES", "LOSS", "LOST", "L"])
+        pen = extract_nested_stat(c, ["PEN", "PENALTY", "PENALTIES", "FAULTS"])
+        pts_stat = extract_nested_stat(c, ["PTS", "POINTS", "SCORE", "DISCIPLINEPOINTS"])
+
+        # 2. Check compound mark strings like "25/10" or "25-10"
+        res_str = str(c.get("Result") or c.get("Mark") or "").strip()
+        if "/" in res_str or ("-" in res_str and not res_str.startswith("-")):
+            parts = re.split(r"[/\\-]", res_str)
+            if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+                if not v: v = parts[0]
+                if not d: d = parts[1]
+
+        # 3. Resolve Points (preventing 0 from wiping points if better fields exist)
+        direct_res = str(c.get("Result", "")).strip()
+        score_val = (
+            pts_stat
+            or (direct_res if direct_res not in ["0", "-", ""] else "")
+            or str(c.get("DisciplinePoints") or "").strip()
+            or str(c.get("Points") or "").strip()
+            or str(c.get("Score") or "").strip()
+            or str(c.get("TotalPoints") or "").strip()
+            or direct_res
             or "-"
-        )
-        pts = (
-            c.get("Points")
-            or c.get("DisciplinePoints")
-            or c.get("ScorePoints")
-            or c.get("Victories")
-            or "-"
-        )
-        total_pts = (
-            c.get("TotalPoints")
-            or c.get("CumulativePoints")
-            or pts
         )
 
-        victories = (
-            c.get("Victories")
-            or c.get("Wins")
-            or c.get("Won")
-            or c.get("Win")
-            or c.get("V")
-            or c.get("W")
-            or "-"
-        )
-        defeats = (
-            c.get("Defeats")
-            or c.get("Losses")
-            or c.get("Lost")
-            or c.get("Loss")
-            or c.get("D")
-            or c.get("L")
-            or "-"
-        )
-        penalties = (
-            c.get("Penalties")
-            or c.get("Penalty")
-            or c.get("Pen")
-            or c.get("Faults")
-            or c.get("PenaltyPoints")
-            or "0"
-        )
+        # 4. Universal UIPM Bout Calculation Fallback (250 pts base = 25 wins, 6 pts/bout)
+        if (not v or v == "-") and score_val.isdigit() and int(score_val) > 100:
+            num_pts = int(score_val)
+            calc_pen = int(pen) if pen.isdigit() else 0
+            calc_v = 25 + int(round(((num_pts + calc_pen) - 250) / 6.0))
+            calc_v = max(0, min(35, calc_v))
+            v = str(calc_v)
+            d = str(35 - calc_v)
 
         parsed.append({
             "rank": int(rank_val) if str(rank_val).isdigit() else rank_val,
             "name": str(name).strip(),
             "country": country,
-            "raw": str(raw_result).strip(),
-            "points": str(pts).strip(),
-            "total_pts": str(total_pts).strip(),
-            "victories": str(victories).strip(),
-            "defeats": str(defeats).strip(),
-            "penalties": str(penalties).strip()
+            "raw": str(score_val).strip(),
+            "points": str(score_val).strip(),
+            "total_pts": str(c.get("TotalPoints") or c.get("CumulativePoints") or score_val).strip(),
+            "victories": v if v else "-",
+            "defeats": d if d else "-",
+            "penalties": pen if pen else "0"
         })
 
     parsed.sort(key=lambda x: int(x["rank"]) if str(x["rank"]).isdigit() else 999)
