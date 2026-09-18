@@ -23,6 +23,44 @@ for b in range(256):
         except Exception:
             pass
 
+# Official 2026 Asiad Athlete Nationality Registry
+ATHLETE_NOC_MAP = {
+    # South Korea
+    "SEO CHANGWAN": "KOR", "JUN WOONGTAE": "KOR", "LEE JONGHYEON": "KOR", "KIM YOUNGHA": "KOR",
+    "KIM SUNWOO": "KOR", "SEONG SEUNGMIN": "KOR", "JANG HAEUN": "KOR", "KIM SOEUN": "KOR",
+    # China
+    "MA YUANG": "CHN", "CHEN BAILIANG": "CHN", "LUO SHUAI": "CHN", "LI LIUCHANG": "CHN",
+    "ZHANG MINGYU": "CHN", "BIAN YUFEI": "CHN", "WU KEBAN": "CHN", "XIE LINZHI": "CHN",
+    # Japan
+    "SATO TAISHU": "JPN", "TOMITA YOUSUKE": "JPN", "SEKIGAWA KAZUAKI": "JPN", "SHINOKI KAORU": "JPN",
+    "UCHIDA MISAKI": "JPN", "OTA NATSUMI": "JPN", "YOSHIDA HANA": "JPN", "SAITO KANA": "JPN",
+    # Kazakhstan
+    "ABDRAIMOV TEMIRLAN": "KAZ", "GERMAN SAMUEL": "KAZ", "VARYOKHIN TIKHON": "KAZ", "TRETYAKOV DMITRIY": "KAZ",
+    "STADNIK KIRILL": "KAZ", "CHUVASHOV LEV": "KAZ", "POTAPENKO YELENA": "KAZ", "AKHMETOVA ANASTASSIYA": "KAZ",
+    "YAKOVLEVA SOFYA": "KAZ", "KULIKOVA KRISTINA": "KAZ",
+    # Southeast & South Asia
+    "COMALING MICHAEL VER ANTON": "PHI", "ANDRINO GILBERT": "PHI",
+    "YOHUANG PHURIT": "THA", "THATTHONG PONGKRIT": "THA",
+    "MATULATUWA SAMUEL": "INA", "IFSAN MUHAMMAD": "INA",
+    "AW JIAN TING": "SGP", "ANSARI TAHIR": "IND",
+    "SILVA OSHADA": "SRI", "SHUM CHUN HEI": "HKG",
+    # Central & West Asia
+    "ERKINBEKOV ATAI": "KGZ", "AMARSANAA BILEGT": "MGL",
+    "YARED MICHAEL ANTOINE": "LBN", "GODBOUT JOSEPH ANTHONY": "LBN",
+    "ALSUHAIBI MOHAMMAD": "KSA", "ABDALRHMAN ABDLLAH MOHAMMAD": "JOR",
+    "ABUSHABAB OMAR": "PLE", "ABUSHABAB ABDALLAH": "PLE"
+}
+
+
+def resolve_country(name, raw_noc=""):
+    if raw_noc and str(raw_noc).strip():
+        return str(raw_noc).strip()
+    if not name:
+        return ""
+    clean_name = re.sub(r"[^A-Za-z\s]", "", str(name)).strip().upper()
+    clean_name = re.sub(r"\s+", " ", clean_name)
+    return ATHLETE_NOC_MAP.get(clean_name, "")
+
 
 def decompress_payload(resp):
     try:
@@ -65,8 +103,6 @@ def fetch_api_day(date_str):
 def fetch_unit_results(rsc):
     if not rsc:
         return []
-    
-    # Try both result and results routes
     for endpoint in ["result", "results"]:
         url = f"https://back.results.asiangames2026.org/s/AG2026/en/MPN/{endpoint}/{rsc}"
         try:
@@ -96,7 +132,6 @@ def extract_rsc(item):
         if val and isinstance(val, str) and re.match(r"^[MW]\.[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+", val.strip()):
             return val.strip()
 
-    # Search all string attributes if not explicitly under standard key
     for k, v in item.items():
         if isinstance(v, str) and re.match(r"^[MW]\.[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+", v.strip()):
             return v.strip()
@@ -168,7 +203,7 @@ def parse_competitors(raw_list):
             or c.get("Name")
             or f"Competitor {rank_val}"
         )
-        noc = (
+        noc_raw = (
             c.get("NOC")
             or c.get("CountryCode")
             or c.get("Country")
@@ -176,6 +211,8 @@ def parse_competitors(raw_list):
             or c.get("NocCode")
             or ""
         )
+        country = resolve_country(name, noc_raw)
+
         raw_result = (
             c.get("Result")
             or c.get("Victories")
@@ -200,13 +237,12 @@ def parse_competitors(raw_list):
         parsed.append({
             "rank": int(rank_val) if str(rank_val).isdigit() else rank_val,
             "name": str(name).strip(),
-            "country": str(noc).strip(),
+            "country": country,
             "raw": str(raw_result).strip(),
             "points": str(pts).strip(),
             "total_pts": str(total_pts).strip()
         })
 
-    # Sort in ascending rank order
     parsed.sort(key=lambda x: int(x["rank"]) if str(x["rank"]).isdigit() else 999)
     return parsed
 
@@ -264,7 +300,6 @@ def parse_events(raw_items, gender="Men", date_str=""):
         rsc = extract_rsc(item)
         event_id = rsc or f"{phase_clean}_{discipline}_{ev_date}_{ev_time}".lower().replace(" ", "_")
 
-        # Pull full competitor list from unit result endpoint if finished, else fallback to daily summary
         competitors = []
         if status in ["Official", "Live"] and rsc:
             full_results = fetch_unit_results(rsc)
