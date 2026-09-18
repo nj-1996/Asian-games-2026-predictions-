@@ -296,6 +296,7 @@ function loadDisciplineView(events, discipline) {
   const content = document.getElementById('mpn-sheet-content');
   if (!content) return;
 
+  // View 1: Overall Group Cumulative Standings
   if (discipline === 'Overall') {
     document.getElementById('mpn-sheet-subtitle').innerText = 'Combined Cumulative Points Standings';
 
@@ -365,6 +366,7 @@ function loadDisciplineView(events, discipline) {
     return;
   }
 
+  // View 2: Single Discipline Standings
   const targetEvent = events.find(e => (e.discipline || e.round) === discipline) || events[0] || {};
   const isLive = targetEvent.status === 'Live';
 
@@ -384,6 +386,58 @@ function loadDisciplineView(events, discipline) {
     return;
   }
 
+  // Check if current view is the Fencing Seeding Round
+  const isFencingSeeding = /seeding/i.test(discipline) || /seeding/i.test(targetEvent.discipline || '') || /seeding/i.test(targetEvent.round || '');
+
+  if (isFencingSeeding) {
+    content.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+        <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; font-weight:700;">Fencing Seeding Round</span>
+        <span style="font-size:0.75rem; color:${isLive ? '#ef4444' : '#4ade80'}; font-weight:600;">${targetEvent.status}</span>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 28px 1fr 34px 34px 38px 60px; font-size:0.7rem; font-weight:700; color:#64748b; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); text-transform:uppercase; text-align:center;">
+        <span style="text-align:left;">#</span>
+        <span style="text-align:left;">Athlete</span>
+        <span>V</span>
+        <span>D</span>
+        <span>Pen</span>
+        <span style="text-align:right;">Points</span>
+      </div>
+
+      <div style="font-size:0.82rem;">
+        ${competitors.map((c, i) => {
+          const rank = c.rank || (i + 1);
+          const name = c.name || `Competitor ${rank}`;
+          const country = resolveAthleteCountry(name, c.country);
+          const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(country) : '';
+          const v = c.victories !== undefined && c.victories !== null && c.victories !== '' ? c.victories : '-';
+          const d = c.defeats !== undefined && c.defeats !== null && c.defeats !== '' ? c.defeats : '-';
+          const pen = c.penalties !== undefined && c.penalties !== null && c.penalties !== '' ? c.penalties : '0';
+          const pts = (c.raw && c.raw !== '0') ? c.raw : (c.points !== '-' ? c.points : (c.total_pts !== '-' ? c.total_pts : '-'));
+
+          return `
+            <div style="display:grid; grid-template-columns: 28px 1fr 34px 34px 38px 60px; align-items:center; padding:0.65rem 0; border-bottom:1px solid rgba(255,255,255,0.04); text-align:center;">
+              <span style="text-align:left; font-weight:700; color:#94a3b8;">${rank}</span>
+              <div style="text-align:left;">
+                <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.35rem;">
+                  <span>${flag}</span> <span>${name}</span>
+                </div>
+                ${country ? `<div style="font-size:0.7rem; color:#94a3b8; margin-left:1.35rem;">${country}</div>` : ''}
+              </div>
+              <span style="font-family:monospace; color:#4ade80; font-weight:600;">${v}</span>
+              <span style="font-family:monospace; color:#f87171; font-weight:600;">${d}</span>
+              <span style="font-family:monospace; color:${pen !== '0' && pen !== '-' ? '#fbbf24' : '#94a3b8'};">${pen}</span>
+              <span style="text-align:right; font-weight:700; color:#38bdf8; font-size:0.88rem;">${pts !== '-' ? pts + ' pts' : '-'}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+    return;
+  }
+
+  // Standard Single Discipline Table (Obstacle, Swim, Laser Run)
   content.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
       <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; font-weight:700;">Discipline Results</span>
