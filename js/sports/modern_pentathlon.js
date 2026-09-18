@@ -183,7 +183,7 @@ window.openMpnSheet = function(phaseEncoded, discEncoded) {
   });
 
   const availableDisciplines = relatedEvents.length > 1
-    ? ['⭐ Overall', ...relatedEvents.map(e => e.discipline || e.round)]
+    ? ['Overall', ...relatedEvents.map(e => e.discipline || e.round)]
     : relatedEvents.map(e => e.discipline || e.round);
 
   renderDisciplineTabs(availableDisciplines, disc);
@@ -217,6 +217,7 @@ function renderDisciplineTabs(disciplines, selected) {
     const safeD = encodeURIComponent(d);
     return `
       <button 
+        id="mpn-tab-${safeD}"
         onclick="window.selectMpnDiscipline('${safeD}')"
         style="white-space:nowrap; padding:0.4rem 0.85rem; font-size:0.75rem; font-weight:600; border-radius:20px; border:none; cursor:pointer; transition:all 0.15s ease; ${isSelected ? 'background:#2563eb; color:#ffffff;' : 'background:rgba(255,255,255,0.06); color:#94a3b8;'}"
       >
@@ -224,6 +225,13 @@ function renderDisciplineTabs(disciplines, selected) {
       </button>
     `;
   }).join('');
+
+  setTimeout(() => {
+    const activeBtn = document.getElementById(`mpn-tab-${encodeURIComponent(selected)}`);
+    if (activeBtn) {
+      activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }, 50);
 }
 
 window.selectMpnDiscipline = function(discEncoded) {
@@ -237,7 +245,7 @@ window.selectMpnDiscipline = function(discEncoded) {
   });
 
   const availableDisciplines = relatedEvents.length > 1
-    ? ['⭐ Overall', ...relatedEvents.map(e => e.discipline || e.round)]
+    ? ['Overall', ...relatedEvents.map(e => e.discipline || e.round)]
     : relatedEvents.map(e => e.discipline || e.round);
 
   renderDisciplineTabs(availableDisciplines, disc);
@@ -249,7 +257,7 @@ function loadDisciplineView(events, discipline) {
   if (!content) return;
 
   // View 1: Overall Group Cumulative Standings
-  if (discipline === '⭐ Overall') {
+  if (discipline === 'Overall') {
     document.getElementById('mpn-sheet-subtitle').innerText = 'Combined Cumulative Points Standings';
 
     const athleteTotals = {};
