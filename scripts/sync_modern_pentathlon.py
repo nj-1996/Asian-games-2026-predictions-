@@ -186,26 +186,6 @@ def extract_match_datetime(m, fallback_date=""):
     return match_date or fallback_date, match_time
 
 
-def extract_nested_stat(c, target_codes):
-    """Recursively search for values inside ExtendedResults or sub-properties."""
-    for container_key in ["ExtendedResults", "ExtendedResult", "Properties", "Property", "Stats", "Statistics"]:
-        items = c.get(container_key)
-        if isinstance(items, list):
-            for item in items:
-                if isinstance(item, dict):
-                    code = str(item.get("Code") or item.get("Type") or item.get("ID") or "").upper()
-                    if code in target_codes:
-                        val = item.get("Value") or item.get("Result") or item.get("Points")
-                        if val is not None and str(val).strip():
-                            return str(val).strip()
-
-    for k, v in c.items():
-        if k.upper() in target_codes and v is not None and str(v).strip():
-            return str(v).strip()
-
-    return ""
-
-
 def parse_competitors(raw_list):
     if not isinstance(raw_list, list):
         return []
@@ -233,52 +213,37 @@ def parse_competitors(raw_list):
         )
         country = resolve_country(name, noc_raw)
 
-        # 1. Deep extraction of Fencing bout stats
-        v = extract_nested_stat(c, ["V", "VICTORIES", "WINS", "WIN", "WON", "W"])
-        d = extract_nested_stat(c, ["D", "DEFEATS", "LOSSES", "LOSS", "LOST", "L"])
-        pen = extract_nested_stat(c, ["PEN", "PENALTY", "PENALTIES", "FAULTS"])
-        pts_stat = extract_nested_stat(c, ["PTS", "POINTS", "SCORE", "DISCIPLINEPOINTS"])
-
-        # 2. Check compound mark strings like "25/10" or "25-10"
-        res_str = str(c.get("Result") or c.get("Mark") or "").strip()
-        if "/" in res_str or ("-" in res_str and not res_str.startswith("-")):
-            parts = re.split(r"[/\\-]", res_str)
-            if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
-                if not v: v = parts[0]
-                if not d: d = parts[1]
-
-        # 3. Resolve Points (preventing 0 from wiping points if better fields exist)
-        direct_res = str(c.get("Result", "")).strip()
-        score_val = (
-            pts_stat
-            or (direct_res if direct_res not in ["0", "-", ""] else "")
-            or str(c.get("DisciplinePoints") or "").strip()
-            or str(c.get("Points") or "").strip()
-            or str(c.get("Score") or "").strip()
-            or str(c.get("TotalPoints") or "").strip()
-            or direct_res
+        raw_result = (
+            c.get("Result")
+            or c.get("Victories")
+            or c.get("Mark")
+            or c.get("Time")
+            or c.get("Score")
             or "-"
         )
-
-        # 4. Universal UIPM Bout Calculation Fallback (250 pts base = 25 wins, 6 pts/bout)
-        if (not v or v == "-") and score_val.isdigit() and int(score_val) > 100:
-            num_pts = int(score_val)
-            calc_pen = int(pen) if pen.isdigit() else 0
-            calc_v = 25 + int(round(((num_pts + calc_pen) - 250) / 6.0))
-            calc_v = max(0, min(35, calc_v))
-            v = str(calc_v)
-            d = str(35 - calc_v)
+        pts = (
+            c.get("Points")
+            or c.get("DisciplinePoints")
+            or c.get("ScorePoints")
+            or c.get("Victories")
+            or "-"
+        )
+        total_pts = (
+            c.get("TotalPoints")
+            or c.get("CumulativePoints")
+            or pts
+        )
 
         parsed.append({
             "rank": int(rank_val) if str(rank_val).isdigit() else rank_val,
             "name": str(name).strip(),
             "country": country,
-            "raw": str(score_val).strip(),
-            "points": str(score_val).strip(),
-            "total_pts": str(c.get("TotalPoints") or c.get("CumulativePoints") or score_val).strip(),
-            "victories": v if v else "-",
-            "defeats": d if d else "-",
-            "penalties": pen if pen else "0"
+            "raw": str(raw_result).strip(),
+            "points": str(pts).strip(),
+            "total_pts": str(total_pts).strip(),
+            "victories": "-",
+            "defeats": "-",
+            "penalties": "0"
         })
 
     parsed.sort(key=lambda x: int(x["rank"]) if str(x["rank"]).isdigit() else 999)
@@ -372,6 +337,57 @@ def parse_events(raw_items, gender="Men", date_str=""):
     return output
 
 
+def reconcile_fencing_seeding(events):
+    """
+    In official Games data feeds, the Seeding Round unit often has '0' touches, 
+    while the official scores are recorded in the Semifinal Fencing sessions.
+    This links them dynamically across all athletes.
+    """
+    athlete_pts = {}
+
+    # 1. Harvest official points from the Semifinal Fencing units
+    for ev in events:
+        disc = (ev.get("discipline") or ev.get("round") or "").lower()
+        if "fencing" in disc and "seed" not in disc:
+            for c in ev.get("competitors", []):
+                name_key = re.sub(r"[^A-Z]", "", c.get("name", "").upper())
+                raw_val = c.get("raw") or c.get("points")
+                if str(raw_val).isdigit() and int(raw_val) > 0:
+                    athlete_pts[name_key] = int(raw_val)
+
+    # 2. Enrich the Seeding Round competitors
+    for ev in events:
+        disc = (ev.get("discipline") or ev.get("round") or "").lower()
+        if "seed" in disc or "ranking" in disc:
+            comps = ev.get("competitors", [])
+            for c in comps:
+                name_key = re.sub(r"[^A-Z]", "", c.get("name", "").upper())
+                pts = athlete_pts.get(name_key, 0)
+                if pts > 0:
+                    base_diff = pts - 250
+                    rem = ((base_diff % 6) + 6) % 6
+                    pen = 0
+                    if rem == 4: pen = 2
+                    elif rem == 2: pen = 4
+                    elif rem != 0: pen = rem
+
+                    net_pts = pts + pen
+                    wins = max(0, min(35, 25 + int(round((net_pts - 250) / 6.0))))
+                    defeats = 35 - wins
+
+                    c["raw"] = str(pts)
+                    c["points"] = str(pts)
+                    c["total_pts"] = str(pts)
+                    c["victories"] = str(wins)
+                    c["defeats"] = str(defeats)
+                    c["penalties"] = str(pen)
+
+            # Sort by total points descending and assign rank 1..36
+            comps.sort(key=lambda x: int(x["raw"]) if str(x["raw"]).isdigit() else -1, reverse=True)
+            for i, c in enumerate(comps):
+                c["rank"] = i + 1
+
+
 def main():
     start_date = datetime(2026, 9, 15)
     dates = [(start_date + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(8)]
@@ -384,6 +400,10 @@ def main():
         print(f"[{d}] Scraped {len(items)} MPN schedule items")
         all_men.extend(parse_events(items, "Men", date_str=d))
         all_women.extend(parse_events(items, "Women", date_str=d))
+
+    # Cross-link official fencing points to the seeding unit
+    reconcile_fencing_seeding(all_men)
+    reconcile_fencing_seeding(all_women)
 
     os.makedirs("data/modern_pentathlon", exist_ok=True)
 
