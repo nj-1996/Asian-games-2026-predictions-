@@ -77,6 +77,56 @@ function getNormalizedPhaseGroup(ev) {
   return pName;
 }
 
+// Dynamically cross-reference fencing points from website data and compute V, D, Pen
+function resolveFencingSeedingStats(c, allEvents) {
+  let pts = parseInt(c.raw, 10) || parseInt(c.points, 10) || 0;
+
+  if (pts === 0 && Array.isArray(allEvents)) {
+    const targetName = (c.name || '').trim().toLowerCase();
+    for (const ev of allEvents) {
+      const disc = (ev.discipline || ev.round || '').toLowerCase();
+      if (disc.includes('fencing') && !disc.includes('seeding')) {
+        const found = (ev.competitors || []).find(item => (item.name || '').trim().toLowerCase() === targetName);
+        if (found) {
+          const foundPts = parseInt(found.raw, 10) || parseInt(found.points, 10) || 0;
+          if (foundPts > 0) {
+            pts = foundPts;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  // Calculate V, D, Pen using UIPM 35-bout formula (250 pts = 25 wins, 6 pts per bout)
+  if (pts > 0) {
+    const baseDiff = pts - 250;
+    const rem = ((baseDiff % 6) + 6) % 6;
+    let pen = 0;
+    if (rem === 4) pen = 2;
+    else if (rem === 2) pen = 4;
+    else if (rem !== 0) pen = rem;
+
+    const netPts = pts + pen;
+    const wins = Math.max(0, Math.min(35, 25 + Math.round((netPts - 250) / 6)));
+    const losses = 35 - wins;
+
+    return {
+      points: String(pts),
+      victories: String(wins),
+      defeats: String(losses),
+      penalties: String(pen)
+    };
+  }
+
+  return {
+    points: '-',
+    victories: '-',
+    defeats: '-',
+    penalties: '0'
+  };
+}
+
 function renderPentathlonHero(nextSession) {
   if (!nextSession) return '';
   const disc = nextSession.discipline || nextSession.round || 'Modern Pentathlon';
@@ -386,10 +436,26 @@ function loadDisciplineView(events, discipline) {
     return;
   }
 
-  // Check if current view is the Fencing Seeding Round
   const isFencingSeeding = /seeding/i.test(discipline) || /seeding/i.test(targetEvent.discipline || '') || /seeding/i.test(targetEvent.round || '');
 
   if (isFencingSeeding) {
+    // Sort competitors by Victories (V) descending, then by Points descending, then by Penalties ascending
+    const sortedCompetitors = competitors.map(c => {
+      const stats = resolveFencingSeedingStats(c, activePentathlonEvents);
+      return {
+        ...c,
+        ...stats,
+        numV: parseInt(stats.victories, 10) || 0,
+        numD: parseInt(stats.defeats, 10) || 0,
+        numPen: parseInt(stats.penalties, 10) || 0,
+        numPts: parseInt(stats.points, 10) || 0
+      };
+    }).sort((a, b) => {
+      if (b.numV !== a.numV) return b.numV - a.numV;
+      if (b.numPts !== a.numPts) return b.numPts - a.numPts;
+      return a.numPen - b.numPen;
+    });
+
     content.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
         <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; font-weight:700;">Fencing Seeding Round</span>
@@ -406,15 +472,11 @@ function loadDisciplineView(events, discipline) {
       </div>
 
       <div style="font-size:0.82rem;">
-        ${competitors.map((c, i) => {
-          const rank = c.rank || (i + 1);
+        ${sortedCompetitors.map((c, i) => {
+          const rank = i + 1;
           const name = c.name || `Competitor ${rank}`;
           const country = resolveAthleteCountry(name, c.country);
           const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(country) : '';
-          const v = c.victories !== undefined && c.victories !== null && c.victories !== '' ? c.victories : '-';
-          const d = c.defeats !== undefined && c.defeats !== null && c.defeats !== '' ? c.defeats : '-';
-          const pen = c.penalties !== undefined && c.penalties !== null && c.penalties !== '' ? c.penalties : '0';
-          const pts = (c.raw && c.raw !== '0') ? c.raw : (c.points !== '-' ? c.points : (c.total_pts !== '-' ? c.total_pts : '-'));
 
           return `
             <div style="display:grid; grid-template-columns: 28px 1fr 34px 34px 38px 60px; align-items:center; padding:0.65rem 0; border-bottom:1px solid rgba(255,255,255,0.04); text-align:center;">
@@ -425,10 +487,10 @@ function loadDisciplineView(events, discipline) {
                 </div>
                 ${country ? `<div style="font-size:0.7rem; color:#94a3b8; margin-left:1.35rem;">${country}</div>` : ''}
               </div>
-              <span style="font-family:monospace; color:#4ade80; font-weight:600;">${v}</span>
-              <span style="font-family:monospace; color:#f87171; font-weight:600;">${d}</span>
-              <span style="font-family:monospace; color:${pen !== '0' && pen !== '-' ? '#fbbf24' : '#94a3b8'};">${pen}</span>
-              <span style="text-align:right; font-weight:700; color:#38bdf8; font-size:0.88rem;">${pts !== '-' ? pts + ' pts' : '-'}</span>
+              <span style="font-family:monospace; color:#4ade80; font-weight:600;">${c.victories}</span>
+              <span style="font-family:monospace; color:#f87171; font-weight:600;">${c.defeats}</span>
+              <span style="font-family:monospace; color:${c.penalties !== '0' && c.penalties !== '-' ? '#fbbf24' : '#94a3b8'};">${c.penalties}</span>
+              <span style="text-align:right; font-weight:700; color:#38bdf8; font-size:0.88rem;">${c.points !== '-' ? c.points + ' pts' : '-'}</span>
             </div>
           `;
         }).join('')}
