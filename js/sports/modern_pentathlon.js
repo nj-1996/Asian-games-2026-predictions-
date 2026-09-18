@@ -398,12 +398,20 @@ function loadDisciplineView(events, discipline) {
   const isFencingSeeding = /seeding/i.test(discipline) || /seeding/i.test(targetEvent.discipline || '') || /seeding/i.test(targetEvent.round || '');
 
   if (isFencingSeeding) {
-    // Pure dynamic render from live API attributes (sorted by Victories descending, Defeats ascending)
+    const totalBouts = competitors.length > 1 ? competitors.length - 1 : 35;
+
     const sortedCompetitors = competitors.map((c, idx) => {
       const originalRank = c.rank !== undefined ? parseInt(c.rank, 10) : (idx + 1);
-      const v = (c.victories !== undefined && c.victories !== null && c.victories !== '') ? String(c.victories) : '-';
-      const d = (c.defeats !== undefined && c.defeats !== null && c.defeats !== '') ? String(c.defeats) : '-';
+      let v = (c.victories !== undefined && c.victories !== null && c.victories !== '') ? String(c.victories) : '-';
+      let d = (c.defeats !== undefined && c.defeats !== null && c.defeats !== '') ? String(c.defeats) : '-';
       const pen = (c.penalties !== undefined && c.penalties !== null && c.penalties !== '') ? String(c.penalties) : '0';
+
+      // Automatic derivation if one side is missing
+      if ((v === '-' || !/^\d+$/.test(v)) && /^\d+$/.test(d)) {
+        v = String(Math.max(0, totalBouts - parseInt(d, 10)));
+      } else if ((d === '-' || !/^\d+$/.test(d)) && /^\d+$/.test(v)) {
+        d = String(Math.max(0, totalBouts - parseInt(v, 10)));
+      }
 
       return {
         ...c,
