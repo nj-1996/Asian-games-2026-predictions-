@@ -19,6 +19,9 @@ function renderPentathlonHero(nextSession) {
   const icon = getDisciplineIcon(disc);
   const phase = nextSession.phase || nextSession.round || 'Upcoming';
 
+  const isSemi = /semi|sf|seed/i.test(phase) || /semi|sf|seed/i.test(nextSession.round || '');
+  const isMedalDecider = Boolean(nextSession.is_medal) && !isSemi;
+
   return `
     <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
       <div style="font-size: 0.75rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
@@ -33,7 +36,7 @@ function renderPentathlonHero(nextSession) {
       <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.2rem;">
         ${phase} • ${nextSession.date} ${nextSession.time} • ${nextSession.venue || 'Anjo Sports Park'}
       </div>
-      ${nextSession.is_medal ? `
+      ${isMedalDecider ? `
         <div style="display:inline-block; margin-top:0.6rem; font-size:0.75rem; background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); padding:2px 8px; border-radius:12px; font-weight:600;">
           🥇 Medal Decider
         </div>
@@ -48,7 +51,6 @@ function renderPentathlonTimeline(items) {
     return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No session timetable available.</div>`;
   }
 
-  // Find next upcoming session for Hero Card
   const nextSession = list.find(ev => ev.status !== 'Official' && ev.status !== 'Finished') || list[0];
 
   const phaseMap = {};
@@ -78,6 +80,10 @@ function renderPentathlonTimeline(items) {
           const disc = ev.discipline || ev.round || 'Session';
           const icon = getDisciplineIcon(disc);
 
+          // Strictly enforce: No medals on Semi-finals or Seeding
+          const isSemiOrSeed = /semi|sf|seed/i.test(phaseHeader) || /semi|sf|seed/i.test(ev.phase || '') || /semi|sf|seed/i.test(ev.round || '');
+          const isMedalSession = Boolean(ev.is_medal) && !isSemiOrSeed;
+
           return `
             <div style="display:flex; justify-content:space-between; align-items:center; padding:0.85rem 1rem; border-bottom:1px solid rgba(255,255,255,0.03);">
               <div style="display:flex; align-items:center; gap:0.75rem;">
@@ -88,7 +94,7 @@ function renderPentathlonTimeline(items) {
                 </div>
               </div>
               <div style="display:flex; align-items:center; gap:0.5rem;">
-                ${ev.is_medal ? `
+                ${isMedalSession ? `
                   <span style="font-size:0.75rem; background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); padding:2px 6px; border-radius:4px; font-weight:600;">
                     🥇 Medal
                   </span>
@@ -109,6 +115,7 @@ function renderPentathlonTimeline(items) {
 
 window.SPORT_ENGINES['modern_pentathlon'] = {
   icon: '🎯',
+  hasBracket: false,
 
   renderMatches(data) {
     return renderPentathlonTimeline(data);
