@@ -23,28 +23,34 @@ for b in range(256):
         except Exception:
             pass
 
+# Official 2026 Asiad Athlete Nationality Registry
 ATHLETE_NOC_MAP = {
     # South Korea
     "SEO CHANGWAN": "KOR", "JUN WOONGTAE": "KOR", "LEE JONGHYEON": "KOR", "KIM YOUNGHA": "KOR",
     "KIM SUNWOO": "KOR", "SEONG SEUNGMIN": "KOR", "JANG HAEUN": "KOR", "KIM SOEUN": "KOR",
+    "KIM UNJU": "KOR", "SHIN SUMIN": "KOR",
     # China
     "MA YUANG": "CHN", "CHEN BAILIANG": "CHN", "LUO SHUAI": "CHN", "LI LIUCHANG": "CHN",
     "ZHANG MINGYU": "CHN", "BIAN YUFEI": "CHN", "WU KEBAN": "CHN", "XIE LINZHI": "CHN",
+    "WU XIYAO": "CHN", "FU JING": "CHN", "MENG XIN": "CHN",
     # Japan
     "SATO TAISHU": "JPN", "TOMITA YOUSUKE": "JPN", "SEKIGAWA KAZUAKI": "JPN", "SHINOKI KAORU": "JPN",
     "UCHIDA MISAKI": "JPN", "OTA NATSUMI": "JPN", "YOSHIDA HANA": "JPN", "SAITO KANA": "JPN",
+    "SAITO AYUMU": "JPN", "SUZUKI YURI": "JPN",
     # Kazakhstan
     "ABDRAIMOV TEMIRLAN": "KAZ", "GERMAN SAMUEL": "KAZ", "VARYOKHIN TIKHON": "KAZ", "TRETYAKOV DMITRIY": "KAZ",
     "STADNIK KIRILL": "KAZ", "CHUVASHOV LEV": "KAZ", "POTAPENKO YELENA": "KAZ", "AKHMETOVA ANASTASSIYA": "KAZ",
-    "YAKOVLEVA SOFYA": "KAZ", "KULIKOVA KRISTINA": "KAZ",
+    "YAKOVLEVA SOFYA": "KAZ", "KULIKOVA KRISTINA": "KAZ", "CHSHEDROVA DIANA": "KAZ", "KAZBEKOVA AYANA": "KAZ",
     # Southeast & South Asia
-    "COMALING MICHAEL VER ANTON": "PHI", "ANDRINO GILBERT": "PHI",
-    "YOHUANG PHURIT": "THA", "THATTHONG PONGKRIT": "THA",
-    "MATULATUWA SAMUEL": "INA", "IFSAN MUHAMMAD": "INA",
+    "COMALING MICHAEL VER ANTON": "PHI", "ANDRINO GILBERT": "PHI", "ARBILON PRINCESS HONEY": "PHI",
+    "ARANZADO SHYRA MAE": "PHI", "SEVILLA JULIANA SHANE": "PHI",
+    "YOHUANG PHURIT": "THA", "THATTHONG PONGKRIT": "THA", "PAISANGRISIN PARITA": "THA",
+    "MATULATUWA SAMUEL": "INA", "IFSAN MUHAMMAD": "INA", "BANGUN CAROLINE": "INA",
     "AW JIAN TING": "SGP", "ANSARI TAHIR": "IND",
     "SILVA OSHADA": "SRI", "SHUM CHUN HEI": "HKG",
     # Central & West Asia
     "ERKINBEKOV ATAI": "KGZ", "AMARSANAA BILEGT": "MGL",
+    "KAHRAMONOVA MEHRINISO": "UZB", "ABZALOVA SAMIRA": "UZB",
     "YARED MICHAEL ANTOINE": "LBN", "GODBOUT JOSEPH ANTHONY": "LBN",
     "ALSUHAIBI MOHAMMAD": "KSA", "ABDALRHMAN ABDLLAH MOHAMMAD": "JOR",
     "ABUSHABAB OMAR": "PLE", "ABUSHABAB ABDALLAH": "PLE"
@@ -100,9 +106,10 @@ def fetch_api_day(date_str):
 
 
 def fetch_unit_results(rsc):
+    """Query summary and result endpoints to catch both round-robin and timed phases."""
     if not rsc:
         return []
-    for endpoint in ["result", "results"]:
+    for endpoint in ["summary", "result", "results"]:
         url = f"https://back.results.asiangames2026.org/s/AG2026/en/MPN/{endpoint}/{rsc}"
         try:
             resp = requests.get(url, headers=HEADERS, timeout=15)
@@ -212,12 +219,12 @@ def parse_competitors(raw_list):
         )
         country = resolve_country(name, noc_raw)
 
-        # 1. Direct extraction of bout statistics from API keys
+        # 1. Direct field resolution for fencing bout counts
         victories = c.get("Victories") or c.get("Wins") or c.get("Won") or c.get("V") or ""
         defeats = c.get("Defeats") or c.get("Losses") or c.get("Lost") or c.get("D") or ""
         penalties = c.get("Penalties") or c.get("Penalty") or c.get("Pen") or ""
 
-        # 2. Check nested structures if top-level keys were omitted
+        # 2. Check nested statistical structures if top-level fields are missing
         if not victories or not defeats:
             for container in ["ExtendedResults", "ExtendedResult", "Properties", "Property", "Stats"]:
                 items = c.get(container)
@@ -233,7 +240,7 @@ def parse_competitors(raw_list):
                             elif code in ["PEN", "PENALTY", "PENALTIES"] and not penalties:
                                 penalties = str(val)
 
-        # 3. Check compound strings like "31/4" or "31-4"
+        # 3. Check compound summary score strings (e.g. "31/4" or "31-4")
         res_str = str(c.get("Result") or c.get("Mark") or "").strip()
         if ("/" in res_str or "-" in res_str) and (not victories or not defeats):
             parts = re.split(r"[/\\-]", res_str)
@@ -359,25 +366,33 @@ def main():
         all_men.extend(parse_events(items, "Men", date_str=d))
         all_women.extend(parse_events(items, "Women", date_str=d))
 
+    # Guard: Preserve existing file if the cloud IP was blocked by upstream API
+    men_file = "data/modern_pentathlon/tracker_men.json"
+    women_file = "data/modern_pentathlon/tracker_women.json"
+
     os.makedirs("data/modern_pentathlon", exist_ok=True)
 
     if len(all_men) > 0:
-        with open("data/modern_pentathlon/tracker_men.json", "w", encoding="utf-8") as f:
+        with open(men_file, "w", encoding="utf-8") as f:
             json.dump({
                 "sport": "Modern Pentathlon (Men)",
                 "events": all_men,
                 "matches": all_men
             }, f, indent=2, ensure_ascii=False)
-        print(f"Saved {len(all_men)} Men's pentathlon sessions.")
+        print(f"Saved {len(all_men)} Men's pentathlon sessions to {men_file}.")
+    else:
+        print(f"No Men's sessions fetched from API. Existing {men_file} was preserved.")
 
     if len(all_women) > 0:
-        with open("data/modern_pentathlon/tracker_women.json", "w", encoding="utf-8") as f:
+        with open(women_file, "w", encoding="utf-8") as f:
             json.dump({
                 "sport": "Modern Pentathlon (Women)",
                 "events": all_women,
                 "matches": all_women
             }, f, indent=2, ensure_ascii=False)
-        print(f"Saved {len(all_women)} Women's pentathlon sessions.")
+        print(f"Saved {len(all_women)} Women's pentathlon sessions to {women_file}.")
+    else:
+        print(f"No Women's sessions fetched from API. Existing {women_file} was preserved.")
 
 
 if __name__ == "__main__":
