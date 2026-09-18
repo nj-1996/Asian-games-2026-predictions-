@@ -18,7 +18,7 @@
       "phase": "Semi-final (Group A)",
       "group": "Group A",
       "discipline": "Fencing Direct Elimination",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "10:00",
       "venue": "Anjo Sports Park",
@@ -30,7 +30,7 @@
       "phase": "Semi-final (Group A)",
       "group": "Group A",
       "discipline": "Obstacle",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "10:20",
       "venue": "Anjo Sports Park",
@@ -42,7 +42,7 @@
       "phase": "Semi-final (Group A)",
       "group": "Group A",
       "discipline": "Swimming",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "10:40",
       "venue": "Anjo Sports Park",
@@ -54,12 +54,12 @@
       "phase": "Semi-final (Group A)",
       "group": "Group A",
       "discipline": "Laser Run",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "11:00",
       "venue": "Anjo Sports Park",
-      "is_medal": true,
-      "medal_desc": "Men's Individual & Team Medals"
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
       "round": "Semi-final (Group B)",
@@ -106,8 +106,8 @@
       "date": "2026-09-18",
       "time": "16:00",
       "venue": "Anjo Sports Park",
-      "is_medal": true,
-      "medal_desc": "Men's Individual & Team Medals"
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
       "round": "Final",
@@ -176,7 +176,7 @@
       "phase": "Semi-final (Group A)",
       "group": "Group A",
       "discipline": "Fencing Direct Elimination",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "10:00",
       "venue": "Anjo Sports Park",
@@ -188,7 +188,7 @@
       "phase": "Semi-final (Group A)",
       "group": "Group A",
       "discipline": "Obstacle",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "10:20",
       "venue": "Anjo Sports Park",
@@ -200,7 +200,7 @@
       "phase": "Semi-final (Group A)",
       "group": "Group A",
       "discipline": "Swimming",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "10:40",
       "venue": "Anjo Sports Park",
@@ -212,12 +212,12 @@
       "phase": "Semi-final (Group A)",
       "group": "Group A",
       "discipline": "Laser Run",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "11:00",
       "venue": "Anjo Sports Park",
-      "is_medal": true,
-      "medal_desc": "Men's Individual & Team Medals"
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
       "round": "Semi-final (Group B)",
@@ -264,8 +264,8 @@
       "date": "2026-09-18",
       "time": "16:00",
       "venue": "Anjo Sports Park",
-      "is_medal": true,
-      "medal_desc": "Men's Individual & Team Medals"
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
       "round": "Final",

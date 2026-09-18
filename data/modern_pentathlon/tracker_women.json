@@ -58,8 +58,8 @@
       "date": "2026-09-17",
       "time": "11:00",
       "venue": "Anjo Sports Park",
-      "is_medal": true,
-      "medal_desc": "Women's Individual & Team Medals"
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
       "round": "Semi-final (Group B)",
@@ -106,8 +106,8 @@
       "date": "2026-09-17",
       "time": "16:00",
       "venue": "Anjo Sports Park",
-      "is_medal": true,
-      "medal_desc": "Women's Individual & Team Medals"
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
       "round": "Final",
@@ -216,8 +216,8 @@
       "date": "2026-09-17",
       "time": "11:00",
       "venue": "Anjo Sports Park",
-      "is_medal": true,
-      "medal_desc": "Women's Individual & Team Medals"
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
       "round": "Semi-final (Group B)",
@@ -264,8 +264,8 @@
       "date": "2026-09-17",
       "time": "16:00",
       "venue": "Anjo Sports Park",
-      "is_medal": true,
-      "medal_desc": "Women's Individual & Team Medals"
+      "is_medal": false,
+      "medal_desc": ""
     },
     {
       "round": "Final",
