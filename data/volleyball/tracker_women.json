@@ -157,8 +157,8 @@
     },
     {
       "round": "Match 14",
-      "status": "Upcoming",
-      "state": "Unofficial",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-18",
       "time": "16:00",
       "player1": "Vietnam",
@@ -180,18 +180,18 @@
     {
       "round": "Match 18",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Getting Ready",
       "date": "2026-09-18",
       "time": "19:00",
       "player1": "Chinese Taipei",
       "player2": "Thailand",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {
       "round": "Match 15",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-18",
       "time": "19:20",
       "player1": "Indonesia",
