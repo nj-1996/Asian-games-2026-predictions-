@@ -23,7 +23,6 @@ for b in range(256):
         except Exception:
             pass
 
-# Official 2026 Asiad Athlete Nationality Registry
 ATHLETE_NOC_MAP = {
     # South Korea
     "SEO CHANGWAN": "KOR", "JUN WOONGTAE": "KOR", "LEE JONGHYEON": "KOR", "KIM YOUNGHA": "KOR",
@@ -213,26 +212,37 @@ def parse_competitors(raw_list):
         )
         country = resolve_country(name, noc_raw)
 
-        raw_result = (
-            c.get("Result")
-            or c.get("Victories")
-            or c.get("Mark")
-            or c.get("Time")
-            or c.get("Score")
-            or "-"
-        )
-        pts = (
-            c.get("Points")
-            or c.get("DisciplinePoints")
-            or c.get("ScorePoints")
-            or c.get("Victories")
-            or "-"
-        )
-        total_pts = (
-            c.get("TotalPoints")
-            or c.get("CumulativePoints")
-            or pts
-        )
+        # 1. Direct extraction of bout statistics from API keys
+        victories = c.get("Victories") or c.get("Wins") or c.get("Won") or c.get("V") or ""
+        defeats = c.get("Defeats") or c.get("Losses") or c.get("Lost") or c.get("D") or ""
+        penalties = c.get("Penalties") or c.get("Penalty") or c.get("Pen") or ""
+
+        # 2. Check nested structures if top-level keys were omitted
+        if not victories or not defeats:
+            for container in ["ExtendedResults", "ExtendedResult", "Properties", "Property", "Stats"]:
+                items = c.get(container)
+                if isinstance(items, list):
+                    for item in items:
+                        if isinstance(item, dict):
+                            code = str(item.get("Code") or item.get("Type") or "").upper()
+                            val = item.get("Value") or item.get("Result")
+                            if code in ["V", "VICTORIES", "WINS"] and not victories:
+                                victories = str(val)
+                            elif code in ["D", "DEFEATS", "LOSSES"] and not defeats:
+                                defeats = str(val)
+                            elif code in ["PEN", "PENALTY", "PENALTIES"] and not penalties:
+                                penalties = str(val)
+
+        # 3. Check compound strings like "31/4" or "31-4"
+        res_str = str(c.get("Result") or c.get("Mark") or "").strip()
+        if ("/" in res_str or "-" in res_str) and (not victories or not defeats):
+            parts = re.split(r"[/\\-]", res_str)
+            if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+                victories = parts[0]
+                defeats = parts[1]
+
+        raw_result = c.get("Result") or c.get("Mark") or c.get("Time") or c.get("Score") or "-"
+        pts = c.get("Points") or c.get("DisciplinePoints") or c.get("ScorePoints") or "-"
 
         parsed.append({
             "rank": int(rank_val) if str(rank_val).isdigit() else rank_val,
@@ -240,10 +250,10 @@ def parse_competitors(raw_list):
             "country": country,
             "raw": str(raw_result).strip(),
             "points": str(pts).strip(),
-            "total_pts": str(total_pts).strip(),
-            "victories": "-",
-            "defeats": "-",
-            "penalties": "0"
+            "total_pts": str(c.get("TotalPoints") or pts).strip(),
+            "victories": str(victories).strip() if victories else "-",
+            "defeats": str(defeats).strip() if defeats else "-",
+            "penalties": str(penalties).strip() if penalties else "0"
         })
 
     parsed.sort(key=lambda x: int(x["rank"]) if str(x["rank"]).isdigit() else 999)
@@ -317,7 +327,7 @@ def parse_events(raw_items, gender="Men", date_str=""):
                 or []
             )
 
-        event_payload = {
+        output.append({
             "id": event_id,
             "unit_code": rsc,
             "round": phase_clean,
@@ -331,61 +341,9 @@ def parse_events(raw_items, gender="Men", date_str=""):
             "is_medal": is_medal,
             "medal_desc": medal_desc,
             "competitors": competitors
-        }
-        output.append(event_payload)
+        })
 
     return output
-
-
-def reconcile_fencing_seeding(events):
-    """
-    In official Games data feeds, the Seeding Round unit often has '0' touches, 
-    while the official scores are recorded in the Semifinal Fencing sessions.
-    This links them dynamically across all athletes.
-    """
-    athlete_pts = {}
-
-    # 1. Harvest official points from the Semifinal Fencing units
-    for ev in events:
-        disc = (ev.get("discipline") or ev.get("round") or "").lower()
-        if "fencing" in disc and "seed" not in disc:
-            for c in ev.get("competitors", []):
-                name_key = re.sub(r"[^A-Z]", "", c.get("name", "").upper())
-                raw_val = c.get("raw") or c.get("points")
-                if str(raw_val).isdigit() and int(raw_val) > 0:
-                    athlete_pts[name_key] = int(raw_val)
-
-    # 2. Enrich the Seeding Round competitors
-    for ev in events:
-        disc = (ev.get("discipline") or ev.get("round") or "").lower()
-        if "seed" in disc or "ranking" in disc:
-            comps = ev.get("competitors", [])
-            for c in comps:
-                name_key = re.sub(r"[^A-Z]", "", c.get("name", "").upper())
-                pts = athlete_pts.get(name_key, 0)
-                if pts > 0:
-                    base_diff = pts - 250
-                    rem = ((base_diff % 6) + 6) % 6
-                    pen = 0
-                    if rem == 4: pen = 2
-                    elif rem == 2: pen = 4
-                    elif rem != 0: pen = rem
-
-                    net_pts = pts + pen
-                    wins = max(0, min(35, 25 + int(round((net_pts - 250) / 6.0))))
-                    defeats = 35 - wins
-
-                    c["raw"] = str(pts)
-                    c["points"] = str(pts)
-                    c["total_pts"] = str(pts)
-                    c["victories"] = str(wins)
-                    c["defeats"] = str(defeats)
-                    c["penalties"] = str(pen)
-
-            # Sort by total points descending and assign rank 1..36
-            comps.sort(key=lambda x: int(x["raw"]) if str(x["raw"]).isdigit() else -1, reverse=True)
-            for i, c in enumerate(comps):
-                c["rank"] = i + 1
 
 
 def main():
@@ -400,10 +358,6 @@ def main():
         print(f"[{d}] Scraped {len(items)} MPN schedule items")
         all_men.extend(parse_events(items, "Men", date_str=d))
         all_women.extend(parse_events(items, "Women", date_str=d))
-
-    # Cross-link official fencing points to the seeding unit
-    reconcile_fencing_seeding(all_men)
-    reconcile_fencing_seeding(all_women)
 
     os.makedirs("data/modern_pentathlon", exist_ok=True)
 
