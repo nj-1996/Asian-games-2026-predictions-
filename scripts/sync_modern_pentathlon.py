@@ -131,7 +131,16 @@ def parse_competitors(item):
             or c.get("PrintName")
             or "Unknown Athlete"
         )
-        noc = c.get("NOC") or c.get("CountryCode") or c.get("Country") or ""
+        noc = (
+            c.get("NOC")
+            or c.get("CountryCode")
+            or c.get("Country")
+            or c.get("Organisation")
+            or c.get("NocCode")
+            or c.get("OrgCode")
+            or c.get("Delegation")
+            or ""
+        )
         raw_result = (
             c.get("Result")
             or c.get("Mark")
@@ -154,10 +163,10 @@ def parse_competitors(item):
         parsed.append({
             "rank": rank_val,
             "name": name,
-            "country": noc,
-            "raw": str(raw_result),
-            "points": str(pts),
-            "total_pts": str(total_pts)
+            "country": str(noc).strip(),
+            "raw": str(raw_result).strip(),
+            "points": str(pts).strip(),
+            "total_pts": str(total_pts).strip()
         })
 
     return parsed
@@ -246,23 +255,10 @@ def main():
 
     all_men = []
     all_women = []
-    sample_dumped = False
 
     for d in dates:
         items = fetch_api_day(d)
         print(f"[{d}] Scraped {len(items)} MPN schedule items")
-
-        # Dump the first completed raw payload to inspect actual feed keys
-        if not sample_dumped and items:
-            for it in items:
-                st = str(it.get("Status", "")).upper()
-                if st in ["OFFICIAL", "FINISHED"]:
-                    with open("mpn_raw_sample.json", "w", encoding="utf-8") as sf:
-                        json.dump(it, sf, indent=2, ensure_ascii=False)
-                    print(f"--> Saved raw sample item to mpn_raw_sample.json from date {d}")
-                    sample_dumped = True
-                    break
-
         all_men.extend(parse_events(items, "Men", date_str=d))
         all_women.extend(parse_events(items, "Women", date_str=d))
 
