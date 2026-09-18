@@ -91,24 +91,24 @@
     },
     {
       "round": "Group C",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-18",
       "time": "19:00",
       "player1": "Kuwait",
       "player2": "Uzbekistan",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 2",
+      "winner": "Uzbekistan"
     },
     {
       "round": "Group D",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-18",
       "time": "19:30",
       "player1": "Saudi Arabia",
       "player2": "Qatar",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {

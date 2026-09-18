@@ -256,14 +256,14 @@
     },
     {
       "round": "Men 1/2 G 1",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-18",
       "time": "19:20",
       "player1": "Japan",
       "player2": "China",
-      "score": "vs",
-      "winner": ""
+      "score": "44 - 30",
+      "winner": "Japan"
     },
     {
       "round": "Men F BM",
