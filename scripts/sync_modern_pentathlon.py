@@ -24,20 +24,10 @@ for b in range(256):
             pass
 
 
-def fetch_api_day(date_str):
-    url = f"https://back.results.asiangames2026.org/s/AG2026/en/MPN/schedule/daily/{date_str}"
-    try:
-        resp = requests.get(url, headers=HEADERS, timeout=15)
-    except Exception as e:
-        print(f"[{date_str}] Request failed: {e}")
-        return []
-
-    if resp.status_code != 200:
-        return []
-
+def decompress_payload(resp):
     try:
         data = resp.json()
-        if isinstance(data, list):
+        if isinstance(data, (list, dict)):
             return data
     except Exception:
         pass
@@ -56,8 +46,62 @@ def fetch_api_day(date_str):
                 return json.loads(decompressed.decode("utf-8"))
             except Exception:
                 continue
+    return None
 
+
+def fetch_api_day(date_str):
+    url = f"https://back.results.asiangames2026.org/s/AG2026/en/MPN/schedule/daily/{date_str}"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        if resp.status_code == 200:
+            res = decompress_payload(resp)
+            if isinstance(res, list):
+                return res
+    except Exception as e:
+        print(f"[{date_str}] Daily schedule request failed: {e}")
     return []
+
+
+def fetch_unit_results(rsc):
+    if not rsc:
+        return []
+    
+    # Try both result and results routes
+    for endpoint in ["result", "results"]:
+        url = f"https://back.results.asiangames2026.org/s/AG2026/en/MPN/{endpoint}/{rsc}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            if resp.status_code == 200:
+                data = decompress_payload(resp)
+                if data:
+                    if isinstance(data, list):
+                        return data
+                    if isinstance(data, dict):
+                        return (
+                            data.get("Competitors")
+                            or data.get("Results")
+                            or data.get("Units")
+                            or data.get("ResultItems")
+                            or data.get("Participants")
+                            or []
+                        )
+        except Exception:
+            continue
+    return []
+
+
+def extract_rsc(item):
+    for key in ["RSC", "Code", "UnitCode", "Unit", "UnitNum", "Id", "ID"]:
+        val = item.get(key)
+        if val and isinstance(val, str) and re.match(r"^[MW]\.[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+", val.strip()):
+            return val.strip()
+
+    # Search all string attributes if not explicitly under standard key
+    for k, v in item.items():
+        if isinstance(v, str) and re.match(r"^[MW]\.[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+", v.strip()):
+            return v.strip()
+
+    return ""
 
 
 def extract_match_datetime(m, fallback_date=""):
@@ -107,14 +151,7 @@ def extract_match_datetime(m, fallback_date=""):
     return match_date or fallback_date, match_time
 
 
-def parse_competitors(item):
-    raw_list = (
-        item.get("Competitors")
-        or item.get("Results")
-        or item.get("Participants")
-        or item.get("Competitor")
-        or []
-    )
+def parse_competitors(raw_list):
     if not isinstance(raw_list, list):
         return []
 
@@ -127,9 +164,9 @@ def parse_competitors(item):
         name = (
             c.get("CompetitorName")
             or c.get("AthleteName")
-            or c.get("Name")
             or c.get("PrintName")
-            or "Unknown Athlete"
+            or c.get("Name")
+            or f"Competitor {rank_val}"
         )
         noc = (
             c.get("NOC")
@@ -137,12 +174,11 @@ def parse_competitors(item):
             or c.get("Country")
             or c.get("Organisation")
             or c.get("NocCode")
-            or c.get("OrgCode")
-            or c.get("Delegation")
             or ""
         )
         raw_result = (
             c.get("Result")
+            or c.get("Victories")
             or c.get("Mark")
             or c.get("Time")
             or c.get("Score")
@@ -152,6 +188,7 @@ def parse_competitors(item):
             c.get("Points")
             or c.get("DisciplinePoints")
             or c.get("ScorePoints")
+            or c.get("Victories")
             or "-"
         )
         total_pts = (
@@ -161,14 +198,16 @@ def parse_competitors(item):
         )
 
         parsed.append({
-            "rank": rank_val,
-            "name": name,
+            "rank": int(rank_val) if str(rank_val).isdigit() else rank_val,
+            "name": str(name).strip(),
             "country": str(noc).strip(),
             "raw": str(raw_result).strip(),
             "points": str(pts).strip(),
             "total_pts": str(total_pts).strip()
         })
 
+    # Sort in ascending rank order
+    parsed.sort(key=lambda x: int(x["rank"]) if str(x["rank"]).isdigit() else 999)
     return parsed
 
 
@@ -200,7 +239,6 @@ def parse_events(raw_items, gender="Men", date_str=""):
         ev_date, ev_time = extract_match_datetime(item, fallback_date=date_str)
         venue = item.get("VenueDesc") or item.get("Venue") or "Anjo Sports Park"
 
-        # Differentiate Semi-Final Group A vs Group B by start hour
         group = ""
         phase_clean = phase_raw.strip()
         is_semi = phase_clean.upper() == "SF" or "semi" in phase_clean.lower()
@@ -216,7 +254,6 @@ def parse_events(raw_items, gender="Men", date_str=""):
 
         discipline = unit_raw if unit_raw else phase_raw
 
-        # Strictly exclude semi-finals, preliminaries, and seeding from medal tags
         is_final_phase = ("final" in phase_clean.lower()) and not is_semi
         is_medal = bool(
             is_final_phase
@@ -224,14 +261,27 @@ def parse_events(raw_items, gender="Men", date_str=""):
         )
         medal_desc = f"{gender}'s Individual & Team Medals" if is_medal else ""
 
-        unit_code = item.get("Unit") or item.get("UnitCode") or ""
-        event_id = unit_code or f"{phase_clean}_{discipline}_{ev_date}_{ev_time}".lower().replace(" ", "_")
+        rsc = extract_rsc(item)
+        event_id = rsc or f"{phase_clean}_{discipline}_{ev_date}_{ev_time}".lower().replace(" ", "_")
 
-        competitors = parse_competitors(item)
+        # Pull full competitor list from unit result endpoint if finished, else fallback to daily summary
+        competitors = []
+        if status in ["Official", "Live"] and rsc:
+            full_results = fetch_unit_results(rsc)
+            if full_results:
+                competitors = parse_competitors(full_results)
+
+        if not competitors:
+            competitors = parse_competitors(
+                item.get("Competitors")
+                or item.get("Results")
+                or item.get("Participants")
+                or []
+            )
 
         event_payload = {
             "id": event_id,
-            "unit_code": unit_code,
+            "unit_code": rsc,
             "round": phase_clean,
             "phase": phase_clean,
             "group": group,
