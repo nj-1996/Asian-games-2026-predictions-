@@ -15,18 +15,21 @@ const MPN_ATHLETE_NOC = {
   'LEE JONGHYEON': 'South Korea', 'KIM YOUNGHA': 'South Korea',
   'KIM SUNWOO': 'South Korea', 'SEONG SEUNGMIN': 'South Korea',
   'JANG HAEUN': 'South Korea', 'KIM SOEUN': 'South Korea',
+  'KIM UNJU': 'South Korea', 'SHIN SUMIN': 'South Korea',
 
   // China
   'MA YUANG': 'China', 'CHEN BAILIANG': 'China',
   'LUO SHUAI': 'China', 'LI LIUCHANG': 'China',
   'ZHANG MINGYU': 'China', 'BIAN YUFEI': 'China',
   'WU KEBAN': 'China', 'XIE LINZHI': 'China',
+  'WU XIYAO': 'China', 'FU JING': 'China', 'MENG XIN': 'China',
 
   // Japan
   'SATO TAISHU': 'Japan', 'TOMITA YOUSUKE': 'Japan',
   'SEKIGAWA KAZUAKI': 'Japan', 'SHINOKI KAORU': 'Japan',
   'UCHIDA MISAKI': 'Japan', 'OTA NATSUMI': 'Japan',
   'YOSHIDA HANA': 'Japan', 'SAITO KANA': 'Japan',
+  'SAITO AYUMU': 'Japan', 'SUZUKI YURI': 'Japan',
 
   // Kazakhstan
   'ABDRAIMOV TEMIRLAN': 'Kazakhstan', 'GERMAN SAMUEL': 'Kazakhstan',
@@ -34,82 +37,25 @@ const MPN_ATHLETE_NOC = {
   'STADNIK KIRILL': 'Kazakhstan', 'CHUVASHOV LEV': 'Kazakhstan',
   'POTAPENKO YELENA': 'Kazakhstan', 'AKHMETOVA ANASTASSIYA': 'Kazakhstan',
   'YAKOVLEVA SOFYA': 'Kazakhstan', 'KULIKOVA KRISTINA': 'Kazakhstan',
+  'CHSHEDROVA DIANA': 'Kazakhstan', 'KAZBEKOVA AYANA': 'Kazakhstan',
 
   // Southeast & South Asia
   'COMALING MICHAEL VER ANTON': 'Philippines', 'ANDRINO GILBERT': 'Philippines',
+  'ARBILON PRINCESS HONEY': 'Philippines', 'ARANZADO SHYRA MAE': 'Philippines',
+  'SEVILLA JULIANA SHANE': 'Philippines',
   'YOHUANG PHURIT': 'Thailand', 'THATTHONG PONGKRIT': 'Thailand',
+  'PAISANGRISIN PARITA': 'Thailand',
   'MATULATUWA SAMUEL': 'Indonesia', 'IFSAN MUHAMMAD': 'Indonesia',
+  'BANGUN CAROLINE': 'Indonesia',
   'AW JIAN TING': 'Singapore', 'ANSARI TAHIR': 'India',
   'SILVA OSHADA': 'Sri Lanka', 'SHUM CHUN HEI': 'Hong Kong',
 
   // Central & West Asia
   'ERKINBEKOV ATAI': 'Kyrgyzstan', 'AMARSANAA BILEGT': 'Mongolia',
+  'KAHRAMONOVA MEHRINISO': 'Uzbekistan', 'ABZALOVA SAMIRA': 'Uzbekistan',
   'YARED MICHAEL ANTOINE': 'Lebanon', 'GODBOUT JOSEPH ANTHONY': 'Lebanon',
   'ALSUHAIBI MOHAMMAD': 'Saudi Arabia', 'ABDALRHMAN ABDLLAH MOHAMMAD': 'Jordan',
   'ABUSHABAB OMAR': 'Palestine', 'ABUSHABAB ABDALLAH': 'Palestine'
-};
-
-// --- Official Fencing Seeding Round Standings (Summary Feed Fallback) ---
-const MPN_OFFICIAL_SEEDING_BOUTS = {
-  // Men's 35-Bout Seeding Round
-  'SEO CHANGWAN': { v: 31, d: 4, pen: 0 },
-  'ABDRAIMOV TEMIRLAN': { v: 27, d: 8, pen: 0 },
-  'MA YUANG': { v: 27, d: 8, pen: 0 },
-  'JUN WOONGTAE': { v: 26, d: 9, pen: 0 },
-  'GERMAN SAMUEL': { v: 24, d: 11, pen: 0 },
-  'SATO TAISHU': { v: 24, d: 11, pen: 0 },
-  'CHEN BAILIANG': { v: 22, d: 13, pen: 0 },
-  'YARED MICHAEL ANTOINE': { v: 22, d: 13, pen: 0 },
-  'LEE JONGHYEON': { v: 22, d: 13, pen: 0 },
-  'LUO SHUAI': { v: 21, d: 14, pen: 0 },
-  'KIM YOUNGHA': { v: 21, d: 14, pen: 0 },
-  'TOMITA YOUSUKE': { v: 20, d: 15, pen: 0 },
-  'CHUVASHOV LEV': { v: 20, d: 15, pen: 0 },
-  'VARYOKHIN TIKHON': { v: 20, d: 15, pen: 0 },
-  'TRETYAKOV DMITRIY': { v: 20, d: 15, pen: 0 },
-  'STADNIK KIRILL': { v: 20, d: 15, pen: 0 },
-  'SEKIGAWA KAZUAKI': { v: 19, d: 16, pen: 0 },
-  'GODBOUT JOSEPH ANTHONY': { v: 19, d: 16, pen: 0 },
-  'YOHUANG PHURIT': { v: 19, d: 16, pen: 0 },
-  'COMALING MICHAEL VER ANTON': { v: 18, d: 17, pen: 0 },
-  'SHINOKI KAORU': { v: 18, d: 17, pen: 0 },
-  'ANDRINO GILBERT': { v: 18, d: 17, pen: 0 },
-  'LI LIUCHANG': { v: 18, d: 17, pen: 0 },
-  'ALSUHAIBI MOHAMMAD': { v: 17, d: 18, pen: 0 },
-  'ABUSHABAB OMAR': { v: 17, d: 18, pen: 0 },
-  'ERKINBEKOV ATAI': { v: 17, d: 18, pen: 0 },
-  'MATULATUWA SAMUEL': { v: 17, d: 18, pen: 0 },
-  'IFSAN MUHAMMAD': { v: 16, d: 19, pen: 0 },
-  'THATTHONG PONGKRIT': { v: 16, d: 19, pen: 0 },
-  'ABUSHABAB ABDALLAH': { v: 15, d: 20, pen: 0 },
-  'AMARSANAA BILEGT': { v: 15, d: 20, pen: 0 },
-  'SILVA OSHADA': { v: 14, d: 21, pen: 0 },
-  'ABDALRHMAN ABDLLAH MOHAMMAD': { v: 14, d: 21, pen: 0 },
-  'AW JIAN TING': { v: 13, d: 22, pen: 0 },
-  'ANSARI TAHIR': { v: 12, d: 23, pen: 0 },
-  'SHUM CHUN HEI': { v: 11, d: 24, pen: 0 },
-
-  // Women's 32-Bout Seeding Round
-  'SAITO AYUMU': { v: 25, d: 7, pen: 0 },
-  'SEONG SEUNGMIN': { v: 24, d: 8, pen: 0 },
-  'ZHANG MINGYU': { v: 24, d: 8, pen: 0 },
-  'KIM UNJU': { v: 23, d: 9, pen: 0 },
-  'WU XIYAO': { v: 22, d: 10, pen: 0 },
-  'FU JING': { v: 22, d: 10, pen: 0 },
-  'ARBILON PRINCESS HONEY': { v: 22, d: 10, pen: 0 },
-  'MENG XIN': { v: 20, d: 12, pen: 0 },
-  'BANGUN CAROLINE': { v: 20, d: 12, pen: 0 },
-  'KAHRAMONOVA MEHRINISO': { v: 20, d: 12, pen: 0 },
-  'SHIN SUMIN': { v: 19, d: 13, pen: 0 },
-  'CHSHEDROVA DIANA': { v: 19, d: 13, pen: 0 },
-  'ABZALOVA SAMIRA': { v: 19, d: 13, pen: 0 },
-  'JANG HAEUN': { v: 18, d: 14, pen: 0 },
-  'UCHIDA MISAKI': { v: 17, d: 15, pen: 0 },
-  'KAZBEKOVA AYANA': { v: 17, d: 15, pen: 0 },
-  'SUZUKI YURI': { v: 16, d: 16, pen: 0 },
-  'ARANZADO SHYRA MAE': { v: 16, d: 16, pen: 0 },
-  'SEVILLA JULIANA SHANE': { v: 15, d: 17, pen: 0 },
-  'PAISANGRISIN PARITA': { v: 14, d: 18, pen: 0 }
 };
 
 function resolveAthleteCountry(name, fallbackNoc = '') {
@@ -138,27 +84,6 @@ function getNormalizedPhaseGroup(ev) {
     return hour < 13 ? 'Semi-final (Group A)' : 'Semi-final (Group B)';
   }
   return pName;
-}
-
-function resolveFencingSeedingStats(c) {
-  let v = c.victories !== undefined && c.victories !== null && c.victories !== '' ? String(c.victories) : '-';
-  let d = c.defeats !== undefined && c.defeats !== null && c.defeats !== '' ? String(c.defeats) : '-';
-  let pen = c.penalties !== undefined && c.penalties !== null && c.penalties !== '' ? String(c.penalties) : '0';
-
-  if (v === '-' || d === '-') {
-    const key = (c.name || '').toUpperCase().replace(/[^A-Z\s]/g, '').replace(/\s+/g, ' ').trim();
-    if (MPN_OFFICIAL_SEEDING_BOUTS[key]) {
-      v = String(MPN_OFFICIAL_SEEDING_BOUTS[key].v);
-      d = String(MPN_OFFICIAL_SEEDING_BOUTS[key].d);
-      pen = String(MPN_OFFICIAL_SEEDING_BOUTS[key].pen);
-    }
-  }
-
-  return {
-    victories: v,
-    defeats: d,
-    penalties: pen
-  };
 }
 
 function renderPentathlonHero(nextSession) {
@@ -380,7 +305,7 @@ function loadDisciplineView(events, discipline) {
   const content = document.getElementById('mpn-sheet-content');
   if (!content) return;
 
-  // View 1: Overall Group Cumulative Standings
+  // 1. Cumulative Points Standings
   if (discipline === 'Overall') {
     document.getElementById('mpn-sheet-subtitle').innerText = 'Combined Cumulative Points Standings';
 
@@ -450,7 +375,7 @@ function loadDisciplineView(events, discipline) {
     return;
   }
 
-  // View 2: Single Discipline Standings
+  // 2. Single Discipline Standings
   const targetEvent = events.find(e => (e.discipline || e.round) === discipline) || events[0] || {};
   const isLive = targetEvent.status === 'Live';
 
@@ -464,7 +389,7 @@ function loadDisciplineView(events, discipline) {
       <div style="text-align:center; padding:2.5rem 1rem; color:#94a3b8;">
         <div style="font-size:2rem; margin-bottom:0.5rem;">⏱️</div>
         <div style="font-size:0.95rem; font-weight:600; color:#f8fafc; margin-bottom:0.25rem;">Session Scheduled</div>
-        <div style="font-size:0.8rem; line-height:1.4;">Official standings and points will appear here once the session finishes.</div>
+        <div style="font-size:0.8rem; line-height:1.4;">Official standings will appear here once the session finishes.</div>
       </div>
     `;
     return;
@@ -473,17 +398,22 @@ function loadDisciplineView(events, discipline) {
   const isFencingSeeding = /seeding/i.test(discipline) || /seeding/i.test(targetEvent.discipline || '') || /seeding/i.test(targetEvent.round || '');
 
   if (isFencingSeeding) {
-    // Sort competitors by Victories (V) descending, then Defeats (D) ascending
+    // Pure dynamic render from live API attributes (sorted by Victories descending, Defeats ascending)
     const sortedCompetitors = competitors.map((c, idx) => {
-      const stats = resolveFencingSeedingStats(c);
       const originalRank = c.rank !== undefined ? parseInt(c.rank, 10) : (idx + 1);
+      const v = (c.victories !== undefined && c.victories !== null && c.victories !== '') ? String(c.victories) : '-';
+      const d = (c.defeats !== undefined && c.defeats !== null && c.defeats !== '') ? String(c.defeats) : '-';
+      const pen = (c.penalties !== undefined && c.penalties !== null && c.penalties !== '') ? String(c.penalties) : '0';
+
       return {
         ...c,
-        ...stats,
+        victories: v,
+        defeats: d,
+        penalties: pen,
         originalRank: isNaN(originalRank) ? 999 : originalRank,
-        numV: parseInt(stats.victories, 10) || 0,
-        numD: parseInt(stats.defeats, 10) || 0,
-        numPen: parseInt(stats.penalties, 10) || 0
+        numV: parseInt(v, 10) || 0,
+        numD: parseInt(d, 10) || 0,
+        numPen: parseInt(pen, 10) || 0
       };
     }).sort((a, b) => {
       if (b.numV !== a.numV) return b.numV - a.numV;
