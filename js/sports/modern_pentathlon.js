@@ -8,6 +8,53 @@ let activePentathlonEvents = [];
 let activePhaseGroup = '';
 let activeDiscipline = '';
 
+// --- Official 2026 Asiad Athlete Nationality Registry ---
+const MPN_ATHLETE_NOC = {
+  // South Korea
+  'SEO CHANGWAN': 'South Korea', 'JUN WOONGTAE': 'South Korea',
+  'LEE JONGHYEON': 'South Korea', 'KIM YOUNGHA': 'South Korea',
+  'KIM SUNWOO': 'South Korea', 'SEONG SEUNGMIN': 'South Korea',
+  'JANG HAEUN': 'South Korea', 'KIM SOEUN': 'South Korea',
+
+  // China
+  'MA YUANG': 'China', 'CHEN BAILIANG': 'China',
+  'LUO SHUAI': 'China', 'LI LIUCHANG': 'China',
+  'ZHANG MINGYU': 'China', 'BIAN YUFEI': 'China',
+  'WU KEBAN': 'China', 'XIE LINZHI': 'China',
+
+  // Japan
+  'SATO TAISHU': 'Japan', 'TOMITA YOUSUKE': 'Japan',
+  'SEKIGAWA KAZUAKI': 'Japan', 'SHINOKI KAORU': 'Japan',
+  'UCHIDA MISAKI': 'Japan', 'OTA NATSUMI': 'Japan',
+  'YOSHIDA HANA': 'Japan', 'SAITO KANA': 'Japan',
+
+  // Kazakhstan
+  'ABDRAIMOV TEMIRLAN': 'Kazakhstan', 'GERMAN SAMUEL': 'Kazakhstan',
+  'VARYOKHIN TIKHON': 'Kazakhstan', 'TRETYAKOV DMITRIY': 'Kazakhstan',
+  'STADNIK KIRILL': 'Kazakhstan', 'CHUVASHOV LEV': 'Kazakhstan',
+  'POTAPENKO YELENA': 'Kazakhstan', 'AKHMETOVA ANASTASSIYA': 'Kazakhstan',
+  'YAKOVLEVA SOFYA': 'Kazakhstan', 'KULIKOVA KRISTINA': 'Kazakhstan',
+
+  // Southeast & South Asia
+  'COMALING MICHAEL VER ANTON': 'Philippines', 'ANDRINO GILBERT': 'Philippines',
+  'YOHUANG PHURIT': 'Thailand', 'THATTHONG PONGKRIT': 'Thailand',
+  'MATULATUWA SAMUEL': 'Indonesia', 'IFSAN MUHAMMAD': 'Indonesia',
+  'AW JIAN TING': 'Singapore', 'ANSARI TAHIR': 'India',
+  'SILVA OSHADA': 'Sri Lanka', 'SHUM CHUN HEI': 'Hong Kong',
+
+  // Central & West Asia
+  'ERKINBEKOV ATAI': 'Kyrgyzstan', 'AMARSANAA BILEGT': 'Mongolia',
+  'YARED MICHAEL ANTOINE': 'Lebanon', 'GODBOUT JOSEPH ANTHONY': 'Lebanon',
+  'ALSUHAIBI MOHAMMAD': 'Saudi Arabia', 'ABDALRHMAN ABDLLAH MOHAMMAD': 'Jordan',
+  'ABUSHABAB OMAR': 'Palestine', 'ABUSHABAB ABDALLAH': 'Palestine'
+};
+
+function resolveAthleteCountry(name, fallbackNoc = '') {
+  if (!name) return fallbackNoc;
+  const key = name.toUpperCase().replace(/[^A-Z\s]/g, '').replace(/\s+/g, ' ').trim();
+  return MPN_ATHLETE_NOC[key] || fallbackNoc || '';
+}
+
 function getDisciplineIcon(name) {
   const n = (name || '').toLowerCase();
   if (n.includes('overall')) return '⭐';
@@ -18,13 +65,25 @@ function getDisciplineIcon(name) {
   return '🏅';
 }
 
+function getNormalizedPhaseGroup(ev) {
+  let pName = ev.round || ev.phase || 'Schedule';
+  if (ev.group && !pName.includes(ev.group)) {
+    return `${pName} (${ev.group})`;
+  }
+  if (pName === 'SF' || pName.toLowerCase() === 'semi-final') {
+    const hour = parseInt((ev.time || '00:00').split(':')[0], 10);
+    return hour < 13 ? 'Semi-final (Group A)' : 'Semi-final (Group B)';
+  }
+  return pName;
+}
+
 function renderPentathlonHero(nextSession) {
   if (!nextSession) return '';
   const disc = nextSession.discipline || nextSession.round || 'Modern Pentathlon';
   const icon = getDisciplineIcon(disc);
-  const phase = nextSession.phase || nextSession.round || 'Upcoming';
+  const phase = getNormalizedPhaseGroup(nextSession);
 
-  const isSemi = /semi|sf|seed/i.test(phase) || /semi|sf|seed/i.test(nextSession.round || '');
+  const isSemi = /semi|sf|seed/i.test(phase);
   const isMedalDecider = Boolean(nextSession.is_medal) && !isSemi;
 
   return `
@@ -61,14 +120,7 @@ function renderPentathlonTimeline(items) {
 
   const phaseMap = {};
   list.forEach(ev => {
-    let pName = ev.round || ev.phase || 'Schedule';
-    if (ev.group && !pName.includes(ev.group)) {
-      pName = `${pName} (${ev.group})`;
-    } else if (pName === 'SF' || pName.toLowerCase() === 'semi-final') {
-      const hour = parseInt((ev.time || '00:00').split(':')[0], 10);
-      pName = hour < 13 ? 'Semi-final (Group A)' : 'Semi-final (Group B)';
-    }
-
+    const pName = getNormalizedPhaseGroup(ev);
     if (!phaseMap[pName]) phaseMap[pName] = [];
     phaseMap[pName].push(ev);
   });
@@ -86,7 +138,7 @@ function renderPentathlonTimeline(items) {
           const disc = ev.discipline || ev.round || 'Session';
           const icon = getDisciplineIcon(disc);
 
-          const isSemiOrSeed = /semi|sf|seed/i.test(phaseHeader) || /semi|sf|seed/i.test(ev.phase || '') || /semi|sf|seed/i.test(ev.round || '');
+          const isSemiOrSeed = /semi|sf|seed/i.test(phaseHeader);
           const isMedalSession = Boolean(ev.is_medal) && !isSemiOrSeed;
 
           const safePhase = encodeURIComponent(phaseHeader);
@@ -172,15 +224,7 @@ window.openMpnSheet = function(phaseEncoded, discEncoded) {
 
   document.getElementById('mpn-sheet-title').innerText = phase;
 
-  const relatedEvents = activePentathlonEvents.filter(ev => {
-    let pName = ev.round || ev.phase || 'Schedule';
-    if (ev.group && !pName.includes(ev.group)) pName = `${pName} (${ev.group})`;
-    else if (pName === 'SF' || pName.toLowerCase() === 'semi-final') {
-      const hour = parseInt((ev.time || '00:00').split(':')[0], 10);
-      pName = hour < 13 ? 'Semi-final (Group A)' : 'Semi-final (Group B)';
-    }
-    return pName === phase;
-  });
+  const relatedEvents = activePentathlonEvents.filter(ev => getNormalizedPhaseGroup(ev) === phase);
 
   const availableDisciplines = relatedEvents.length > 1
     ? ['Overall', ...relatedEvents.map(e => e.discipline || e.round)]
@@ -238,11 +282,7 @@ window.selectMpnDiscipline = function(discEncoded) {
   const disc = decodeURIComponent(discEncoded);
   activeDiscipline = disc;
 
-  const relatedEvents = activePentathlonEvents.filter(ev => {
-    let pName = ev.round || ev.phase || 'Schedule';
-    if (ev.group && !pName.includes(ev.group)) pName = `${pName} (${ev.group})`;
-    return pName === activePhaseGroup;
-  });
+  const relatedEvents = activePentathlonEvents.filter(ev => getNormalizedPhaseGroup(ev) === activePhaseGroup);
 
   const availableDisciplines = relatedEvents.length > 1
     ? ['Overall', ...relatedEvents.map(e => e.discipline || e.round)]
@@ -256,7 +296,6 @@ function loadDisciplineView(events, discipline) {
   const content = document.getElementById('mpn-sheet-content');
   if (!content) return;
 
-  // View 1: Overall Group Cumulative Standings
   if (discipline === 'Overall') {
     document.getElementById('mpn-sheet-subtitle').innerText = 'Combined Cumulative Points Standings';
 
@@ -265,9 +304,10 @@ function loadDisciplineView(events, discipline) {
       (ev.competitors || []).forEach(c => {
         const name = c.name;
         if (!athleteTotals[name]) {
+          const country = resolveAthleteCountry(name, c.country);
           athleteTotals[name] = {
             name,
-            country: c.country || '',
+            country,
             totalPts: 0,
             eventsCount: 0
           };
@@ -283,10 +323,10 @@ function loadDisciplineView(events, discipline) {
     content.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
         <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; font-weight:700;">Combined Standings</span>
-        <span style="font-size:0.75rem; color:#38bdf8; font-weight:600;">Top 9 Advance</span>
+        <span style="font-size:0.75rem; color:#38bdf8; font-weight:600;">Top 9 Advance to Final</span>
       </div>
 
-      <div style="display:grid; grid-template-columns: 32px 1fr 65px 70px; font-size:0.7rem; font-weight:700; color:#64748b; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); text-transform:uppercase;">
+      <div style="display:grid; grid-template-columns: 32px 1fr 65px 75px; font-size:0.7rem; font-weight:700; color:#64748b; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); text-transform:uppercase;">
         <span>#</span>
         <span>Athlete</span>
         <span style="text-align:center;">Events</span>
@@ -297,18 +337,22 @@ function loadDisciplineView(events, discipline) {
         ${overallList.map((item, idx) => {
           const rank = idx + 1;
           const isCutoff = rank === 9;
+          const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(item.country) : '';
 
           return `
-            <div style="display:grid; grid-template-columns: 32px 1fr 65px 70px; align-items:center; padding:0.7rem 0; border-bottom:1px solid rgba(255,255,255,0.04);">
+            <div style="display:grid; grid-template-columns: 32px 1fr 65px 75px; align-items:center; padding:0.7rem 0; border-bottom:1px solid rgba(255,255,255,0.04);">
               <span style="font-weight:700; color:${rank <= 9 ? '#38bdf8' : '#64748b'};">${rank}</span>
               <div>
-                <div style="font-weight:600; color:#f8fafc;">${item.name}</div>${item.country ? `<span style="font-size:0.7rem; color:#64748b;">${item.country}</span>` : ''}
+                <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.35rem;">
+                  <span>${flag}</span> <span>${item.name}</span>
+                </div>
+                ${item.country ? `<div style="font-size:0.7rem; color:#94a3b8; margin-left:1.35rem;">${item.country}</div>` : ''}
               </div>
               <span style="text-align:center; font-size:0.75rem; color:#94a3b8;">${item.eventsCount} / 4</span>
               <span style="text-align:right; font-weight:700; color:#4ade80; font-size:0.9rem;">${item.totalPts}</span>
             </div>
             ${isCutoff ? `
-              <div style="display:flex; align-items:center; margin:0.5rem 0; gap:0.5rem;">
+              <div style="display:flex; align-items:center; margin:0.6rem 0; gap:0.5rem;">
                 <div style="flex:1; height:1px; background:#ef4444;"></div>
                 <span style="font-size:0.65rem; font-weight:700; color:#ef4444; letter-spacing:0.05em;">FINAL QUALIFICATION CUTOFF</span>
                 <div style="flex:1; height:1px; background:#ef4444;"></div>
@@ -321,9 +365,7 @@ function loadDisciplineView(events, discipline) {
     return;
   }
 
-  // View 2: Single Discipline Standings
   const targetEvent = events.find(e => (e.discipline || e.round) === discipline) || events[0] || {};
-  const isFinished = targetEvent.status === 'Official' || targetEvent.status === 'Finished';
   const isLive = targetEvent.status === 'Live';
 
   document.getElementById('mpn-sheet-subtitle').innerText = 
@@ -358,19 +400,109 @@ function loadDisciplineView(events, discipline) {
       ${competitors.map((c, i) => {
         const rank = c.rank || (i + 1);
         const name = c.name || `Competitor ${rank}`;
-        const noc = c.country || '';
+        const country = resolveAthleteCountry(name, c.country);
+        const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(country) : '';
         const pts = (c.raw && c.raw !== '0') ? c.raw : (c.points !== '-' ? c.points : '0');
 
         return `
           <div style="display:grid; grid-template-columns: 32px 1fr 80px; align-items:center; padding:0.7rem 0; border-bottom:1px solid rgba(255,255,255,0.04);">
             <span style="font-weight:700; color:#94a3b8;">${rank}</span>
             <div>
-              <div style="font-weight:600; color:#f8fafc;">${name}</div>${noc ? `<span style="font-size:0.7rem; color:#64748b;">${noc}</span>` : ''}
+              <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.35rem;">
+                <span>${flag}</span> <span>${name}</span>
+              </div>
+              ${country ? `<div style="font-size:0.7rem; color:#94a3b8; margin-left:1.35rem;">${country}</div>` : ''}
             </div>
             <span style="text-align:right; font-weight:700; color:#4ade80; font-size:0.9rem;">+${pts} pts</span>
           </div>
         `;
       }).join('')}
+    </div>
+  `;
+}
+
+function buildGroupStandings(sessions) {
+  const athletes = {};
+
+  sessions.forEach(s => {
+    const disc = (s.discipline || s.round || '').toLowerCase();
+    (s.competitors || []).forEach(c => {
+      const name = c.name;
+      if (!athletes[name]) {
+        athletes[name] = {
+          name,
+          country: resolveAthleteCountry(name, c.country),
+          fence: '-',
+          obstacle: '-',
+          swim: '-',
+          laser: '-',
+          total: 0
+        };
+      }
+      const pts = parseInt(c.raw, 10) || parseInt(c.points, 10) || 0;
+      if (disc.includes('fencing')) athletes[name].fence = pts;
+      else if (disc.includes('obstacle')) athletes[name].obstacle = pts;
+      else if (disc.includes('swim')) athletes[name].swim = pts;
+      else if (disc.includes('laser')) athletes[name].laser = pts;
+      athletes[name].total += pts;
+    });
+  });
+
+  return Object.values(athletes).sort((a, b) => b.total - a.total);
+}
+
+function renderGroupTable(title, athletes, isFinal = false) {
+  return `
+    <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow-x:auto;">
+      <div style="padding:0.85rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center;">
+        <span>${title}</span>
+        <span style="font-size:0.75rem; color:${isFinal ? '#facc15' : '#38bdf8'}; font-weight:600;">
+          ${isFinal ? 'Official Medal Round' : 'Top 9 Advance (Q)'}
+        </span>
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
+        <thead>
+          <tr style="color:#94a3b8; font-size:0.72rem; border-bottom:1px solid rgba(255,255,255,0.05); background:rgba(0,0,0,0.15);">
+            <th style="padding:0.65rem 0.5rem; text-align:left;"># Athlete</th>
+            <th style="padding:0.65rem 0.3rem;">Fence</th>
+            <th style="padding:0.65rem 0.3rem;">Obstacle</th>
+            <th style="padding:0.65rem 0.3rem;">Swim</th>
+            <th style="padding:0.65rem 0.3rem;">Laser</th>
+            <th style="padding:0.65rem 0.5rem; font-weight:700; color:#f8fafc;">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${athletes.map((a, idx) => {
+            const rank = idx + 1;
+            const isQualified = !isFinal && rank <= 9;
+            const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(a.country) : '';
+            const isPodium = isFinal && rank <= 3;
+
+            return `
+              <tr style="border-bottom:${rank === 9 && !isFinal ? '2px solid #ef4444' : '1px solid rgba(255,255,255,0.03)'}; background:${isPodium ? 'rgba(234,179,8,0.06)' : isQualified ? 'rgba(56,189,248,0.03)' : 'transparent'};">
+                <td style="padding:0.65rem 0.5rem; text-align:left;">
+                  <div style="display:flex; align-items:center; gap:0.4rem;">
+                    <span style="display:inline-block; width:18px; font-weight:700; color:${isPodium ? (rank === 1 ? '#facc15' : rank === 2 ? '#cbd5e1' : '#f59e0b') : isQualified ? '#38bdf8' : '#94a3b8'};">
+                      ${rank}
+                    </span>
+                    <div>
+                      <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.35rem;">
+                        <span>${flag}</span> <span>${a.name}</span>${isQualified ? `<span style="font-size:0.65rem; background:rgba(56,189,248,0.2); color:#38bdf8; padding:1px 5px; border-radius:4px; font-weight:700;">Q</span>` : ''}
+                      </div>
+                      ${a.country ? `<div style="font-size:0.7rem; color:#94a3b8; margin-left:1.35rem;">${a.country}</div>` : ''}
+                    </div>
+                  </div>
+                </td>
+                <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.fence}</td>
+                <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.obstacle}</td>
+                <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.swim}</td>
+                <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.laser}</td>
+                <td style="padding:0.65rem 0.5rem; font-family:monospace; font-weight:700; color:#4ade80;">${a.total}</td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
     </div>
   `;
 }
@@ -383,17 +515,45 @@ window.SPORT_ENGINES['modern_pentathlon'] = {
     return renderPentathlonTimeline(data);
   },
 
+  // --- Leaderboard View: Group A & Group B Cumulative Standings ---
   renderStandingsTable(data) {
-    return `
-      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:1.5rem; margin-bottom:1.5rem; text-align:center;">
-        <div style="font-size:1.8rem; margin-bottom:0.5rem;">🎯 🤺 🏃 🏊</div>
-        <div style="font-weight:700; font-size:1rem; margin-bottom:0.25rem;">Modern Pentathlon Leaderboard</div>
-        <div style="color:#94a3b8; font-size:0.82rem; max-width:440px; margin:0 auto; line-height:1.4;">
-          Tap any session in the Matches tab to view individual discipline points, heat timings, and overall semi-final progression.
+    const list = Array.isArray(data) ? data : (data?.events || data?.matches || []);
+    if (!list || list.length === 0) {
+      return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No standings data available.</div>`;
+    }
+
+    const groupAEvents = list.filter(ev => getNormalizedPhaseGroup(ev).includes('Group A'));
+    const groupBEvents = list.filter(ev => getNormalizedPhaseGroup(ev).includes('Group B'));
+    const finalEvents = list.filter(ev => getNormalizedPhaseGroup(ev) === 'Final' && (ev.competitors || []).length > 0);
+
+    const groupAStandings = buildGroupStandings(groupAEvents);
+    const groupBStandings = buildGroupStandings(groupBEvents);
+
+    let html = `
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem;">
+        <div style="font-weight:700; font-size:1.05rem; margin-bottom:0.35rem; display:flex; align-items:center; gap:0.5rem;">
+          <span>🎯 Semi-final Standings & Qualification</span>
         </div>
+        <p style="color:#94a3b8; font-size:0.82rem; margin:0; line-height:1.4;">
+          The top 9 athletes from Semi-final Group A and the top 9 from Semi-final Group B advance to the 18-athlete Final medal round on September 20.
+        </p>
       </div>
-      ${renderPentathlonTimeline(data)}
     `;
+
+    if (finalEvents.length > 0) {
+      const finalStandings = buildGroupStandings(finalEvents);
+      html += renderGroupTable('Final Classification', finalStandings, true);
+    }
+
+    if (groupAStandings.length > 0) {
+      html += renderGroupTable('Semi-final • Group A', groupAStandings, false);
+    }
+
+    if (groupBStandings.length > 0) {
+      html += renderGroupTable('Semi-final • Group B', groupBStandings, false);
+    }
+
+    return html;
   },
 
   renderKnockoutBracket() {
