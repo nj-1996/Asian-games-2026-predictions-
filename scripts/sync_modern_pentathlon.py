@@ -107,6 +107,62 @@ def extract_match_datetime(m, fallback_date=""):
     return match_date or fallback_date, match_time
 
 
+def parse_competitors(item):
+    raw_list = (
+        item.get("Competitors")
+        or item.get("Results")
+        or item.get("Participants")
+        or item.get("Competitor")
+        or []
+    )
+    if not isinstance(raw_list, list):
+        return []
+
+    parsed = []
+    for idx, c in enumerate(raw_list):
+        if not isinstance(c, dict):
+            continue
+
+        rank_val = c.get("Rank") or c.get("Order") or c.get("Position") or (idx + 1)
+        name = (
+            c.get("CompetitorName")
+            or c.get("AthleteName")
+            or c.get("Name")
+            or c.get("PrintName")
+            or "Unknown Athlete"
+        )
+        noc = c.get("NOC") or c.get("CountryCode") or c.get("Country") or ""
+        raw_result = (
+            c.get("Result")
+            or c.get("Mark")
+            or c.get("Time")
+            or c.get("Score")
+            or "-"
+        )
+        pts = (
+            c.get("Points")
+            or c.get("DisciplinePoints")
+            or c.get("ScorePoints")
+            or "-"
+        )
+        total_pts = (
+            c.get("TotalPoints")
+            or c.get("CumulativePoints")
+            or pts
+        )
+
+        parsed.append({
+            "rank": rank_val,
+            "name": name,
+            "country": noc,
+            "raw": str(raw_result),
+            "points": str(pts),
+            "total_pts": str(total_pts)
+        })
+
+    return parsed
+
+
 def parse_events(raw_items, gender="Men", date_str=""):
     output = []
     for item in raw_items:
@@ -159,7 +215,14 @@ def parse_events(raw_items, gender="Men", date_str=""):
         )
         medal_desc = f"{gender}'s Individual & Team Medals" if is_medal else ""
 
+        unit_code = item.get("Unit") or item.get("UnitCode") or ""
+        event_id = unit_code or f"{phase_clean}_{discipline}_{ev_date}_{ev_time}".lower().replace(" ", "_")
+
+        competitors = parse_competitors(item)
+
         event_payload = {
+            "id": event_id,
+            "unit_code": unit_code,
             "round": phase_clean,
             "phase": phase_clean,
             "group": group,
@@ -169,7 +232,8 @@ def parse_events(raw_items, gender="Men", date_str=""):
             "time": ev_time,
             "venue": venue,
             "is_medal": is_medal,
-            "medal_desc": medal_desc
+            "medal_desc": medal_desc,
+            "competitors": competitors
         }
         output.append(event_payload)
 
