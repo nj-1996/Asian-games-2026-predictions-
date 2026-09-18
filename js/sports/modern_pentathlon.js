@@ -49,6 +49,69 @@ const MPN_ATHLETE_NOC = {
   'ABUSHABAB OMAR': 'Palestine', 'ABUSHABAB ABDALLAH': 'Palestine'
 };
 
+// --- Official Fencing Seeding Round Standings (Summary Feed Fallback) ---
+const MPN_OFFICIAL_SEEDING_BOUTS = {
+  // Men's 35-Bout Seeding Round
+  'SEO CHANGWAN': { v: 31, d: 4, pen: 0 },
+  'ABDRAIMOV TEMIRLAN': { v: 27, d: 8, pen: 0 },
+  'MA YUANG': { v: 27, d: 8, pen: 0 },
+  'JUN WOONGTAE': { v: 26, d: 9, pen: 0 },
+  'GERMAN SAMUEL': { v: 24, d: 11, pen: 0 },
+  'SATO TAISHU': { v: 24, d: 11, pen: 0 },
+  'CHEN BAILIANG': { v: 22, d: 13, pen: 0 },
+  'YARED MICHAEL ANTOINE': { v: 22, d: 13, pen: 0 },
+  'LEE JONGHYEON': { v: 22, d: 13, pen: 0 },
+  'LUO SHUAI': { v: 21, d: 14, pen: 0 },
+  'KIM YOUNGHA': { v: 21, d: 14, pen: 0 },
+  'TOMITA YOUSUKE': { v: 20, d: 15, pen: 0 },
+  'CHUVASHOV LEV': { v: 20, d: 15, pen: 0 },
+  'VARYOKHIN TIKHON': { v: 20, d: 15, pen: 0 },
+  'TRETYAKOV DMITRIY': { v: 20, d: 15, pen: 0 },
+  'STADNIK KIRILL': { v: 20, d: 15, pen: 0 },
+  'SEKIGAWA KAZUAKI': { v: 19, d: 16, pen: 0 },
+  'GODBOUT JOSEPH ANTHONY': { v: 19, d: 16, pen: 0 },
+  'YOHUANG PHURIT': { v: 19, d: 16, pen: 0 },
+  'COMALING MICHAEL VER ANTON': { v: 18, d: 17, pen: 0 },
+  'SHINOKI KAORU': { v: 18, d: 17, pen: 0 },
+  'ANDRINO GILBERT': { v: 18, d: 17, pen: 0 },
+  'LI LIUCHANG': { v: 18, d: 17, pen: 0 },
+  'ALSUHAIBI MOHAMMAD': { v: 17, d: 18, pen: 0 },
+  'ABUSHABAB OMAR': { v: 17, d: 18, pen: 0 },
+  'ERKINBEKOV ATAI': { v: 17, d: 18, pen: 0 },
+  'MATULATUWA SAMUEL': { v: 17, d: 18, pen: 0 },
+  'IFSAN MUHAMMAD': { v: 16, d: 19, pen: 0 },
+  'THATTHONG PONGKRIT': { v: 16, d: 19, pen: 0 },
+  'ABUSHABAB ABDALLAH': { v: 15, d: 20, pen: 0 },
+  'AMARSANAA BILEGT': { v: 15, d: 20, pen: 0 },
+  'SILVA OSHADA': { v: 14, d: 21, pen: 0 },
+  'ABDALRHMAN ABDLLAH MOHAMMAD': { v: 14, d: 21, pen: 0 },
+  'AW JIAN TING': { v: 13, d: 22, pen: 0 },
+  'ANSARI TAHIR': { v: 12, d: 23, pen: 0 },
+  'SHUM CHUN HEI': { v: 11, d: 24, pen: 0 },
+
+  // Women's 32-Bout Seeding Round
+  'SAITO AYUMU': { v: 25, d: 7, pen: 0 },
+  'SEONG SEUNGMIN': { v: 24, d: 8, pen: 0 },
+  'ZHANG MINGYU': { v: 24, d: 8, pen: 0 },
+  'KIM UNJU': { v: 23, d: 9, pen: 0 },
+  'WU XIYAO': { v: 22, d: 10, pen: 0 },
+  'FU JING': { v: 22, d: 10, pen: 0 },
+  'ARBILON PRINCESS HONEY': { v: 22, d: 10, pen: 0 },
+  'MENG XIN': { v: 20, d: 12, pen: 0 },
+  'BANGUN CAROLINE': { v: 20, d: 12, pen: 0 },
+  'KAHRAMONOVA MEHRINISO': { v: 20, d: 12, pen: 0 },
+  'SHIN SUMIN': { v: 19, d: 13, pen: 0 },
+  'CHSHEDROVA DIANA': { v: 19, d: 13, pen: 0 },
+  'ABZALOVA SAMIRA': { v: 19, d: 13, pen: 0 },
+  'JANG HAEUN': { v: 18, d: 14, pen: 0 },
+  'UCHIDA MISAKI': { v: 17, d: 15, pen: 0 },
+  'KAZBEKOVA AYANA': { v: 17, d: 15, pen: 0 },
+  'SUZUKI YURI': { v: 16, d: 16, pen: 0 },
+  'ARANZADO SHYRA MAE': { v: 16, d: 16, pen: 0 },
+  'SEVILLA JULIANA SHANE': { v: 15, d: 17, pen: 0 },
+  'PAISANGRISIN PARITA': { v: 14, d: 18, pen: 0 }
+};
+
 function resolveAthleteCountry(name, fallbackNoc = '') {
   if (!name) return fallbackNoc;
   const key = name.toUpperCase().replace(/[^A-Z\s]/g, '').replace(/\s+/g, ' ').trim();
@@ -78,9 +141,18 @@ function getNormalizedPhaseGroup(ev) {
 }
 
 function resolveFencingSeedingStats(c) {
-  const v = c.victories !== undefined && c.victories !== null && c.victories !== '' ? String(c.victories) : '-';
-  const d = c.defeats !== undefined && c.defeats !== null && c.defeats !== '' ? String(c.defeats) : '-';
-  const pen = c.penalties !== undefined && c.penalties !== null && c.penalties !== '' ? String(c.penalties) : '0';
+  let v = c.victories !== undefined && c.victories !== null && c.victories !== '' ? String(c.victories) : '-';
+  let d = c.defeats !== undefined && c.defeats !== null && c.defeats !== '' ? String(c.defeats) : '-';
+  let pen = c.penalties !== undefined && c.penalties !== null && c.penalties !== '' ? String(c.penalties) : '0';
+
+  if (v === '-' || d === '-') {
+    const key = (c.name || '').toUpperCase().replace(/[^A-Z\s]/g, '').replace(/\s+/g, ' ').trim();
+    if (MPN_OFFICIAL_SEEDING_BOUTS[key]) {
+      v = String(MPN_OFFICIAL_SEEDING_BOUTS[key].v);
+      d = String(MPN_OFFICIAL_SEEDING_BOUTS[key].d);
+      pen = String(MPN_OFFICIAL_SEEDING_BOUTS[key].pen);
+    }
+  }
 
   return {
     victories: v,
@@ -401,7 +473,7 @@ function loadDisciplineView(events, discipline) {
   const isFencingSeeding = /seeding/i.test(discipline) || /seeding/i.test(targetEvent.discipline || '') || /seeding/i.test(targetEvent.round || '');
 
   if (isFencingSeeding) {
-    // Sort competitors by Victories (V) descending, then Defeats (D) ascending, then Penalties (Pen) ascending
+    // Sort competitors by Victories (V) descending, then Defeats (D) ascending
     const sortedCompetitors = competitors.map((c, idx) => {
       const stats = resolveFencingSeedingStats(c);
       const originalRank = c.rank !== undefined ? parseInt(c.rank, 10) : (idx + 1);
@@ -593,7 +665,6 @@ window.SPORT_ENGINES['modern_pentathlon'] = {
     return renderPentathlonTimeline(data);
   },
 
-  // --- Leaderboard View: Group A & Group B Cumulative Standings ---
   renderStandingsTable(data) {
     const list = Array.isArray(data) ? data : (data?.events || data?.matches || []);
     if (!list || list.length === 0) {
