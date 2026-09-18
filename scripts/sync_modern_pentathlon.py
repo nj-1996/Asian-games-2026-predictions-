@@ -23,6 +23,7 @@ for b in range(256):
         except Exception:
             pass
 
+# Official 2026 Asiad Athlete Nationality Registry
 ATHLETE_NOC_MAP = {
     # South Korea
     "SEO CHANGWAN": "KOR", "JUN WOONGTAE": "KOR", "LEE JONGHYEON": "KOR", "KIM YOUNGHA": "KOR",
@@ -37,22 +38,32 @@ ATHLETE_NOC_MAP = {
     "UCHIDA MISAKI": "JPN", "OTA NATSUMI": "JPN", "YOSHIDA HANA": "JPN", "SAITO KANA": "JPN",
     "SAITO AYUMU": "JPN", "SUZUKI YURI": "JPN",
     # Kazakhstan
-    "ABDRAIMOV TEMIRLAN": "KAZ", "GERMAN SAMUEL": "KAZ", "VARYOKHIN TIKHON": "KAZ", "TRETYAKOV DMITRIY": "KAZ",
-    "STADNIK KIRILL": "KAZ", "CHUVASHOV LEV": "KAZ", "POTAPENKO YELENA": "KAZ", "AKHMETOVA ANASTASSIYA": "KAZ",
-    "YAKOVLEVA SOFYA": "KAZ", "KULIKOVA KRISTINA": "KAZ", "CHSHEDROVA DIANA": "KAZ", "KAZBEKOVA AYANA": "KAZ",
+    "ABDRAIMOV TEMIRLAN": "KAZ", "VARYOKHIN TIKHON": "KAZ",
+    "STADNIK KIRILL": "KAZ", "CHUVASHOV LEV": "KAZ",
+    "POTAPENKO YELENA": "KAZ", "AKHMETOVA ANASTASSIYA": "KAZ",
+    "YAKOVLEVA SOFYA": "KAZ", "KULIKOVA KRISTINA": "KAZ",
+    "CHSHEDROVA DIANA": "KAZ", "KAZBEKOVA AYANA": "KAZ",
+    # Philippines
+    "GERMAN SAMUEL": "PHI", "GODBOUT JOSEPH ANTHONY": "PHI",
+    "COMALING MICHAEL VER ANTON": "PHI", "ANDRINO GILBERT": "PHI",
+    "ARBILON PRINCESS HONEY": "PHI", "ARANZADO SHYRA MAE": "PHI",
+    "SEVILLA JULIANA SHANE": "PHI",
+    # Uzbekistan
+    "TRETYAKOV DMITRIY": "UZB", "KAHRAMONOVA MEHRINISO": "UZB",
+    "ABZALOVA SAMIRA": "UZB",
+    # West & Central Asia
+    "YARED MICHAEL ANTOINE": "LBN",
+    "ALSUHAIBI MOHAMMAD": "KUW",
+    "ABDALRHMAN ABDLLAH MOHAMMAD": "UAE",
+    "ABUSHABAB OMAR": "PLE", "ABUSHABAB ABDALLAH": "PLE",
+    "ERKINBEKOV ATAI": "KGZ", "AMARSANAA BILEGT": "MGL",
     # Southeast & South Asia
-    "COMALING MICHAEL VER ANTON": "PHI", "ANDRINO GILBERT": "PHI", "ARBILON PRINCESS HONEY": "PHI",
-    "ARANZADO SHYRA MAE": "PHI", "SEVILLA JULIANA SHANE": "PHI",
     "YOHUANG PHURIT": "THA", "THATTHONG PONGKRIT": "THA", "PAISANGRISIN PARITA": "THA",
     "MATULATUWA SAMUEL": "INA", "IFSAN MUHAMMAD": "INA", "BANGUN CAROLINE": "INA",
-    "AW JIAN TING": "SGP", "ANSARI TAHIR": "IND",
-    "SILVA OSHADA": "SRI", "SHUM CHUN HEI": "HKG",
-    # Central & West Asia
-    "ERKINBEKOV ATAI": "KGZ", "AMARSANAA BILEGT": "MGL",
-    "KAHRAMONOVA MEHRINISO": "UZB", "ABZALOVA SAMIRA": "UZB",
-    "YARED MICHAEL ANTOINE": "LBN", "GODBOUT JOSEPH ANTHONY": "LBN",
-    "ALSUHAIBI MOHAMMAD": "KSA", "ABDALRHMAN ABDLLAH MOHAMMAD": "JOR",
-    "ABUSHABAB OMAR": "PLE", "ABUSHABAB ABDALLAH": "PLE"
+    "AW JIAN TING": "MAS",
+    "ANSARI TAHIR": "SGP",
+    "SILVA OSHADA": "SRI",
+    "SHUM CHUN HEI": "HKG"
 }
 
 VIC_CODES = {"w", "vic", "v", "victories", "victory", "wins", "win", "won", "boutswon", "bw"}
@@ -61,13 +72,15 @@ PEN_CODES = {"pen", "penalties", "penalty", "pty", "fault", "faults"}
 
 
 def resolve_country(name, raw_noc=""):
-    if raw_noc and str(raw_noc).strip():
-        return str(raw_noc).strip()
     if not name:
-        return ""
+        return str(raw_noc).strip()
     clean_name = re.sub(r"[^A-Za-z\s]", "", str(name)).strip().upper()
     clean_name = re.sub(r"\s+", " ", clean_name)
-    return ATHLETE_NOC_MAP.get(clean_name, "")
+    if clean_name in ATHLETE_NOC_MAP:
+        return ATHLETE_NOC_MAP[clean_name]
+    if raw_noc and str(raw_noc).strip():
+        return str(raw_noc).strip()
+    return ""
 
 
 def decompress_payload(resp):
@@ -287,13 +300,13 @@ def extract_competitor_name(c, default_name=""):
 def extract_competitor_noc(c):
     if not isinstance(c, dict):
         return ""
-    for key in ["NOC", "@NOC", "noc", "CountryCode", "Country", "Organisation", "@Organisation"]:
+    for key in ["NOC", "@NOC", "noc", "CountryCode", "Country", "Organisation", "@Organisation", "NocCode"]:
         if c.get(key) and str(c[key]).strip():
             return str(c[key]).strip()
 
     comp = c.get("Competitor")
     if isinstance(comp, dict):
-        for key in ["Organisation", "@Organisation", "NOC", "@NOC"]:
+        for key in ["Organisation", "@Organisation", "NOC", "@NOC", "CountryCode", "Country"]:
             if comp.get(key) and str(comp[key]).strip():
                 return comp[key].strip()
     return ""
