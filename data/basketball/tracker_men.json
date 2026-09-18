@@ -256,13 +256,13 @@
     },
     {
       "round": "Men 1/2 G 1",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-18",
       "time": "19:20",
       "player1": "Japan",
       "player2": "China",
-      "score": "44 - 30",
+      "score": "97 - 77",
       "winner": "Japan"
     },
     {
@@ -271,7 +271,7 @@
       "state": "Scheduled",
       "date": "2026-09-20",
       "time": "16:40",
-      "player1": "TBD",
+      "player1": "China",
       "player2": "IR Iran",
       "score": "vs",
       "winner": ""
@@ -282,7 +282,7 @@
       "state": "Scheduled",
       "date": "2026-09-20",
       "time": "19:40",
-      "player1": "TBD",
+      "player1": "Japan",
       "player2": "Korea",
       "score": "vs",
       "winner": ""

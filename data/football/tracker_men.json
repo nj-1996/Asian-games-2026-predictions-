@@ -91,8 +91,8 @@
     },
     {
       "round": "Group C",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-18",
       "time": "19:00",
       "player1": "Kuwait",
@@ -102,14 +102,14 @@
     },
     {
       "round": "Group D",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-18",
       "time": "19:30",
       "player1": "Saudi Arabia",
       "player2": "Qatar",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "2 - 0",
+      "winner": "Saudi Arabia"
     },
     {
       "round": "Group B",

@@ -179,24 +179,24 @@
     },
     {
       "round": "Match 18",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-18",
       "time": "19:00",
       "player1": "Chinese Taipei",
       "player2": "Thailand",
-      "score": "0 - 2",
+      "score": "0 - 3",
       "winner": "Thailand"
     },
     {
       "round": "Match 15",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-18",
       "time": "19:20",
       "player1": "Indonesia",
       "player2": "Japan",
-      "score": "0 - 1",
+      "score": "1 - 3",
       "winner": "Japan"
     },
     {
