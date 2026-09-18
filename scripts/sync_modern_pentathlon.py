@@ -23,7 +23,6 @@ for b in range(256):
         except Exception:
             pass
 
-# Official 2026 Asiad Athlete Nationality Registry
 ATHLETE_NOC_MAP = {
     # South Korea
     "SEO CHANGWAN": "KOR", "JUN WOONGTAE": "KOR", "LEE JONGHYEON": "KOR", "KIM YOUNGHA": "KOR",
@@ -55,6 +54,10 @@ ATHLETE_NOC_MAP = {
     "ALSUHAIBI MOHAMMAD": "KSA", "ABDALRHMAN ABDLLAH MOHAMMAD": "JOR",
     "ABUSHABAB OMAR": "PLE", "ABUSHABAB ABDALLAH": "PLE"
 }
+
+VIC_CODES = {"vic", "v", "victories", "victory", "wins", "win", "won", "boutswon"}
+DEF_CODES = {"def", "d", "defeats", "defeat", "losses", "loss", "lost", "boutslost", "ddef"}
+PEN_CODES = {"pen", "penalties", "penalty", "pty", "fault", "faults"}
 
 
 def resolve_country(name, raw_noc=""):
@@ -105,28 +108,37 @@ def fetch_api_day(date_str):
     return []
 
 
+def unpack_results(data):
+    if not data:
+        return []
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        for k in ["Competitors", "Results", "Result", "Units", "ResultItems", "Participants", "Rows"]:
+            v = data.get(k)
+            if isinstance(v, list) and len(v) > 0:
+                return v
+        comp = data.get("Competition")
+        if isinstance(comp, dict):
+            for k in ["Result", "Results", "Competitors"]:
+                v = comp.get(k)
+                if isinstance(v, list) and len(v) > 0:
+                    return v
+    return []
+
+
 def fetch_unit_results(rsc):
-    """Query summary and result endpoints to catch both round-robin and timed phases."""
     if not rsc:
         return []
-    for endpoint in ["summary", "result", "results"]:
+    for endpoint in ["result", "summary", "results"]:
         url = f"https://back.results.asiangames2026.org/s/AG2026/en/MPN/{endpoint}/{rsc}"
         try:
             resp = requests.get(url, headers=HEADERS, timeout=15)
             if resp.status_code == 200:
                 data = decompress_payload(resp)
-                if data:
-                    if isinstance(data, list):
-                        return data
-                    if isinstance(data, dict):
-                        return (
-                            data.get("Competitors")
-                            or data.get("Results")
-                            or data.get("Units")
-                            or data.get("ResultItems")
-                            or data.get("Participants")
-                            or []
-                        )
+                unpacked = unpack_results(data)
+                if unpacked:
+                    return unpacked
         except Exception:
             continue
     return []
@@ -192,6 +204,111 @@ def extract_match_datetime(m, fallback_date=""):
     return match_date or fallback_date, match_time
 
 
+def deep_extract_stat(c, target_codes):
+    """Recursively traverses ODF ExtendedResults, nested dictionaries, and lists."""
+    if not c:
+        return ""
+
+    if isinstance(c, dict):
+        for k, v in c.items():
+            clean_k = re.sub(r"[^a-zA-Z0-9]", "", str(k)).lower()
+            if clean_k in target_codes:
+                if isinstance(v, (str, int, float)) and str(v).strip() not in ["", "-", "None"]:
+                    return str(v).strip()
+
+        code_val = None
+        for code_key in ["Code", "@Code", "code", "@code", "Type", "@Type", "type", "PropertyCode", "Key"]:
+            if code_key in c and c[code_key]:
+                code_val = str(c[code_key])
+                break
+
+        if code_val:
+            clean_code = re.sub(r"[^a-zA-Z0-9]", "", code_val).lower()
+            if clean_code in target_codes:
+                for val_key in ["Value", "@Value", "value", "@value", "Result", "@Result", "result", "PropertyValue"]:
+                    if val_key in c and c[val_key] is not None:
+                        raw_v = str(c[val_key]).strip()
+                        if raw_v not in ["", "-", "None"]:
+                            return raw_v
+
+        for v in c.values():
+            if isinstance(v, (dict, list)):
+                res = deep_extract_stat(v, target_codes)
+                if res:
+                    return res
+
+    elif isinstance(c, list):
+        for item in c:
+            res = deep_extract_stat(item, target_codes)
+            if res:
+                return res
+
+    return ""
+
+
+def extract_compound_bouts(c):
+    if not isinstance(c, dict):
+        return "", ""
+    for k in ["Result", "@Result", "result", "Mark", "@Mark", "mark", "Score"]:
+        val = c.get(k)
+        if val and isinstance(val, (str, int)):
+            m = re.search(r"(\d+)\s*(?:[vV/\\-]|bouts? won)\s*(\d+)", str(val))
+            if m:
+                return m.group(1), m.group(2)
+    return "", ""
+
+
+def extract_competitor_name(c, default_name=""):
+    if not isinstance(c, dict):
+        return default_name
+
+    for key in ["CompetitorName", "AthleteName", "PrintName", "Name", "@PrintName"]:
+        if c.get(key) and str(c[key]).strip():
+            return str(c[key]).strip()
+
+    comp = c.get("Competitor")
+    if isinstance(comp, dict):
+        desc = comp.get("Description")
+        if isinstance(desc, dict):
+            for key in ["PrintName", "@PrintName", "Name"]:
+                if desc.get(key) and str(desc[key]).strip():
+                    return str(desc[key]).strip()
+            given = desc.get("GivenName") or desc.get("@GivenName") or ""
+            family = desc.get("FamilyName") or desc.get("@FamilyName") or ""
+            if family or given:
+                return f"{family} {given}".strip()
+        for key in ["PrintName", "@PrintName", "Name"]:
+            if isinstance(comp.get(key), str) and comp[key].strip():
+                return comp[key].strip()
+
+    return default_name
+
+
+def extract_competitor_noc(c):
+    if not isinstance(c, dict):
+        return ""
+    for key in ["NOC", "@NOC", "noc", "CountryCode", "Country", "Organisation", "@Organisation"]:
+        if c.get(key) and str(c[key]).strip():
+            return str(c[key]).strip()
+
+    comp = c.get("Competitor")
+    if isinstance(comp, dict):
+        for key in ["Organisation", "@Organisation", "NOC", "@NOC"]:
+            if comp.get(key) and str(comp[key]).strip():
+                return comp[key].strip()
+    return ""
+
+
+def extract_competitor_rank(c, default_rank=999):
+    if not isinstance(c, dict):
+        return default_rank
+    for key in ["Rank", "@Rank", "rank", "Order", "@Order", "Position"]:
+        val = c.get(key)
+        if val is not None and str(val).isdigit():
+            return int(val)
+    return default_rank
+
+
 def parse_competitors(raw_list):
     if not isinstance(raw_list, list):
         return []
@@ -201,66 +318,35 @@ def parse_competitors(raw_list):
         if not isinstance(c, dict):
             continue
 
-        rank_val = c.get("Rank") or c.get("Order") or c.get("Position") or (idx + 1)
-        name = (
-            c.get("CompetitorName")
-            or c.get("AthleteName")
-            or c.get("PrintName")
-            or c.get("Name")
-            or f"Competitor {rank_val}"
-        )
-        noc_raw = (
-            c.get("NOC")
-            or c.get("CountryCode")
-            or c.get("Country")
-            or c.get("Organisation")
-            or c.get("NocCode")
-            or ""
-        )
+        rank_val = extract_competitor_rank(c, idx + 1)
+        name = extract_competitor_name(c, f"Competitor {rank_val}")
+        noc_raw = extract_competitor_noc(c)
         country = resolve_country(name, noc_raw)
 
-        # 1. Direct field resolution for fencing bout counts
-        victories = c.get("Victories") or c.get("Wins") or c.get("Won") or c.get("V") or ""
-        defeats = c.get("Defeats") or c.get("Losses") or c.get("Lost") or c.get("D") or ""
-        penalties = c.get("Penalties") or c.get("Penalty") or c.get("Pen") or ""
+        # 1. Deep recursive search for ODF bout statistics
+        victories = deep_extract_stat(c, VIC_CODES)
+        defeats = deep_extract_stat(c, DEF_CODES)
+        penalties = deep_extract_stat(c, PEN_CODES)
 
-        # 2. Check nested statistical structures if top-level fields are missing
+        # 2. Check compound mark strings like "31/4"
         if not victories or not defeats:
-            for container in ["ExtendedResults", "ExtendedResult", "Properties", "Property", "Stats"]:
-                items = c.get(container)
-                if isinstance(items, list):
-                    for item in items:
-                        if isinstance(item, dict):
-                            code = str(item.get("Code") or item.get("Type") or "").upper()
-                            val = item.get("Value") or item.get("Result")
-                            if code in ["V", "VICTORIES", "WINS"] and not victories:
-                                victories = str(val)
-                            elif code in ["D", "DEFEATS", "LOSSES"] and not defeats:
-                                defeats = str(val)
-                            elif code in ["PEN", "PENALTY", "PENALTIES"] and not penalties:
-                                penalties = str(val)
-
-        # 3. Check compound summary score strings (e.g. "31/4" or "31-4")
-        res_str = str(c.get("Result") or c.get("Mark") or "").strip()
-        if ("/" in res_str or "-" in res_str) and (not victories or not defeats):
-            parts = re.split(r"[/\\-]", res_str)
-            if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
-                victories = parts[0]
-                defeats = parts[1]
+            cv, cd = extract_compound_bouts(c)
+            if cv and cd:
+                victories, defeats = cv, cd
 
         raw_result = c.get("Result") or c.get("Mark") or c.get("Time") or c.get("Score") or "-"
         pts = c.get("Points") or c.get("DisciplinePoints") or c.get("ScorePoints") or "-"
 
         parsed.append({
-            "rank": int(rank_val) if str(rank_val).isdigit() else rank_val,
-            "name": str(name).strip(),
+            "rank": rank_val,
+            "name": name,
             "country": country,
             "raw": str(raw_result).strip(),
             "points": str(pts).strip(),
             "total_pts": str(c.get("TotalPoints") or pts).strip(),
-            "victories": str(victories).strip() if victories else "-",
-            "defeats": str(defeats).strip() if defeats else "-",
-            "penalties": str(penalties).strip() if penalties else "0"
+            "victories": victories if victories else "-",
+            "defeats": defeats if defeats else "-",
+            "penalties": penalties if penalties else "0"
         })
 
     parsed.sort(key=lambda x: int(x["rank"]) if str(x["rank"]).isdigit() else 999)
@@ -366,33 +452,25 @@ def main():
         all_men.extend(parse_events(items, "Men", date_str=d))
         all_women.extend(parse_events(items, "Women", date_str=d))
 
-    # Guard: Preserve existing file if the cloud IP was blocked by upstream API
-    men_file = "data/modern_pentathlon/tracker_men.json"
-    women_file = "data/modern_pentathlon/tracker_women.json"
-
     os.makedirs("data/modern_pentathlon", exist_ok=True)
 
     if len(all_men) > 0:
-        with open(men_file, "w", encoding="utf-8") as f:
+        with open("data/modern_pentathlon/tracker_men.json", "w", encoding="utf-8") as f:
             json.dump({
                 "sport": "Modern Pentathlon (Men)",
                 "events": all_men,
                 "matches": all_men
             }, f, indent=2, ensure_ascii=False)
-        print(f"Saved {len(all_men)} Men's pentathlon sessions to {men_file}.")
-    else:
-        print(f"No Men's sessions fetched from API. Existing {men_file} was preserved.")
+        print(f"Saved {len(all_men)} Men's pentathlon sessions.")
 
     if len(all_women) > 0:
-        with open(women_file, "w", encoding="utf-8") as f:
+        with open("data/modern_pentathlon/tracker_women.json", "w", encoding="utf-8") as f:
             json.dump({
                 "sport": "Modern Pentathlon (Women)",
                 "events": all_women,
                 "matches": all_women
             }, f, indent=2, ensure_ascii=False)
-        print(f"Saved {len(all_women)} Women's pentathlon sessions to {women_file}.")
-    else:
-        print(f"No Women's sessions fetched from API. Existing {women_file} was preserved.")
+        print(f"Saved {len(all_women)} Women's pentathlon sessions.")
 
 
 if __name__ == "__main__":
