@@ -2,6 +2,8 @@
   "sport": "Modern Pentathlon (Men)",
   "events": [
     {
+      "id": "fencing_seeding_round_fencing_seeding_round_2026-09-16_14:30",
+      "unit_code": "",
       "round": "Fencing Seeding Round",
       "phase": "Fencing Seeding Round",
       "group": "",
@@ -11,9 +13,37 @@
       "time": "14:30",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "SEO Changwan",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "ABDRAIMOV Temirlan",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "MA Yuang",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_a)_fencing_direct_elimination_2026-09-18_10:00",
+      "unit_code": "",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -23,9 +53,37 @@
       "time": "10:00",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "ABDRAIMOV Temirlan",
+          "country": "",
+          "raw": "250",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "LEE Jonghyeon",
+          "country": "",
+          "raw": "244",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "SEO Changwan",
+          "country": "",
+          "raw": "238",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_a)_obstacle_2026-09-18_10:20",
+      "unit_code": "",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -35,9 +93,37 @@
       "time": "10:20",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "IFSAN Muhammad",
+          "country": "",
+          "raw": "379",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "ANDRINO Gilbert",
+          "country": "",
+          "raw": "378",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "CHEN Bailiang",
+          "country": "",
+          "raw": "377",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_a)_swimming_2026-09-18_10:40",
+      "unit_code": "",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -47,9 +133,37 @@
       "time": "10:40",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "SHUM Chun Hei",
+          "country": "",
+          "raw": "327",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "",
+          "raw": "324",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "",
+          "raw": "320",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_a)_laser_run_2026-09-18_11:00",
+      "unit_code": "",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -59,45 +173,157 @@
       "time": "11:00",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "ANDRINO Gilbert",
+          "country": "",
+          "raw": "634",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "LUO Shuai",
+          "country": "",
+          "raw": "625",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "SEO Changwan",
+          "country": "",
+          "raw": "621",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_b)_fencing_direct_elimination_2026-09-18_15:00",
+      "unit_code": "",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
       "discipline": "Fencing Direct Elimination",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "15:00",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "JUN Woongtae",
+          "country": "",
+          "raw": "250",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "MA Yuang",
+          "country": "",
+          "raw": "244",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "GERMAN Samuel",
+          "country": "",
+          "raw": "238",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_b)_obstacle_2026-09-18_15:20",
+      "unit_code": "",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
       "discipline": "Obstacle",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "15:20",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "GERMAN Samuel",
+          "country": "",
+          "raw": "386",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "MA Yuang",
+          "country": "",
+          "raw": "382",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "LI Liuchang",
+          "country": "",
+          "raw": "377",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_b)_swimming_2026-09-18_15:40",
+      "unit_code": "",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
       "discipline": "Swimming",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "15:40",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "KIM Youngha",
+          "country": "",
+          "raw": "332",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "LI Liuchang",
+          "country": "",
+          "raw": "323",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "MATULATUWA Samuel",
+          "country": "",
+          "raw": "321",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_b)_laser_run_2026-09-18_16:00",
+      "unit_code": "",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -107,9 +333,12 @@
       "time": "16:00",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": []
     },
     {
+      "id": "final_fencing_direct_elimination_2026-09-20_14:30",
+      "unit_code": "",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -119,9 +348,12 @@
       "time": "14:30",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": []
     },
     {
+      "id": "final_obstacle_2026-09-20_14:50",
+      "unit_code": "",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -131,9 +363,12 @@
       "time": "14:50",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": []
     },
     {
+      "id": "final_swimming_2026-09-20_15:10",
+      "unit_code": "",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -143,9 +378,12 @@
       "time": "15:10",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": []
     },
     {
+      "id": "final_laser_run_2026-09-20_15:30",
+      "unit_code": "",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -155,11 +393,14 @@
       "time": "15:30",
       "venue": "Anjo Sports Park",
       "is_medal": true,
-      "medal_desc": "Men's Individual & Team Medals"
+      "medal_desc": "Men's Individual & Team Medals",
+      "competitors": []
     }
   ],
   "matches": [
     {
+      "id": "fencing_seeding_round_fencing_seeding_round_2026-09-16_14:30",
+      "unit_code": "",
       "round": "Fencing Seeding Round",
       "phase": "Fencing Seeding Round",
       "group": "",
@@ -169,9 +410,37 @@
       "time": "14:30",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "SEO Changwan",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "ABDRAIMOV Temirlan",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "MA Yuang",
+          "country": "",
+          "raw": "0",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_a)_fencing_direct_elimination_2026-09-18_10:00",
+      "unit_code": "",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -181,9 +450,37 @@
       "time": "10:00",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "ABDRAIMOV Temirlan",
+          "country": "",
+          "raw": "250",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "LEE Jonghyeon",
+          "country": "",
+          "raw": "244",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "SEO Changwan",
+          "country": "",
+          "raw": "238",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_a)_obstacle_2026-09-18_10:20",
+      "unit_code": "",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -193,9 +490,37 @@
       "time": "10:20",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "IFSAN Muhammad",
+          "country": "",
+          "raw": "379",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "ANDRINO Gilbert",
+          "country": "",
+          "raw": "378",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "CHEN Bailiang",
+          "country": "",
+          "raw": "377",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_a)_swimming_2026-09-18_10:40",
+      "unit_code": "",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -205,9 +530,37 @@
       "time": "10:40",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "SHUM Chun Hei",
+          "country": "",
+          "raw": "327",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "",
+          "raw": "324",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "",
+          "raw": "320",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_a)_laser_run_2026-09-18_11:00",
+      "unit_code": "",
       "round": "Semi-final (Group A)",
       "phase": "Semi-final (Group A)",
       "group": "Group A",
@@ -217,45 +570,157 @@
       "time": "11:00",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "ANDRINO Gilbert",
+          "country": "",
+          "raw": "634",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "LUO Shuai",
+          "country": "",
+          "raw": "625",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "SEO Changwan",
+          "country": "",
+          "raw": "621",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_b)_fencing_direct_elimination_2026-09-18_15:00",
+      "unit_code": "",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
       "discipline": "Fencing Direct Elimination",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "15:00",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "JUN Woongtae",
+          "country": "",
+          "raw": "250",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "MA Yuang",
+          "country": "",
+          "raw": "244",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "GERMAN Samuel",
+          "country": "",
+          "raw": "238",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_b)_obstacle_2026-09-18_15:20",
+      "unit_code": "",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
       "discipline": "Obstacle",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "15:20",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "GERMAN Samuel",
+          "country": "",
+          "raw": "386",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "MA Yuang",
+          "country": "",
+          "raw": "382",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "LI Liuchang",
+          "country": "",
+          "raw": "377",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_b)_swimming_2026-09-18_15:40",
+      "unit_code": "",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
       "discipline": "Swimming",
-      "status": "Scheduled",
+      "status": "Official",
       "date": "2026-09-18",
       "time": "15:40",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "KIM Youngha",
+          "country": "",
+          "raw": "332",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 2,
+          "name": "LI Liuchang",
+          "country": "",
+          "raw": "323",
+          "points": "-",
+          "total_pts": "-"
+        },
+        {
+          "rank": 3,
+          "name": "MATULATUWA Samuel",
+          "country": "",
+          "raw": "321",
+          "points": "-",
+          "total_pts": "-"
+        }
+      ]
     },
     {
+      "id": "semi-final_(group_b)_laser_run_2026-09-18_16:00",
+      "unit_code": "",
       "round": "Semi-final (Group B)",
       "phase": "Semi-final (Group B)",
       "group": "Group B",
@@ -265,9 +730,12 @@
       "time": "16:00",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": []
     },
     {
+      "id": "final_fencing_direct_elimination_2026-09-20_14:30",
+      "unit_code": "",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -277,9 +745,12 @@
       "time": "14:30",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": []
     },
     {
+      "id": "final_obstacle_2026-09-20_14:50",
+      "unit_code": "",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -289,9 +760,12 @@
       "time": "14:50",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": []
     },
     {
+      "id": "final_swimming_2026-09-20_15:10",
+      "unit_code": "",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -301,9 +775,12 @@
       "time": "15:10",
       "venue": "Anjo Sports Park",
       "is_medal": false,
-      "medal_desc": ""
+      "medal_desc": "",
+      "competitors": []
     },
     {
+      "id": "final_laser_run_2026-09-20_15:30",
+      "unit_code": "",
       "round": "Final",
       "phase": "Final",
       "group": "",
@@ -313,7 +790,8 @@
       "time": "15:30",
       "venue": "Anjo Sports Park",
       "is_medal": true,
-      "medal_desc": "Men's Individual & Team Medals"
+      "medal_desc": "Men's Individual & Team Medals",
+      "competitors": []
     }
   ]
 }

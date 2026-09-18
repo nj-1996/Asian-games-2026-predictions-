@@ -135,8 +135,8 @@
     },
     {
       "round": "Match 13",
-      "status": "Upcoming",
-      "state": "Unofficial",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-18",
       "time": "13:00",
       "player1": "Qatar",
@@ -146,8 +146,8 @@
     },
     {
       "round": "Match 16",
-      "status": "Upcoming",
-      "state": "Unofficial",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-18",
       "time": "13:00",
       "player1": "Kazakhstan",
@@ -157,25 +157,25 @@
     },
     {
       "round": "Match 14",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-18",
       "time": "16:00",
       "player1": "Vietnam",
       "player2": "Korea",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 1",
+      "winner": "Korea"
     },
     {
       "round": "Match 17",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-18",
       "time": "16:00",
       "player1": "Mongolia",
       "player2": "Kyrgyzstan",
-      "score": "vs",
-      "winner": ""
+      "score": "2 - 0",
+      "winner": "Mongolia"
     },
     {
       "round": "Match 18",

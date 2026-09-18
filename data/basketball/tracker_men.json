@@ -3,8 +3,8 @@
   "matches": [
     {
       "round": "Men Group B G 1",
-      "status": "Finished",
-      "state": "Official",
+      "status": "Upcoming",
+      "state": "Unofficial",
       "date": "2026-09-10",
       "time": "10:00",
       "player1": "IR Iran",
@@ -245,14 +245,14 @@
     },
     {
       "round": "Men 1/2 G 2",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-18",
       "time": "16:00",
       "player1": "Korea",
       "player2": "IR Iran",
-      "score": "vs",
-      "winner": ""
+      "score": "36 - 24",
+      "winner": "Korea"
     },
     {
       "round": "Men 1/2 G 1",
