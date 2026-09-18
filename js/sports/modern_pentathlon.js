@@ -8,7 +8,28 @@ let activePentathlonEvents = [];
 let activePhaseGroup = '';
 let activeDiscipline = '';
 
-// --- Official 2026 Asiad Athlete Nationality Registry ---
+const MPN_NOC_TO_COUNTRY = {
+  KOR: 'South Korea',
+  CHN: 'China',
+  JPN: 'Japan',
+  KAZ: 'Kazakhstan',
+  PHI: 'Philippines',
+  UZB: 'Uzbekistan',
+  LBN: 'Lebanon',
+  THA: 'Thailand',
+  INA: 'Indonesia',
+  KUW: 'Kuwait',
+  PLE: 'Palestine',
+  KGZ: 'Kyrgyzstan',
+  MGL: 'Mongolia',
+  SRI: 'Sri Lanka',
+  UAE: 'United Arab Emirates',
+  MAS: 'Malaysia',
+  SGP: 'Singapore',
+  HKG: 'Hong Kong'
+};
+
+// Official 2026 Asiad Athlete Nationality Registry
 const MPN_ATHLETE_NOC = {
   // South Korea
   'SEO CHANGWAN': 'South Korea', 'JUN WOONGTAE': 'South Korea',
@@ -32,33 +53,43 @@ const MPN_ATHLETE_NOC = {
   'SAITO AYUMU': 'Japan', 'SUZUKI YURI': 'Japan',
 
   // Kazakhstan
-  'ABDRAIMOV TEMIRLAN': 'Kazakhstan', 'GERMAN SAMUEL': 'Kazakhstan',
-  'VARYOKHIN TIKHON': 'Kazakhstan', 'TRETYAKOV DMITRIY': 'Kazakhstan',
+  'ABDRAIMOV TEMIRLAN': 'Kazakhstan', 'VARYOKHIN TIKHON': 'Kazakhstan',
   'STADNIK KIRILL': 'Kazakhstan', 'CHUVASHOV LEV': 'Kazakhstan',
   'POTAPENKO YELENA': 'Kazakhstan', 'AKHMETOVA ANASTASSIYA': 'Kazakhstan',
   'YAKOVLEVA SOFYA': 'Kazakhstan', 'KULIKOVA KRISTINA': 'Kazakhstan',
   'CHSHEDROVA DIANA': 'Kazakhstan', 'KAZBEKOVA AYANA': 'Kazakhstan',
 
-  // Southeast & South Asia
+  // Philippines
+  'GERMAN SAMUEL': 'Philippines', 'GODBOUT JOSEPH ANTHONY': 'Philippines',
   'COMALING MICHAEL VER ANTON': 'Philippines', 'ANDRINO GILBERT': 'Philippines',
   'ARBILON PRINCESS HONEY': 'Philippines', 'ARANZADO SHYRA MAE': 'Philippines',
   'SEVILLA JULIANA SHANE': 'Philippines',
-  'YOHUANG PHURIT': 'Thailand', 'THATTHONG PONGKRIT': 'Thailand',
-  'PAISANGRISIN PARITA': 'Thailand',
-  'MATULATUWA SAMUEL': 'Indonesia', 'IFSAN MUHAMMAD': 'Indonesia',
-  'BANGUN CAROLINE': 'Indonesia',
-  'AW JIAN TING': 'Singapore', 'ANSARI TAHIR': 'India',
-  'SILVA OSHADA': 'Sri Lanka', 'SHUM CHUN HEI': 'Hong Kong',
 
-  // Central & West Asia
+  // Uzbekistan
+  'TRETYAKOV DMITRIY': 'Uzbekistan', 'KAHRAMONOVA MEHRINISO': 'Uzbekistan',
+  'ABZALOVA SAMIRA': 'Uzbekistan',
+
+  // West & Central Asia
+  'YARED MICHAEL ANTOINE': 'Lebanon',
+  'ALSUHAIBI MOHAMMAD': 'Kuwait',
+  'ABDALRHMAN ABDLLAH MOHAMMAD': 'United Arab Emirates',
+  'ABUSHABAB OMAR': 'Palestine', 'ABUSHABAB ABDALLAH': 'Palestine',
   'ERKINBEKOV ATAI': 'Kyrgyzstan', 'AMARSANAA BILEGT': 'Mongolia',
-  'KAHRAMONOVA MEHRINISO': 'Uzbekistan', 'ABZALOVA SAMIRA': 'Uzbekistan',
-  'YARED MICHAEL ANTOINE': 'Lebanon', 'GODBOUT JOSEPH ANTHONY': 'Lebanon',
-  'ALSUHAIBI MOHAMMAD': 'Saudi Arabia', 'ABDALRHMAN ABDLLAH MOHAMMAD': 'Jordan',
-  'ABUSHABAB OMAR': 'Palestine', 'ABUSHABAB ABDALLAH': 'Palestine'
+
+  // Southeast & South Asia
+  'YOHUANG PHURIT': 'Thailand', 'THATTHONG PONGKRIT': 'Thailand', 'PAISANGRISIN PARITA': 'Thailand',
+  'MATULATUWA SAMUEL': 'Indonesia', 'IFSAN MUHAMMAD': 'Indonesia', 'BANGUN CAROLINE': 'Indonesia',
+  'AW JIAN TING': 'Malaysia',
+  'ANSARI TAHIR': 'Singapore',
+  'SILVA OSHADA': 'Sri Lanka',
+  'SHUM CHUN HEI': 'Hong Kong'
 };
 
 function resolveAthleteCountry(name, fallbackNoc = '') {
+  const cleanNoc = (fallbackNoc || '').toUpperCase().trim();
+  if (MPN_NOC_TO_COUNTRY[cleanNoc]) {
+    return MPN_NOC_TO_COUNTRY[cleanNoc];
+  }
   if (!name) return fallbackNoc;
   const key = name.toUpperCase().replace(/[^A-Z\s]/g, '').replace(/\s+/g, ' ').trim();
   return MPN_ATHLETE_NOC[key] || fallbackNoc || '';
@@ -406,7 +437,6 @@ function loadDisciplineView(events, discipline) {
       let d = (c.defeats !== undefined && c.defeats !== null && c.defeats !== '') ? String(c.defeats) : '-';
       const pen = (c.penalties !== undefined && c.penalties !== null && c.penalties !== '') ? String(c.penalties) : '0';
 
-      // Automatic derivation if one side is missing
       if ((v === '-' || !/^\d+$/.test(v)) && /^\d+$/.test(d)) {
         v = String(Math.max(0, totalBouts - parseInt(d, 10)));
       } else if ((d === '-' || !/^\d+$/.test(d)) && /^\d+$/.test(v)) {
