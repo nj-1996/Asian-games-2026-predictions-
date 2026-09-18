@@ -55,8 +55,8 @@ ATHLETE_NOC_MAP = {
     "ABUSHABAB OMAR": "PLE", "ABUSHABAB ABDALLAH": "PLE"
 }
 
-VIC_CODES = {"vic", "v", "victories", "victory", "wins", "win", "won", "boutswon"}
-DEF_CODES = {"def", "d", "defeats", "defeat", "losses", "loss", "lost", "boutslost", "ddef"}
+VIC_CODES = {"w", "vic", "v", "victories", "victory", "wins", "win", "won", "boutswon", "bw"}
+DEF_CODES = {"l", "def", "d", "defeats", "defeat", "losses", "loss", "lost", "boutslost", "bl", "ddef"}
 PEN_CODES = {"pen", "penalties", "penalty", "pty", "fault", "faults"}
 
 
@@ -130,7 +130,7 @@ def unpack_results(data):
 def fetch_unit_results(rsc):
     if not rsc:
         return []
-    for endpoint in ["result", "summary", "results"]:
+    for endpoint in ["summary", "result", "results"]:
         url = f"https://back.results.asiangames2026.org/s/AG2026/en/MPN/{endpoint}/{rsc}"
         try:
             resp = requests.get(url, headers=HEADERS, timeout=15)
@@ -252,7 +252,7 @@ def extract_compound_bouts(c):
     for k in ["Result", "@Result", "result", "Mark", "@Mark", "mark", "Score"]:
         val = c.get(k)
         if val and isinstance(val, (str, int)):
-            m = re.search(r"(\d+)\s*(?:[vV/\\-]|bouts? won)\s*(\d+)", str(val))
+            m = re.search(r"(\d+)\s*(?:[vVwW/\\-]|bouts? won)\s*(\d+)", str(val))
             if m:
                 return m.group(1), m.group(2)
     return "", ""
@@ -313,6 +313,9 @@ def parse_competitors(raw_list):
     if not isinstance(raw_list, list):
         return []
 
+    total_athletes = len(raw_list)
+    total_bouts = total_athletes - 1 if total_athletes > 1 else 35
+
     parsed = []
     for idx, c in enumerate(raw_list):
         if not isinstance(c, dict):
@@ -333,6 +336,12 @@ def parse_competitors(raw_list):
             cv, cd = extract_compound_bouts(c)
             if cv and cd:
                 victories, defeats = cv, cd
+
+        # 3. Dynamic round-robin bout calculation if the feed omitted one column
+        if defeats.isdigit() and (not victories or not victories.isdigit()):
+            victories = str(max(0, total_bouts - int(defeats)))
+        elif victories.isdigit() and (not defeats or not defeats.isdigit()):
+            defeats = str(max(0, total_bouts - int(victories)))
 
         raw_result = c.get("Result") or c.get("Mark") or c.get("Time") or c.get("Score") or "-"
         pts = c.get("Points") or c.get("DisciplinePoints") or c.get("ScorePoints") or "-"
