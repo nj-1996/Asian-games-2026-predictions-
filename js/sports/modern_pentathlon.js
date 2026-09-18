@@ -77,53 +77,15 @@ function getNormalizedPhaseGroup(ev) {
   return pName;
 }
 
-// Dynamically cross-reference fencing points from website data and compute V, D, Pen
-function resolveFencingSeedingStats(c, allEvents) {
-  let pts = parseInt(c.raw, 10) || parseInt(c.points, 10) || 0;
-
-  if (pts === 0 && Array.isArray(allEvents)) {
-    const targetName = (c.name || '').trim().toLowerCase();
-    for (const ev of allEvents) {
-      const disc = (ev.discipline || ev.round || '').toLowerCase();
-      if (disc.includes('fencing') && !disc.includes('seeding')) {
-        const found = (ev.competitors || []).find(item => (item.name || '').trim().toLowerCase() === targetName);
-        if (found) {
-          const foundPts = parseInt(found.raw, 10) || parseInt(found.points, 10) || 0;
-          if (foundPts > 0) {
-            pts = foundPts;
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  // Calculate V, D, Pen using UIPM 35-bout formula (250 pts = 25 wins, 6 pts per bout)
-  if (pts > 0) {
-    const baseDiff = pts - 250;
-    const rem = ((baseDiff % 6) + 6) % 6;
-    let pen = 0;
-    if (rem === 4) pen = 2;
-    else if (rem === 2) pen = 4;
-    else if (rem !== 0) pen = rem;
-
-    const netPts = pts + pen;
-    const wins = Math.max(0, Math.min(35, 25 + Math.round((netPts - 250) / 6)));
-    const losses = 35 - wins;
-
-    return {
-      points: String(pts),
-      victories: String(wins),
-      defeats: String(losses),
-      penalties: String(pen)
-    };
-  }
+function resolveFencingSeedingStats(c) {
+  const v = c.victories !== undefined && c.victories !== null && c.victories !== '' ? String(c.victories) : '-';
+  const d = c.defeats !== undefined && c.defeats !== null && c.defeats !== '' ? String(c.defeats) : '-';
+  const pen = c.penalties !== undefined && c.penalties !== null && c.penalties !== '' ? String(c.penalties) : '0';
 
   return {
-    points: '-',
-    victories: '-',
-    defeats: '-',
-    penalties: '0'
+    victories: v,
+    defeats: d,
+    penalties: pen
   };
 }
 
@@ -439,21 +401,23 @@ function loadDisciplineView(events, discipline) {
   const isFencingSeeding = /seeding/i.test(discipline) || /seeding/i.test(targetEvent.discipline || '') || /seeding/i.test(targetEvent.round || '');
 
   if (isFencingSeeding) {
-    // Sort competitors by Victories (V) descending, then by Points descending, then by Penalties ascending
-    const sortedCompetitors = competitors.map(c => {
-      const stats = resolveFencingSeedingStats(c, activePentathlonEvents);
+    // Sort competitors by Victories (V) descending, then Defeats (D) ascending, then Penalties (Pen) ascending
+    const sortedCompetitors = competitors.map((c, idx) => {
+      const stats = resolveFencingSeedingStats(c);
+      const originalRank = c.rank !== undefined ? parseInt(c.rank, 10) : (idx + 1);
       return {
         ...c,
         ...stats,
+        originalRank: isNaN(originalRank) ? 999 : originalRank,
         numV: parseInt(stats.victories, 10) || 0,
         numD: parseInt(stats.defeats, 10) || 0,
-        numPen: parseInt(stats.penalties, 10) || 0,
-        numPts: parseInt(stats.points, 10) || 0
+        numPen: parseInt(stats.penalties, 10) || 0
       };
     }).sort((a, b) => {
       if (b.numV !== a.numV) return b.numV - a.numV;
-      if (b.numPts !== a.numPts) return b.numPts - a.numPts;
-      return a.numPen - b.numPen;
+      if (a.numD !== b.numD) return a.numD - b.numD;
+      if (a.numPen !== b.numPen) return a.numPen - b.numPen;
+      return a.originalRank - b.originalRank;
     });
 
     content.innerHTML = `
@@ -462,13 +426,12 @@ function loadDisciplineView(events, discipline) {
         <span style="font-size:0.75rem; color:${isLive ? '#ef4444' : '#4ade80'}; font-weight:600;">${targetEvent.status}</span>
       </div>
 
-      <div style="display:grid; grid-template-columns: 28px 1fr 34px 34px 38px 60px; font-size:0.7rem; font-weight:700; color:#64748b; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); text-transform:uppercase; text-align:center;">
+      <div style="display:grid; grid-template-columns: 28px 1fr 38px 38px 44px; font-size:0.7rem; font-weight:700; color:#64748b; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); text-transform:uppercase; text-align:center;">
         <span style="text-align:left;">#</span>
         <span style="text-align:left;">Athlete</span>
         <span>V</span>
         <span>D</span>
-        <span>Pen</span>
-        <span style="text-align:right;">Points</span>
+        <span style="text-align:right;">Pen</span>
       </div>
 
       <div style="font-size:0.82rem;">
@@ -479,7 +442,7 @@ function loadDisciplineView(events, discipline) {
           const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(country) : '';
 
           return `
-            <div style="display:grid; grid-template-columns: 28px 1fr 34px 34px 38px 60px; align-items:center; padding:0.65rem 0; border-bottom:1px solid rgba(255,255,255,0.04); text-align:center;">
+            <div style="display:grid; grid-template-columns: 28px 1fr 38px 38px 44px; align-items:center; padding:0.65rem 0; border-bottom:1px solid rgba(255,255,255,0.04); text-align:center;">
               <span style="text-align:left; font-weight:700; color:#94a3b8;">${rank}</span>
               <div style="text-align:left;">
                 <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.35rem;">
@@ -489,8 +452,7 @@ function loadDisciplineView(events, discipline) {
               </div>
               <span style="font-family:monospace; color:#4ade80; font-weight:600;">${c.victories}</span>
               <span style="font-family:monospace; color:#f87171; font-weight:600;">${c.defeats}</span>
-              <span style="font-family:monospace; color:${c.penalties !== '0' && c.penalties !== '-' ? '#fbbf24' : '#94a3b8'};">${c.penalties}</span>
-              <span style="text-align:right; font-weight:700; color:#38bdf8; font-size:0.88rem;">${c.points !== '-' ? c.points + ' pts' : '-'}</span>
+              <span style="font-family:monospace; color:${c.penalties !== '0' && c.penalties !== '-' ? '#fbbf24' : '#94a3b8'}; text-align:right;">${c.penalties}</span>
             </div>
           `;
         }).join('')}
