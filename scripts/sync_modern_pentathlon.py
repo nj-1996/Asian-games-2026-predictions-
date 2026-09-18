@@ -23,7 +23,6 @@ for b in range(256):
         except Exception:
             pass
 
-# Official 2026 Asiad Athlete Nationality Registry
 ATHLETE_NOC_MAP = {
     # South Korea
     "SEO CHANGWAN": "KOR", "JUN WOONGTAE": "KOR", "LEE JONGHYEON": "KOR", "KIM YOUNGHA": "KOR",
@@ -234,13 +233,43 @@ def parse_competitors(raw_list):
             or pts
         )
 
+        victories = (
+            c.get("Victories")
+            or c.get("Wins")
+            or c.get("Won")
+            or c.get("Win")
+            or c.get("V")
+            or c.get("W")
+            or "-"
+        )
+        defeats = (
+            c.get("Defeats")
+            or c.get("Losses")
+            or c.get("Lost")
+            or c.get("Loss")
+            or c.get("D")
+            or c.get("L")
+            or "-"
+        )
+        penalties = (
+            c.get("Penalties")
+            or c.get("Penalty")
+            or c.get("Pen")
+            or c.get("Faults")
+            or c.get("PenaltyPoints")
+            or "0"
+        )
+
         parsed.append({
             "rank": int(rank_val) if str(rank_val).isdigit() else rank_val,
             "name": str(name).strip(),
             "country": country,
             "raw": str(raw_result).strip(),
             "points": str(pts).strip(),
-            "total_pts": str(total_pts).strip()
+            "total_pts": str(total_pts).strip(),
+            "victories": str(victories).strip(),
+            "defeats": str(defeats).strip(),
+            "penalties": str(penalties).strip()
         })
 
     parsed.sort(key=lambda x: int(x["rank"]) if str(x["rank"]).isdigit() else 999)
