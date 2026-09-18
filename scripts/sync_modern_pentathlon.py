@@ -246,10 +246,23 @@ def main():
 
     all_men = []
     all_women = []
+    sample_dumped = False
 
     for d in dates:
         items = fetch_api_day(d)
         print(f"[{d}] Scraped {len(items)} MPN schedule items")
+
+        # Dump the first completed raw payload to inspect actual feed keys
+        if not sample_dumped and items:
+            for it in items:
+                st = str(it.get("Status", "")).upper()
+                if st in ["OFFICIAL", "FINISHED"]:
+                    with open("mpn_raw_sample.json", "w", encoding="utf-8") as sf:
+                        json.dump(it, sf, indent=2, ensure_ascii=False)
+                    print(f"--> Saved raw sample item to mpn_raw_sample.json from date {d}")
+                    sample_dumped = True
+                    break
+
         all_men.extend(parse_events(items, "Men", date_str=d))
         all_women.extend(parse_events(items, "Women", date_str=d))
 
