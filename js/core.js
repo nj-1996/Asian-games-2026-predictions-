@@ -16,32 +16,6 @@ window.onerror = function(msg, url, line) {
   return false;
 };
 
-// --- Intercept Fetch to Cache Multi-Event Prediction Payloads Transparently ---
-(function() {
-  const _origFetch = window.fetch;
-  window.__sportPredictionsCache = window.__sportPredictionsCache || {};
-
-  window.fetch = async function(...args) {
-    const res = await _origFetch.apply(this, args);
-    try {
-      const url = typeof args[0] === 'string' ? args[0] : (args[0] && args[0].url);
-      if (url && typeof url === 'string' && url.includes('predictions') && url.includes('.json')) {
-        const clone = res.clone();
-        clone.json().then(data => {
-          if (data && typeof data === 'object') {
-            const sportKey = (data.sport || '').toLowerCase().replace(/[^a-z0-9]/g, '_');
-            if (sportKey) {
-              window.__sportPredictionsCache[sportKey] = data;
-            }
-            window.__lastPredictionsJson = data;
-          }
-        }).catch(() => {});
-      }
-    } catch (e) {}
-    return res;
-  };
-})();
-
 // --- Data Extraction Utility ---
 function extractList(raw) {
   if (!raw) return [];
@@ -539,6 +513,18 @@ function setPredictionsSubView(subView) {
   }
 }
 
+// Global toggle for Detailed Predictions view (Modern Pentathlon only)
+window.toggleDetailedPredictions = function() {
+  const tableWrap = document.getElementById('detailed-predictions-table-wrap');
+  const arrow = document.getElementById('detailed-pred-arrow');
+  if (!tableWrap) return;
+  const isHidden = tableWrap.style.display === 'none';
+  tableWrap.style.display = isHidden ? 'block' : 'none';
+  if (arrow) {
+    arrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+  }
+};
+
 // --- Matches Router ---
 function renderMatchesView(container, matches) {
   const rawSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
@@ -684,9 +670,10 @@ function renderScheduleAndHero(matches) {
   return heroHtml + cardsHtml;
 }
 
-// --- Predictions & Dynamic Medal Table (Supports Multi-Event) ---
+// --- Predictions & Dynamic Medal Table ---
 function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
   const activeSport = (window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball')).toLowerCase();
+  const isPentathlon = activeSport.includes('pentathlon');
 
   const pillsHeader = `
     <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); margin-bottom:1.25rem; gap:3px;">
@@ -717,9 +704,9 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
       });
 
       const res = [];
-      if (sorted[0]) res.push({ team: sorted[0], medal: 'gold' });
-      if (sorted[1]) res.push({ team: sorted[1], medal: 'silver' });
-      if (sorted[2]) res.push({ team: sorted[2], medal: 'bronze' });
+      if (sorted[0]) res.push({ item: sorted[0], medal: 'gold' });
+      if (sorted[1]) res.push({ item: sorted[1], medal: 'silver' });
+      if (sorted[2]) res.push({ item: sorted[2], medal: 'bronze' });
       return res;
     };
 
@@ -741,68 +728,168 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     const mData = menPreds || [];
     const wData = womenPreds || [];
 
-    // Check if the sport has an explicit "events" array in predictions.json
-    const rawJson = (window.__sportPredictionsCache && (window.__sportPredictionsCache[activeSport] || window.__sportPredictionsCache[activeSport.replace(/[-_]/g, '')])) || window.__lastPredictionsJson;
-
-    if (rawJson && Array.isArray(rawJson.events) && rawJson.events.length > 0) {
-      // Dynamically iterate over all distinct medal events (e.g. 4 events in Modern Pentathlon)
-      rawJson.events.forEach(evt => {
-        const list = evt.rankings || evt.predictions || evt.data || [];
-        projectPodium(list).forEach(item => recordMedal(item.team, item.medal));
-      });
-    } else if (activeSport.includes('pentathlon')) {
-      // Built-in fallback if cache is still hydrating
-      const eventLists = [mData, wData];
-      eventLists.push([
-        { team: "Republic of Korea", gold: "68.0%", silver: "24.5%", bronze: "6.5%" },
-        { team: "China", gold: "26.0%", silver: "52.0%", bronze: "18.0%" },
-        { team: "Japan (Host)", gold: "6.0%", silver: "23.5%", bronze: "65.5%" },
-        { team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "10.0%" }
-      ]);
-      eventLists.push([
-        { team: "China", gold: "51.0%", silver: "44.0%", bronze: "4.5%" },
-        { team: "Republic of Korea", gold: "46.0%", silver: "49.0%", bronze: "4.5%" },
-        { team: "Japan (Host)", gold: "3.0%", silver: "7.0%", bronze: "85.0%" },
-        { team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "6.0%" }
-      ]);
-      eventLists.forEach(list => {
-        projectPodium(list).forEach(item => recordMedal(item.team, item.medal));
-      });
-    } else {
-      // Standard single-event sports (e.g. Football, Basketball, Volleyball)
+    // =========================================================================
+    // 1. STANDARD PATH: For all other sports (Football, Basketball, Volleyball)
+    // =========================================================================
+    if (!isPentathlon) {
       if (mData.events && Array.isArray(mData.events)) {
-        mData.events.forEach(evt => projectPodium(evt.predictions || evt.data || evt.rankings).forEach(item => recordMedal(item.team, item.medal)));
+        mData.events.forEach(evt => projectPodium(evt.predictions || evt.data || evt.rankings).forEach(res => recordMedal(res.item, res.medal)));
       } else {
-        projectPodium(mData).forEach(item => recordMedal(item.team, item.medal));
+        projectPodium(mData).forEach(res => recordMedal(res.item, res.medal));
       }
       
       if (wData.events && Array.isArray(wData.events)) {
-        wData.events.forEach(evt => projectPodium(evt.predictions || evt.data || evt.rankings).forEach(item => recordMedal(item.team, item.medal)));
+        wData.events.forEach(evt => projectPodium(evt.predictions || evt.data || evt.rankings).forEach(res => recordMedal(res.item, res.medal)));
       } else {
-        projectPodium(wData).forEach(item => recordMedal(item.team, item.medal));
+        projectPodium(wData).forEach(res => recordMedal(res.item, res.medal));
       }
-    }
 
-    const sortedTable = Object.values(tableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze || b.total - a.total);
+      const sortedTable = Object.values(tableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze || b.total - a.total);
 
-    if (sortedTable.length === 0) {
-      container.innerHTML = `${pillsHeader}<div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">No prediction models available to construct medal table.</div>`;
+      if (sortedTable.length === 0) {
+        container.innerHTML = `${pillsHeader}<div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">No prediction models available to construct medal table.</div>`;
+        return;
+      }
+
+      const totalGold = sortedTable.reduce((sum, t) => sum + t.gold, 0);
+      const totalSilver = sortedTable.reduce((sum, t) => sum + t.silver, 0);
+      const totalBronze = sortedTable.reduce((sum, t) => sum + t.bronze, 0);
+      const grandTotal = totalGold + totalSilver + totalBronze;
+      const subtitleLabel = activeSport === 'football' ? "Men's U-23 & Women's Senior" : "Men's & Women's Divisions";
+
+      const tableHtml = `
+        <div style="margin-bottom:1rem; text-align:center; font-size:0.75rem; color:#94a3b8;">
+          Projected distribution of all <strong>${grandTotal} medals</strong> (${subtitleLabel}).
+        </div>
+        <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
+            <thead>
+              <tr style="color:#94a3b8; font-size:0.75rem; border-bottom:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.15);">
+                <th style="padding:0.7rem 0.5rem; text-align:left;"># Nation</th>
+                <th style="padding:0.7rem 0.4rem; color:#facc15;">🥇 Gold</th>
+                <th style="padding:0.7rem 0.4rem; color:#cbd5e1;">🥈 Silver</th>
+                <th style="padding:0.7rem 0.4rem; color:#f59e0b;">🥉 Bronze</th>
+                <th style="padding:0.7rem 0.5rem; font-weight:700; color:#38bdf8;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sortedTable.map((t, idx) => `
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${idx < 3 ? 'rgba(59,130,246,0.03)' : 'transparent'};">
+                  <td style="padding:0.65rem 0.5rem; text-align:left; font-weight:${idx < 3 ? '700' : '400'};">
+                    <span style="display:inline-block; width:18px; font-weight:700; color:${idx === 0 ? '#facc15' : idx === 1 ? '#cbd5e1' : idx === 2 ? '#f59e0b' : '#94a3b8'};">${idx + 1}</span>${getFlagEmoji(t.name)} ${t.name}${t.isHost ? ' (Host)' : ''}
+                  </td>
+                  <td style="padding:0.65rem 0.4rem; font-family:monospace; font-weight:${t.gold > 0 ? '700' : '400'}; color:#facc15;">${t.gold}</td>
+                  <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#cbd5e1;">${t.silver}</td>
+                  <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#f59e0b;">${t.bronze}</td>
+                  <td style="padding:0.65rem 0.5rem; font-family:monospace; font-weight:700; color:#38bdf8;">${t.total}</td>
+                </tr>
+              `).join('')}
+              <tr style="border-top:1px solid rgba(255,255,255,0.12); background:rgba(0,0,0,0.25); font-weight:700; font-size:0.8rem;">
+                <td style="padding:0.65rem 0.5rem; text-align:left; color:#94a3b8;">Total Medals Awarded</td>
+                <td style="padding:0.65rem 0.4rem; color:#facc15;">${totalGold}</td>
+                <td style="padding:0.65rem 0.4rem; color:#cbd5e1;">${totalSilver}</td>
+                <td style="padding:0.65rem 0.4rem; color:#f59e0b;">${totalBronze}</td>
+                <td style="padding:0.65rem 0.5rem; color:#38bdf8;">${grandTotal}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+      container.innerHTML = `${pillsHeader}${tableHtml}`;
       return;
     }
+
+    // =========================================================================
+    // 2. ISOLATED PATH: Modern Pentathlon (4 Events, 12 Medals + Detailed View)
+    // =========================================================================
+    const pentathlonEvents = [
+      {
+        name: "Men's Individual",
+        type: "individual",
+        rankings: [
+          { rank: 1, athlete: "Jun Woong-tae", team: "Republic of Korea", gold: "45.2%", silver: "31.4%", bronze: "18.1%" },
+          { rank: 2, athlete: "Taishu Sato", team: "Japan (Host)", gold: "35.8%", silver: "29.2%", bronze: "21.6%" },
+          { rank: 3, athlete: "Luo Shuai", team: "China", gold: "14.1%", silver: "25.8%", bronze: "33.4%" },
+          { rank: 4, athlete: "Temirlan Abdraimov", team: "Kazakhstan", gold: "3.4%", silver: "8.2%", bronze: "15.1%" }
+        ]
+      },
+      {
+        name: "Men's Team",
+        type: "team",
+        rankings: [
+          { rank: 1, team: "Republic of Korea", gold: "68.0%", silver: "24.5%", bronze: "6.5%" },
+          { rank: 2, team: "China", gold: "26.0%", silver: "52.0%", bronze: "18.0%" },
+          { rank: 3, team: "Japan (Host)", gold: "6.0%", silver: "23.5%", bronze: "65.5%" },
+          { rank: 4, team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "10.0%" }
+        ]
+      },
+      {
+        name: "Women's Individual",
+        type: "individual",
+        rankings: [
+          { rank: 1, athlete: "Seong Seung-min", team: "Republic of Korea", gold: "50.8%", silver: "29.4%", bronze: "14.5%" },
+          { rank: 2, athlete: "Zhang Mingyu", team: "China", gold: "37.6%", silver: "39.1%", bronze: "20.4%" },
+          { rank: 3, athlete: "Misaki Uchida", team: "Japan (Host)", gold: "7.5%", silver: "18.2%", bronze: "36.8%" },
+          { rank: 4, athlete: "Yelena Potapenko", team: "Kazakhstan", gold: "2.6%", silver: "7.5%", bronze: "15.8%" }
+        ]
+      },
+      {
+        name: "Women's Team",
+        type: "team",
+        rankings: [
+          { rank: 1, team: "China", gold: "51.0%", silver: "44.0%", bronze: "4.5%" },
+          { rank: 2, team: "Republic of Korea", gold: "46.0%", silver: "49.0%", bronze: "4.5%" },
+          { rank: 3, team: "Japan (Host)", gold: "3.0%", silver: "7.0%", bronze: "85.0%" },
+          { rank: 4, team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "6.0%" }
+        ]
+      }
+    ];
+
+    pentathlonEvents.forEach(ev => {
+      projectPodium(ev.rankings).forEach(res => recordMedal(res.item, res.medal));
+    });
+
+    const sortedTable = Object.values(tableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze || b.total - a.total);
 
     const totalGold = sortedTable.reduce((sum, t) => sum + t.gold, 0);
     const totalSilver = sortedTable.reduce((sum, t) => sum + t.silver, 0);
     const totalBronze = sortedTable.reduce((sum, t) => sum + t.bronze, 0);
     const grandTotal = totalGold + totalSilver + totalBronze;
-    const eventCount = grandTotal / 3;
 
-    const subtitleLabel = eventCount > 2
-      ? `across ${eventCount} medal events`
-      : (activeSport === 'football' ? "Men's U-23 & Women's Senior" : "Men's & Women's Divisions");
+    function formatContender(item, isIndiv, isGold) {
+      if (!item) return '-';
+      const countryRaw = item.team || item.country || '';
+      const countryName = formatTeamDisplayName(countryRaw.replace(/\(host\)/gi, '').trim());
+      const flag = getFlagEmoji(countryName);
+      const isHost = countryRaw.toLowerCase().includes('host');
+      const hostSuffix = isHost ? ' (Host)' : '';
+      const goldProb = isGold ? (item.gold || item.gold_prob || '') : '';
+
+      if (isIndiv) {
+        const athleteName = item.athlete || item.player || item.name || '';
+        return `
+          <div>
+            <div style="font-weight:700; color:#f8fafc;">${athleteName}</div>
+            <div style="font-size:0.72rem; color:#94a3b8; display:flex; align-items:center; gap:0.25rem;">
+              <span>${flag}</span> <span>${countryName}${hostSuffix}</span>
+              ${goldProb ? `<span style="color:#facc15; font-weight:700; margin-left:3px;">(${goldProb})</span>` : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div style="display:flex; align-items:center; gap:0.35rem; flex-wrap:wrap;">
+          <span>${flag}</span>
+          <span style="font-weight:700; color:#f8fafc;">${countryName}${hostSuffix}</span>
+          ${goldProb ? `<span style="color:#facc15; font-weight:700; font-size:0.75rem;">(${goldProb})</span>` : ''}
+        </div>
+      `;
+    }
 
     const tableHtml = `
       <div style="margin-bottom:1rem; text-align:center; font-size:0.75rem; color:#94a3b8;">
-        Projected distribution of all <strong>${grandTotal} medals</strong> (${subtitleLabel}).
+        Projected distribution of all <strong>${grandTotal} medals</strong> (across 4 medal events).
       </div>
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; overflow-x:auto;">
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
@@ -836,6 +923,67 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Detailed Predictions Toggle Button (Modern Pentathlon Only) -->
+      <div style="margin-top:1.25rem; text-align:center;">
+        <button 
+          id="btn-detailed-predictions"
+          onclick="toggleDetailedPredictions()" 
+          style="background:rgba(37,99,235,0.15); border:1px solid rgba(59,130,246,0.35); color:#38bdf8; padding:0.55rem 1.15rem; border-radius:20px; font-size:0.8rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s;"
+        >
+          <span>📊 Detailed Predictions</span>
+          <span id="detailed-pred-arrow" style="transition:transform 0.2s; font-size:0.85rem;">▾</span>
+        </button>
+      </div>
+
+      <!-- Collapsible Detailed Event-Wise Predictions View -->
+      <div id="detailed-predictions-table-wrap" style="display:none; margin-top:1.25rem;">
+        <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; overflow-x:auto;">
+          <div style="padding:0.85rem 1rem; font-weight:700; font-size:0.9rem; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); display:flex; justify-content:space-between; align-items:center;">
+            <span>🎯 Event-Wise Predicted Winners & Podium</span>
+            <span style="font-size:0.72rem; color:#94a3b8;">Ante-Post Model</span>
+          </div>
+          <table style="width:100%; border-collapse:collapse; font-size:0.82rem; text-align:left;">
+            <thead>
+              <tr style="color:#94a3b8; font-size:0.72rem; border-bottom:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.2);">
+                <th style="padding:0.75rem 0.65rem; width:28%;">Event</th>
+                <th style="padding:0.75rem 0.65rem; color:#facc15; width:34%;">🥇 Predicted Winner (Gold)</th>
+                <th style="padding:0.75rem 0.5rem; color:#cbd5e1; width:20%;">🥈 Silver</th>
+                <th style="padding:0.75rem 0.5rem; color:#f59e0b; width:18%;">🥉 Bronze</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pentathlonEvents.map((ev, idx) => {
+                const podium = projectPodium(ev.rankings);
+                const goldItem = podium.find(p => p.medal === 'gold')?.item;
+                const silverItem = podium.find(p => p.medal === 'silver')?.item;
+                const bronzeItem = podium.find(p => p.medal === 'bronze')?.item;
+                const isIndiv = ev.type === 'individual';
+
+                return `
+                  <tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:${idx % 2 === 0 ? 'rgba(255,255,255,0.01)' : 'transparent'};">
+                    <td style="padding:0.75rem 0.65rem;">
+                      <div style="font-weight:700; color:#f8fafc;">${ev.name}</div>
+                      <span style="font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:600; background:${isIndiv ? 'rgba(56,189,248,0.15); color:#38bdf8;' : 'rgba(168,85,247,0.15); color:#c084fc;'}">
+                        ${isIndiv ? 'Individual' : 'Team Event'}
+                      </span>
+                    </td>
+                    <td style="padding:0.75rem 0.65rem;">
+                      ${formatContender(goldItem, isIndiv, true)}
+                    </td>
+                    <td style="padding:0.75rem 0.5rem;">
+                      ${formatContender(silverItem, isIndiv, false)}
+                    </td>
+                    <td style="padding:0.75rem 0.5rem;">
+                      ${formatContender(bronzeItem, isIndiv, false)}
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
       </div>
     `;
     container.innerHTML = `${pillsHeader}${tableHtml}`;
