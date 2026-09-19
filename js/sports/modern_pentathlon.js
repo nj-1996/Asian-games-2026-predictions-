@@ -77,7 +77,7 @@ const MPN_ATHLETE_NOC = {
 
   // Uzbekistan
   'TRETYAKOV DMITRIY': 'Uzbekistan', 'KAHRAMONOVA MEHRINISO': 'Uzbekistan',
-  'ABZALOVA SAMIRA': 'Uzbekistan',
+  'ABZALOVA SAMIRA': 'Uzbekistan', 'OSMANOVA RIANA': 'Uzbekistan',
 
   // West & Central Asia
   'YARED MICHAEL ANTOINE': 'Lebanon',
@@ -87,12 +87,15 @@ const MPN_ATHLETE_NOC = {
   'ERKINBEKOV ATAI': 'Kyrgyzstan', 'AMARSANAA BILEGT': 'Mongolia',
 
   // Southeast & South Asia
-  'YOHUANG PHURIT': 'Thailand', 'THATTHONG PONGKRIT': 'Thailand', 'PAISANGRISIN PARITA': 'Thailand',
-  'MATULATUWA SAMUEL': 'Indonesia', 'IFSAN MUHAMMAD': 'Indonesia', 'BANGUN CAROLINE': 'Indonesia',
+  'YOHUANG PHURIT': 'Thailand', 'THATTHONG PONGKRIT': 'Thailand',
+  'PAISANSRISIN PARITA': 'Thailand', 'PAISANGRISIN PARITA': 'Thailand',
+  'WITSAPHAN CHANANAN': 'Thailand',
+  'MATULATUWA SAMUEL': 'Indonesia', 'IFSAN MUHAMMAD': 'Indonesia',
+  'BANGUN CAROLINE': 'Indonesia', 'WAHYUNI SRI': 'Indonesia',
   'AW JIAN TING': 'Malaysia',
   'ANSARI TAHIR': 'Singapore',
-  'SILVA OSHADA': 'Sri Lanka',
-  'SHUM CHUN HEI': 'Hong Kong'
+  'SILVA OSHADA': 'Sri Lanka', 'KUMARI GAYANI': 'Sri Lanka',
+  'SHUM CHUN HEI': 'Hong Kong', 'LIU HEI YU': 'Hong Kong'
 };
 
 function resolveAthleteCountry(name, fallbackNoc = '') {
