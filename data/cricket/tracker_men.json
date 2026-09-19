@@ -1,0 +1,173 @@
+{
+  "sport": "Cricket (Men)",
+  "matches": [
+    {
+      "round": "Group A",
+      "group": "Group A",
+      "team1": "Afghanistan",
+      "team2": "Japan",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-24",
+      "time": "09:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Group B",
+      "group": "Group B",
+      "team1": "Hong Kong",
+      "team2": "Malaysia",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-24",
+      "time": "14:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Group B",
+      "group": "Group B",
+      "team1": "Hong Kong",
+      "team2": "Oman",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-25",
+      "time": "09:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Group A",
+      "group": "Group A",
+      "team1": "Afghanistan",
+      "team2": "Nepal",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-25",
+      "time": "14:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Group A",
+      "group": "Group A",
+      "team1": "Japan",
+      "team2": "Nepal",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-26",
+      "time": "09:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Group B",
+      "group": "Group B",
+      "team1": "Malaysia",
+      "team2": "Oman",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-26",
+      "time": "14:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Quarterfinal 1",
+      "group": "Knockout",
+      "team1": "Pakistan",
+      "team2": "2nd Group B",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-28",
+      "time": "09:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Quarterfinal 2",
+      "group": "Knockout",
+      "team1": "India",
+      "team2": "2nd Group A",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-28",
+      "time": "14:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Quarterfinal 3",
+      "group": "Knockout",
+      "team1": "Sri Lanka",
+      "team2": "Winner Group A",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-29",
+      "time": "09:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Quarterfinal 4",
+      "group": "Knockout",
+      "team1": "Bangladesh",
+      "team2": "Winner Group B",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-29",
+      "time": "14:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Semifinal 1",
+      "group": "Knockout",
+      "team1": "Winner QF 1",
+      "team2": "Winner QF 2",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-10-01",
+      "time": "09:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Semifinal 2",
+      "group": "Knockout",
+      "team1": "Winner QF 3",
+      "team2": "Winner QF 4",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-10-01",
+      "time": "14:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Bronze Medal Match",
+      "group": "Knockout",
+      "team1": "Loser SF 1",
+      "team2": "Loser SF 2",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-10-03",
+      "time": "09:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Gold Medal Match",
+      "group": "Knockout",
+      "team1": "Winner SF 1",
+      "team2": "Winner SF 2",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-10-03",
+      "time": "14:00",
+      "venue": "Korogi Sports Park"
+    }
+  ]
+}
