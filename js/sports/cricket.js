@@ -23,6 +23,75 @@
     icon: '🏏',
     hasBracket: true,
 
+    renderMatches(matches) {
+      if (!matches || matches.length === 0) {
+        return `<div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">No matches scheduled for Cricket.</div>`;
+      }
+
+      const parsed = matches.map(m => parseMatchData(m));
+      const todayStr = '2026-09-20'; // Current date anchor
+
+      // Find live session first, then upcoming sessions from today onwards
+      const liveSession = parsed.find(s => s.status.toLowerCase().includes('live') || s.state.toLowerCase().includes('live'));
+      const upcomingSessions = parsed.filter(s => !s.isFinished && s.date >= todayStr);
+      const heroTarget = liveSession || upcomingSessions[0] || parsed.find(s => !s.isFinished) || parsed[0];
+
+      let heroHtml = '';
+      if (heroTarget) {
+        const isLive = heroTarget.status.toLowerCase().includes('live') || heroTarget.state.toLowerCase().includes('live');
+        const displayDateTime = formatMatchDateTime(heroTarget.date, heroTarget.time) || heroTarget.status;
+
+        heroHtml = `
+          <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.8)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center;">
+            <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.2rem 0.65rem; border-radius:9999px; background:${isLive ? 'rgba(239,68,68,0.2)' : 'rgba(59,130,246,0.2)'}; color:${isLive ? '#ef4444' : '#60a5fa'}; margin-bottom:0.75rem;">
+              ${isLive ? '🔴 LIVE NOW' : '⏳ NEXT TIP-OFF'}
+            </div>
+            <div style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-bottom:0.5rem;">
+              <div style="font-weight:700; font-size:1rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
+                <span>${getFlagEmoji(heroTarget.t1)}</span> ${heroTarget.t1}
+              </div>
+              <span style="color:#94a3b8; font-weight:600; font-size:0.85rem;">VS</span>
+              <div style="font-weight:700; font-size:1rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
+                <span>${getFlagEmoji(heroTarget.t2)}</span> ${heroTarget.t2}
+              </div>
+            </div>
+            <div style="font-size:0.8rem; color:#94a3b8;">
+              ${displayDateTime} • ${heroTarget.stage}
+            </div>
+          </div>
+        `;
+      }
+
+      const cardsHtml = parsed.map(s => {
+        const displayDateTime = formatMatchDateTime(s.date, s.time) || s.status;
+        const isOfficial = s.isFinished || s.status.toLowerCase().includes('official');
+        const isLive = s.status.toLowerCase().includes('live');
+
+        return `
+          <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem;">
+            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.3rem; display:flex; justify-content:space-between;">
+              <span>${s.stage} • ${displayDateTime}</span>
+              <span style="color:${isLive ? '#ef4444' : isOfficial ? '#4ade80' : '#38bdf8'}; font-weight:600;">${s.status}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
+              <div style="font-weight:${s.winner === s.t1 ? '700' : '600'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
+                <span>${getFlagEmoji(s.t1)}</span> ${s.t1}
+              </div>
+              <span style="font-family:monospace; font-weight:700; color:#f8fafc;">${s.s1}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
+              <div style="font-weight:${s.winner === s.t2 ? '700' : '600'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
+                <span>${getFlagEmoji(s.t2)}</span> ${s.t2}
+              </div>
+              <span style="font-family:monospace; font-weight:700; color:#f8fafc;">${s.s2}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      return heroHtml + cardsHtml;
+    },
+
     renderStandingsTable(matches) {
       const parsedMatches = matches.map(m => parseMatchData(m));
       const groups = {};
@@ -189,5 +258,5 @@
     }
   };
 
-  window.SPORT_ENGINES['cricket'] = CRICKET_ENGINES = CRICKET_ENGINE;
+  window.SPORT_ENGINES['cricket'] = CRICKET_ENGINE;
 })();
