@@ -1104,43 +1104,50 @@ function renderPentathlonCalibration(container, predictions, matches) {
   const upsetEvents = [];
 
   if (topQualifiers.length > 0) {
-    evaluatedSpots = topQualifiers.length; // Exactly the 18 qualifiers (Top 9 from Grp A & B)
+    evaluatedSpots = topQualifiers.length; // 18 qualifiers total
 
     topQualifiers.forEach(a => {
       const projRank = getAthletePredictedRank(a.name, a.country);
-      
-      // If a projected top-18 favorite successfully made the Top 9 cut
       if (projRank <= 18) {
         correctFavorites++;
-      } else {
-        // GREEN UPSET: An unseeded/underdog athlete (proj rank 19+) broke into the Top 9 final cut
-        upsetEvents.push({
-          type: 'underdog_qualified',
-          name: a.name,
-          country: a.country,
-          projRank: projRank,
-          actualRank: a.actualRank,
-          group: a.group,
-          pts: a.totalPts
-        });
       }
     });
 
-    // Check for shock exits: Projected top-9 favorites who missed the cut (finished 10th or lower)
-    eliminatedAthletes.forEach(a => {
-      const projRank = getAthletePredictedRank(a.name, a.country);
-      if (projRank <= 9) {
-        // RED UPSET: A projected top-9 favorite missed the cut line
+    // Reconcile Group A and Group B independently to pair underdogs with bumped favorites
+    ['A', 'B'].forEach(grp => {
+      const grpQuals = topQualifiers.filter(q => q.group === grp);
+      const grpElims = eliminatedAthletes.filter(e => e.group === grp);
+
+      // Underdogs who broke into Top 9 (proj rank > 9)
+      const underdogs = grpQuals.filter(q => getAthletePredictedRank(q.name, q.country) > 9);
+      // Top favorites who missed the cut in this group (lowest projected ranks among eliminated)
+      const bumpedFavorites = grpElims
+        .filter(e => getAthletePredictedRank(e.name, e.country) <= 12)
+        .sort((x, y) => getAthletePredictedRank(x.name, x.country) - getAthletePredictedRank(y.name, y.country));
+
+      underdogs.forEach(u => {
+        upsetEvents.push({
+          type: 'underdog_qualified',
+          name: u.name,
+          country: u.country,
+          projRank: getAthletePredictedRank(u.name, u.country),
+          actualRank: u.actualRank,
+          group: u.group,
+          pts: u.totalPts
+        });
+      });
+
+      bumpedFavorites.forEach(f => {
         upsetEvents.push({
           type: 'favorite_eliminated',
-          name: a.name,
-          country: a.country,
-          projRank: projRank,
-          actualRank: a.actualRank,
-          group: a.group,
-          pts: a.totalPts
+          name: f.name,
+          country: f.country,
+          projRank: getAthletePredictedRank(f.name, f.country),
+          actualRank: f.actualRank,
+          group: f.group,
+          pts: f.totalPts
         });
-      }
+      });
     });
   }
 
