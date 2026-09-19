@@ -127,10 +127,10 @@
       const getGame = (list, num) => list.find(m => new RegExp(`game\\s*${num}`, 'i').test(m.stage)) || list[num - 1];
 
       const defaultQF = [
-        { title: 'QF 1', t1: '1st Group A', t2: '4th Group B' },
-        { title: 'QF 2', t1: '2nd Group B', t2: '3rd Group A' },
-        { title: 'QF 3', t1: '1st Group B', t2: '4th Group A' },
-        { title: 'QF 4', t1: '2nd Group A', t2: '3rd Group B' }
+        { title: 'QF 1', t1: 'Pakistan', t2: '2nd Group B' },
+        { title: 'QF 2', t1: 'India', t2: '2nd Group A' },
+        { title: 'QF 3', t1: 'Sri Lanka', t2: '1st Group A' },
+        { title: 'QF 4', t1: 'Bangladesh', t2: '1st Group B' }
       ];
 
       const renderSlot = (title, match, fallback, medalType = null) => {
@@ -189,5 +189,5 @@
     }
   };
 
-  window.SPORT_ENGINES['cricket'] = CRICKET_ENGINE;
+  window.SPORT_ENGINES['cricket'] = CRICKET_ENGINES = CRICKET_ENGINE;
 })();
