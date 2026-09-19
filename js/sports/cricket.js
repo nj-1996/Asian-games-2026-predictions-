@@ -31,15 +31,15 @@
       const parsed = matches.map(m => parseMatchData(m));
       const todayStr = '2026-09-20'; // Current date anchor
 
-      // Find live session first, then upcoming sessions from today onwards
-      const liveSession = parsed.find(s => s.status.toLowerCase().includes('live') || s.state.toLowerCase().includes('live'));
-      const upcomingSessions = parsed.filter(s => !s.isFinished && s.date >= todayStr);
+      // Find live session first, then upcoming sessions from today onwards safely
+      const liveSession = parsed.find(s => (s.status || '').toLowerCase().includes('live') || (s.state || '').toLowerCase().includes('live'));
+      const upcomingSessions = parsed.filter(s => !s.isFinished && (s.date || '') >= todayStr);
       const heroTarget = liveSession || upcomingSessions[0] || parsed.find(s => !s.isFinished) || parsed[0];
 
       let heroHtml = '';
       if (heroTarget) {
-        const isLive = heroTarget.status.toLowerCase().includes('live') || heroTarget.state.toLowerCase().includes('live');
-        const displayDateTime = formatMatchDateTime(heroTarget.date, heroTarget.time) || heroTarget.status;
+        const isLive = (heroTarget.status || '').toLowerCase().includes('live') || (heroTarget.state || '').toLowerCase().includes('live');
+        const displayDateTime = formatMatchDateTime(heroTarget.date, heroTarget.time) || heroTarget.status || 'Scheduled';
 
         heroHtml = `
           <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.8)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center;">
@@ -56,22 +56,22 @@
               </div>
             </div>
             <div style="font-size:0.8rem; color:#94a3b8;">
-              ${displayDateTime} • ${heroTarget.stage}
+              ${displayDateTime} • ${heroTarget.stage || 'Match'}
             </div>
           </div>
         `;
       }
 
       const cardsHtml = parsed.map(s => {
-        const displayDateTime = formatMatchDateTime(s.date, s.time) || s.status;
-        const isOfficial = s.isFinished || s.status.toLowerCase().includes('official');
-        const isLive = s.status.toLowerCase().includes('live');
+        const displayDateTime = formatMatchDateTime(s.date, s.time) || s.status || 'Scheduled';
+        const isOfficial = s.isFinished || (s.status || '').toLowerCase().includes('official');
+        const isLive = (s.status || '').toLowerCase().includes('live');
 
         return `
           <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem;">
             <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.3rem; display:flex; justify-content:space-between;">
-              <span>${s.stage} • ${displayDateTime}</span>
-              <span style="color:${isLive ? '#ef4444' : isOfficial ? '#4ade80' : '#38bdf8'}; font-weight:600;">${s.status}</span>
+              <span>${s.stage || 'Match'} • ${displayDateTime}</span>
+              <span style="color:${isLive ? '#ef4444' : isOfficial ? '#4ade80' : '#38bdf8'}; font-weight:600;">${s.status || 'Scheduled'}</span>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
               <div style="font-weight:${s.winner === s.t1 ? '700' : '600'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
@@ -97,7 +97,7 @@
       const groups = {};
 
       parsedMatches.forEach(m => {
-        const grpMatch = m.stage.match(/Group\s+[A-Za-z0-9]+/i);
+        const grpMatch = (m.stage || '').match(/Group\s+[A-Za-z0-9]+/i);
         const grpName = grpMatch ? grpMatch[0] : null;
 
         if (!grpName) return;
@@ -186,14 +186,14 @@
 
     renderKnockoutBracket(matches) {
       const parsed = matches.map(m => parseMatchData(m));
-      const getStage = (m) => (m.stage + ' ' + m.status).toLowerCase();
+      const getStage = (m) => ((m.stage || '') + ' ' + (m.status || '')).toLowerCase();
 
       const qfMatches = parsed.filter(m => getStage(m).includes('quarter') || getStage(m).includes('qf'));
       const sfMatches = parsed.filter(m => getStage(m).includes('semi') || getStage(m).includes('sf'));
       const finalMatch = parsed.find(m => getStage(m).includes('gold') || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
       const bronzeMatch = parsed.find(m => getStage(m).includes('bronze') || getStage(m).includes('3rd'));
 
-      const getGame = (list, num) => list.find(m => new RegExp(`game\\s*${num}`, 'i').test(m.stage)) || list[num - 1];
+      const getGame = (list, num) => list.find(m => new RegExp(`game\\s*${num}`, 'i').test(m.stage || '')) || list[num - 1];
 
       const defaultQF = [
         { title: 'QF 1', t1: 'Pakistan', t2: '2nd Group B' },
