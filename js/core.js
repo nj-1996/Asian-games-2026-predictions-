@@ -518,7 +518,6 @@ function renderMatchesView(container, matches) {
   const rawSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
   const activeSport = String(rawSport).trim().toLowerCase();
 
-  // Use protected BASKETBALL_ENGINE directly for basketball to prevent script race conditions
   const engine = activeSport === 'basketball'
     ? BASKETBALL_ENGINE
     : (window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport]);
@@ -715,18 +714,51 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
 
     const mData = menPreds || [];
     const wData = womenPreds || [];
+    const eventLists = [];
 
-    if (mData.events && Array.isArray(mData.events)) {
-      mData.events.forEach(evt => projectPodium(evt.predictions || evt.data).forEach(item => recordMedal(item.team, item.medal)));
-    } else {
-      projectPodium(mData).forEach(item => recordMedal(item.team, item.medal));
+    // 1. Gather primary individual division events
+    if (Array.isArray(mData)) {
+      if (mData.length > 0 && mData[0] && (mData[0].predictions || mData[0].data)) {
+        mData.forEach(evt => eventLists.push(evt.predictions || evt.data || []));
+      } else {
+        eventLists.push(mData);
+      }
+    } else if (mData && mData.events && Array.isArray(mData.events)) {
+      mData.events.forEach(evt => eventLists.push(evt.predictions || evt.data || []));
     }
-    
-    if (wData.events && Array.isArray(wData.events)) {
-      wData.events.forEach(evt => projectPodium(evt.predictions || evt.data).forEach(item => recordMedal(item.team, item.medal)));
-    } else {
-      projectPodium(wData).forEach(item => recordMedal(item.team, item.medal));
+
+    if (Array.isArray(wData)) {
+      if (wData.length > 0 && wData[0] && (wData[0].predictions || wData[0].data)) {
+        wData.forEach(evt => eventLists.push(evt.predictions || evt.data || []));
+      } else {
+        eventLists.push(wData);
+      }
+    } else if (wData && wData.events && Array.isArray(wData.events)) {
+      wData.events.forEach(evt => eventLists.push(evt.predictions || evt.data || []));
     }
+
+    // 2. Multi-Event Sports: Add official Team events (Modern Pentathlon = 4 events / 12 medals)
+    if (activeSport.includes('pentathlon') && eventLists.length === 2) {
+      // Men's Team Event (3 medals)
+      eventLists.push([
+        { team: "Republic of Korea", gold: "68.0%", silver: "24.5%", bronze: "6.5%" },
+        { team: "China", gold: "26.0%", silver: "52.0%", bronze: "18.0%" },
+        { team: "Japan (Host)", gold: "6.0%", silver: "23.5%", bronze: "65.5%" },
+        { team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "10.0%" }
+      ]);
+      // Women's Team Event (3 medals)
+      eventLists.push([
+        { team: "China", gold: "51.0%", silver: "44.0%", bronze: "4.5%" },
+        { team: "Republic of Korea", gold: "46.0%", silver: "49.0%", bronze: "4.5%" },
+        { team: "Japan (Host)", gold: "3.0%", silver: "7.0%", bronze: "85.0%" },
+        { team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "6.0%" }
+      ]);
+    }
+
+    // 3. Tally all medal events
+    eventLists.forEach(list => {
+      projectPodium(list).forEach(item => recordMedal(item.team, item.medal));
+    });
 
     const sortedTable = Object.values(tableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze || b.total - a.total);
 
@@ -741,7 +773,9 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     const grandTotal = totalGold + totalSilver + totalBronze;
     const eventCount = grandTotal / 3;
 
-    const subtitleLabel = eventCount > 2 ? `across ${eventCount} medal events` : (activeSport === 'football' ? "Men's U-23 & Women's Senior" : "Men's & Women's Divisions");
+    const subtitleLabel = eventCount > 2
+      ? `across ${eventCount} medal events`
+      : (activeSport === 'football' ? "Men's U-23 & Women's Senior" : "Men's & Women's Divisions");
 
     const tableHtml = `
       <div style="margin-bottom:1rem; text-align:center; font-size:0.75rem; color:#94a3b8;">
