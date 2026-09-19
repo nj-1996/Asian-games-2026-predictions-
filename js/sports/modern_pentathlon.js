@@ -26,7 +26,17 @@ const MPN_NOC_TO_COUNTRY = {
   UAE: 'United Arab Emirates',
   MAS: 'Malaysia',
   SGP: 'Singapore',
-  HKG: 'Hong Kong'
+  HKG: 'Hong Kong',
+  IND: 'India',
+  TPE: 'Chinese Taipei',
+  VIE: 'Vietnam',
+  PRK: 'North Korea',
+  IRI: 'Iran',
+  BRN: 'Bahrain',
+  JOR: 'Jordan',
+  KSA: 'Saudi Arabia',
+  QAT: 'Qatar',
+  NEP: 'Nepal'
 };
 
 // Official 2026 Asiad Athlete Nationality Registry
@@ -89,6 +99,10 @@ function resolveAthleteCountry(name, fallbackNoc = '') {
   const cleanNoc = (fallbackNoc || '').toUpperCase().trim();
   if (MPN_NOC_TO_COUNTRY[cleanNoc]) {
     return MPN_NOC_TO_COUNTRY[cleanNoc];
+  }
+  const knownCountries = Object.values(MPN_NOC_TO_COUNTRY);
+  if (knownCountries.includes(fallbackNoc)) {
+    return fallbackNoc;
   }
   if (!name) return fallbackNoc;
   const key = name.toUpperCase().replace(/[^A-Z\s]/g, '').replace(/\s+/g, ' ').trim();
