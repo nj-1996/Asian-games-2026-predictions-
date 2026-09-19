@@ -71,6 +71,28 @@ DEF_CODES = {"l", "def", "d", "defeats", "defeat", "losses", "loss", "lost", "bo
 PEN_CODES = {"pen", "penalties", "penalty", "pty", "fault", "faults"}
 
 
+def deep_extract_noc(c):
+    """Recursively search for 3-letter IOC/NOC code across the competitor object."""
+    if not c:
+        return ""
+    if isinstance(c, dict):
+        for k in ["NOC", "@NOC", "noc", "Organisation", "@Organisation", "organization", "CountryCode", "Country", "NocCode"]:
+            v = c.get(k)
+            if v and isinstance(v, str) and len(v.strip()) == 3 and v.strip().isalpha():
+                return v.strip().upper()
+        for v in c.values():
+            if isinstance(v, (dict, list)):
+                res = deep_extract_noc(v)
+                if res:
+                    return res
+    elif isinstance(c, list):
+        for item in c:
+            res = deep_extract_noc(item)
+            if res:
+                return res
+    return ""
+
+
 def resolve_country(name, raw_noc=""):
     if not name:
         return str(raw_noc).strip()
@@ -279,7 +301,7 @@ def extract_competitor_name(c, default_name=""):
         if c.get(key) and str(c[key]).strip():
             return str(c[key]).strip()
 
-    comp = c.get("Competitor")
+    comp = c.get("Competitor") or c.get("Participant")
     if isinstance(comp, dict):
         desc = comp.get("Description")
         if isinstance(desc, dict):
@@ -295,21 +317,6 @@ def extract_competitor_name(c, default_name=""):
                 return comp[key].strip()
 
     return default_name
-
-
-def extract_competitor_noc(c):
-    if not isinstance(c, dict):
-        return ""
-    for key in ["NOC", "@NOC", "noc", "CountryCode", "Country", "Organisation", "@Organisation", "NocCode"]:
-        if c.get(key) and str(c[key]).strip():
-            return str(c[key]).strip()
-
-    comp = c.get("Competitor")
-    if isinstance(comp, dict):
-        for key in ["Organisation", "@Organisation", "NOC", "@NOC", "CountryCode", "Country"]:
-            if comp.get(key) and str(comp[key]).strip():
-                return comp[key].strip()
-    return ""
 
 
 def extract_competitor_rank(c, default_rank=999):
@@ -336,21 +343,18 @@ def parse_competitors(raw_list):
 
         rank_val = extract_competitor_rank(c, idx + 1)
         name = extract_competitor_name(c, f"Competitor {rank_val}")
-        noc_raw = extract_competitor_noc(c)
+        noc_raw = deep_extract_noc(c)
         country = resolve_country(name, noc_raw)
 
-        # 1. Deep recursive search for ODF bout statistics
         victories = deep_extract_stat(c, VIC_CODES)
         defeats = deep_extract_stat(c, DEF_CODES)
         penalties = deep_extract_stat(c, PEN_CODES)
 
-        # 2. Check compound mark strings like "31/4"
         if not victories or not defeats:
             cv, cd = extract_compound_bouts(c)
             if cv and cd:
                 victories, defeats = cv, cd
 
-        # 3. Dynamic round-robin bout calculation if the feed omitted one column
         if defeats.isdigit() and (not victories or not victories.isdigit()):
             victories = str(max(0, total_bouts - int(defeats)))
         elif victories.isdigit() and (not defeats or not defeats.isdigit()):
