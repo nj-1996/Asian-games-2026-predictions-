@@ -513,7 +513,7 @@ function setPredictionsSubView(subView) {
   }
 }
 
-// Global toggle for Detailed Predictions view (Modern Pentathlon only)
+// Global toggle for Detailed Predictions view across all sports
 window.toggleDetailedPredictions = function() {
   const tableWrap = document.getElementById('detailed-predictions-table-wrap');
   const arrow = document.getElementById('detailed-pred-arrow');
@@ -670,7 +670,7 @@ function renderScheduleAndHero(matches) {
   return heroHtml + cardsHtml;
 }
 
-// --- Predictions & Dynamic Medal Table ---
+// --- Predictions & Dynamic Medal Table (All Sports) ---
 function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
   const activeSport = (window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball')).toLowerCase();
   const isPentathlon = activeSport.includes('pentathlon');
@@ -728,137 +728,90 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     const mData = menPreds || [];
     const wData = womenPreds || [];
 
-    // =========================================================================
-    // 1. STANDARD PATH: For all other sports (Football, Basketball, Volleyball)
-    // =========================================================================
-    if (!isPentathlon) {
-      if (mData.events && Array.isArray(mData.events)) {
-        mData.events.forEach(evt => projectPodium(evt.predictions || evt.data || evt.rankings).forEach(res => recordMedal(res.item, res.medal)));
-      } else {
-        projectPodium(mData).forEach(res => recordMedal(res.item, res.medal));
-      }
-      
-      if (wData.events && Array.isArray(wData.events)) {
-        wData.events.forEach(evt => projectPodium(evt.predictions || evt.data || evt.rankings).forEach(res => recordMedal(res.item, res.medal)));
-      } else {
-        projectPodium(wData).forEach(res => recordMedal(res.item, res.medal));
-      }
+    // Assemble the event list dynamically for ANY sport
+    let detailedEventsList = [];
 
-      const sortedTable = Object.values(tableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze || b.total - a.total);
+    if (isPentathlon) {
+      // Modern Pentathlon: 4 medal events (12 medals)
+      detailedEventsList = [
+        {
+          name: "Men's Individual",
+          type: "individual",
+          rankings: [
+            { rank: 1, athlete: "Jun Woong-tae", team: "Republic of Korea", gold: "45.2%", silver: "31.4%", bronze: "18.1%" },
+            { rank: 2, athlete: "Taishu Sato", team: "Japan (Host)", gold: "35.8%", silver: "29.2%", bronze: "21.6%" },
+            { rank: 3, athlete: "Luo Shuai", team: "China", gold: "14.1%", silver: "25.8%", bronze: "33.4%" },
+            { rank: 4, athlete: "Temirlan Abdraimov", team: "Kazakhstan", gold: "3.4%", silver: "8.2%", bronze: "15.1%" }
+          ]
+        },
+        {
+          name: "Men's Team",
+          type: "team",
+          rankings: [
+            { rank: 1, team: "Republic of Korea", gold: "68.0%", silver: "24.5%", bronze: "6.5%" },
+            { rank: 2, team: "China", gold: "26.0%", silver: "52.0%", bronze: "18.0%" },
+            { rank: 3, team: "Japan (Host)", gold: "6.0%", silver: "23.5%", bronze: "65.5%" },
+            { rank: 4, team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "10.0%" }
+          ]
+        },
+        {
+          name: "Women's Individual",
+          type: "individual",
+          rankings: [
+            { rank: 1, athlete: "Seong Seung-min", team: "Republic of Korea", gold: "50.8%", silver: "29.4%", bronze: "14.5%" },
+            { rank: 2, athlete: "Zhang Mingyu", team: "China", gold: "37.6%", silver: "39.1%", bronze: "20.4%" },
+            { rank: 3, athlete: "Misaki Uchida", team: "Japan (Host)", gold: "7.5%", silver: "18.2%", bronze: "36.8%" },
+            { rank: 4, athlete: "Yelena Potapenko", team: "Kazakhstan", gold: "2.6%", silver: "7.5%", bronze: "15.8%" }
+          ]
+        },
+        {
+          name: "Women's Team",
+          type: "team",
+          rankings: [
+            { rank: 1, team: "China", gold: "51.0%", silver: "44.0%", bronze: "4.5%" },
+            { rank: 2, team: "Republic of Korea", gold: "46.0%", silver: "49.0%", bronze: "4.5%" },
+            { rank: 3, team: "Japan (Host)", gold: "3.0%", silver: "7.0%", bronze: "85.0%" },
+            { rank: 4, team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "6.0%" }
+          ]
+        }
+      ];
+    } else {
+      // Team Sports (Basketball, Volleyball, Football): 2 medal events (6 medals)
+      const menLabel = activeSport === 'football' ? "Men's Tournament (U-23)" : "Men's Tournament";
+      const womenLabel = activeSport === 'football' ? "Women's Tournament (Senior)" : "Women's Tournament";
 
-      if (sortedTable.length === 0) {
-        container.innerHTML = `${pillsHeader}<div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">No prediction models available to construct medal table.</div>`;
-        return;
-      }
-
-      const totalGold = sortedTable.reduce((sum, t) => sum + t.gold, 0);
-      const totalSilver = sortedTable.reduce((sum, t) => sum + t.silver, 0);
-      const totalBronze = sortedTable.reduce((sum, t) => sum + t.bronze, 0);
-      const grandTotal = totalGold + totalSilver + totalBronze;
-      const subtitleLabel = activeSport === 'football' ? "Men's U-23 & Women's Senior" : "Men's & Women's Divisions";
-
-      const tableHtml = `
-        <div style="margin-bottom:1rem; text-align:center; font-size:0.75rem; color:#94a3b8;">
-          Projected distribution of all <strong>${grandTotal} medals</strong> (${subtitleLabel}).
-        </div>
-        <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; overflow-x:auto;">
-          <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
-            <thead>
-              <tr style="color:#94a3b8; font-size:0.75rem; border-bottom:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.15);">
-                <th style="padding:0.7rem 0.5rem; text-align:left;"># Nation</th>
-                <th style="padding:0.7rem 0.4rem; color:#facc15;">🥇 Gold</th>
-                <th style="padding:0.7rem 0.4rem; color:#cbd5e1;">🥈 Silver</th>
-                <th style="padding:0.7rem 0.4rem; color:#f59e0b;">🥉 Bronze</th>
-                <th style="padding:0.7rem 0.5rem; font-weight:700; color:#38bdf8;">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${sortedTable.map((t, idx) => `
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${idx < 3 ? 'rgba(59,130,246,0.03)' : 'transparent'};">
-                  <td style="padding:0.65rem 0.5rem; text-align:left; font-weight:${idx < 3 ? '700' : '400'};">
-                    <span style="display:inline-block; width:18px; font-weight:700; color:${idx === 0 ? '#facc15' : idx === 1 ? '#cbd5e1' : idx === 2 ? '#f59e0b' : '#94a3b8'};">${idx + 1}</span>${getFlagEmoji(t.name)} ${t.name}${t.isHost ? ' (Host)' : ''}
-                  </td>
-                  <td style="padding:0.65rem 0.4rem; font-family:monospace; font-weight:${t.gold > 0 ? '700' : '400'}; color:#facc15;">${t.gold}</td>
-                  <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#cbd5e1;">${t.silver}</td>
-                  <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#f59e0b;">${t.bronze}</td>
-                  <td style="padding:0.65rem 0.5rem; font-family:monospace; font-weight:700; color:#38bdf8;">${t.total}</td>
-                </tr>
-              `).join('')}
-              <tr style="border-top:1px solid rgba(255,255,255,0.12); background:rgba(0,0,0,0.25); font-weight:700; font-size:0.8rem;">
-                <td style="padding:0.65rem 0.5rem; text-align:left; color:#94a3b8;">Total Medals Awarded</td>
-                <td style="padding:0.65rem 0.4rem; color:#facc15;">${totalGold}</td>
-                <td style="padding:0.65rem 0.4rem; color:#cbd5e1;">${totalSilver}</td>
-                <td style="padding:0.65rem 0.4rem; color:#f59e0b;">${totalBronze}</td>
-                <td style="padding:0.65rem 0.5rem; color:#38bdf8;">${grandTotal}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      `;
-      container.innerHTML = `${pillsHeader}${tableHtml}`;
-      return;
+      detailedEventsList = [
+        { name: menLabel, type: "team", rankings: mData },
+        { name: womenLabel, type: "team", rankings: wData }
+      ];
     }
 
-    // =========================================================================
-    // 2. ISOLATED PATH: Modern Pentathlon (4 Events, 12 Medals + Detailed View)
-    // =========================================================================
-    const pentathlonEvents = [
-      {
-        name: "Men's Individual",
-        type: "individual",
-        rankings: [
-          { rank: 1, athlete: "Jun Woong-tae", team: "Republic of Korea", gold: "45.2%", silver: "31.4%", bronze: "18.1%" },
-          { rank: 2, athlete: "Taishu Sato", team: "Japan (Host)", gold: "35.8%", silver: "29.2%", bronze: "21.6%" },
-          { rank: 3, athlete: "Luo Shuai", team: "China", gold: "14.1%", silver: "25.8%", bronze: "33.4%" },
-          { rank: 4, athlete: "Temirlan Abdraimov", team: "Kazakhstan", gold: "3.4%", silver: "8.2%", bronze: "15.1%" }
-        ]
-      },
-      {
-        name: "Men's Team",
-        type: "team",
-        rankings: [
-          { rank: 1, team: "Republic of Korea", gold: "68.0%", silver: "24.5%", bronze: "6.5%" },
-          { rank: 2, team: "China", gold: "26.0%", silver: "52.0%", bronze: "18.0%" },
-          { rank: 3, team: "Japan (Host)", gold: "6.0%", silver: "23.5%", bronze: "65.5%" },
-          { rank: 4, team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "10.0%" }
-        ]
-      },
-      {
-        name: "Women's Individual",
-        type: "individual",
-        rankings: [
-          { rank: 1, athlete: "Seong Seung-min", team: "Republic of Korea", gold: "50.8%", silver: "29.4%", bronze: "14.5%" },
-          { rank: 2, athlete: "Zhang Mingyu", team: "China", gold: "37.6%", silver: "39.1%", bronze: "20.4%" },
-          { rank: 3, athlete: "Misaki Uchida", team: "Japan (Host)", gold: "7.5%", silver: "18.2%", bronze: "36.8%" },
-          { rank: 4, athlete: "Yelena Potapenko", team: "Kazakhstan", gold: "2.6%", silver: "7.5%", bronze: "15.8%" }
-        ]
-      },
-      {
-        name: "Women's Team",
-        type: "team",
-        rankings: [
-          { rank: 1, team: "China", gold: "51.0%", silver: "44.0%", bronze: "4.5%" },
-          { rank: 2, team: "Republic of Korea", gold: "46.0%", silver: "49.0%", bronze: "4.5%" },
-          { rank: 3, team: "Japan (Host)", gold: "3.0%", silver: "7.0%", bronze: "85.0%" },
-          { rank: 4, team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "6.0%" }
-        ]
-      }
-    ];
-
-    pentathlonEvents.forEach(ev => {
+    // Tally medals across all active events
+    detailedEventsList.forEach(ev => {
       projectPodium(ev.rankings).forEach(res => recordMedal(res.item, res.medal));
     });
 
     const sortedTable = Object.values(tableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze || b.total - a.total);
 
+    if (sortedTable.length === 0) {
+      container.innerHTML = `${pillsHeader}<div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">No prediction models available to construct medal table.</div>`;
+      return;
+    }
+
     const totalGold = sortedTable.reduce((sum, t) => sum + t.gold, 0);
     const totalSilver = sortedTable.reduce((sum, t) => sum + t.silver, 0);
     const totalBronze = sortedTable.reduce((sum, t) => sum + t.bronze, 0);
     const grandTotal = totalGold + totalSilver + totalBronze;
+    const eventCount = grandTotal / 3;
 
+    const subtitleLabel = eventCount > 2
+      ? `across ${eventCount} medal events`
+      : (activeSport === 'football' ? "Men's U-23 & Women's Senior" : "Men's & Women's Divisions");
+
+    // Formatter for table contenders (Player Name for individual, Country for team)
     function formatContender(item, isIndiv, isGold) {
       if (!item) return '-';
-      const countryRaw = item.team || item.country || '';
+      const countryRaw = item.team || item.country || item.name || '';
       const countryName = formatTeamDisplayName(countryRaw.replace(/\(host\)/gi, '').trim());
       const flag = getFlagEmoji(countryName);
       const isHost = countryRaw.toLowerCase().includes('host');
@@ -866,16 +819,18 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
       const goldProb = isGold ? (item.gold || item.gold_prob || '') : '';
 
       if (isIndiv) {
-        const athleteName = item.athlete || item.player || item.name || '';
-        return `
-          <div>
-            <div style="font-weight:700; color:#f8fafc;">${athleteName}</div>
-            <div style="font-size:0.72rem; color:#94a3b8; display:flex; align-items:center; gap:0.25rem;">
-              <span>${flag}</span> <span>${countryName}${hostSuffix}</span>
-              ${goldProb ? `<span style="color:#facc15; font-weight:700; margin-left:3px;">(${goldProb})</span>` : ''}
+        const athleteName = item.athlete || item.player || '';
+        if (athleteName) {
+          return `
+            <div>
+              <div style="font-weight:700; color:#f8fafc;">${athleteName}</div>
+              <div style="font-size:0.72rem; color:#94a3b8; display:flex; align-items:center; gap:0.25rem; margin-top:1px;">
+                <span>${flag}</span> <span>${countryName}${hostSuffix}</span>
+                ${goldProb ? `<span style="color:#facc15; font-weight:700; margin-left:3px;">(${goldProb})</span>` : ''}
+              </div>
             </div>
-          </div>
-        `;
+          `;
+        }
       }
 
       return `
@@ -889,8 +844,10 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
 
     const tableHtml = `
       <div style="margin-bottom:1rem; text-align:center; font-size:0.75rem; color:#94a3b8;">
-        Projected distribution of all <strong>${grandTotal} medals</strong> (across 4 medal events).
+        Projected distribution of all <strong>${grandTotal} medals</strong> (${subtitleLabel}).
       </div>
+
+      <!-- Main Projected Medal Standings Table -->
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; overflow-x:auto;">
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
           <thead>
@@ -925,7 +882,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
         </table>
       </div>
 
-      <!-- Detailed Predictions Toggle Button (Modern Pentathlon Only) -->
+      <!-- Detailed Predictions Toggle Button (All Sports) -->
       <div style="margin-top:1.25rem; text-align:center;">
         <button 
           id="btn-detailed-predictions"
@@ -954,7 +911,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
               </tr>
             </thead>
             <tbody>
-              ${pentathlonEvents.map((ev, idx) => {
+              ${detailedEventsList.map((ev, idx) => {
                 const podium = projectPodium(ev.rankings);
                 const goldItem = podium.find(p => p.medal === 'gold')?.item;
                 const silverItem = podium.find(p => p.medal === 'silver')?.item;
