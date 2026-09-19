@@ -79,14 +79,14 @@
                 🌧️ Match cancelled due to rain. Decision decided by higher seeding.
               </div>
               <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
-                <div style="font-weight:${s.winner === s.t1 ? '700' : '500'}; font-size:0.9rem; color:${s.winner === s.t1 ? '#4ade80' : '#f8fafc'}; display:flex; align-items:center; gap:0.4rem;">
-                  <span>${getFlagEmoji(s.t1)}</span> ${s.t1}${s.winner === s.t1 ? '✓ (Advancd)' : ''}
+                <div style="font-weight:${s.winner === s.t1 ? '700' : '500'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
+                  <span>${getFlagEmoji(s.t1)}</span>${s.t1}
                 </div>
                 <span style="font-size:0.75rem; background:rgba(74,222,128,0.15); color:#4ade80; padding:2px 8px; border-radius:6px; font-weight:600;">${s.winner === s.t1 ? 'Advanced (Seeding)' : 'Eliminated'}</span>
               </div>
               <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
-                <div style="font-weight:${s.winner === s.t2 ? '700' : '500'}; font-size:0.9rem; color:${s.winner === s.t2 ? '#4ade80' : '#f8fafc'}; display:flex; align-items:center; gap:0.4rem;">
-                  <span>${getFlagEmoji(s.t2)}</span> ${s.t2}${s.winner === s.t2 ? '✓ (Advanced)' : ''}
+                <div style="font-weight:${s.winner === s.t2 ? '700' : '500'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
+                  <span>${getFlagEmoji(s.t2)}</span>${s.t2}
                 </div>
                 <span style="font-size:0.75rem; background:rgba(239,68,68,0.15); color:#ef4444; padding:2px 8px; border-radius:6px; font-weight:600;">${s.winner === s.t2 ? 'Advanced (Seeding)' : 'Eliminated'}</span>
               </div>
@@ -224,8 +224,11 @@
       const renderSlot = (title, match, fallback, medalType = null) => {
         const t1 = (match && match.t1 && match.t1 !== 'TBD') ? match.t1 : fallback.t1;
         const t2 = (match && match.t2 && match.t2 !== 'TBD') ? match.t2 : fallback.t2;
-        const s1 = match ? match.s1 : '-';
-        const s2 = match ? match.s2 : '-';
+        const isAbandoned = match && ((match.s1 || '').toLowerCase().includes('abandoned') || (match.score1 || '').toLowerCase().includes('abandoned') || (match.state || '').toLowerCase().includes('rain'));
+        
+        const s1 = isAbandoned ? 'Rain' : (match ? match.s1 : '-');
+        const s2 = isAbandoned ? 'Seeding' : (match ? match.s2 : '-');
+        
         const isFinished = match ? match.isFinished : false;
         const t1Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t1) : (isFinished && Number(s1) > Number(s2));
         const t2Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t2) : (isFinished && Number(s2) > Number(s1));
@@ -240,11 +243,11 @@
             </div>
             <div class="bracket-team-row ${t1Win ? 'winner' : ''}">
               <div class="bracket-team-info"><span>${getFlagEmoji(t1)}</span> <span>${t1}</span></div>
-              <span class="bracket-score">${s1}</span>
+              <span class="bracket-score" ${isAbandoned ? 'style="font-size:0.7rem; color:#38bdf8;"' : ''}>${s1}</span>
             </div>
             <div class="bracket-team-row ${t2Win ? 'winner' : ''}">
               <div class="bracket-team-info"><span>${getFlagEmoji(t2)}</span> <span>${t2}</span></div>
-              <span class="bracket-score">${s2}</span>
+              <span class="bracket-score" ${isAbandoned ? 'style="font-size:0.7rem; color:#f87171;"' : ''}>${s2}</span>
             </div>
           </div>
         `;
