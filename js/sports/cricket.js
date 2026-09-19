@@ -31,7 +31,6 @@
       const parsed = matches.map(m => parseMatchData(m));
       const todayStr = '2026-09-20'; // Current date anchor
 
-      // Find live session first, then upcoming sessions from today onwards safely
       const liveSession = parsed.find(s => (s.status || '').toLowerCase().includes('live') || (s.state || '').toLowerCase().includes('live'));
       const upcomingSessions = parsed.filter(s => !s.isFinished && (s.date || '') >= todayStr);
       const heroTarget = liveSession || upcomingSessions[0] || parsed.find(s => !s.isFinished) || parsed[0];
@@ -66,25 +65,45 @@
         const displayDateTime = formatMatchDateTime(s.date, s.time) || s.status || 'Scheduled';
         const isOfficial = s.isFinished || (s.status || '').toLowerCase().includes('official');
         const isLive = (s.status || '').toLowerCase().includes('live');
+        const isAbandoned = (s.s1 || '').toLowerCase().includes('abandoned') || (s.score1 || '').toLowerCase().includes('abandoned') || (s.state || '').toLowerCase().includes('rain');
 
         return `
           <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem;">
             <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.3rem; display:flex; justify-content:space-between;">
               <span>${s.stage || 'Match'} • ${displayDateTime}</span>
-              <span style="color:${isLive ? '#ef4444' : isOfficial ? '#4ade80' : '#38bdf8'}; font-weight:600;">${s.status || 'Scheduled'}</span>
+              <span style="color:${isLive ? '#ef4444' : isOfficial ? '#4ade80' : '#38bdf8'}; font-weight:600;">${isAbandoned ? 'Abandoned (Rain)' : (s.status || 'Scheduled')}</span>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
-              <div style="font-weight:${s.winner === s.t1 ? '700' : '600'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
-                <span>${getFlagEmoji(s.t1)}</span> ${s.t1}
+            
+            ${isAbandoned ? `
+              <div style="padding:0.3rem 0; font-size:0.82rem; color:#cbd5e1; margin-bottom:0.4rem;">
+                🌧️ Match cancelled due to rain. Decision decided by higher seeding.
               </div>
-              <span style="font-family:monospace; font-weight:700; color:#f8fafc;">${s.s1}</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
-              <div style="font-weight:${s.winner === s.t2 ? '700' : '600'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
-                <span>${getFlagEmoji(s.t2)}</span> ${s.t2}
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
+                <div style="font-weight:${s.winner === s.t1 ? '700' : '500'}; font-size:0.9rem; color:${s.winner === s.t1 ? '#4ade80' : '#f8fafc'}; display:flex; align-items:center; gap:0.4rem;">
+                  <span>${getFlagEmoji(s.t1)}</span> ${s.t1}${s.winner === s.t1 ? '✓ (Advancd)' : ''}
+                </div>
+                <span style="font-size:0.75rem; background:rgba(74,222,128,0.15); color:#4ade80; padding:2px 8px; border-radius:6px; font-weight:600;">${s.winner === s.t1 ? 'Advanced (Seeding)' : 'Eliminated'}</span>
               </div>
-              <span style="font-family:monospace; font-weight:700; color:#f8fafc;">${s.s2}</span>
-            </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
+                <div style="font-weight:${s.winner === s.t2 ? '700' : '500'}; font-size:0.9rem; color:${s.winner === s.t2 ? '#4ade80' : '#f8fafc'}; display:flex; align-items:center; gap:0.4rem;">
+                  <span>${getFlagEmoji(s.t2)}</span> ${s.t2}${s.winner === s.t2 ? '✓ (Advanced)' : ''}
+                </div>
+                <span style="font-size:0.75rem; background:rgba(239,68,68,0.15); color:#ef4444; padding:2px 8px; border-radius:6px; font-weight:600;">${s.winner === s.t2 ? 'Advanced (Seeding)' : 'Eliminated'}</span>
+              </div>
+            ` : `
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
+                <div style="font-weight:${s.winner === s.t1 ? '700' : '600'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
+                  <span>${getFlagEmoji(s.t1)}</span>${s.t1}
+                </div>
+                <span style="font-family:monospace; font-weight:700; color:#f8fafc;">${s.s1}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
+                <div style="font-weight:${s.winner === s.t2 ? '700' : '600'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
+                  <span>${getFlagEmoji(s.t2)}</span>${s.t2}
+                </div>
+                <span style="font-family:monospace; font-weight:700; color:#f8fafc;">${s.s2}</span>
+              </div>
+            `}
           </div>
         `;
       }).join('');
