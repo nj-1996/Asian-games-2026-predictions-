@@ -16,6 +16,32 @@ window.onerror = function(msg, url, line) {
   return false;
 };
 
+// --- Intercept Fetch to Cache Multi-Event Prediction Payloads Transparently ---
+(function() {
+  const _origFetch = window.fetch;
+  window.__sportPredictionsCache = window.__sportPredictionsCache || {};
+
+  window.fetch = async function(...args) {
+    const res = await _origFetch.apply(this, args);
+    try {
+      const url = typeof args[0] === 'string' ? args[0] : (args[0] && args[0].url);
+      if (url && typeof url === 'string' && url.includes('predictions') && url.includes('.json')) {
+        const clone = res.clone();
+        clone.json().then(data => {
+          if (data && typeof data === 'object') {
+            const sportKey = (data.sport || '').toLowerCase().replace(/[^a-z0-9]/g, '_');
+            if (sportKey) {
+              window.__sportPredictionsCache[sportKey] = data;
+            }
+            window.__lastPredictionsJson = data;
+          }
+        }).catch(() => {});
+      }
+    } catch (e) {}
+    return res;
+  };
+})();
+
 // --- Data Extraction Utility ---
 function extractList(raw) {
   if (!raw) return [];
@@ -660,7 +686,7 @@ function renderScheduleAndHero(matches) {
 
 // --- Predictions & Dynamic Medal Table (Supports Multi-Event) ---
 function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
-  const activeSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
+  const activeSport = (window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball')).toLowerCase();
 
   const pillsHeader = `
     <div style="display:flex; background:rgba(15,23,42,0.6); padding:3px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); margin-bottom:1.25rem; gap:3px;">
@@ -700,7 +726,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     const tableMap = {};
     const recordMedal = (predObj, medalType) => {
       if (!predObj) return;
-      const rawName = predObj.team || predObj.country || predObj.name || '';
+      const rawName = predObj.team || predObj.country || predObj.name || (typeof predObj === 'string' ? predObj : '');
       if (!rawName) return;
       const cleaned = cleanTeamName(rawName);
       const displayName = formatTeamDisplayName(rawName.replace(/\(host\)/gi, '').trim());
@@ -714,51 +740,48 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
 
     const mData = menPreds || [];
     const wData = womenPreds || [];
-    const eventLists = [];
 
-    // 1. Gather primary individual division events
-    if (Array.isArray(mData)) {
-      if (mData.length > 0 && mData[0] && (mData[0].predictions || mData[0].data)) {
-        mData.forEach(evt => eventLists.push(evt.predictions || evt.data || []));
-      } else {
-        eventLists.push(mData);
-      }
-    } else if (mData && mData.events && Array.isArray(mData.events)) {
-      mData.events.forEach(evt => eventLists.push(evt.predictions || evt.data || []));
-    }
+    // Check if the sport has an explicit "events" array in predictions.json
+    const rawJson = (window.__sportPredictionsCache && (window.__sportPredictionsCache[activeSport] || window.__sportPredictionsCache[activeSport.replace(/[-_]/g, '')])) || window.__lastPredictionsJson;
 
-    if (Array.isArray(wData)) {
-      if (wData.length > 0 && wData[0] && (wData[0].predictions || wData[0].data)) {
-        wData.forEach(evt => eventLists.push(evt.predictions || evt.data || []));
-      } else {
-        eventLists.push(wData);
-      }
-    } else if (wData && wData.events && Array.isArray(wData.events)) {
-      wData.events.forEach(evt => eventLists.push(evt.predictions || evt.data || []));
-    }
-
-    // 2. Multi-Event Sports: Add official Team events (Modern Pentathlon = 4 events / 12 medals)
-    if (activeSport.includes('pentathlon') && eventLists.length === 2) {
-      // Men's Team Event (3 medals)
+    if (rawJson && Array.isArray(rawJson.events) && rawJson.events.length > 0) {
+      // Dynamically iterate over all distinct medal events (e.g. 4 events in Modern Pentathlon)
+      rawJson.events.forEach(evt => {
+        const list = evt.rankings || evt.predictions || evt.data || [];
+        projectPodium(list).forEach(item => recordMedal(item.team, item.medal));
+      });
+    } else if (activeSport.includes('pentathlon')) {
+      // Built-in fallback if cache is still hydrating
+      const eventLists = [mData, wData];
       eventLists.push([
         { team: "Republic of Korea", gold: "68.0%", silver: "24.5%", bronze: "6.5%" },
         { team: "China", gold: "26.0%", silver: "52.0%", bronze: "18.0%" },
         { team: "Japan (Host)", gold: "6.0%", silver: "23.5%", bronze: "65.5%" },
         { team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "10.0%" }
       ]);
-      // Women's Team Event (3 medals)
       eventLists.push([
         { team: "China", gold: "51.0%", silver: "44.0%", bronze: "4.5%" },
         { team: "Republic of Korea", gold: "46.0%", silver: "49.0%", bronze: "4.5%" },
         { team: "Japan (Host)", gold: "3.0%", silver: "7.0%", bronze: "85.0%" },
         { team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "6.0%" }
       ]);
+      eventLists.forEach(list => {
+        projectPodium(list).forEach(item => recordMedal(item.team, item.medal));
+      });
+    } else {
+      // Standard single-event sports (e.g. Football, Basketball, Volleyball)
+      if (mData.events && Array.isArray(mData.events)) {
+        mData.events.forEach(evt => projectPodium(evt.predictions || evt.data || evt.rankings).forEach(item => recordMedal(item.team, item.medal)));
+      } else {
+        projectPodium(mData).forEach(item => recordMedal(item.team, item.medal));
+      }
+      
+      if (wData.events && Array.isArray(wData.events)) {
+        wData.events.forEach(evt => projectPodium(evt.predictions || evt.data || evt.rankings).forEach(item => recordMedal(item.team, item.medal)));
+      } else {
+        projectPodium(wData).forEach(item => recordMedal(item.team, item.medal));
+      }
     }
-
-    // 3. Tally all medal events
-    eventLists.forEach(list => {
-      projectPodium(list).forEach(item => recordMedal(item.team, item.medal));
-    });
 
     const sortedTable = Object.values(tableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze || b.total - a.total);
 
@@ -822,7 +845,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
   const sourceData = currentGender === 'men' ? menPreds : womenPreds;
   let preds = sourceData;
   if (sourceData && sourceData.events) {
-    preds = sourceData.events[0]?.predictions || sourceData.events[0]?.data || [];
+    preds = sourceData.events[0]?.predictions || sourceData.events[0]?.data || sourceData.events[0]?.rankings || [];
   }
 
   if (!preds || preds.length === 0) {
