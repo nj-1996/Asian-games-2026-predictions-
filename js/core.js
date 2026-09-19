@@ -1018,7 +1018,7 @@ function renderPentathlonCalibration(container, predictions, matches) {
     'GERMAN SAMUEL': 17, 'YOHUANG PHURIT': 18, 'COMALING MICHAEL VER ANTON': 19,
     'MATULATUWA SAMUEL': 20,
 
-    // Women's Priors (Includes Fu Jing, Meng Xin, Shin Sumin, etc.)
+    // Women's Priors
     'SEONG SEUNGMIN': 1, 'SEONG SEUNG MIN': 1, 'ZHANG MINGYU': 2, 'KIM SUNWOO': 3,
     'WU XIYAO': 4, 'UCHIDA MISAKI': 5, 'BIAN YUFEI': 6, 'JANG HAEUN': 7,
     'SAITO AYUMU': 8, 'SUZUKI YURI': 9, 'POTAPENKO YELENA': 10, 'OTA NATSUMI': 11,
@@ -1038,12 +1038,10 @@ function renderPentathlonCalibration(container, predictions, matches) {
     const norm = normalizeName(name);
     if (!norm) return 99;
 
-    // 1. Direct match against canonical priors map
     for (const [key, rank] of Object.entries(SEED_PRIORS)) {
       if (normalizeName(key) === norm) return rank;
     }
 
-    // 2. Check if predictions array contains athlete names
     if (Array.isArray(predictions)) {
       for (let i = 0; i < predictions.length; i++) {
         const p = predictions[i];
@@ -1054,15 +1052,7 @@ function renderPentathlonCalibration(container, predictions, matches) {
       }
     }
 
-    // 3. Fallback partial token match
-    const tokens = (name || '').toUpperCase().split(/\s+/).filter(t => t.length > 2);
-    for (const [key, rank] of Object.entries(SEED_PRIORS)) {
-      const keyTokens = key.split(/\s+/);
-      const matchCount = tokens.filter(t => keyTokens.includes(t)).length;
-      if (matchCount >= 2) return rank;
-    }
-
-    return 8; // Default safe seed for roster athletes
+    return 24; // Unseeded default
   }
 
   // Filter completed sessions
@@ -1114,13 +1104,16 @@ function renderPentathlonCalibration(container, predictions, matches) {
   const upsetEvents = [];
 
   if (topQualifiers.length > 0) {
-    evaluatedSpots = topQualifiers.length;
+    evaluatedSpots = topQualifiers.length; // Exactly the 18 qualifiers (Top 9 from Grp A & B)
 
     topQualifiers.forEach(a => {
       const projRank = getAthletePredictedRank(a.name, a.country);
+      
+      // If a projected top-18 favorite successfully made the Top 9 cut
       if (projRank <= 18) {
         correctFavorites++;
       } else {
+        // GREEN UPSET: An unseeded/underdog athlete (proj rank 19+) broke into the Top 9 final cut
         upsetEvents.push({
           type: 'underdog_qualified',
           name: a.name,
@@ -1133,9 +1126,11 @@ function renderPentathlonCalibration(container, predictions, matches) {
       }
     });
 
+    // Check for shock exits: Projected top-9 favorites who missed the cut (finished 10th or lower)
     eliminatedAthletes.forEach(a => {
       const projRank = getAthletePredictedRank(a.name, a.country);
-      if (projRank <= 12) {
+      if (projRank <= 9) {
+        // RED UPSET: A projected top-9 favorite missed the cut line
         upsetEvents.push({
           type: 'favorite_eliminated',
           name: a.name,
