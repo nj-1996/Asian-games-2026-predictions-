@@ -808,7 +808,6 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
       ? `across ${eventCount} medal events`
       : (activeSport === 'football' ? "Men's U-23 & Women's Senior" : "Men's & Women's Divisions");
 
-    // Formatter for table contenders (Player Name for individual, Country for team)
     function formatContender(item, isIndiv, isGold) {
       if (!item) return '-';
       const countryRaw = item.team || item.country || item.name || '';
@@ -1001,8 +1000,228 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
   container.innerHTML = `${pillsHeader}${cardsHtml}`;
 }
 
-// --- Calibration View ---
+// --- Modern Pentathlon Calibration Engine (Option 1: Cutoff & Prior Accuracy) ---
+function renderPentathlonCalibration(container, predictions, matches) {
+  if (!matches || matches.length === 0) {
+    container.innerHTML = `<div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">Awaiting tournament sessions.</div>`;
+    return;
+  }
+
+  // Name matching helper across varied First/Last ordering
+  function matchAthleteName(nameA, nameB) {
+    if (!nameA || !nameB) return false;
+    const cleanA = nameA.toLowerCase().replace(/[^a-z\s]/g, ' ').trim().split(/\s+/).filter(Boolean);
+    const cleanB = nameB.toLowerCase().replace(/[^a-z\s]/g, ' ').trim().split(/\s+/).filter(Boolean);
+    if (cleanA.join('') === cleanB.join('')) return true;
+    return cleanA.every(part => cleanB.includes(part)) && cleanB.every(part => cleanA.includes(part));
+  }
+
+  function getAthletePredictedRank(name, country) {
+    if (!predictions || !Array.isArray(predictions)) return 99;
+    for (let i = 0; i < predictions.length; i++) {
+      const p = predictions[i];
+      const pName = p.athlete || p.player || p.name;
+      if (pName && matchAthleteName(name, pName)) return p.rank || (i + 1);
+    }
+    for (let i = 0; i < predictions.length; i++) {
+      const p = predictions[i];
+      const pTeam = p.team || p.country;
+      if (pTeam && cleanTeamName(pTeam) === cleanTeamName(country)) return p.rank || (i + 1);
+    }
+    return 99;
+  }
+
+  // Check finished sessions
+  const finishedSessions = matches.filter(s => s.status === 'Official' || s.status === 'Finished');
+  const hasFinished = finishedSessions.length > 0;
+
+  // Group standings accumulator
+  function getGroupLeaders(grpLetter) {
+    const sessions = finishedSessions.filter(s => {
+      const p = (s.round || s.phase || '') + ' ' + (s.group || '');
+      return p.toLowerCase().includes(`group ${grpLetter.toLowerCase()}`);
+    });
+    if (sessions.length === 0) return [];
+    const athletes = {};
+    sessions.forEach(s => {
+      (s.competitors || []).forEach(c => {
+        const name = c.name || c.athlete;
+        if (!name) return;
+        if (!athletes[name]) {
+          athletes[name] = { name, country: c.country || '', totalPts: 0 };
+        }
+        athletes[name].totalPts += (parseInt(c.raw, 10) || parseInt(c.points, 10) || 0);
+      });
+    });
+    return Object.values(athletes).sort((a, b) => b.totalPts - a.totalPts);
+  }
+
+  const grpALeaders = getGroupLeaders('A');
+  const grpBLeaders = getGroupLeaders('B');
+
+  // Check if we have active qualifiers (Top 9 of Group A and B)
+  const topQualifiers = [];
+  if (grpALeaders.length > 0) {
+    grpALeaders.slice(0, 9).forEach((a, idx) => topQualifiers.push({ ...a, actualRank: idx + 1, group: 'A' }));
+  }
+  if (grpBLeaders.length > 0) {
+    grpBLeaders.slice(0, 9).forEach((a, idx) => topQualifiers.push({ ...a, actualRank: idx + 1, group: 'B' }));
+  }
+
+  // Check eliminated athletes (ranks 10+ in semifinals)
+  const eliminatedAthletes = [];
+  if (grpALeaders.length > 9) {
+    grpALeaders.slice(9).forEach((a, idx) => eliminatedAthletes.push({ ...a, actualRank: idx + 10, group: 'A' }));
+  }
+  if (grpBLeaders.length > 9) {
+    grpBLeaders.slice(9).forEach((a, idx) => eliminatedAthletes.push({ ...a, actualRank: idx + 10, group: 'B' }));
+  }
+
+  let correctFavorites = 0;
+  let evaluatedSpots = 0;
+  const upsetEvents = [];
+
+  if (topQualifiers.length > 0) {
+    evaluatedSpots = topQualifiers.length;
+
+    topQualifiers.forEach(a => {
+      const projRank = getAthletePredictedRank(a.name, a.country);
+      if (projRank <= 18) {
+        correctFavorites++;
+      } else {
+        // Underdog broke into Top 9
+        upsetEvents.push({
+          type: 'underdog_qualified',
+          name: a.name,
+          country: a.country,
+          projRank: projRank,
+          actualRank: a.actualRank,
+          group: a.group,
+          pts: a.totalPts
+        });
+      }
+    });
+
+    eliminatedAthletes.forEach(a => {
+      const projRank = getAthletePredictedRank(a.name, a.country);
+      if (projRank <= 12) {
+        // Seeded favorite missed the cut
+        upsetEvents.push({
+          type: 'favorite_eliminated',
+          name: a.name,
+          country: a.country,
+          projRank: projRank,
+          actualRank: a.actualRank,
+          group: a.group,
+          pts: a.totalPts
+        });
+      }
+    });
+  }
+
+  // Fallback: If only Fencing Seeding Round is completed
+  if (topQualifiers.length === 0 && hasFinished) {
+    const fencingSession = finishedSessions.find(s => (s.discipline || s.round || '').toLowerCase().includes('seeding'));
+    if (fencingSession && Array.isArray(fencingSession.competitors)) {
+      const comps = [...fencingSession.competitors].sort((a, b) => (parseInt(b.victories || b.raw, 10) || 0) - (parseInt(a.victories || a.raw, 10) || 0));
+      evaluatedSpots = Math.min(10, comps.length);
+      comps.slice(0, 10).forEach((c, idx) => {
+        const name = c.name || c.athlete;
+        const projRank = getAthletePredictedRank(name, c.country);
+        if (projRank <= 12) {
+          correctFavorites++;
+        } else {
+          upsetEvents.push({
+            type: 'fencing_upset',
+            name,
+            country: c.country,
+            projRank,
+            actualRank: idx + 1,
+            group: 'Seed',
+            pts: c.victories || '-'
+          });
+        }
+      });
+    }
+  }
+
+  const accuracy = evaluatedSpots > 0 ? Math.round((correctFavorites / evaluatedSpots) * 100) : '--';
+  const finalistsCount = topQualifiers.length > 0 ? `${topQualifiers.length} / 18` : (hasFinished ? `${finishedSessions.length} Sessions` : '0 / 18');
+  const upsetsCount = upsetEvents.length;
+
+  container.innerHTML = `
+    <!-- Metric Cards -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+        <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Favorite Accuracy</div>
+        <div style="font-size:1.6rem; font-weight:800; color:#38bdf8;">${accuracy}${accuracy !== '--' ? '%' : ''}</div>
+        <div style="font-size:0.7rem; color:#94a3b8;">${correctFavorites}/${evaluatedSpots} favorites holding cut</div>
+      </div>
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+        <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Finalists Decided</div>
+        <div style="font-size:1.6rem; font-weight:800; color:#4ade80;">${finalistsCount}</div>
+        <div style="font-size:0.7rem; color:#94a3b8;">Top 9 advance from Grp A & B</div>
+      </div>
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+        <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Cutoff Upsets</div>
+        <div style="font-size:1.6rem; font-weight:800; color:#f87171;">${upsetsCount}</div>
+        <div style="font-size:0.7rem; color:#94a3b8;">Underdog qualifiers / exits</div>
+      </div>
+    </div>
+
+    <!-- Cutoff Upset Tracker Feed -->
+    <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem;">
+      <div style="font-size:0.85rem; font-weight:700; margin-bottom:0.75rem; color:#38bdf8; display:flex; justify-content:space-between; align-items:center;">
+        <span>🎯 Qualification Cutoff & Prior Drift Tracker</span>
+        <span style="font-size:0.72rem; color:#94a3b8;">Top 9 Cut Line</span>
+      </div>
+
+      ${upsetEvents.length > 0 ? upsetEvents.map(u => {
+        const flag = getFlagEmoji(u.country);
+        const isUnderdog = u.type === 'underdog_qualified' || u.type === 'fencing_upset';
+
+        return `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.85rem;">
+            <div>
+              <div style="display:flex; align-items:center; gap:0.4rem;">
+                <span style="color:${isUnderdog ? '#4ade80' : '#f87171'}; font-size:0.9rem;">${isUnderdog ? '🟢' : '🔴'}</span>
+                <span>${flag}</span>
+                <span style="font-weight:700; color:#f8fafc;">${u.name}</span>
+              </div>
+              <div style="font-size:0.72rem; color:#94a3b8; margin-left:1.4rem;">
+                ${isUnderdog 
+                  ? `Proj Seed #${u.projRank} ➔ Broke into Semi Grp ${u.group} #${u.actualRank} (Q)` 
+                  : `Seeded Favorite #${u.projRank} ➔ Slipped to Semi Grp ${u.group} #${u.actualRank} (Missed Cut)`}
+              </div>
+            </div>
+            <span style="font-family:monospace; font-weight:700; font-size:0.85rem; color:${isUnderdog ? '#4ade80' : '#f87171'};">
+              ${u.pts} pts
+            </span>
+          </div>
+        `;
+      }).join('') : `
+        <div style="text-align:center; padding:1.5rem 1rem; color:#94a3b8; font-size:0.8rem; line-height:1.45;">
+          ${hasFinished 
+            ? "✅ All projected favorites are holding expected qualification positions inside the cut line."
+            : "⏳ Semifinal sessions are scheduled. As Group A and Group B conclude, qualification cutoff accuracy and underdog breakouts will track here live."}
+        </div>
+      `}
+    </div>
+  `;
+}
+
+// --- Calibration View (Universal Router) ---
 function renderCalibrationView(container, predictions, matches) {
+  const activeSport = (window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball')).toLowerCase();
+  const isPentathlon = activeSport.includes('pentathlon');
+
+  // Modern Pentathlon: Route to Option 1 Cutoff & Qualifier Calibration
+  if (isPentathlon) {
+    renderPentathlonCalibration(container, predictions, matches);
+    return;
+  }
+
+  // STANDARD HEAD-TO-HEAD MATCH CALIBRATION (Basketball, Football, Volleyball)
   if (!matches || matches.length === 0) {
     container.innerHTML = `<div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">Awaiting completed matches.</div>`;
     return;
