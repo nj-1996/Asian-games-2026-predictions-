@@ -224,14 +224,15 @@
       const renderSlot = (title, match, fallback, medalType = null) => {
         const t1 = (match && match.t1 && match.t1 !== 'TBD') ? match.t1 : fallback.t1;
         const t2 = (match && match.t2 && match.t2 !== 'TBD') ? match.t2 : fallback.t2;
-        const isAbandoned = match && ((match.s1 || '').toLowerCase().includes('abandoned') || (match.score1 || '').toLowerCase().includes('abandoned') || (match.state || '').toLowerCase().includes('rain'));
-        
-        const s1 = isAbandoned ? 'Rain' : (match ? match.s1 : '-');
-        const s2 = isAbandoned ? 'Seeding' : (match ? match.s2 : '-');
+        const isAbandoned = match && ((match.s1 || '').toLowerCase().includes('abandoned') || (match.score1 || '').toLowerCase().includes('abandoned') || (match.state || '').toLowerCase().includes('rain') || (match.status || '').toLowerCase().includes('abandoned'));
         
         const isFinished = match ? match.isFinished : false;
-        const t1Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t1) : (isFinished && Number(s1) > Number(s2));
-        const t2Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t2) : (isFinished && Number(s2) > Number(s1));
+        const t1Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t1) : (isFinished && Number(match.s1) > Number(match.s2));
+        const t2Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t2) : (isFinished && Number(match.s2) > Number(match.s1));
+        
+        const s1 = isAbandoned ? (t1Win ? 'ADV' : 'ELIM') : (match ? match.s1 : '-');
+        const s2 = isAbandoned ? (t2Win ? 'ADV' : 'ELIM') : (match ? match.s2 : '-');
+        
         const displayDateTime = match ? (formatMatchDateTime(match.date, match.time) || match.status || 'Scheduled') : 'Scheduled';
 
         return `
@@ -243,11 +244,11 @@
             </div>
             <div class="bracket-team-row ${t1Win ? 'winner' : ''}">
               <div class="bracket-team-info"><span>${getFlagEmoji(t1)}</span> <span>${t1}</span></div>
-              <span class="bracket-score" ${isAbandoned ? 'style="font-size:0.7rem; color:#38bdf8;"' : ''}>${s1}</span>
+              <span class="bracket-score" style="font-size:0.7rem; color:${t1Win ? '#4ade80' : '#ef4444'};">${s1}</span>
             </div>
             <div class="bracket-team-row ${t2Win ? 'winner' : ''}">
               <div class="bracket-team-info"><span>${getFlagEmoji(t2)}</span> <span>${t2}</span></div>
-              <span class="bracket-score" ${isAbandoned ? 'style="font-size:0.7rem; color:#f87171;"' : ''}>${s2}</span>
+              <span class="bracket-score" style="font-size:0.7rem; color:${t2Win ? '#4ade80' : '#ef4444'};">${s2}</span>
             </div>
           </div>
         `;
