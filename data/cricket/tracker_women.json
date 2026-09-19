@@ -1,0 +1,105 @@
+{
+  "sport": "Cricket (Women)",
+  "matches": [
+    {
+      "round": "Quarterfinal",
+      "group": "Knockout",
+      "team1": "Bangladesh",
+      "team2": "China",
+      "score1": "145/4",
+      "score2": "92/8",
+      "status": "Official",
+      "date": "2026-09-17",
+      "time": "09:00",
+      "venue": "Korogi Sports Park",
+      "winner": "Bangladesh"
+    },
+    {
+      "round": "Quarterfinal",
+      "group": "Knockout",
+      "team1": "Pakistan",
+      "team2": "Thailand",
+      "score1": "160/3",
+      "score2": "110/6",
+      "status": "Official",
+      "date": "2026-09-17",
+      "time": "14:00",
+      "venue": "Korogi Sports Park",
+      "winner": "Pakistan"
+    },
+    {
+      "round": "Quarterfinal",
+      "group": "Knockout",
+      "team1": "Sri Lanka",
+      "team2": "Malaysia",
+      "score1": "172/4",
+      "score2": "88/9",
+      "status": "Official",
+      "date": "2026-09-18",
+      "time": "09:00",
+      "venue": "Korogi Sports Park",
+      "winner": "Sri Lanka"
+    },
+    {
+      "round": "Quarterfinal",
+      "group": "Knockout",
+      "team1": "India",
+      "team2": "Japan",
+      "score1": "185/2",
+      "score2": "54/10",
+      "status": "Official",
+      "date": "2026-09-18",
+      "time": "14:00",
+      "venue": "Korogi Sports Park",
+      "winner": "India"
+    },
+    {
+      "round": "Semifinal",
+      "group": "Knockout",
+      "team1": "India",
+      "team2": "Bangladesh",
+      "score1": "-",
+      "score2": "-",
+      "status": "Live",
+      "date": "2026-09-20",
+      "time": "09:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Semifinal",
+      "group": "Knockout",
+      "team1": "Pakistan",
+      "team2": "Sri Lanka",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-20",
+      "time": "14:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Bronze Medal Match",
+      "group": "Knockout",
+      "team1": "Loser SF 1",
+      "team2": "Loser SF 2",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-22",
+      "time": "09:00",
+      "venue": "Korogi Sports Park"
+    },
+    {
+      "round": "Gold Medal Match",
+      "group": "Knockout",
+      "team1": "Winner SF 1",
+      "team2": "Winner SF 2",
+      "score1": "-",
+      "score2": "-",
+      "status": "Scheduled",
+      "date": "2026-09-22",
+      "time": "14:00",
+      "venue": "Korogi Sports Park"
+    }
+  ]
+}
