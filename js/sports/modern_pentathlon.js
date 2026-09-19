@@ -7,7 +7,8 @@ window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 let activePentathlonEvents = [];
 let activePhaseGroup = '';
 let activeDiscipline = '';
-let activeMpnStandingsTab = 'individual'; // 'individual' | 'team'
+let activeMpnStandingsTab = 'individual'; // 'individual' | 'team' | 'predictions'
+let mpnPredictionsCache = null;
 
 const MPN_NOC_TO_COUNTRY = {
   KOR: 'South Korea',
@@ -385,7 +386,6 @@ function loadDisciplineView(events, discipline) {
   const content = document.getElementById('mpn-sheet-content');
   if (!content) return;
 
-  // 1. Cumulative Individual Standings inside drawer
   if (discipline === 'Overall') {
     document.getElementById('mpn-sheet-subtitle').innerText = 'Combined Cumulative Points Standings';
 
@@ -455,7 +455,6 @@ function loadDisciplineView(events, discipline) {
     return;
   }
 
-  // 2. Single Discipline Standings inside drawer
   const targetEvent = events.find(e => (e.discipline || e.round) === discipline) || events[0] || {};
   const isLive = targetEvent.status === 'Live';
 
@@ -550,7 +549,6 @@ function loadDisciplineView(events, discipline) {
     return;
   }
 
-  // Standard Single Discipline Table (Obstacle, Swim, Laser Run)
   content.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
       <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; font-weight:700;">Discipline Results</span>
@@ -644,11 +642,9 @@ function renderGroupTable(title, athletes, isFinal = false) {
   `;
 }
 
-// Official UIPM Team Medal Classification Engine
 function renderOfficialTeamView(finalStandings, semiAStandings, semiBStandings) {
   const hasFinalScores = finalStandings && finalStandings.length > 0 && finalStandings.some(a => a.total > 0);
 
-  // 1. Final Medal Decider View: Aggregate points of the 3 finalists per nation
   if (hasFinalScores) {
     const nationFinalists = {};
     finalStandings.forEach(a => {
@@ -738,7 +734,6 @@ function renderOfficialTeamView(finalStandings, semiAStandings, semiBStandings) 
     `;
   }
 
-  // 2. Semifinal Stage: Identify which nations have 3 qualifiers contending for Team Medals
   const qualifiedA = (semiAStandings || []).slice(0, 9);
   const qualifiedB = (semiBStandings || []).slice(0, 9);
   const all18Qualifiers = [...qualifiedA, ...qualifiedB];
@@ -792,12 +787,7 @@ function renderOfficialTeamView(finalStandings, semiAStandings, semiBStandings) 
               </div>
             </div>
           `;
-        }).join('') : `
-          <div style="padding:1rem; text-align:center; color:#94a3b8; font-size:0.8rem;">
-            Qualification in progress. Finalists will appear here once semifinals conclude.
-          </div>
-        `}
-
+        }).join('')}
         ${nonContenders.length > 0 ? `
           <div style="padding:0.75rem 1rem 0.25rem 1rem; margin-top:0.5rem;">
             <span style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:#ef4444; font-weight:700;">
@@ -824,23 +814,228 @@ function renderOfficialTeamView(finalStandings, semiAStandings, semiBStandings) 
   `;
 }
 
-window.setMpnStandingsTab = function(tab) {
+// Renders the Predictions view from data/modern_pentathlon/predictions.json
+function renderPredictionsFromData(predData, isWomen = false) {
+  if (!predData) {
+    return `<div style="text-align:center; padding:2rem; color:#94a3b8;">Loading statistical predictions...</div>`;
+  }
+
+  const genderData = isWomen ? predData.women : predData.men;
+  if (!genderData) {
+    return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No predictions available.</div>`;
+  }
+
+  const individual = genderData.individual || [];
+  const teamList = genderData.team || [];
+  const top3 = individual.slice(0, 3);
+
+  return `
+    <!-- Top 3 Podium Forecast -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+      ${top3.map((a, idx) => {
+        const medal = idx === 0 ? '🥇 Gold Favorite' : idx === 1 ? '🥈 Silver Contender' : '🥉 Bronze Contender';
+        const medalColor = idx === 0 ? '#facc15' : idx === 1 ? '#cbd5e1' : '#f59e0b';
+        const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(a.country) : '';
+
+        return `
+          <div style="background:var(--card-bg, #1e293b); border:1px solid ${medalColor}40; border-radius:12px; padding:1.2rem; box-shadow:0 4px 15px rgba(0,0,0,0.25);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+              <span style="font-size:0.75rem; font-weight:700; color:${medalColor}; text-transform:uppercase; letter-spacing:0.05em;">${medal}</span>
+              <span style="font-size:0.75rem; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:12px; font-weight:700; color:#38bdf8;">${a.win_prob}% Win</span>
+            </div>
+            <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.2rem; display:flex; align-items:center; gap:0.4rem;">
+              <span>${flag}</span> <span>${a.name}</span>
+            </div>
+            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.75rem;">${a.country} •${a.badge}</div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0.6rem; background:rgba(0,0,0,0.25); border-radius:8px; font-size:0.75rem;">
+              <span style="color:#94a3b8;">Projected Total</span>
+              <span style="font-family:monospace; font-weight:700; color:#4ade80; font-size:0.95rem;">${a.total} pts</span>
+            </div>
+            <div style="margin-top:0.6rem;">
+              <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#94a3b8; margin-bottom:0.25rem;">
+                <span>Podium Probability</span>
+                <span style="font-weight:700; color:#cbd5e1;">${a.medal_prob}%</span>
+              </div>
+              <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden;">
+                <div style="width:${a.medal_prob}\%; height:100\%; background:${medalColor};"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+
+    <!-- Projected Leaderboard & Discipline Skill Matrix -->
+    <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow-x:auto;">
+      <div style="padding:0.85rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02);">
+        <span>🔮 Pre-Tournament Statistical Projection</span>
+        <span style="font-size:0.72rem; color:#94a3b8;">data/modern_pentathlon/predictions.json</span>
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
+        <thead>
+          <tr style="color:#94a3b8; font-size:0.72rem; border-bottom:1px solid rgba(255,255,255,0.05); background:rgba(0,0,0,0.15);">
+            <th style="padding:0.65rem 0.6rem; text-align:left;"># Contender</th>
+            <th style="padding:0.65rem 0.3rem;">Proj. Fencing</th>
+            <th style="padding:0.65rem 0.3rem;">Proj. Obstacle</th>
+            <th style="padding:0.65rem 0.3rem;">Proj. Swim</th>
+            <th style="padding:0.65rem 0.3rem;">Proj. Laser</th>
+            <th style="padding:0.65rem 0.6rem; font-weight:700; color:#f8fafc;">Proj. Total</th>
+            <th style="padding:0.65rem 0.5rem; text-align:right;">Win %</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${individual.map((a, idx) => {
+            const rank = a.rank || (idx + 1);
+            const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(a.country) : '';
+            return `
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${rank <= 3 ? 'rgba(234,179,8,0.03)' : 'transparent'};">
+                <td style="padding:0.65rem 0.6rem; text-align:left;">
+                  <div style="display:flex; align-items:center; gap:0.4rem;">
+                    <span style="width:18px; font-weight:700; color:${rank === 1 ? '#facc15' : rank === 2 ? '#cbd5e1' : rank === 3 ? '#f59e0b' : '#94a3b8'};">${rank}</span>
+                    <div>
+                      <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.35rem;">
+                        <span>${flag}</span> <span>${a.name}</span>
+                      </div>
+                      <div style="font-size:0.7rem; color:#94a3b8; margin-left:1.35rem;">${a.country}</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.fence}</td>
+                <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.obs}</td>
+                <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.swim}</td>
+                <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.lr}</td>
+                <td style="padding:0.65rem 0.6rem; font-family:monospace; font-weight:700; color:#4ade80;">${a.total}</td>
+                <td style="padding:0.65rem 0.5rem; text-align:right; font-weight:700; color:${a.win_prob > 10 ? '#38bdf8' : '#94a3b8'};">${a.win_prob}%</td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Simulated Laser Run Handicap Board -->
+    <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow:hidden;">
+      <div style="padding:0.85rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02);">
+        <span>🎯 Projected Laser Run Handicap Board</span>
+        <span style="font-size:0.72rem; color:#38bdf8;">1 Point = 1 Second Deficit</span>
+      </div>
+      <div style="padding:0.75rem 1rem; font-size:0.75rem; color:#94a3b8; line-height:1.45; border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(56,189,248,0.04);">
+        ℹ️ The athlete leading across Fencing, Obstacle, and Swimming starts first at <strong>00:00</strong>. Chasers start staggered by their point deficit. First athlete across the finish line takes Gold.
+      </div>
+      <div style="font-size:0.82rem;">
+        ${individual.map((a, idx) => {
+          const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(a.country) : '';
+          const isLeader = a.start_delay === '00:00';
+          return `
+            <div style="display:grid; grid-template-columns:28px 1fr 90px 85px; align-items:center; padding:0.65rem 1rem; border-bottom:1px solid rgba(255,255,255,0.03);">
+              <span style="font-weight:700; color:#94a3b8;">${idx + 1}</span>
+              <div style="display:flex; align-items:center; gap:0.4rem;">
+                <span>${flag}</span>
+                <span style="font-weight:600; color:#f8fafc;">${a.name}</span>
+              </div>
+              <span style="font-family:monospace; color:#cbd5e1; text-align:right;">${a.pre_lr_points} pts</span>
+              <span style="font-family:monospace; font-weight:700; text-align:right; color:${isLeader ? '#4ade80' : '#facc15'};">
+                ${a.start_delay}
+              </span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- Projected Team Medal Podium -->
+    <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow:hidden;">
+      <div style="padding:0.85rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02);">
+        <span>👥 Projected Team Medals (Top 3 Baseline Aggregation)</span>
+        <span style="font-size:0.72rem; color:#facc15;">3 Finalists Required</span>
+      </div>
+      <div style="font-size:0.85rem;">
+        ${teamList.map((team, idx) => {
+          const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '';
+          const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(team.country) : '';
+          return `
+            <div style="padding:0.85rem 1rem; border-bottom:1px solid rgba(255,255,255,0.04); background:${idx <= 2 ? 'rgba(234,179,8,0.03)' : 'transparent'};">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <span style="font-weight:700; width:22px;">${medal || idx + 1}</span>
+                  <span style="font-size:1.15rem;">${flag}</span>
+                  <span style="font-weight:700; color:#f8fafc;">${team.country}</span>
+                </div>
+                <span style="font-family:monospace; font-weight:700; color:#4ade80;">${team.total_score.toLocaleString()} pts</span>
+              </div>
+              <div style="margin-left:2rem; font-size:0.75rem; color:#94a3b8;">
+                ${(team.athletes || []).map(a => `${a.name} (${a.score})`).join(' • ')}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+window.fetchAndRenderMpnPredictions = function(isWomen) {
+  const container = document.getElementById('mpn-pred-content');
+  if (!container) return;
+
+  if (mpnPredictionsCache) {
+    container.innerHTML = renderPredictionsFromData(mpnPredictionsCache, isWomen);
+    return;
+  }
+
+  fetch('data/modern_pentathlon/predictions.json')
+    .then(r => {
+      if (!r.ok) throw new Error('Predictions feed unavailable');
+      return r.json();
+    })
+    .then(data => {
+      mpnPredictionsCache = data;
+      container.innerHTML = renderPredictionsFromData(data, isWomen);
+    })
+    .catch(() => {
+      container.innerHTML = `
+        <div style="text-align:center; padding:2rem; color:#94a3b8;">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem;">⚠️</div>
+          <div>Unable to load predictions from <code>data/modern_pentathlon/predictions.json</code></div>
+        </div>
+      `;
+    });
+};
+
+window.setMpnStandingsTab = function(tab, isWomen = false) {
   activeMpnStandingsTab = tab;
   const bIndiv = document.getElementById('mpn-tab-btn-indiv');
   const bTeam = document.getElementById('mpn-tab-btn-team');
+  const bPred = document.getElementById('mpn-tab-btn-pred');
+
   const cIndiv = document.getElementById('mpn-indiv-content');
   const cTeam = document.getElementById('mpn-team-content');
+  const cPred = document.getElementById('mpn-pred-content');
+
+  [bIndiv, bTeam, bPred].forEach(btn => {
+    if (btn) {
+      btn.style.background = 'transparent';
+      btn.style.color = '#94a3b8';
+    }
+  });
+
+  if (cIndiv) cIndiv.style.display = 'none';
+  if (cTeam) cTeam.style.display = 'none';
+  if (cPred) cPred.style.display = 'none';
 
   if (tab === 'team') {
-    if (bIndiv) { bIndiv.style.background = 'transparent'; bIndiv.style.color = '#94a3b8'; }
     if (bTeam) { bTeam.style.background = '#2563eb'; bTeam.style.color = '#ffffff'; }
-    if (cIndiv) cIndiv.style.display = 'none';
     if (cTeam) cTeam.style.display = 'block';
+  } else if (tab === 'predictions') {
+    if (bPred) { bPred.style.background = '#2563eb'; bPred.style.color = '#ffffff'; }
+    if (cPred) {
+      cPred.style.display = 'block';
+      window.fetchAndRenderMpnPredictions(isWomen);
+    }
   } else {
     if (bIndiv) { bIndiv.style.background = '#2563eb'; bIndiv.style.color = '#ffffff'; }
-    if (bTeam) { bTeam.style.background = 'transparent'; bTeam.style.color = '#94a3b8'; }
     if (cIndiv) cIndiv.style.display = 'block';
-    if (cTeam) cTeam.style.display = 'none';
   }
 };
 
@@ -857,6 +1052,10 @@ window.SPORT_ENGINES['modern_pentathlon'] = {
     if (!list || list.length === 0) {
       return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No standings data available.</div>`;
     }
+
+    const isWomen = (data?.sport || '').toLowerCase().includes('women') || 
+                    (list[0]?.discipline || '').toLowerCase().includes('women') ||
+                    (list[0]?.round || '').toLowerCase().includes('women');
 
     const groupAEvents = list.filter(ev => getNormalizedPhaseGroup(ev).includes('Group A'));
     const groupBEvents = list.filter(ev => getNormalizedPhaseGroup(ev).includes('Group B'));
@@ -883,24 +1082,30 @@ window.SPORT_ENGINES['modern_pentathlon'] = {
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:0.75rem;">
           <div style="font-weight:700; font-size:1.05rem; display:flex; align-items:center; gap:0.5rem;">
-            <span>🎯 Modern Pentathlon Standings</span>
+            <span>🎯 Modern Pentathlon ${isWomen ? "(Women)" : "(Men)"} Standings</span>
           </div>
 
-          <!-- Standings View Selector: Individual vs. Team Event -->
           <div style="display:inline-flex; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:3px; gap:4px;">
             <button 
               id="mpn-tab-btn-indiv" 
-              onclick="window.setMpnStandingsTab('individual')"
-              style="border:none; padding:0.35rem 0.9rem; border-radius:16px; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s ease; ${activeMpnStandingsTab === 'individual' ? 'background:#2563eb; color:#ffffff;' : 'background:transparent; color:#94a3b8;'}"
+              onclick="window.setMpnStandingsTab('individual', ${isWomen})"
+              style="border:none; padding:0.35rem 0.85rem; border-radius:16px; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s ease; ${activeMpnStandingsTab === 'individual' ? 'background:#2563eb; color:#ffffff;' : 'background:transparent; color:#94a3b8;'}"
             >
               👤 Individual
             </button>
             <button 
               id="mpn-tab-btn-team" 
-              onclick="window.setMpnStandingsTab('team')"
-              style="border:none; padding:0.35rem 0.9rem; border-radius:16px; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s ease; ${activeMpnStandingsTab === 'team' ? 'background:#2563eb; color:#ffffff;' : 'background:transparent; color:#94a3b8;'}"
+              onclick="window.setMpnStandingsTab('team', ${isWomen})"
+              style="border:none; padding:0.35rem 0.85rem; border-radius:16px; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s ease; ${activeMpnStandingsTab === 'team' ? 'background:#2563eb; color:#ffffff;' : 'background:transparent; color:#94a3b8;'}"
             >
               👥 Team Event
+            </button>
+            <button 
+              id="mpn-tab-btn-pred" 
+              onclick="window.setMpnStandingsTab('predictions', ${isWomen})"
+              style="border:none; padding:0.35rem 0.85rem; border-radius:16px; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s ease; ${activeMpnStandingsTab === 'predictions' ? 'background:#2563eb; color:#ffffff;' : 'background:transparent; color:#94a3b8;'}"
+            >
+              🔮 Predictions
             </button>
           </div>
         </div>
@@ -916,6 +1121,9 @@ window.SPORT_ENGINES['modern_pentathlon'] = {
         </div>
         <div id="mpn-team-content" style="display:${activeMpnStandingsTab === 'team' ? 'block' : 'none'};">
           ${teamHtml}
+        </div>
+        <div id="mpn-pred-content" style="display:${activeMpnStandingsTab === 'predictions' ? 'block' : 'none'};">
+          ${activeMpnStandingsTab === 'predictions' ? renderPredictionsFromData(mpnPredictionsCache, isWomen) : ''}
         </div>
       </div>
     `;
