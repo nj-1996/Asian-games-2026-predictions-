@@ -61,6 +61,18 @@
 
       const groupKeys = Object.keys(groups).sort();
       if (groupKeys.length === 0) {
+        const isWomen = (typeof currentGender !== 'undefined' ? currentGender : window.currentGender) === 'women';
+        if (isWomen) {
+          return `
+            <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(59,130,246,0.2); border-radius:12px; padding:2rem 1.5rem; text-align:center; margin-top:1rem;">
+              <div style="font-size:2rem; margin-bottom:0.75rem;">ℹ️</div>
+              <div style="font-weight:700; font-size:1rem; color:#f8fafc; margin-bottom:0.4rem;">Direct Knockout Format</div>
+              <div style="font-size:0.85rem; color:#94a3b8; line-height:1.5; max-width:380px; margin:0 auto;">
+                Women's Cricket starts directly from the Quarterfinals and does not feature a group stage. Use the <strong>Bracket</strong> or <strong>Schedule</strong> tab to view fixtures and results.
+              </div>
+            </div>
+          `;
+        }
         return `<div style="text-align:center; padding:2rem; color:#94a3b8;">Group stage standings will update as matches complete.</div>`;
       }
 
