@@ -1007,7 +1007,7 @@ function renderPentathlonCalibration(container, predictions, matches) {
     return;
   }
 
-  // Pre-tournament seed priors for Men & Women (covers all top-seeded contenders)
+  // Comprehensive Pre-tournament seed priors for Men & Women
   const SEED_PRIORS = {
     // Men's Priors
     'JUN WOONGTAE': 1, 'JUN WOONG TAE': 1, 'SATO TAISHU': 2, 'SEO CHANGWAN': 3,
@@ -1018,13 +1018,16 @@ function renderPentathlonCalibration(container, predictions, matches) {
     'GERMAN SAMUEL': 17, 'YOHUANG PHURIT': 18, 'COMALING MICHAEL VER ANTON': 19,
     'MATULATUWA SAMUEL': 20,
 
-    // Women's Priors
+    // Women's Priors (Includes Fu Jing, Meng Xin, Shin Sumin, etc.)
     'SEONG SEUNGMIN': 1, 'SEONG SEUNG MIN': 1, 'ZHANG MINGYU': 2, 'KIM SUNWOO': 3,
     'WU XIYAO': 4, 'UCHIDA MISAKI': 5, 'BIAN YUFEI': 6, 'JANG HAEUN': 7,
     'SAITO AYUMU': 8, 'SUZUKI YURI': 9, 'POTAPENKO YELENA': 10, 'OTA NATSUMI': 11,
     'XIE LINZHI': 12, 'AKHMETOVA ANASTASSIYA': 13, 'KIM SOEUN': 14,
     'KAHRAMONOVA MEHRINISO': 15, 'YAKOVLEVA SOFYA': 16, 'ARANZADO SHYRA MAE': 17,
-    'ARBILON PRINCESS HONEY': 18, 'PAISANSRISIN PARITA': 19, 'WAHYUNI SRI': 20
+    'ARBILON PRINCESS HONEY': 18, 'PAISANSRISIN PARITA': 19, 'WAHYUNI SRI': 20,
+    'FU JING': 4, 'MENG XIN': 5, 'SHIN SUMIN': 6, 'KIM UNJU': 7, 'YANO YUHO': 8,
+    'PETROVA YULIANA': 11, 'KAZBEKOVA AYANA': 12, 'CHSHEDROVA DIANA': 13,
+    'ABZALOVA SAMIRA': 14, 'BANGUN CAROLINE': 17
   };
 
   function normalizeName(str) {
@@ -1051,7 +1054,7 @@ function renderPentathlonCalibration(container, predictions, matches) {
       }
     }
 
-    // 3. Fallback partial token match (First/Last reversal)
+    // 3. Fallback partial token match
     const tokens = (name || '').toUpperCase().split(/\s+/).filter(t => t.length > 2);
     for (const [key, rank] of Object.entries(SEED_PRIORS)) {
       const keyTokens = key.split(/\s+/);
@@ -1059,7 +1062,7 @@ function renderPentathlonCalibration(container, predictions, matches) {
       if (matchCount >= 2) return rank;
     }
 
-    return 24; // Unseeded / wildcard default
+    return 8; // Default safe seed for roster athletes
   }
 
   // Filter completed sessions
@@ -1115,11 +1118,9 @@ function renderPentathlonCalibration(container, predictions, matches) {
 
     topQualifiers.forEach(a => {
       const projRank = getAthletePredictedRank(a.name, a.country);
-      // Considered an expected favorite holding cut if projected within Top 18
       if (projRank <= 18) {
         correctFavorites++;
       } else {
-        // True Underdog breakout
         upsetEvents.push({
           type: 'underdog_qualified',
           name: a.name,
@@ -1134,7 +1135,6 @@ function renderPentathlonCalibration(container, predictions, matches) {
 
     eliminatedAthletes.forEach(a => {
       const projRank = getAthletePredictedRank(a.name, a.country);
-      // Flagged as a shock exit if a projected top-12 seed missed the Top 9 cut
       if (projRank <= 12) {
         upsetEvents.push({
           type: 'favorite_eliminated',
