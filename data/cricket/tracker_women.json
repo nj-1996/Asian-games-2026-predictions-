@@ -2,18 +2,18 @@
   "sport": "Cricket (Women)",
   "matches": [
     {
-  "round": "Quarterfinal",
-  "status": "Finished",
-  "state": "Cancelled (Rain) / Higher Seeding",
-  "date": "2026-09-17",
-  "time": "09:00",
-  "team1": "Bangladesh",
-  "team2": "China",
-  "score1": "Abandoned",
-  "score2": "Abandoned",
-  "venue": "Korogi Sports Park",
-  "winner": "Bangladesh"
-},
+      "round": "Quarterfinal 1",
+      "status": "Upcoming",
+      "state": "Cancelled",
+      "date": "2026-09-17",
+      "time": "09:00",
+      "team1": "Bangladesh",
+      "team2": "China",
+      "score1": "-",
+      "score2": "-",
+      "venue": "Korogi Athletic Park",
+      "winner": "Bangladesh"
+    },
     {
       "round": "Quarterfinal 2",
       "status": "Finished",
