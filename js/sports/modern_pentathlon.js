@@ -117,6 +117,9 @@
     var phase = getNormalizedPhaseGroup(nextSession);
     var isSemi = /semi|sf|seed/i.test(phase);
     var isMedalDecider = Boolean(nextSession.is_medal) && !isSemi;
+    var dateTimeFormatted = typeof formatMatchDateTime === 'function' 
+      ? formatMatchDateTime(nextSession.date, nextSession.time) 
+      : (nextSession.date + ' ' + nextSession.time);
 
     return `
       <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
@@ -130,7 +133,7 @@
           ${disc}
         </div>
         <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.2rem;">
-          ${phase} • ${nextSession.date} ${nextSession.time} • ${nextSession.venue || 'Anjo Sports Park'}
+          ${dateTimeFormatted} • ${nextSession.venue || 'Anjo Sports Park'}
         </div>
         ${isMedalDecider ? `
           <div style="display:inline-block; margin-top:0.6rem; font-size:0.75rem; background:rgba(234,179,8,0.15); color:#facc15; border:1px solid rgba(234,179,8,0.3); padding:2px 8px; border-radius:12px; font-weight:600;">
@@ -176,6 +179,9 @@
               var isMedalSession = Boolean(ev.is_medal) && !isSemiOrSeed;
               var safePhase = encodeURIComponent(phaseHeader);
               var safeDisc = encodeURIComponent(disc);
+              var dateTimeFormatted = typeof formatMatchDateTime === 'function'
+                ? formatMatchDateTime(ev.date, ev.time)
+                : (ev.date + ' ' + ev.time);
 
               return `
                 <div 
@@ -186,7 +192,7 @@
                     <span style="font-size:1.25rem; line-height:1;">${icon}</span>
                     <div>
                       <div style="font-size:0.85rem; font-weight:600; color:#f8fafc;">${disc}</div>
-                      <div style="font-size:0.75rem; color:#94a3b8;">${ev.date} •${ev.time}</div>
+                      <div style="font-size:0.75rem; color:#94a3b8;">${dateTimeFormatted}</div>
                     </div>
                   </div>
                   <div style="display:flex; align-items:center; gap:0.6rem;">
@@ -386,7 +392,10 @@
 
     var targetEvent = events.find(function(e) { return (e.discipline || e.round) === discipline; }) || events[0] || {};
     var isLive = targetEvent.status === 'Live';
-    document.getElementById('mpn-sheet-subtitle').innerText = (targetEvent.date || '') + ' • ' + (targetEvent.time || '') + ' • ' + (targetEvent.venue || 'Anjo Sports Park');
+    var dateTimeFormatted = typeof formatMatchDateTime === 'function'
+      ? formatMatchDateTime(targetEvent.date, targetEvent.time)
+      : (targetEvent.date + ' • ' + targetEvent.time);
+    document.getElementById('mpn-sheet-subtitle').innerText = dateTimeFormatted + ' • ' + (targetEvent.venue || 'Anjo Sports Park');
 
     var competitors = targetEvent.competitors || [];
     if (competitors.length === 0) {
