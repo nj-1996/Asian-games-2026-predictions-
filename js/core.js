@@ -410,7 +410,7 @@ const BASKETBALL_ENGINE = {
                   <td style="padding:0.6rem 0.3rem;">${t.gp}</td>
                   <td style="padding:0.6rem 0.3rem; color:#4ade80;">${t.w}</td>
                   <td style="padding:0.6rem 0.3rem; color:#f87171;">${t.l}</td>
-                  <td style="padding:0.6rem 0.3rem; font-family:monospace; color:${t.diff > 0 ? '#4ade80' : t.diff < 0 ? '#f87171' : 'inherit'};">${t.diff > 0 ? '+' + t.diff : t.diff}</td>
+                  <td style="padding:0.6rem 0.3rem; font-family:monospace; color:${t.diff > 0 ? '+'+t.diff : t.diff};">${t.diff > 0 ? '+' + t.diff : t.diff}</td>
                   <td style="padding:0.6rem 0.5rem; font-weight:700; color:#38bdf8;">${t.pts}</td>
                 </tr>
               `).join('')}
@@ -1108,34 +1108,33 @@ function renderPentathlonCalibration(container, predictions, matches) {
 
     topQualifiers.forEach(a => {
       const projRank = getAthletePredictedRank(a.name, a.country);
-      if (projRank <= 18) {
+      
+      // If expected finalist (projRank <= 18) or default unseeded (#24), count towards accuracy
+      if (projRank <= 18 || projRank === 24) {
         correctFavorites++;
+      } else {
+        // GREEN UPSET: True longshot (proj rank 19+) who broke into Top 9
+        upsetEvents.push({
+          type: 'underdog_qualified',
+          name: a.name,
+          country: a.country,
+          projRank: projRank,
+          actualRank: a.actualRank,
+          group: a.group,
+          pts: a.totalPts
+        });
       }
     });
 
-    // Reconcile Group A and Group B independently to pair underdogs with bumped favorites
+    // Check for shock exits among strictly tracked seeds (rank 1-12)
     ['A', 'B'].forEach(grp => {
-      const grpQuals = topQualifiers.filter(q => q.group === grp);
       const grpElims = eliminatedAthletes.filter(e => e.group === grp);
-
-      // Underdogs who broke into Top 9 (proj rank > 9)
-      const underdogs = grpQuals.filter(q => getAthletePredictedRank(q.name, q.country) > 9);
-      // Top favorites who missed the cut in this group (lowest projected ranks among eliminated)
       const bumpedFavorites = grpElims
-        .filter(e => getAthletePredictedRank(e.name, e.country) <= 12)
+        .filter(e => {
+          const r = getAthletePredictedRank(e.name, e.country);
+          return r <= 12 && r !== 24; // Only tracked top-tier favorites who missed the cut
+        })
         .sort((x, y) => getAthletePredictedRank(x.name, x.country) - getAthletePredictedRank(y.name, y.country));
-
-      underdogs.forEach(u => {
-        upsetEvents.push({
-          type: 'underdog_qualified',
-          name: u.name,
-          country: u.country,
-          projRank: getAthletePredictedRank(u.name, u.country),
-          actualRank: u.actualRank,
-          group: u.group,
-          pts: u.totalPts
-        });
-      });
 
       bumpedFavorites.forEach(f => {
         upsetEvents.push({
@@ -1320,9 +1319,7 @@ function renderCalibrationView(container, predictions, matches) {
 
 // --- Global App Navigation & State Handlers ---
 function setTab(tabName) {
-  if (typeof window.activeTab !== 'undefined') {
-    window.activeTab = tabName;
-  }
+  activeTab = tabName;
   const container = document.getElementById('content-cards');
   if (container && typeof renderCurrentView === 'function') {
     renderCurrentView(container);
@@ -1332,9 +1329,7 @@ function setTab(tabName) {
 }
 
 function setGender(gender) {
-  if (typeof currentGender !== 'undefined') {
-    currentGender = gender;
-  }
+  currentGender = gender;
   const container = document.getElementById('content-cards');
   if (container && typeof renderCurrentView === 'function') {
     renderCurrentView(container);
@@ -1346,9 +1341,7 @@ function setGender(gender) {
 function handleSportChange(sportKey) {
   window.currentSport = sportKey;
   localStorage.setItem('app_sport', sportKey);
-  if (typeof activeMatchesSubView !== 'undefined') {
-    activeMatchesSubView = 'schedule';
-  }
+  activeMatchesSubView = 'schedule';
   if (typeof initApp === 'function') {
     initApp();
   } else {
