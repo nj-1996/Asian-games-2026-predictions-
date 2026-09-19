@@ -126,49 +126,64 @@
 
       const getGame = (list, num) => list.find(m => new RegExp(`game\\s*${num}`, 'i').test(m.stage)) || list[num - 1];
 
-      const renderSlot = (title, match, fallbackTeams, medalType = null) => {
-        const t1 = (match && match.t1 && match.t1 !== 'TBD') ? match.t1 : fallbackTeams[0];
-        const t2 = (match && match.t2 && match.t2 !== 'TBD') ? match.t2 : fallbackTeams[1];
+      const defaultQF = [
+        { title: 'QF 1', t1: '1st Group A', t2: '4th Group B' },
+        { title: 'QF 2', t1: '2nd Group B', t2: '3rd Group A' },
+        { title: 'QF 3', t1: '1st Group B', t2: '4th Group A' },
+        { title: 'QF 4', t1: '2nd Group A', t2: '3rd Group B' }
+      ];
+
+      const renderSlot = (title, match, fallback, medalType = null) => {
+        const t1 = (match && match.t1 && match.t1 !== 'TBD') ? match.t1 : fallback.t1;
+        const t2 = (match && match.t2 && match.t2 !== 'TBD') ? match.t2 : fallback.t2;
         const s1 = match ? match.s1 : '-';
         const s2 = match ? match.s2 : '-';
         const isFinished = match ? match.isFinished : false;
-        const t1Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t1) : false;
-        const t2Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t2) : false;
+        const t1Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t1) : (isFinished && Number(s1) > Number(s2));
+        const t2Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t2) : (isFinished && Number(s2) > Number(s1));
         const displayDateTime = match ? (formatMatchDateTime(match.date, match.time) || match.status || 'Scheduled') : 'Scheduled';
 
         return `
-          <div class="bracket-match-card" style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem; margin-bottom:0.75rem;">
-            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#94a3b8; margin-bottom:0.4rem;">
+          <div class="bracket-match-card">
+            <div class="bracket-match-header">
               <span>${title}</span>
-              ${medalType ? `<span style="color:${medalType === 'gold' ? '#facc15' : '#f59e0b'}; font-weight:700;">${medalType.toUpperCase()}</span>` : ''}
+              ${medalType ? `<span class="bracket-medal-badge medal-${medalType}">${medalType.toUpperCase()}</span>` : ''}
               <span>${displayDateTime}</span>
             </div>
-            <div style="display:flex; justify-content:space-between; padding:0.3rem 0; font-weight:${t1Win ? '700' : '400'}; color:${t1Win ? '#38bdf8' : 'inherit'};">
-              <span>${getFlagEmoji(t1)} ${t1}</span>
-              <span style="font-family:monospace;">${s1}</span>
+            <div class="bracket-team-row ${t1Win ? 'winner' : ''}">
+              <div class="bracket-team-info"><span>${getFlagEmoji(t1)}</span> <span>${t1}</span></div>
+              <span class="bracket-score">${s1}</span>
             </div>
-            <div style="display:flex; justify-content:space-between; padding:0.3rem 0; font-weight:${t2Win ? '700' : '400'}; color:${t2Win ? '#38bdf8' : 'inherit'};">
-              <span>${getFlagEmoji(t2)} ${t2}</span>
-              <span style="font-family:monospace;">${s2}</span>
+            <div class="bracket-team-row ${t2Win ? 'winner' : ''}">
+              <div class="bracket-team-info"><span>${getFlagEmoji(t2)}</span> <span>${t2}</span></div>
+              <span class="bracket-score">${s2}</span>
             </div>
           </div>
         `;
       };
 
+      const hasQF = qfMatches.length > 0;
+
       return `
-        <div style="padding:0.5rem 0;">
-          <div style="font-size:0.9rem; font-weight:700; margin-bottom:1rem; color:#38bdf8;">🏆 Tournament Knockout Stage</div>
-          ${qfMatches.length > 0 ? `
-            <div style="font-size:0.75rem; color:#94a3b8; font-weight:600; text-transform:uppercase; margin-bottom:0.5rem;">Quarterfinals</div>
-            ${qfMatches.map((m, idx) => renderSlot(`Quarterfinal ${idx + 1}`, m, [m.t1, m.t2])).join('')}
-          ` : ''}
-          <div style="font-size:0.75rem; color:#94a3b8; font-weight:600; text-transform:uppercase; margin:1rem 0 0.5rem 0;">Semifinals</div>
-          ${renderSlot('Semifinal 1', sfMatches[0], ['Winner QF 1', 'Winner QF 2'])}
-          ${renderSlot('Semifinal 2', sfMatches[1], ['Winner QF 3', 'Winner QF 4'])}
-          
-          <div style="font-size:0.75rem; color:#94a3b8; font-weight:600; text-transform:uppercase; margin:1rem 0 0.5rem 0;">Medal Matches</div>
-          ${renderSlot('Gold Medal Match', finalMatch, ['Winner SF 1', 'Winner SF 2'], 'gold')}
-          ${renderSlot('Bronze Medal Match', bronzeMatch, ['Loser SF 1', 'Loser SF 2'], 'bronze')}
+        <div class="bracket-wrapper">
+          <div class="bracket-container">
+            ${hasQF ? `
+              <div class="bracket-round">
+                <div class="bracket-round-header">Quarterfinals</div>
+                ${[0, 1, 2, 3].map(i => renderSlot(`QF ${i + 1}`, getGame(qfMatches, i + 1), defaultQF[i])).join('')}
+              </div>
+            ` : ''}
+            <div class="bracket-round">
+              <div class="bracket-round-header">Semifinals</div>
+              ${renderSlot('SF 1', getGame(sfMatches, 1), { t1: 'Winner QF 1', t2: 'Winner QF 2' })}
+              ${renderSlot('SF 2', getGame(sfMatches, 2), { t1: 'Winner QF 3', t2: 'Winner QF 4' })}
+            </div>
+            <div class="bracket-round">
+              <div class="bracket-round-header">Medal Matches</div>
+              ${renderSlot('Gold Medal', finalMatch, { t1: 'Winner SF 1', t2: 'Winner SF 2' }, 'gold')}
+              ${renderSlot('Bronze Medal', bronzeMatch, { t1: 'Loser SF 1', t2: 'Loser SF 2' }, 'bronze')}
+            </div>
+          </div>
         </div>
       `;
     }
