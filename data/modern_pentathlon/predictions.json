@@ -4,35 +4,37 @@
   "weighting": "UIPM World Rankings + 2022 Asian Games + Paris 2024 + 2025 Asian Championships",
   "home_venue_boost": "+12 pts (Japan / Anjo Sports Park)",
   "men": [
-    { "rank": 1, "team": "Republic of Korea", "gold": "45.2%", "silver": "31.4%", "bronze": "18.1%", "podium": "94.7%" },
-    { "rank": 2, "team": "Japan (Host)", "gold": "35.8%", "silver": "29.2%", "bronze": "21.6%", "podium": "86.6%" },
-    { "rank": 3, "team": "China", "gold": "14.1%", "silver": "25.8%", "bronze": "33.4%", "podium": "73.3%" },
-    { "rank": 4, "team": "Kazakhstan", "gold": "3.4%", "silver": "8.2%", "bronze": "15.1%", "podium": "26.7%" },
-    { "rank": 5, "team": "Uzbekistan", "gold": "1.0%", "silver": "3.1%", "bronze": "6.5%", "podium": "10.6%" },
-    { "rank": 6, "team": "Philippines", "gold": "0.3%", "silver": "1.4%", "bronze": "3.1%", "podium": "4.8%" }
+    { "rank": 1, "athlete": "Jun Woong-tae", "team": "Republic of Korea", "gold": "45.2%", "silver": "31.4%", "bronze": "18.1%", "podium": "94.7%" },
+    { "rank": 2, "athlete": "Taishu Sato", "team": "Japan (Host)", "gold": "35.8%", "silver": "29.2%", "bronze": "21.6%", "podium": "86.6%" },
+    { "rank": 3, "athlete": "Luo Shuai", "team": "China", "gold": "14.1%", "silver": "25.8%", "bronze": "33.4%", "podium": "73.3%" },
+    { "rank": 4, "athlete": "Temirlan Abdraimov", "team": "Kazakhstan", "gold": "3.4%", "silver": "8.2%", "bronze": "15.1%", "podium": "26.7%" },
+    { "rank": 5, "athlete": "Dmitriy Tretyakov", "team": "Uzbekistan", "gold": "1.0%", "silver": "3.1%", "bronze": "6.5%", "podium": "10.6%" },
+    { "rank": 6, "athlete": "Samuel German", "team": "Philippines", "gold": "0.3%", "silver": "1.4%", "bronze": "3.1%", "podium": "4.8%" }
   ],
   "women": [
-    { "rank": 1, "team": "Republic of Korea", "gold": "50.8%", "silver": "29.4%", "bronze": "14.5%", "podium": "94.7%" },
-    { "rank": 2, "team": "China", "gold": "37.6%", "silver": "39.1%", "bronze": "20.4%", "podium": "97.1%" },
-    { "rank": 3, "team": "Japan (Host)", "gold": "7.5%", "silver": "18.2%", "bronze": "36.8%", "podium": "62.5%" },
-    { "rank": 4, "team": "Kazakhstan", "gold": "2.6%", "silver": "7.5%", "bronze": "15.8%", "podium": "25.9%" },
-    { "rank": 5, "team": "Uzbekistan", "gold": "1.0%", "silver": "3.6%", "bronze": "6.9%", "podium": "11.5%" },
-    { "rank": 6, "team": "Philippines", "gold": "0.3%", "silver": "1.3%", "bronze": "3.2%", "podium": "4.8%" }
+    { "rank": 1, "athlete": "Seong Seung-min", "team": "Republic of Korea", "gold": "50.8%", "silver": "29.4%", "bronze": "14.5%", "podium": "94.7%" },
+    { "rank": 2, "athlete": "Zhang Mingyu", "team": "China", "gold": "37.6%", "silver": "39.1%", "bronze": "20.4%", "podium": "97.1%" },
+    { "rank": 3, "athlete": "Misaki Uchida", "team": "Japan (Host)", "gold": "7.5%", "silver": "18.2%", "bronze": "36.8%", "podium": "62.5%" },
+    { "rank": 4, "athlete": "Yelena Potapenko", "team": "Kazakhstan", "gold": "2.6%", "silver": "7.5%", "bronze": "15.8%", "podium": "25.9%" },
+    { "rank": 5, "athlete": "Mehriniso Kahramonova", "team": "Uzbekistan", "gold": "1.0%", "silver": "3.6%", "bronze": "6.9%", "podium": "11.5%" },
+    { "rank": 6, "athlete": "Princess Honey Arbilon", "team": "Philippines", "gold": "0.3%", "silver": "1.3%", "bronze": "3.2%", "podium": "4.8%" }
   ],
   "events": [
     {
       "event": "Men's Individual",
       "gender": "men",
+      "type": "individual",
       "rankings": [
-        { "rank": 1, "team": "Republic of Korea", "gold": "45.2%", "silver": "31.4%", "bronze": "18.1%", "podium": "94.7%" },
-        { "rank": 2, "team": "Japan (Host)", "gold": "35.8%", "silver": "29.2%", "bronze": "21.6%", "podium": "86.6%" },
-        { "rank": 3, "team": "China", "gold": "14.1%", "silver": "25.8%", "bronze": "33.4%", "podium": "73.3%" },
-        { "rank": 4, "team": "Kazakhstan", "gold": "3.4%", "silver": "8.2%", "bronze": "15.1%", "podium": "26.7%" }
+        { "rank": 1, "athlete": "Jun Woong-tae", "team": "Republic of Korea", "gold": "45.2%", "silver": "31.4%", "bronze": "18.1%", "podium": "94.7%" },
+        { "rank": 2, "athlete": "Taishu Sato", "team": "Japan (Host)", "gold": "35.8%", "silver": "29.2%", "bronze": "21.6%", "podium": "86.6%" },
+        { "rank": 3, "athlete": "Luo Shuai", "team": "China", "gold": "14.1%", "silver": "25.8%", "bronze": "33.4%", "podium": "73.3%" },
+        { "rank": 4, "athlete": "Temirlan Abdraimov", "team": "Kazakhstan", "gold": "3.4%", "silver": "8.2%", "bronze": "15.1%", "podium": "26.7%" }
       ]
     },
     {
       "event": "Men's Team",
       "gender": "men",
+      "type": "team",
       "rankings": [
         { "rank": 1, "team": "Republic of Korea", "gold": "68.0%", "silver": "24.5%", "bronze": "6.5%", "podium": "99.0%" },
         { "rank": 2, "team": "China", "gold": "26.0%", "silver": "52.0%", "bronze": "18.0%", "podium": "96.0%" },
@@ -43,16 +45,18 @@
     {
       "event": "Women's Individual",
       "gender": "women",
+      "type": "individual",
       "rankings": [
-        { "rank": 1, "team": "Republic of Korea", "gold": "50.8%", "silver": "29.4%", "bronze": "14.5%", "podium": "94.7%" },
-        { "rank": 2, "team": "China", "gold": "37.6%", "silver": "39.1%", "bronze": "20.4%", "podium": "97.1%" },
-        { "rank": 3, "team": "Japan (Host)", "gold": "7.5%", "silver": "18.2%", "bronze": "36.8%", "podium": "62.5%" },
-        { "rank": 4, "team": "Kazakhstan", "gold": "2.6%", "silver": "7.5%", "bronze": "15.8%", "podium": "25.9%" }
+        { "rank": 1, "athlete": "Seong Seung-min", "team": "Republic of Korea", "gold": "50.8%", "silver": "29.4%", "bronze": "14.5%", "podium": "94.7%" },
+        { "rank": 2, "athlete": "Zhang Mingyu", "team": "China", "gold": "37.6%", "silver": "39.1%", "bronze": "20.4%", "podium": "97.1%" },
+        { "rank": 3, "athlete": "Misaki Uchida", "team": "Japan (Host)", "gold": "7.5%", "silver": "18.2%", "bronze": "36.8%", "podium": "62.5%" },
+        { "rank": 4, "athlete": "Yelena Potapenko", "team": "Kazakhstan", "gold": "2.6%", "silver": "7.5%", "bronze": "15.8%", "podium": "25.9%" }
       ]
     },
     {
       "event": "Women's Team",
       "gender": "women",
+      "type": "team",
       "rankings": [
         { "rank": 1, "team": "China", "gold": "51.0%", "silver": "44.0%", "bronze": "4.5%", "podium": "99.5%" },
         { "rank": 2, "team": "Republic of Korea", "gold": "46.0%", "silver": "49.0%", "bronze": "4.5%", "podium": "99.5%" },
