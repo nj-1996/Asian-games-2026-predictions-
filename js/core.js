@@ -728,7 +728,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
     const mData = menPreds || [];
     const wData = womenPreds || [];
 
-    // Assemble the event list dynamically for ANY sport
+    // Assemble event list dynamically for ANY sport
     let detailedEventsList = [];
 
     if (isPentathlon) {
@@ -1007,41 +1007,72 @@ function renderPentathlonCalibration(container, predictions, matches) {
     return;
   }
 
-  // Name matching helper across varied First/Last ordering
-  function matchAthleteName(nameA, nameB) {
-    if (!nameA || !nameB) return false;
-    const cleanA = nameA.toLowerCase().replace(/[^a-z\s]/g, ' ').trim().split(/\s+/).filter(Boolean);
-    const cleanB = nameB.toLowerCase().replace(/[^a-z\s]/g, ' ').trim().split(/\s+/).filter(Boolean);
-    if (cleanA.join('') === cleanB.join('')) return true;
-    return cleanA.every(part => cleanB.includes(part)) && cleanB.every(part => cleanA.includes(part));
+  // Pre-tournament seed priors for Men & Women (covers all top-seeded contenders)
+  const SEED_PRIORS = {
+    // Men's Priors
+    'JUN WOONGTAE': 1, 'JUN WOONG TAE': 1, 'SATO TAISHU': 2, 'SEO CHANGWAN': 3,
+    'LUO SHUAI': 4, 'MA YUANG': 5, 'CHEN BAILIANG': 6, 'LEE JONGHYEON': 7,
+    'TOMITA YOUSUKE': 8, 'SEKIGAWA KAZUAKI': 9, 'LI LIUCHANG': 10,
+    'ABDRAIMOV TEMIRLAN': 11, 'KIM YOUNGHA': 12, 'VARYOKHIN TIKHON': 13,
+    'CHUVASHOV LEV': 14, 'STADNIK KIRILL': 15, 'TRETYAKOV DMITRIY': 16,
+    'GERMAN SAMUEL': 17, 'YOHUANG PHURIT': 18, 'COMALING MICHAEL VER ANTON': 19,
+    'MATULATUWA SAMUEL': 20,
+
+    // Women's Priors
+    'SEONG SEUNGMIN': 1, 'SEONG SEUNG MIN': 1, 'ZHANG MINGYU': 2, 'KIM SUNWOO': 3,
+    'WU XIYAO': 4, 'UCHIDA MISAKI': 5, 'BIAN YUFEI': 6, 'JANG HAEUN': 7,
+    'SAITO AYUMU': 8, 'SUZUKI YURI': 9, 'POTAPENKO YELENA': 10, 'OTA NATSUMI': 11,
+    'XIE LINZHI': 12, 'AKHMETOVA ANASTASSIYA': 13, 'KIM SOEUN': 14,
+    'KAHRAMONOVA MEHRINISO': 15, 'YAKOVLEVA SOFYA': 16, 'ARANZADO SHYRA MAE': 17,
+    'ARBILON PRINCESS HONEY': 18, 'PAISANSRISIN PARITA': 19, 'WAHYUNI SRI': 20
+  };
+
+  function normalizeName(str) {
+    return (str || '').toUpperCase().replace(/[^A-Z]/g, '').trim();
   }
 
   function getAthletePredictedRank(name, country) {
-    if (!predictions || !Array.isArray(predictions)) return 99;
-    for (let i = 0; i < predictions.length; i++) {
-      const p = predictions[i];
-      const pName = p.athlete || p.player || p.name;
-      if (pName && matchAthleteName(name, pName)) return p.rank || (i + 1);
+    const norm = normalizeName(name);
+    if (!norm) return 99;
+
+    // 1. Direct match against canonical priors map
+    for (const [key, rank] of Object.entries(SEED_PRIORS)) {
+      if (normalizeName(key) === norm) return rank;
     }
-    for (let i = 0; i < predictions.length; i++) {
-      const p = predictions[i];
-      const pTeam = p.team || p.country;
-      if (pTeam && cleanTeamName(pTeam) === cleanTeamName(country)) return p.rank || (i + 1);
+
+    // 2. Check if predictions array contains athlete names
+    if (Array.isArray(predictions)) {
+      for (let i = 0; i < predictions.length; i++) {
+        const p = predictions[i];
+        const aName = p.athlete || p.player || p.name;
+        if (aName && normalizeName(aName) === norm) {
+          return p.rank || (i + 1);
+        }
+      }
     }
-    return 99;
+
+    // 3. Fallback partial token match (First/Last reversal)
+    const tokens = (name || '').toUpperCase().split(/\s+/).filter(t => t.length > 2);
+    for (const [key, rank] of Object.entries(SEED_PRIORS)) {
+      const keyTokens = key.split(/\s+/);
+      const matchCount = tokens.filter(t => keyTokens.includes(t)).length;
+      if (matchCount >= 2) return rank;
+    }
+
+    return 24; // Unseeded / wildcard default
   }
 
-  // Check finished sessions
+  // Filter completed sessions
   const finishedSessions = matches.filter(s => s.status === 'Official' || s.status === 'Finished');
   const hasFinished = finishedSessions.length > 0;
 
-  // Group standings accumulator
   function getGroupLeaders(grpLetter) {
     const sessions = finishedSessions.filter(s => {
       const p = (s.round || s.phase || '') + ' ' + (s.group || '');
       return p.toLowerCase().includes(`group ${grpLetter.toLowerCase()}`);
     });
     if (sessions.length === 0) return [];
+
     const athletes = {};
     sessions.forEach(s => {
       (s.competitors || []).forEach(c => {
@@ -1059,7 +1090,6 @@ function renderPentathlonCalibration(container, predictions, matches) {
   const grpALeaders = getGroupLeaders('A');
   const grpBLeaders = getGroupLeaders('B');
 
-  // Check if we have active qualifiers (Top 9 of Group A and B)
   const topQualifiers = [];
   if (grpALeaders.length > 0) {
     grpALeaders.slice(0, 9).forEach((a, idx) => topQualifiers.push({ ...a, actualRank: idx + 1, group: 'A' }));
@@ -1068,7 +1098,6 @@ function renderPentathlonCalibration(container, predictions, matches) {
     grpBLeaders.slice(0, 9).forEach((a, idx) => topQualifiers.push({ ...a, actualRank: idx + 1, group: 'B' }));
   }
 
-  // Check eliminated athletes (ranks 10+ in semifinals)
   const eliminatedAthletes = [];
   if (grpALeaders.length > 9) {
     grpALeaders.slice(9).forEach((a, idx) => eliminatedAthletes.push({ ...a, actualRank: idx + 10, group: 'A' }));
@@ -1086,10 +1115,11 @@ function renderPentathlonCalibration(container, predictions, matches) {
 
     topQualifiers.forEach(a => {
       const projRank = getAthletePredictedRank(a.name, a.country);
+      // Considered an expected favorite holding cut if projected within Top 18
       if (projRank <= 18) {
         correctFavorites++;
       } else {
-        // Underdog broke into Top 9
+        // True Underdog breakout
         upsetEvents.push({
           type: 'underdog_qualified',
           name: a.name,
@@ -1104,8 +1134,8 @@ function renderPentathlonCalibration(container, predictions, matches) {
 
     eliminatedAthletes.forEach(a => {
       const projRank = getAthletePredictedRank(a.name, a.country);
+      // Flagged as a shock exit if a projected top-12 seed missed the Top 9 cut
       if (projRank <= 12) {
-        // Seeded favorite missed the cut
         upsetEvents.push({
           type: 'favorite_eliminated',
           name: a.name,
@@ -1117,32 +1147,6 @@ function renderPentathlonCalibration(container, predictions, matches) {
         });
       }
     });
-  }
-
-  // Fallback: If only Fencing Seeding Round is completed
-  if (topQualifiers.length === 0 && hasFinished) {
-    const fencingSession = finishedSessions.find(s => (s.discipline || s.round || '').toLowerCase().includes('seeding'));
-    if (fencingSession && Array.isArray(fencingSession.competitors)) {
-      const comps = [...fencingSession.competitors].sort((a, b) => (parseInt(b.victories || b.raw, 10) || 0) - (parseInt(a.victories || a.raw, 10) || 0));
-      evaluatedSpots = Math.min(10, comps.length);
-      comps.slice(0, 10).forEach((c, idx) => {
-        const name = c.name || c.athlete;
-        const projRank = getAthletePredictedRank(name, c.country);
-        if (projRank <= 12) {
-          correctFavorites++;
-        } else {
-          upsetEvents.push({
-            type: 'fencing_upset',
-            name,
-            country: c.country,
-            projRank,
-            actualRank: idx + 1,
-            group: 'Seed',
-            pts: c.victories || '-'
-          });
-        }
-      });
-    }
   }
 
   const accuracy = evaluatedSpots > 0 ? Math.round((correctFavorites / evaluatedSpots) * 100) : '--';
@@ -1178,7 +1182,7 @@ function renderPentathlonCalibration(container, predictions, matches) {
 
       ${upsetEvents.length > 0 ? upsetEvents.map(u => {
         const flag = getFlagEmoji(u.country);
-        const isUnderdog = u.type === 'underdog_qualified' || u.type === 'fencing_upset';
+        const isUnderdog = u.type === 'underdog_qualified';
 
         return `
           <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.85rem;">
@@ -1195,14 +1199,14 @@ function renderPentathlonCalibration(container, predictions, matches) {
               </div>
             </div>
             <span style="font-family:monospace; font-weight:700; font-size:0.85rem; color:${isUnderdog ? '#4ade80' : '#f87171'};">
-              ${u.pts} pts
+              ${u.pts.toLocaleString()} pts
             </span>
           </div>
         `;
       }).join('') : `
         <div style="text-align:center; padding:1.5rem 1rem; color:#94a3b8; font-size:0.8rem; line-height:1.45;">
           ${hasFinished 
-            ? "✅ All projected favorites are holding expected qualification positions inside the cut line."
+            ? "✅ All projected favorites held expected qualification positions inside the Top 9 cut line."
             : "⏳ Semifinal sessions are scheduled. As Group A and Group B conclude, qualification cutoff accuracy and underdog breakouts will track here live."}
         </div>
       `}
