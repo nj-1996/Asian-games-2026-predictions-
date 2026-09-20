@@ -3,13 +3,15 @@
   "matches": [
     {
       "round": "Quarterfinal 1",
-      "status": "Upcoming",
-      "state": "Cancelled",
+      "status": "Finished",
+      "state": "Cancelled (Rain)",
       "date": "2026-09-17",
       "time": "09:00",
       "player1": "Bangladesh",
       "player2": "China",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": "Bangladesh"
     },
     {
@@ -20,7 +22,9 @@
       "time": "15:30",
       "player1": "Pakistan",
       "player2": "Thailand",
-      "score": "92/7 - 91/4",
+      "score": "92 - 91",
+      "score1": "92/7",
+      "score2": "91/4",
       "winner": "Pakistan"
     },
     {
@@ -31,7 +35,9 @@
       "time": "09:00",
       "player1": "Sri Lanka",
       "player2": "Malaysia",
-      "score": "160/4 - 74/7",
+      "score": "160 - 74",
+      "score1": "160/4",
+      "score2": "74/7",
       "winner": "Sri Lanka"
     },
     {
@@ -42,7 +48,9 @@
       "time": "14:00",
       "player1": "India",
       "player2": "Japan",
-      "score": "59/2 - 57/10",
+      "score": "59 - 57",
+      "score1": "59/2",
+      "score2": "57/10",
       "winner": "India"
     },
     {
@@ -53,7 +61,9 @@
       "time": "10:20",
       "player1": "Pakistan",
       "player2": "Sri Lanka",
-      "score": "177/4 - 178/2",
+      "score": "177 - 178",
+      "score1": "177/4",
+      "score2": "178/2",
       "winner": "Sri Lanka"
     },
     {
@@ -64,7 +74,9 @@
       "time": "14:00",
       "player1": "Bangladesh",
       "player2": "India",
-      "score": "81/10 - 195/4",
+      "score": "81 - 195",
+      "score1": "81/10",
+      "score2": "195/4",
       "winner": "India"
     },
     {
@@ -76,6 +88,8 @@
       "player1": "Pakistan",
       "player2": "Bangladesh",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -87,6 +101,8 @@
       "player1": "Sri Lanka",
       "player2": "India",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     }
   ]
