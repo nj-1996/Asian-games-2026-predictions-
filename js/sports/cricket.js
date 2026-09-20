@@ -21,16 +21,40 @@
 
   const clean = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
-  // Helper to preserve original raw properties alongside parsed helper fields
+  // Helper to adapt the global schema (player1/player2/score) into the 
+  // custom t1/t2/s1/s2 format needed for the Cricket UI components
   const parseMatch = (m) => {
     const base = typeof parseMatchData === 'function' ? parseMatchData(m) : {};
+    
+    let s1 = base.s1 || m.score1 || '-';
+    let s2 = base.s2 || m.score2 || '-';
+    
+    // Safely split the new combined score string (e.g. "92 - 7 - 91 - 4" or "160/4 - 74/7")
+    const rawScore = m.score || base.score || '';
+    if (rawScore && !m.score1 && !m.score2) {
+        if (rawScore.includes(' - ')) {
+            const parts = rawScore.split(' - ');
+            if (parts.length === 4) {
+                // Handles format: "92 - 7 - 91 - 4"
+                s1 = parts[0].trim() + ' - ' + parts[1].trim();
+                s2 = parts[2].trim() + ' - ' + parts[3].trim();
+            } else if (parts.length === 2) {
+                // Handles format: "160/4 - 74/7"
+                s1 = parts[0].trim();
+                s2 = parts[1].trim();
+            } else {
+                s1 = rawScore;
+            }
+        }
+    }
+
     return {
       ...m,
       ...base,
-      t1: base.t1 || m.team1 || m.player1 || 'TBD',
-      t2: base.t2 || m.team2 || m.player2 || 'TBD',
-      s1: base.s1 || m.score1 || '-',
-      s2: base.s2 || m.score2 || '-',
+      t1: base.t1 || m.player1 || m.team1 || 'TBD',
+      t2: base.t2 || m.player2 || m.team2 || 'TBD',
+      s1: s1,
+      s2: s2,
       winner: m.winner || base.winner || '',
       state: m.state || base.state || '',
       status: m.status || base.status || '',
