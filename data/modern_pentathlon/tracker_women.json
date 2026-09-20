@@ -2426,39 +2426,6 @@
         },
         {
           "rank": 3,
-          "name": "FU Jing",
-          "country": "CHN",
-          "raw": "298",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 4,
-          "name": "WU Xiyao",
-          "country": "CHN",
-          "raw": "296",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 5,
-          "name": "ZHANG Mingyu",
-          "country": "CHN",
-          "raw": "296",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 6,
           "name": "SUZUKI Yuri",
           "country": "JPN",
           "raw": "295",
@@ -2469,40 +2436,7 @@
           "penalties": "0"
         },
         {
-          "rank": 7,
-          "name": "SEONG Seungmin",
-          "country": "KOR",
-          "raw": "295",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 8,
-          "name": "MENG Xin",
-          "country": "CHN",
-          "raw": "291",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 9,
-          "name": "BANGUN Caroline",
-          "country": "INA",
-          "raw": "291",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 10,
+          "rank": 4,
           "name": "CHSHEDROVA Diana",
           "country": "KAZ",
           "raw": "286",
@@ -2513,29 +2447,7 @@
           "penalties": "0"
         },
         {
-          "rank": 11,
-          "name": "SHIN Sumin",
-          "country": "KOR",
-          "raw": "286",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 12,
-          "name": "PETROVA Yuliana",
-          "country": "",
-          "raw": "285",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 13,
+          "rank": 5,
           "name": "JANG Haeun",
           "country": "KOR",
           "raw": "275",
@@ -2546,54 +2458,10 @@
           "penalties": "0"
         },
         {
-          "rank": 14,
-          "name": "KAHRAMAONOVA Mehriniso",
-          "country": "",
-          "raw": "274",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 15,
-          "name": "SAITO Ayumu",
-          "country": "JPN",
-          "raw": "271",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 16,
+          "rank": 6,
           "name": "KAZBEKOVA Ayana",
           "country": "KAZ",
           "raw": "271",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 17,
-          "name": "ABZALOVA Samira",
-          "country": "UZB",
-          "raw": "268",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 18,
-          "name": "KIM Unju",
-          "country": "KOR",
-          "raw": "259",
           "points": "-",
           "total_pts": "-",
           "victories": "-",
@@ -2808,6 +2676,99 @@
           "name": "CHSHEDROVA Diana",
           "country": "KAZ",
           "raw": "412",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        }
+      ]
+    },
+    {
+      "id": "W.TEAM--------------.FNL-.000100--",
+      "unit_code": "W.TEAM--------------.FNL-.000100--",
+      "round": "Final",
+      "phase": "Final",
+      "group": "",
+      "discipline": "Women's Team Final",
+      "status": "Official",
+      "date": "2026-09-20",
+      "time": "11:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "China",
+          "country": "",
+          "raw": "4318",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 2,
+          "name": "South Korea",
+          "country": "",
+          "raw": "4271",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 3,
+          "name": "Japan",
+          "country": "",
+          "raw": "4169",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 4,
+          "name": "Kazakhstan",
+          "country": "",
+          "raw": "3919",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 5,
+          "name": "Indonesia",
+          "country": "",
+          "raw": "3760",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 6,
+          "name": "Philippines",
+          "country": "",
+          "raw": "3876",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 7,
+          "name": "Thailand",
+          "country": "",
+          "raw": "3286",
           "points": "-",
           "total_pts": "-",
           "victories": "-",
@@ -5243,39 +5204,6 @@
         },
         {
           "rank": 3,
-          "name": "FU Jing",
-          "country": "CHN",
-          "raw": "298",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 4,
-          "name": "WU Xiyao",
-          "country": "CHN",
-          "raw": "296",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 5,
-          "name": "ZHANG Mingyu",
-          "country": "CHN",
-          "raw": "296",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 6,
           "name": "SUZUKI Yuri",
           "country": "JPN",
           "raw": "295",
@@ -5286,40 +5214,7 @@
           "penalties": "0"
         },
         {
-          "rank": 7,
-          "name": "SEONG Seungmin",
-          "country": "KOR",
-          "raw": "295",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 8,
-          "name": "MENG Xin",
-          "country": "CHN",
-          "raw": "291",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 9,
-          "name": "BANGUN Caroline",
-          "country": "INA",
-          "raw": "291",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 10,
+          "rank": 4,
           "name": "CHSHEDROVA Diana",
           "country": "KAZ",
           "raw": "286",
@@ -5330,29 +5225,7 @@
           "penalties": "0"
         },
         {
-          "rank": 11,
-          "name": "SHIN Sumin",
-          "country": "KOR",
-          "raw": "286",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 12,
-          "name": "PETROVA Yuliana",
-          "country": "",
-          "raw": "285",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 13,
+          "rank": 5,
           "name": "JANG Haeun",
           "country": "KOR",
           "raw": "275",
@@ -5363,54 +5236,10 @@
           "penalties": "0"
         },
         {
-          "rank": 14,
-          "name": "KAHRAMAONOVA Mehriniso",
-          "country": "",
-          "raw": "274",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 15,
-          "name": "SAITO Ayumu",
-          "country": "JPN",
-          "raw": "271",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 16,
+          "rank": 6,
           "name": "KAZBEKOVA Ayana",
           "country": "KAZ",
           "raw": "271",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 17,
-          "name": "ABZALOVA Samira",
-          "country": "UZB",
-          "raw": "268",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "-",
-          "defeats": "-",
-          "penalties": "0"
-        },
-        {
-          "rank": 18,
-          "name": "KIM Unju",
-          "country": "KOR",
-          "raw": "259",
           "points": "-",
           "total_pts": "-",
           "victories": "-",
@@ -5625,6 +5454,99 @@
           "name": "CHSHEDROVA Diana",
           "country": "KAZ",
           "raw": "412",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        }
+      ]
+    },
+    {
+      "id": "W.TEAM--------------.FNL-.000100--",
+      "unit_code": "W.TEAM--------------.FNL-.000100--",
+      "round": "Final",
+      "phase": "Final",
+      "group": "",
+      "discipline": "Women's Team Final",
+      "status": "Official",
+      "date": "2026-09-20",
+      "time": "11:00",
+      "venue": "Anjo Sports Park",
+      "is_medal": false,
+      "medal_desc": "",
+      "competitors": [
+        {
+          "rank": 1,
+          "name": "China",
+          "country": "",
+          "raw": "4318",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 2,
+          "name": "South Korea",
+          "country": "",
+          "raw": "4271",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 3,
+          "name": "Japan",
+          "country": "",
+          "raw": "4169",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 4,
+          "name": "Kazakhstan",
+          "country": "",
+          "raw": "3919",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 5,
+          "name": "Indonesia",
+          "country": "",
+          "raw": "3760",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 6,
+          "name": "Philippines",
+          "country": "",
+          "raw": "3876",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "-",
+          "defeats": "-",
+          "penalties": "0"
+        },
+        {
+          "rank": 7,
+          "name": "Thailand",
+          "country": "",
+          "raw": "3286",
           "points": "-",
           "total_pts": "-",
           "victories": "-",

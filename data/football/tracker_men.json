@@ -113,30 +113,30 @@
     },
     {
       "round": "Group B",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-20",
       "time": "14:00",
       "player1": "IR Iran",
       "player2": "China",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {
       "round": "Group A",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-20",
       "time": "16:00",
       "player1": "Hong Kong, China",
       "player2": "Thailand",
-      "score": "vs",
-      "winner": ""
+      "score": "1 - 5",
+      "winner": "Thailand"
     },
     {
       "round": "Group B",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-20",
       "time": "19:00",
       "player1": "DPR Korea",
@@ -147,7 +147,7 @@
     {
       "round": "Group A",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-20",
       "time": "19:30",
       "player1": "Kyrgyzstan",
