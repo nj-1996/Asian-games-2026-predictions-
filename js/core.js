@@ -340,6 +340,11 @@ const BASKETBALL_ENGINE = {
   icon: '🏀',
   renderStandingsTable(matches) {
     const parsedMatches = matches.map(m => parseMatchData(m));
+    const groupMatches = parsedMatches.filter(m => /group|pool/i.test(m.stage));
+    const allGroupFinished = groupMatches.length > 0 && (
+      groupMatches.every(m => m.isFinished) ||
+      parsedMatches.some(m => /(?:quarter|semi|final|gold|bronze|1\/4|1\/2)/i.test(m.stage) && (m.isFinished || (m.t1 && m.t1 !== 'TBD')))
+    );
     const groups = {};
 
     parsedMatches.forEach(m => {
@@ -392,6 +397,40 @@ const BASKETBALL_ENGINE = {
       return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No group stage data available.</div>`;
     }
 
+    const statusMap = {};
+    if (allGroupFinished) {
+      const thirdPlaceTeams = [];
+
+      groupKeys.forEach(grpKey => {
+        const sorted = Object.values(groups[grpKey]).sort((a, b) => b.pts - a.pts || b.diff - a.diff || b.pf - a.pf);
+
+        sorted.forEach((team, idx) => {
+          if (idx < 2) {
+            statusMap[team.name] = 'Q';
+            statusMap[cleanTeamName(team.name)] = 'Q';
+          } else if (idx === 2) {
+            thirdPlaceTeams.push(team);
+          } else {
+            statusMap[team.name] = 'E';
+            statusMap[cleanTeamName(team.name)] = 'E';
+          }
+        });
+      });
+
+      thirdPlaceTeams.sort((a, b) => b.pts - a.pts || b.diff - a.diff || b.pf - a.pf);
+      thirdPlaceTeams.forEach((team, idx) => {
+        const status = idx < 2 ? 'q' : 'E';
+        statusMap[team.name] = status;
+        statusMap[cleanTeamName(team.name)] = status;
+      });
+    }
+
+    const badgeStyles = {
+      'Q': 'background:rgba(34,197,94,0.18); color:#4ade80; border:1px solid rgba(74,222,128,0.35);',
+      'q': 'background:rgba(56,189,248,0.18); color:#38bdf8; border:1px solid rgba(56,189,248,0.35);',
+      'E': 'background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(248,113,113,0.25);'
+    };
+
     return groupKeys.map(grpKey => {
       const teams = Object.values(groups[grpKey]).sort((a, b) => b.pts - a.pts || b.diff - a.diff || b.pf - a.pf);
 
@@ -399,7 +438,10 @@ const BASKETBALL_ENGINE = {
         <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; margin-bottom:1.5rem; overflow-x:auto;">
           <div style="padding:0.75rem 1rem; font-weight:700; font-size:0.9rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center;">
             <span>${grpKey}</span>
-            <span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 + best 2 3rd advance</span>
+            ${allGroupFinished
+              ? `<span style="font-size:0.75rem;"><strong style="color:#4ade80;">Q</strong> Qualified &nbsp;•&nbsp; <strong style="color:#38bdf8;">q</strong> Wildcard &nbsp;•&nbsp; <strong style="color:#f87171;">E</strong> Eliminated</span>`
+              : `<span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">Top 2 + best 2 3rd advance</span>`
+            }
           </div>
           <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
             <thead>
@@ -413,19 +455,27 @@ const BASKETBALL_ENGINE = {
               </tr>
             </thead>
             <tbody>
-              ${teams.map((t, idx) => `
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${idx < 2 ? 'rgba(59,130,246,0.04)' : 'transparent'};">
-                  <td style="padding:0.6rem 0.5rem; text-align:left; font-weight:${idx < 2 ? '700' : '400'};">
-                    <span style="display:inline-block; width:16px; color:${idx < 2 ? '#38bdf8' : 'inherit'};">${idx + 1}</span>
-                    ${getFlagEmoji(t.name)}${t.name}
-                  </td>
-                  <td style="padding:0.6rem 0.3rem;">${t.gp}</td>
-                  <td style="padding:0.6rem 0.3rem; color:#4ade80;">${t.w}</td>
-                  <td style="padding:0.6rem 0.3rem; color:#f87171;">${t.l}</td>
-                  <td style="padding:0.6rem 0.3rem; font-family:monospace; color:${t.diff > 0 ? '+'+t.diff : t.diff};">${t.diff > 0 ? '+' + t.diff : t.diff}</td>
-                  <td style="padding:0.6rem 0.5rem; font-weight:700; color:#38bdf8;">${t.pts}</td>
-                </tr>
-              `).join('')}
+              ${teams.map((t, idx) => {
+                const badge = statusMap[t.name] || statusMap[cleanTeamName(t.name)];
+                const badgeHtml = badge
+                  ? `<span style="display:inline-block; font-size:0.65rem; font-weight:800; padding:1px 5px; border-radius:4px; margin-left:6px; vertical-align:middle; ${badgeStyles[badge]}">${badge}</span>`
+                  : '';
+                const isEliminated = badge === 'E';
+
+                return `
+                  <tr style="border-bottom:1px solid rgba(255,255,255,0.03); opacity:${isEliminated ? '0.75' : '1'}; background:${idx < 2 ? 'rgba(59,130,246,0.04)' : 'transparent'};">
+                    <td style="padding:0.6rem 0.5rem; text-align:left; font-weight:${idx < 2 ? '700' : '400'};">
+                      <span style="display:inline-block; width:16px; color:${idx < 2 ? '#38bdf8' : 'inherit'};">${idx + 1}</span>
+                      ${getFlagEmoji(t.name)} ${t.name} ${badgeHtml}
+                    </td>
+                    <td style="padding:0.6rem 0.3rem;">${t.gp}</td>
+                    <td style="padding:0.6rem 0.3rem; color:#4ade80;">${t.w}</td>
+                    <td style="padding:0.6rem 0.3rem; color:#f87171;">${t.l}</td>
+                    <td style="padding:0.6rem 0.3rem; font-family:monospace; color:${t.diff > 0 ? '+' + t.diff : t.diff};">${t.diff > 0 ? '+' + t.diff : t.diff}</td>
+                    <td style="padding:0.6rem 0.5rem; font-weight:700; color:#38bdf8;">${t.pts}</td>
+                  </tr>
+                `;
+              }).join('')}
             </tbody>
           </table>
         </div>
