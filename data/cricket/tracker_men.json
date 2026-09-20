@@ -7,11 +7,9 @@
       "state": "Scheduled",
       "date": "2026-09-24",
       "time": "09:00",
-      "team1": "Afghanistan",
-      "team2": "Japan",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Afghanistan",
+      "player2": "Japan",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -20,11 +18,9 @@
       "state": "Scheduled",
       "date": "2026-09-24",
       "time": "14:00",
-      "team1": "Hong Kong, China",
-      "team2": "Malaysia",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Hong Kong, China",
+      "player2": "Malaysia",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -33,11 +29,9 @@
       "state": "Scheduled",
       "date": "2026-09-25",
       "time": "09:00",
-      "team1": "Hong Kong, China",
-      "team2": "Oman",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Hong Kong, China",
+      "player2": "Oman",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -46,11 +40,9 @@
       "state": "Scheduled",
       "date": "2026-09-25",
       "time": "14:00",
-      "team1": "Afghanistan",
-      "team2": "Nepal",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Afghanistan",
+      "player2": "Nepal",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -59,11 +51,9 @@
       "state": "Scheduled",
       "date": "2026-09-26",
       "time": "09:00",
-      "team1": "Japan",
-      "team2": "Nepal",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Japan",
+      "player2": "Nepal",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -72,11 +62,9 @@
       "state": "Scheduled",
       "date": "2026-09-26",
       "time": "14:00",
-      "team1": "Malaysia",
-      "team2": "Oman",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Malaysia",
+      "player2": "Oman",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -85,11 +73,9 @@
       "state": "Scheduled",
       "date": "2026-09-28",
       "time": "09:00",
-      "team1": "Pakistan",
-      "team2": "TBD",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Pakistan",
+      "player2": "TBD",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -98,11 +84,9 @@
       "state": "Scheduled",
       "date": "2026-09-28",
       "time": "13:30",
-      "team1": "India",
-      "team2": "TBD",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "India",
+      "player2": "TBD",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -111,11 +95,9 @@
       "state": "Scheduled",
       "date": "2026-09-29",
       "time": "09:00",
-      "team1": "Sri Lanka",
-      "team2": "TBD",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Sri Lanka",
+      "player2": "TBD",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -124,11 +106,9 @@
       "state": "Scheduled",
       "date": "2026-09-29",
       "time": "13:30",
-      "team1": "Bangladesh",
-      "team2": "TBD",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Bangladesh",
+      "player2": "TBD",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -137,11 +117,9 @@
       "state": "Scheduled",
       "date": "2026-10-01",
       "time": "09:00",
-      "team1": "TBD",
-      "team2": "TBD",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -150,11 +128,9 @@
       "state": "Scheduled",
       "date": "2026-10-01",
       "time": "13:30",
-      "team1": "TBD",
-      "team2": "TBD",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -163,11 +139,9 @@
       "state": "Scheduled",
       "date": "2026-10-03",
       "time": "09:00",
-      "team1": "TBD",
-      "team2": "TBD",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -176,11 +150,9 @@
       "state": "Scheduled",
       "date": "2026-10-03",
       "time": "13:30",
-      "team1": "TBD",
-      "team2": "TBD",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "TBD",
+      "player2": "TBD",
+      "score": "vs",
       "winner": ""
     }
   ]

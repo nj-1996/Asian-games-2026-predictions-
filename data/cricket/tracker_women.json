@@ -2,29 +2,25 @@
   "sport": "Cricket (Women)",
   "matches": [
     {
-  "round": "Quarterfinal 1",
-  "status": "Finished",
-  "state": "Cancelled (Rain)",
-  "date": "2026-09-17",
-  "time": "09:00",
-  "team1": "Bangladesh",
-  "team2": "China",
-  "score1": "-",
-  "score2": "-",
-  "venue": "Korogi Athletic Park",
-  "winner": "Bangladesh"
-},
+      "round": "Quarterfinal 1",
+      "status": "Upcoming",
+      "state": "Cancelled",
+      "date": "2026-09-17",
+      "time": "09:00",
+      "player1": "Bangladesh",
+      "player2": "China",
+      "score": "vs",
+      "winner": "Bangladesh"
+    },
     {
       "round": "Quarterfinal 2",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-17",
       "time": "15:30",
-      "team1": "Pakistan",
-      "team2": "Thailand",
-      "score1": "92 - 7",
-      "score2": "91 - 4",
-      "venue": "Korogi Athletic Park",
+      "player1": "Pakistan",
+      "player2": "Thailand",
+      "score": "92 - 7 - 91 - 4",
       "winner": "Pakistan"
     },
     {
@@ -33,11 +29,9 @@
       "state": "Official",
       "date": "2026-09-18",
       "time": "09:00",
-      "team1": "Sri Lanka",
-      "team2": "Malaysia",
-      "score1": "160 - 4",
-      "score2": "74 - 7",
-      "venue": "Korogi Athletic Park",
+      "player1": "Sri Lanka",
+      "player2": "Malaysia",
+      "score": "160 - 4 - 74 - 7",
       "winner": "Sri Lanka"
     },
     {
@@ -46,11 +40,9 @@
       "state": "Official",
       "date": "2026-09-18",
       "time": "14:00",
-      "team1": "India",
-      "team2": "Japan",
-      "score1": "59 - 2",
-      "score2": "57 - 10",
-      "venue": "Korogi Athletic Park",
+      "player1": "India",
+      "player2": "Japan",
+      "score": "59 - 2 - 57 - 10",
       "winner": "India"
     },
     {
@@ -59,11 +51,9 @@
       "state": "Official",
       "date": "2026-09-20",
       "time": "10:20",
-      "team1": "Pakistan",
-      "team2": "Sri Lanka",
-      "score1": "177 - 4",
-      "score2": "178 - 2",
-      "venue": "Korogi Athletic Park",
+      "player1": "Pakistan",
+      "player2": "Sri Lanka",
+      "score": "177 - 4 - 178 - 2",
       "winner": "Sri Lanka"
     },
     {
@@ -72,11 +62,9 @@
       "state": "Official",
       "date": "2026-09-20",
       "time": "14:00",
-      "team1": "Bangladesh",
-      "team2": "India",
-      "score1": "81 - 10",
-      "score2": "195 - 4",
-      "venue": "Korogi Athletic Park",
+      "player1": "Bangladesh",
+      "player2": "India",
+      "score": "81 - 10 - 195 - 4",
       "winner": "India"
     },
     {
@@ -85,11 +73,9 @@
       "state": "Scheduled",
       "date": "2026-09-22",
       "time": "09:00",
-      "team1": "Pakistan",
-      "team2": "Bangladesh",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Pakistan",
+      "player2": "Bangladesh",
+      "score": "vs",
       "winner": ""
     },
     {
@@ -98,11 +84,9 @@
       "state": "Scheduled",
       "date": "2026-09-22",
       "time": "14:00",
-      "team1": "Sri Lanka",
-      "team2": "India",
-      "score1": "-",
-      "score2": "-",
-      "venue": "Korogi Athletic Park",
+      "player1": "Sri Lanka",
+      "player2": "India",
+      "score": "vs",
       "winner": ""
     }
   ]
