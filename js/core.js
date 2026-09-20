@@ -132,6 +132,7 @@ function cleanTeamName(name) {
   if (n.includes('korea') && !n.includes('north')) return 'korea';
   if (n.includes('iran')) return 'iran';
   if (n.includes('taipei') || n.includes('taiwan')) return 'chinese taipei';
+  if (n.includes('hong kong')) return 'hong kong';
   if (n.includes('china')) return 'china';
   if (n.includes('japan')) return 'japan';
   if (n.includes('philippine')) return 'philippines';
@@ -194,6 +195,16 @@ function parseStatNumber(val) {
     num = num * 100;
   }
   return Math.round(num);
+}
+
+function parseScoreValue(val) {
+  if (val == null || val === '' || val === '-') return NaN;
+  if (typeof val === 'number') return val;
+  const str = String(val).trim();
+  const m = str.match(/^(\d+)/);
+  if (m) return parseInt(m[1], 10);
+  const num = parseFloat(str);
+  return isNaN(num) ? NaN : num;
 }
 
 // --- Timezone State & Formatter ---
@@ -299,14 +310,15 @@ function parseMatchData(m) {
   const isFinished = lowerStatus.includes('final') || lowerStatus.includes('finished') || (s1 !== '-' && s2 !== '-' && !lowerStatus.includes('live'));
 
   let winner = '';
-  const num1 = parseFloat(s1);
-  const num2 = parseFloat(s2);
-  if (!isNaN(num1) && !isNaN(num2)) {
-    if (num1 > num2) winner = t1;
-    else if (num2 > num1) winner = t2;
-    else if (m.winner) winner = formatTeamDisplayName(m.winner);
-  } else if (m.winner) {
+  if (m.winner) {
     winner = formatTeamDisplayName(m.winner);
+  } else {
+    const num1 = parseScoreValue(s1);
+    const num2 = parseScoreValue(s2);
+    if (!isNaN(num1) && !isNaN(num2)) {
+      if (num1 > num2) winner = t1;
+      else if (num2 > num1) winner = t2;
+    }
   }
 
   return {
@@ -1226,7 +1238,14 @@ function renderCalibrationView(container, predictions, matches) {
     return;
   }
 
-  // STANDARD HEAD-TO-HEAD MATCH CALIBRATION (Basketball, Football, Volleyball)
+  // Check if sport engine provides a custom calibration renderer
+  const engine = window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport];
+  if (engine && typeof engine.renderCalibration === 'function') {
+    engine.renderCalibration(container, predictions, matches);
+    return;
+  }
+
+  // STANDARD HEAD-TO-HEAD MATCH CALIBRATION (Basketball, Football, Volleyball, Cricket)
   if (!matches || matches.length === 0) {
     container.innerHTML = `<div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">Awaiting completed matches.</div>`;
     return;
@@ -1247,19 +1266,40 @@ function renderCalibrationView(container, predictions, matches) {
   });
 
   finished.forEach(m => {
-    const s1 = Number(m.s1);
-    const s2 = Number(m.s2);
-    if (isNaN(s1) || isNaN(s2)) return;
+    const s1 = parseScoreValue(m.s1);
+    const s2 = parseScoreValue(m.s2);
 
     let actualWinner = '';
     let actualLoser = '';
-    let winScore = 0;
-    let loseScore = 0;
 
-    if (s1 > s2) { actualWinner = m.t1; actualLoser = m.t2; winScore = s1; loseScore = s2; } 
-    else if (s2 > s1) { actualWinner = m.t2; actualLoser = m.t1; winScore = s2; loseScore = s1; } 
-    else if (m.winner) { actualWinner = m.winner.trim(); actualLoser = cleanTeamName(actualWinner) === cleanTeamName(m.t1) ? m.t2 : m.t1; winScore = s1; loseScore = s2; } 
-    else { return; }
+    // 1. If match object explicitly records official winner, trust it
+    if (m.winner && typeof m.winner === 'string' && m.winner.trim()) {
+      const wClean = cleanTeamName(m.winner);
+      if (wClean === cleanTeamName(m.t1)) {
+        actualWinner = m.t1;
+        actualLoser = m.t2;
+      } else if (wClean === cleanTeamName(m.t2)) {
+        actualWinner = m.t2;
+        actualLoser = m.t1;
+      } else {
+        actualWinner = m.winner.trim();
+        actualLoser = (wClean === cleanTeamName(m.t1)) ? m.t2 : m.t1;
+      }
+    }
+    // 2. Otherwise determine winner by parsed scores
+    else if (!isNaN(s1) && !isNaN(s2)) {
+      if (s1 > s2) {
+        actualWinner = m.t1;
+        actualLoser = m.t2;
+      } else if (s2 > s1) {
+        actualWinner = m.t2;
+        actualLoser = m.t1;
+      } else {
+        return; // Tie / draw
+      }
+    } else {
+      return; // Cannot determine winner
+    }
 
     const c1 = cleanTeamName(m.t1);
     const c2 = cleanTeamName(m.t2);
@@ -1272,7 +1312,8 @@ function renderCalibrationView(container, predictions, matches) {
       if (cleanTeamName(actualWinner) === cleanTeamName(fav)) {
         correctFavorites++;
       } else {
-        upsetLogs.push({ winner: actualWinner, loser: actualLoser, score: `${winScore} - ${loseScore}` });
+        const displayScore = (m.s1 !== '-' && m.s2 !== '-') ? `${m.s1} - ${m.s2}` : (m.score || '');
+        upsetLogs.push({ winner: actualWinner, loser: actualLoser, score: displayScore });
       }
     }
   });
@@ -1313,7 +1354,19 @@ function renderCalibrationView(container, predictions, matches) {
           </div>
         `).join('')}
       </div>
-    ` : ''}
+    ` : evaluatedMatches > 0 ? `
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(74,222,128,0.2); border-radius:10px; padding:1rem; text-align:center; color:#4ade80; font-size:0.85rem;">
+        ✅ All projected favorites won their matches (${correctFavorites}/${evaluatedMatches}) with 0 upsets recorded.
+      </div>
+    ` : finished.length === 0 ? `
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1.5rem; text-align:center; color:#94a3b8; font-size:0.85rem; line-height:1.5;">
+        ⏳ Tournament matches are scheduled. As matches conclude, calibration accuracy and upset tracking will update here live.
+      </div>
+    ` : `
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1.5rem; text-align:center; color:#94a3b8; font-size:0.85rem; line-height:1.5;">
+        ℹ️ Completed matches featured unranked or neutral matchups without an established favorite.
+      </div>
+    `}
   `;
 }
 
