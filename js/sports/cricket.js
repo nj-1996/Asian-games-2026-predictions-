@@ -19,6 +19,28 @@
     return originalFetch.apply(this, arguments);
   };
 
+  const clean = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+
+  // Helper to preserve original raw properties alongside parsed helper fields
+  const parseMatch = (m) => {
+    const base = typeof parseMatchData === 'function' ? parseMatchData(m) : {};
+    return {
+      ...m,
+      ...base,
+      t1: base.t1 || m.team1 || m.player1 || 'TBD',
+      t2: base.t2 || m.team2 || m.player2 || 'TBD',
+      s1: base.s1 || m.score1 || '-',
+      s2: base.s2 || m.score2 || '-',
+      winner: m.winner || base.winner || '',
+      state: m.state || base.state || '',
+      status: m.status || base.status || '',
+      stage: base.stage || m.round || m.stage || 'Match',
+      date: base.date || m.date || '',
+      time: base.time || m.time || '',
+      isFinished: base.isFinished || (m.status || '').toLowerCase().includes('finish') || (m.status || '').toLowerCase().includes('official')
+    };
+  };
+
   const CRICKET_ENGINE = {
     icon: '🏏',
     hasBracket: true,
@@ -28,8 +50,8 @@
         return `<div style="text-align:center; padding:3rem 1rem; color:#94a3b8;">No matches scheduled for Cricket.</div>`;
       }
 
-      const parsed = matches.map(m => parseMatchData(m));
-      const todayStr = '2026-09-20'; // Current date anchor
+      const parsed = matches.map(m => parseMatch(m));
+      const todayStr = '2026-09-20';
 
       const liveSession = parsed.find(s => (s.status || '').toLowerCase().includes('live') || (s.state || '').toLowerCase().includes('live'));
       const upcomingSessions = parsed.filter(s => !s.isFinished && (s.date || '') >= todayStr);
@@ -43,7 +65,7 @@
         heroHtml = `
           <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.8)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center;">
             <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.2rem 0.65rem; border-radius:9999px; background:${isLive ? 'rgba(239,68,68,0.2)' : 'rgba(59,130,246,0.2)'}; color:${isLive ? '#ef4444' : '#60a5fa'}; margin-bottom:0.75rem;">
-              ${isLive ? '🔴 LIVE NOW' : '⏳ NEXT TIP-OFF'}
+              ${isLive ? '🔴 LIVE NOW' : '⏳ NEXT MATCH'}
             </div>
             <div style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-bottom:0.5rem;">
               <div style="font-weight:700; font-size:1rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
@@ -55,7 +77,7 @@
               </div>
             </div>
             <div style="font-size:0.8rem; color:#94a3b8;">
-              ${displayDateTime} • ${heroTarget.stage || 'Match'}
+              ${displayDateTime} • ${heroTarget.stage}
             </div>
           </div>
         `;
@@ -63,45 +85,56 @@
 
       const cardsHtml = parsed.map(s => {
         const displayDateTime = formatMatchDateTime(s.date, s.time) || s.status || 'Scheduled';
-        const isOfficial = s.isFinished || (s.status || '').toLowerCase().includes('official');
+        const isOfficial = s.isFinished;
         const isLive = (s.status || '').toLowerCase().includes('live');
-        const isAbandoned = (s.s1 || '').toLowerCase().includes('abandoned') || (s.score1 || '').toLowerCase().includes('abandoned') || (s.state || '').toLowerCase().includes('rain');
+        
+        const stateCombined = ((s.state || '') + ' ' + (s.status || '')).toLowerCase();
+        const isCancelled = stateCombined.includes('cancel') || stateCombined.includes('rain') || stateCombined.includes('abandon') || (isOfficial && s.winner && s.s1 === '-' && s.s2 === '-');
+
+        const t1Win = isOfficial && clean(s.winner) === clean(s.t1);
+        const t2Win = isOfficial && clean(s.winner) === clean(s.t2);
 
         return `
           <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem;">
-            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.3rem; display:flex; justify-content:space-between;">
-              <span>${s.stage || 'Match'} • ${displayDateTime}</span>
-              <span style="color:${isLive ? '#ef4444' : isOfficial ? '#4ade80' : '#38bdf8'}; font-weight:600;">${isAbandoned ? 'Abandoned (Rain)' : (s.status || 'Scheduled')}</span>
+            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.3rem; display:flex; justify-content:space-between; align-items:center;">
+              <span>${s.stage} • ${displayDateTime}</span>
+              <span style="color:${isCancelled ? '#f59e0b' : isLive ? '#ef4444' : isOfficial ? '#4ade80' : '#38bdf8'}; font-weight:600;">
+                ${isCancelled ? 'Cancelled (Rain)' : (s.status || 'Scheduled')}
+              </span>
             </div>
-            
-            ${isAbandoned ? `
-              <div style="padding:0.3rem 0; font-size:0.82rem; color:#cbd5e1; margin-bottom:0.4rem;">
-                🌧️ Match cancelled due to rain. Decision decided by higher seeding.
+
+            ${isCancelled ? `
+              <div style="font-size:0.78rem; color:#94a3b8; margin:0.35rem 0 0.5rem 0; display:flex; align-items:center; gap:0.35rem; line-height:1.4;">
+                <span>🌧️</span> <span>Match cancelled due to rain. <strong>${s.winner}</strong> advanced due to higher seeding.</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
-                <div style="font-weight:${s.winner === s.t1 ? '700' : '500'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
-                  <span>${getFlagEmoji(s.t1)}</span>${s.t1}
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.25rem 0;">
+                <div style="font-weight:${t1Win ? '700' : '400'}; font-size:0.9rem; color:${t1Win ? '#38bdf8' : '#64748b'}; display:flex; align-items:center; gap:0.4rem;">
+                  <span>${getFlagEmoji(s.t1)}</span> ${s.t1}${t1Win ? '<span style="color:#4ade80; font-size:0.85rem;">✓</span>' : ''}
                 </div>
-                <span style="font-size:0.75rem; background:rgba(74,222,128,0.15); color:#4ade80; padding:2px 8px; border-radius:6px; font-weight:600;">${s.winner === s.t1 ? 'Advanced (Seeding)' : 'Eliminated'}</span>
+                <span style="font-size:0.72rem; padding:2px 8px; border-radius:6px; font-weight:600; background:${t1Win ? 'rgba(56,189,248,0.15)' : 'rgba(239,68,68,0.1)'}; color:${t1Win ? '#38bdf8' : '#ef4444'};">
+                  ${t1Win ? 'Advanced (Seeding)' : 'Eliminated'}
+                </span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
-                <div style="font-weight:${s.winner === s.t2 ? '700' : '500'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
-                  <span>${getFlagEmoji(s.t2)}</span>${s.t2}
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.25rem 0;">
+                <div style="font-weight:${t2Win ? '700' : '400'}; font-size:0.9rem; color:${t2Win ? '#38bdf8' : '#64748b'}; display:flex; align-items:center; gap:0.4rem;">
+                  <span>${getFlagEmoji(s.t2)}</span> ${s.t2}${t2Win ? '<span style="color:#4ade80; font-size:0.85rem;">✓</span>' : ''}
                 </div>
-                <span style="font-size:0.75rem; background:rgba(239,68,68,0.15); color:#ef4444; padding:2px 8px; border-radius:6px; font-weight:600;">${s.winner === s.t2 ? 'Advanced (Seeding)' : 'Eliminated'}</span>
+                <span style="font-size:0.72rem; padding:2px 8px; border-radius:6px; font-weight:600; background:${t2Win ? 'rgba(56,189,248,0.15)' : 'rgba(239,68,68,0.1)'}; color:${t2Win ? '#38bdf8' : '#ef4444'};">
+                  ${t2Win ? 'Advanced (Seeding)' : 'Eliminated'}
+                </span>
               </div>
             ` : `
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
-                <div style="font-weight:${s.winner === s.t1 ? '700' : '600'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
-                  <span>${getFlagEmoji(s.t1)}</span>${s.t1}
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.25rem 0;">
+                <div style="font-weight:${t1Win ? '700' : isOfficial ? '400' : '600'}; font-size:0.9rem; color:${t1Win ? '#38bdf8' : isOfficial ? '#64748b' : '#f8fafc'}; display:flex; align-items:center; gap:0.4rem;">
+                  <span>${getFlagEmoji(s.t1)}</span> ${s.t1}${t1Win ? '<span style="color:#4ade80; font-size:0.85rem;">✓</span>' : ''}
                 </div>
-                <span style="font-family:monospace; font-weight:700; color:#f8fafc;">${s.s1}</span>
+                <span style="font-family:monospace; font-weight:${t1Win ? '700' : '500'}; color:${t1Win ? '#38bdf8' : isOfficial ? '#64748b' : '#f8fafc'};">${s.s1}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0;">
-                <div style="font-weight:${s.winner === s.t2 ? '700' : '600'}; font-size:0.9rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
-                  <span>${getFlagEmoji(s.t2)}</span>${s.t2}
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.25rem 0;">
+                <div style="font-weight:${t2Win ? '700' : isOfficial ? '400' : '600'}; font-size:0.9rem; color:${t2Win ? '#38bdf8' : isOfficial ? '#64748b' : '#f8fafc'}; display:flex; align-items:center; gap:0.4rem;">
+                  <span>${getFlagEmoji(s.t2)}</span> ${s.t2}${t2Win ? '<span style="color:#4ade80; font-size:0.85rem;">✓</span>' : ''}
                 </div>
-                <span style="font-family:monospace; font-weight:700; color:#f8fafc;">${s.s2}</span>
+                <span style="font-family:monospace; font-weight:${t2Win ? '700' : '500'}; color:${t2Win ? '#38bdf8' : isOfficial ? '#64748b' : '#f8fafc'};">${s.s2}</span>
               </div>
             `}
           </div>
@@ -112,7 +145,7 @@
     },
 
     renderStandingsTable(matches) {
-      const parsedMatches = matches.map(m => parseMatchData(m));
+      const parsedMatches = matches.map(m => parseMatch(m));
       const groups = {};
 
       parsedMatches.forEach(m => {
@@ -133,7 +166,7 @@
             groups[grpName][m.t1].p += 1;
             groups[grpName][m.t2].p += 1;
 
-            const t1Won = m.winner ? cleanTeamName(m.winner) === cleanTeamName(m.t1) : true;
+            const t1Won = m.winner ? clean(m.winner) === clean(m.t1) : true;
             if (t1Won) {
               groups[grpName][m.t1].w += 1;
               groups[grpName][m.t1].pts += 2;
@@ -204,7 +237,7 @@
     },
 
     renderKnockoutBracket(matches) {
-      const parsed = matches.map(m => parseMatchData(m));
+      const parsed = matches.map(m => parseMatch(m));
       const getStage = (m) => ((m.stage || '') + ' ' + (m.status || '')).toLowerCase();
 
       const qfMatches = parsed.filter(m => getStage(m).includes('quarter') || getStage(m).includes('qf'));
@@ -224,15 +257,17 @@
       const renderSlot = (title, match, fallback, medalType = null) => {
         const t1 = (match && match.t1 && match.t1 !== 'TBD') ? match.t1 : fallback.t1;
         const t2 = (match && match.t2 && match.t2 !== 'TBD') ? match.t2 : fallback.t2;
-        const isAbandoned = match && ((match.s1 || '').toLowerCase().includes('abandoned') || (match.score1 || '').toLowerCase().includes('abandoned') || (match.state || '').toLowerCase().includes('rain') || (match.status || '').toLowerCase().includes('abandoned'));
         
+        const stateCombined = match ? ((match.state || '') + ' ' + (match.status || '')).toLowerCase() : '';
+        const isCancelled = match && (stateCombined.includes('cancel') || stateCombined.includes('rain') || stateCombined.includes('abandon') || (match.isFinished && match.winner && match.s1 === '-' && match.s2 === '-'));
+
         const isFinished = match ? match.isFinished : false;
-        const t1Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t1) : (isFinished && Number(match.s1) > Number(match.s2));
-        const t2Win = match && match.winner ? cleanTeamName(match.winner) === cleanTeamName(t2) : (isFinished && Number(match.s2) > Number(match.s1));
-        
-        const s1 = isAbandoned ? (t1Win ? 'ADV' : 'ELIM') : (match ? match.s1 : '-');
-        const s2 = isAbandoned ? (t2Win ? 'ADV' : 'ELIM') : (match ? match.s2 : '-');
-        
+        const t1Win = isFinished && clean(match.winner) === clean(t1);
+        const t2Win = isFinished && clean(match.winner) === clean(t2);
+
+        const s1 = isCancelled ? (t1Win ? 'ADV' : '-') : (match ? match.s1 : '-');
+        const s2 = isCancelled ? (t2Win ? 'ADV' : '-') : (match ? match.s2 : '-');
+
         const displayDateTime = match ? (formatMatchDateTime(match.date, match.time) || match.status || 'Scheduled') : 'Scheduled';
 
         return `
@@ -244,11 +279,11 @@
             </div>
             <div class="bracket-team-row ${t1Win ? 'winner' : ''}">
               <div class="bracket-team-info"><span>${getFlagEmoji(t1)}</span> <span>${t1}</span></div>
-              <span class="bracket-score" style="font-size:0.7rem; color:${t1Win ? '#4ade80' : '#ef4444'};">${s1}</span>
+              <span class="bracket-score" ${isCancelled && t1Win ? 'style="font-size:0.75rem; color:#4ade80; font-weight:700;"' : ''}>${s1}</span>
             </div>
             <div class="bracket-team-row ${t2Win ? 'winner' : ''}">
               <div class="bracket-team-info"><span>${getFlagEmoji(t2)}</span> <span>${t2}</span></div>
-              <span class="bracket-score" style="font-size:0.7rem; color:${t2Win ? '#4ade80' : '#ef4444'};">${s2}</span>
+              <span class="bracket-score" ${isCancelled && t2Win ? 'style="font-size:0.75rem; color:#4ade80; font-weight:700;"' : ''}>${s2}</span>
             </div>
           </div>
         `;
