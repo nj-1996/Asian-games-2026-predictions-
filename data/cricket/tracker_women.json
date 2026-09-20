@@ -3,8 +3,8 @@
   "matches": [
     {
       "round": "Quarterfinal 1",
-      "status": "Upcoming",
-      "state": "Cancelled",
+      "status": "Finished",
+      "state": "Cancelled (Rain)",
       "date": "2026-09-17",
       "time": "09:00",
       "player1": "Bangladesh",
@@ -20,7 +20,7 @@
       "time": "15:30",
       "player1": "Pakistan",
       "player2": "Thailand",
-      "score": "92 - 7 - 91 - 4",
+      "score": "92/7 - 91/4",
       "winner": "Pakistan"
     },
     {
@@ -31,7 +31,7 @@
       "time": "09:00",
       "player1": "Sri Lanka",
       "player2": "Malaysia",
-      "score": "160 - 4 - 74 - 7",
+      "score": "160/4 - 74/7",
       "winner": "Sri Lanka"
     },
     {
@@ -42,7 +42,7 @@
       "time": "14:00",
       "player1": "India",
       "player2": "Japan",
-      "score": "59 - 2 - 57 - 10",
+      "score": "59/2 - 57/10",
       "winner": "India"
     },
     {
@@ -53,7 +53,7 @@
       "time": "10:20",
       "player1": "Pakistan",
       "player2": "Sri Lanka",
-      "score": "177 - 4 - 178 - 2",
+      "score": "177/4 - 178/2",
       "winner": "Sri Lanka"
     },
     {
@@ -64,7 +64,7 @@
       "time": "14:00",
       "player1": "Bangladesh",
       "player2": "India",
-      "score": "81 - 10 - 195 - 4",
+      "score": "81/10 - 195/4",
       "winner": "India"
     },
     {
