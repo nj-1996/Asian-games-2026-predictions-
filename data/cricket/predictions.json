@@ -1,0 +1,79 @@
+{
+  "sport": "Cricket",
+  "men": [
+    {
+      "team": "India",
+      "gold": 0.55,
+      "silver": 0.25,
+      "bronze": 0.10,
+      "probability": 0.55,
+      "rank": 1
+    },
+    {
+      "team": "Pakistan",
+      "gold": 0.20,
+      "silver": 0.30,
+      "bronze": 0.25,
+      "probability": 0.20,
+      "rank": 2
+    },
+    {
+      "team": "Afghanistan",
+      "gold": 0.15,
+      "silver": 0.25,
+      "bronze": 0.30,
+      "probability": 0.15,
+      "rank": 3
+    },
+    {
+      "team": "Sri Lanka",
+      "gold": 0.05,
+      "silver": 0.10,
+      "bronze": 0.20,
+      "probability": 0.05,
+      "rank": 4
+    },
+    {
+      "team": "Bangladesh",
+      "gold": 0.05,
+      "silver": 0.10,
+      "bronze": 0.15,
+      "probability": 0.05,
+      "rank": 5
+    }
+  ],
+  "women": [
+    {
+      "team": "India",
+      "gold": 0.65,
+      "silver": 0.20,
+      "bronze": 0.10,
+      "probability": 0.65,
+      "rank": 1
+    },
+    {
+      "team": "Sri Lanka",
+      "gold": 0.20,
+      "silver": 0.40,
+      "bronze": 0.25,
+      "probability": 0.20,
+      "rank": 2
+    },
+    {
+      "team": "Pakistan",
+      "gold": 0.10,
+      "silver": 0.25,
+      "bronze": 0.35,
+      "probability": 0.10,
+      "rank": 3
+    },
+    {
+      "team": "Bangladesh",
+      "gold": 0.05,
+      "silver": 0.15,
+      "bronze": 0.30,
+      "probability": 0.05,
+      "rank": 4
+    }
+  ]
+}
