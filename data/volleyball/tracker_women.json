@@ -201,25 +201,25 @@
     },
     {
       "round": "Match 21",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-20",
       "time": "10:00",
       "player1": "Thailand",
       "player2": "Indonesia",
-      "score": "vs",
-      "winner": ""
+      "score": "3 - 0",
+      "winner": "Thailand"
     },
     {
       "round": "Match 22",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-20",
       "time": "13:00",
       "player1": "Vietnam",
       "player2": "China",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 1",
+      "winner": "China"
     },
     {
       "round": "Match 20",
@@ -279,10 +279,10 @@
     {
       "round": "Match 26",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-21",
       "time": "13:00",
-      "player1": "TBD",
+      "player1": "Indonesia",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
@@ -290,10 +290,10 @@
     {
       "round": "Match 28",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-21",
       "time": "16:00",
-      "player1": "TBD",
+      "player1": "Thailand",
       "player2": "TBD",
       "score": "vs",
       "winner": ""

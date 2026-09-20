@@ -1071,28 +1071,6 @@
       "competitors": [
         {
           "rank": 1,
-          "name": "ANDRINO Gilbert",
-          "country": "PHI",
-          "raw": "1493",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "13",
-          "defeats": "4",
-          "penalties": "0"
-        },
-        {
-          "rank": 2,
-          "name": "LUO Shuai",
-          "country": "CHN",
-          "raw": "1533",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "16",
-          "defeats": "1",
-          "penalties": "0"
-        },
-        {
-          "rank": 3,
           "name": "SEO Changwan",
           "country": "KOR",
           "raw": "1547",
@@ -1103,40 +1081,7 @@
           "penalties": "0"
         },
         {
-          "rank": 4,
-          "name": "TRETYAKOV Dmitriy",
-          "country": "UZB",
-          "raw": "1518",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "17",
-          "defeats": "0",
-          "penalties": "0"
-        },
-        {
-          "rank": 5,
-          "name": "YOHUANG Phurit",
-          "country": "THA",
-          "raw": "1507",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "15",
-          "defeats": "2",
-          "penalties": "0"
-        },
-        {
-          "rank": 6,
-          "name": "COMALING Michael Ver Anton",
-          "country": "PHI",
-          "raw": "1499",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "16",
-          "defeats": "1",
-          "penalties": "0"
-        },
-        {
-          "rank": 7,
+          "rank": 2,
           "name": "LEE Jonghyeon",
           "country": "KOR",
           "raw": "1533",
@@ -1147,10 +1092,10 @@
           "penalties": "0"
         },
         {
-          "rank": 8,
-          "name": "SHINOKI Kaoru",
-          "country": "JPN",
-          "raw": "1489",
+          "rank": 3,
+          "name": "LUO Shuai",
+          "country": "CHN",
+          "raw": "1533",
           "points": "-",
           "total_pts": "-",
           "victories": "16",
@@ -1158,7 +1103,7 @@
           "penalties": "0"
         },
         {
-          "rank": 9,
+          "rank": 4,
           "name": "VARYOKHIN Tikhon",
           "country": "KAZ",
           "raw": "1520",
@@ -1169,7 +1114,18 @@
           "penalties": "0"
         },
         {
-          "rank": 10,
+          "rank": 5,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "UZB",
+          "raw": "1518",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "17",
+          "defeats": "0",
+          "penalties": "0"
+        },
+        {
+          "rank": 6,
           "name": "ABDRAIMOV Temirlan",
           "country": "KAZ",
           "raw": "1507",
@@ -1180,18 +1136,7 @@
           "penalties": "0"
         },
         {
-          "rank": 11,
-          "name": "SEKIGAWA Kazuaki",
-          "country": "JPN",
-          "raw": "1481",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "15",
-          "defeats": "2",
-          "penalties": "0"
-        },
-        {
-          "rank": 12,
+          "rank": 7,
           "name": "CHEN Bailiang",
           "country": "CHN",
           "raw": "1507",
@@ -1199,6 +1144,61 @@
           "total_pts": "-",
           "victories": "14",
           "defeats": "3",
+          "penalties": "0"
+        },
+        {
+          "rank": 8,
+          "name": "YOHUANG Phurit",
+          "country": "THA",
+          "raw": "1507",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "15",
+          "defeats": "2",
+          "penalties": "0"
+        },
+        {
+          "rank": 9,
+          "name": "COMALING Michael Ver Anton",
+          "country": "PHI",
+          "raw": "1499",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "16",
+          "defeats": "1",
+          "penalties": "0"
+        },
+        {
+          "rank": 10,
+          "name": "ANDRINO Gilbert",
+          "country": "PHI",
+          "raw": "1493",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "13",
+          "defeats": "4",
+          "penalties": "0"
+        },
+        {
+          "rank": 11,
+          "name": "SHINOKI Kaoru",
+          "country": "JPN",
+          "raw": "1489",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "16",
+          "defeats": "1",
+          "penalties": "0"
+        },
+        {
+          "rank": 12,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "JPN",
+          "raw": "1481",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "15",
+          "defeats": "2",
           "penalties": "0"
         },
         {
@@ -1236,17 +1236,6 @@
         },
         {
           "rank": 16,
-          "name": "ABDALRHMAN Abdllah Mohammad",
-          "country": "UAE",
-          "raw": "1282",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "13",
-          "defeats": "4",
-          "penalties": "0"
-        },
-        {
-          "rank": 17,
           "name": "AW Jian Ting",
           "country": "MAS",
           "raw": "1317",
@@ -1254,6 +1243,17 @@
           "total_pts": "-",
           "victories": "14",
           "defeats": "3",
+          "penalties": "0"
+        },
+        {
+          "rank": 17,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "UAE",
+          "raw": "1282",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "13",
+          "defeats": "4",
           "penalties": "0"
         },
         {
@@ -3257,28 +3257,6 @@
       "competitors": [
         {
           "rank": 1,
-          "name": "ANDRINO Gilbert",
-          "country": "PHI",
-          "raw": "1493",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "13",
-          "defeats": "4",
-          "penalties": "0"
-        },
-        {
-          "rank": 2,
-          "name": "LUO Shuai",
-          "country": "CHN",
-          "raw": "1533",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "16",
-          "defeats": "1",
-          "penalties": "0"
-        },
-        {
-          "rank": 3,
           "name": "SEO Changwan",
           "country": "KOR",
           "raw": "1547",
@@ -3289,40 +3267,7 @@
           "penalties": "0"
         },
         {
-          "rank": 4,
-          "name": "TRETYAKOV Dmitriy",
-          "country": "UZB",
-          "raw": "1518",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "17",
-          "defeats": "0",
-          "penalties": "0"
-        },
-        {
-          "rank": 5,
-          "name": "YOHUANG Phurit",
-          "country": "THA",
-          "raw": "1507",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "15",
-          "defeats": "2",
-          "penalties": "0"
-        },
-        {
-          "rank": 6,
-          "name": "COMALING Michael Ver Anton",
-          "country": "PHI",
-          "raw": "1499",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "16",
-          "defeats": "1",
-          "penalties": "0"
-        },
-        {
-          "rank": 7,
+          "rank": 2,
           "name": "LEE Jonghyeon",
           "country": "KOR",
           "raw": "1533",
@@ -3333,10 +3278,10 @@
           "penalties": "0"
         },
         {
-          "rank": 8,
-          "name": "SHINOKI Kaoru",
-          "country": "JPN",
-          "raw": "1489",
+          "rank": 3,
+          "name": "LUO Shuai",
+          "country": "CHN",
+          "raw": "1533",
           "points": "-",
           "total_pts": "-",
           "victories": "16",
@@ -3344,7 +3289,7 @@
           "penalties": "0"
         },
         {
-          "rank": 9,
+          "rank": 4,
           "name": "VARYOKHIN Tikhon",
           "country": "KAZ",
           "raw": "1520",
@@ -3355,7 +3300,18 @@
           "penalties": "0"
         },
         {
-          "rank": 10,
+          "rank": 5,
+          "name": "TRETYAKOV Dmitriy",
+          "country": "UZB",
+          "raw": "1518",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "17",
+          "defeats": "0",
+          "penalties": "0"
+        },
+        {
+          "rank": 6,
           "name": "ABDRAIMOV Temirlan",
           "country": "KAZ",
           "raw": "1507",
@@ -3366,18 +3322,7 @@
           "penalties": "0"
         },
         {
-          "rank": 11,
-          "name": "SEKIGAWA Kazuaki",
-          "country": "JPN",
-          "raw": "1481",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "15",
-          "defeats": "2",
-          "penalties": "0"
-        },
-        {
-          "rank": 12,
+          "rank": 7,
           "name": "CHEN Bailiang",
           "country": "CHN",
           "raw": "1507",
@@ -3385,6 +3330,61 @@
           "total_pts": "-",
           "victories": "14",
           "defeats": "3",
+          "penalties": "0"
+        },
+        {
+          "rank": 8,
+          "name": "YOHUANG Phurit",
+          "country": "THA",
+          "raw": "1507",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "15",
+          "defeats": "2",
+          "penalties": "0"
+        },
+        {
+          "rank": 9,
+          "name": "COMALING Michael Ver Anton",
+          "country": "PHI",
+          "raw": "1499",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "16",
+          "defeats": "1",
+          "penalties": "0"
+        },
+        {
+          "rank": 10,
+          "name": "ANDRINO Gilbert",
+          "country": "PHI",
+          "raw": "1493",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "13",
+          "defeats": "4",
+          "penalties": "0"
+        },
+        {
+          "rank": 11,
+          "name": "SHINOKI Kaoru",
+          "country": "JPN",
+          "raw": "1489",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "16",
+          "defeats": "1",
+          "penalties": "0"
+        },
+        {
+          "rank": 12,
+          "name": "SEKIGAWA Kazuaki",
+          "country": "JPN",
+          "raw": "1481",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "15",
+          "defeats": "2",
           "penalties": "0"
         },
         {
@@ -3422,17 +3422,6 @@
         },
         {
           "rank": 16,
-          "name": "ABDALRHMAN Abdllah Mohammad",
-          "country": "UAE",
-          "raw": "1282",
-          "points": "-",
-          "total_pts": "-",
-          "victories": "13",
-          "defeats": "4",
-          "penalties": "0"
-        },
-        {
-          "rank": 17,
           "name": "AW Jian Ting",
           "country": "MAS",
           "raw": "1317",
@@ -3440,6 +3429,17 @@
           "total_pts": "-",
           "victories": "14",
           "defeats": "3",
+          "penalties": "0"
+        },
+        {
+          "rank": 17,
+          "name": "ABDALRHMAN Abdllah Mohammad",
+          "country": "UAE",
+          "raw": "1282",
+          "points": "-",
+          "total_pts": "-",
+          "victories": "13",
+          "defeats": "4",
           "penalties": "0"
         },
         {

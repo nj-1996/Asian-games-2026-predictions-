@@ -69,24 +69,24 @@
     },
     {
       "round": "Women Group B G 3",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-20",
       "time": "10:00",
       "player1": "Hong Kong, China",
       "player2": "Philippines",
-      "score": "vs",
-      "winner": ""
+      "score": "73 - 90",
+      "winner": "Philippines"
     },
     {
       "round": "Women Group B G 4",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Getting Ready",
       "date": "2026-09-20",
       "time": "13:50",
       "player1": "Kazakhstan",
       "player2": "Japan",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {

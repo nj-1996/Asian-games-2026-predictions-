@@ -268,7 +268,7 @@
     {
       "round": "Men F BM",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-20",
       "time": "16:40",
       "player1": "China",
@@ -279,7 +279,7 @@
     {
       "round": "Men F GM",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-20",
       "time": "19:40",
       "player1": "Japan",
