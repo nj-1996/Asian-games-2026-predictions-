@@ -93,7 +93,7 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
         if not is_target: continue
 
         status_raw = m.get("Status", "").upper()
-        if status_raw in ["OFFICIAL", "UNCONFIRMED"]: status = "Finished"
+        if status_raw in ["OFFICIAL", "UNCONFIRMED", "CANCELLED", "ABANDONED"]: status = "Finished"
         elif status_raw in ["LIVE", "IN_PROGRESS", "RUNNING"]: status = "Live"
         else: status = "Upcoming"
 
