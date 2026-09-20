@@ -10,6 +10,8 @@
       "player1": "Afghanistan",
       "player2": "Japan",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -21,6 +23,8 @@
       "player1": "Hong Kong, China",
       "player2": "Malaysia",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -32,6 +36,8 @@
       "player1": "Hong Kong, China",
       "player2": "Oman",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -43,6 +49,8 @@
       "player1": "Afghanistan",
       "player2": "Nepal",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -54,6 +62,8 @@
       "player1": "Japan",
       "player2": "Nepal",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -65,6 +75,8 @@
       "player1": "Malaysia",
       "player2": "Oman",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -76,6 +88,8 @@
       "player1": "Pakistan",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -87,6 +101,8 @@
       "player1": "India",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -98,6 +114,8 @@
       "player1": "Sri Lanka",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -109,6 +127,8 @@
       "player1": "Bangladesh",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -120,6 +140,8 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -131,6 +153,8 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -142,6 +166,8 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     },
     {
@@ -153,6 +179,8 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
       "winner": ""
     }
   ]
