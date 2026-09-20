@@ -22,7 +22,7 @@
     },
     {
       "rank": 3,
-      "team": "Sri Lanka",
+      "team": "Afghanistan",
       "gold": "15.0%",
       "silver": "25.0%",
       "bronze": "30.0%",
@@ -30,11 +30,19 @@
     },
     {
       "rank": 4,
+      "team": "Sri Lanka",
+      "gold": "5.0%",
+      "silver": "10.0%",
+      "bronze": "20.0%",
+      "podium": "35.0%"
+    },
+    {
+      "rank": 5,
       "team": "Bangladesh",
-      "gold": "10.0%",
-      "silver": "20.0%",
-      "bronze": "35.0%",
-      "podium": "65.0%"
+      "gold": "5.0%",
+      "silver": "10.0%",
+      "bronze": "15.0%",
+      "podium": "30.0%"
     }
   ],
   "women": [
@@ -65,10 +73,42 @@
     {
       "rank": 4,
       "team": "Bangladesh",
-      "gold": "5.0%",
-      "silver": "15.0%",
-      "bronze": "30.0%",
-      "podium": "50.0%"
+      "gold": "4.5%",
+      "silver": "14.5%",
+      "bronze": "29.5%",
+      "podium": "48.5%"
+    },
+    {
+      "rank": 5,
+      "team": "Thailand",
+      "gold": "0.2%",
+      "silver": "0.3%",
+      "bronze": "0.4%",
+      "podium": "0.9%"
+    },
+    {
+      "rank": 6,
+      "team": "Malaysia",
+      "gold": "0.1%",
+      "silver": "0.1%",
+      "bronze": "0.1%",
+      "podium": "0.3%"
+    },
+    {
+      "rank": 7,
+      "team": "China",
+      "gold": "0.1%",
+      "silver": "0.1%",
+      "bronze": "0.1%",
+      "podium": "0.3%"
+    },
+    {
+      "rank": 8,
+      "team": "Japan",
+      "gold": "0.1%",
+      "silver": "0.1%",
+      "bronze": "0.1%",
+      "podium": "0.3%"
     }
   ]
 }
