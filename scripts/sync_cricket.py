@@ -157,8 +157,8 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
         home_name = home.get("NameS") or home.get("Name") or "TBD"
         away_name = away.get("NameS") or away.get("Name") or "TBD"
 
-        home_score = home.get("Result", "")
-        away_score = away.get("Result", "")
+        home_score = str(home.get("Result", "")).strip()
+        away_score = str(away.get("Result", "")).strip()
 
         winner = ""
         try:
@@ -172,7 +172,9 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
             pass
 
         round_name = m.get("UnitDescS") or m.get("UnitDescA") or m.get("PhaseDescS", "Group Stage")
-        venue_name = m.get("VenueDesc") or m.get("Venue") or "Korogi Sports Park"
+        
+        # Combine the scores to match the basketball schema ("92 - 7" or "vs")
+        score_str = f"{home_score} - {away_score}" if (home_score != "" and away_score != "") else "vs"
 
         output.append({
             "round": round_name,
@@ -180,11 +182,9 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
             "state": state_desc,
             "date": match_date,
             "time": match_time,
-            "team1": home_name,
-            "team2": away_name,
-            "score1": home_score if home_score != "" else "-",
-            "score2": away_score if away_score != "" else "-",
-            "venue": venue_name,
+            "player1": home_name,
+            "player2": away_name,
+            "score": score_str,
             "winner": winner
         })
     return output
