@@ -148,7 +148,6 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
             status = "Upcoming"
 
         state_desc = m.get("StatusDesc") or m.get("Period") or status
-
         match_date, match_time = extract_match_datetime(m, fallback_date=date_str)
 
         home = m.get("Home", {})
@@ -157,12 +156,19 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
         home_name = home.get("NameS") or home.get("Name") or "TBD"
         away_name = away.get("NameS") or away.get("Name") or "TBD"
 
-        # Convert "177 - 4" to "177/4" (Standard Cricket Notation) to prevent dashboard parsing bugs
         home_raw = str(home.get("Result", "")).strip()
         away_raw = str(away.get("Result", "")).strip()
         
-        home_score = home_raw.replace(" - ", "/").replace("-", "/")
-        away_score = away_raw.replace(" - ", "/").replace("-", "/")
+        # 1. UI Format: "177/4"
+        home_score_ui = home_raw.replace(" - ", "/").replace("-", "/")
+        away_score_ui = away_raw.replace(" - ", "/").replace("-", "/")
+
+        # 2. Calibration Format: "177" (pure runs, stripping wickets)
+        home_runs = home_raw.split("-")[0].strip() if home_raw else ""
+        away_runs = away_raw.split("-")[0].strip() if away_raw else ""
+
+        # Global Dashboard Score: "177 - 178"
+        score_calib = f"{home_runs} - {away_runs}" if (home_runs != "" and away_runs != "") else "vs"
 
         winner = ""
         try:
@@ -177,9 +183,6 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
 
         round_name = m.get("UnitDescS") or m.get("UnitDescA") or m.get("PhaseDescS", "Group Stage")
         
-        # Combine the scores (e.g., "177/4 - 178/2" or "vs")
-        score_str = f"{home_score} - {away_score}" if (home_score != "" and away_score != "") else "vs"
-
         output.append({
             "round": round_name,
             "status": status,
@@ -188,7 +191,9 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
             "time": match_time,
             "player1": home_name,
             "player2": away_name,
-            "score": score_str,
+            "score": score_calib,
+            "score1": home_score_ui if home_score_ui else "-",
+            "score2": away_score_ui if away_score_ui else "-",
             "winner": winner
         })
     return output
