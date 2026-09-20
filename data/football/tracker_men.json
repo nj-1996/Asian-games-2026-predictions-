@@ -146,13 +146,13 @@
     },
     {
       "round": "Group A",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-20",
       "time": "19:30",
       "player1": "Kyrgyzstan",
       "player2": "Japan",
-      "score": "0 - 6",
+      "score": "0 - 7",
       "winner": "Japan"
     },
     {

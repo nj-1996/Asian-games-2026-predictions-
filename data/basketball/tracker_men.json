@@ -278,13 +278,13 @@
     },
     {
       "round": "Men F GM",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-20",
       "time": "19:40",
       "player1": "Japan",
       "player2": "Korea",
-      "score": "49 - 62",
+      "score": "57 - 67",
       "winner": "Korea"
     }
   ]
