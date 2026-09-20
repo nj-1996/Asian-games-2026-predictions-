@@ -1,111 +1,114 @@
 {
   "sport": "Cricket",
+  "simulation_model": "Monte Carlo (50,000 Runs)",
+  "weighting": "ICC T20I Rankings + Asia Cup 2025 + 2022 Asian Games Results",
+  "home_court_boost": "+2.0 pts (Japan - Pitch Familiarity)",
   "men": [
     {
+      "rank": 1,
       "team": "India",
-      "gold": 0.55,
-      "silver": 0.25,
-      "bronze": 0.10,
-      "probability": 0.55,
-      "rank": 1
+      "gold": "55.0%",
+      "silver": "25.0%",
+      "bronze": "10.0%",
+      "podium": "90.0%"
     },
     {
+      "rank": 2,
       "team": "Pakistan",
-      "gold": 0.20,
-      "silver": 0.30,
-      "bronze": 0.25,
-      "probability": 0.20,
-      "rank": 2
+      "gold": "20.0%",
+      "silver": "30.0%",
+      "bronze": "25.0%",
+      "podium": "75.0%"
     },
     {
+      "rank": 3,
       "team": "Afghanistan",
-      "gold": 0.15,
-      "silver": 0.25,
-      "bronze": 0.30,
-      "probability": 0.15,
-      "rank": 3
+      "gold": "15.0%",
+      "silver": "25.0%",
+      "bronze": "30.0%",
+      "podium": "70.0%"
     },
     {
+      "rank": 4,
       "team": "Sri Lanka",
-      "gold": 0.05,
-      "silver": 0.10,
-      "bronze": 0.20,
-      "probability": 0.05,
-      "rank": 4
+      "gold": "5.0%",
+      "silver": "10.0%",
+      "bronze": "20.0%",
+      "podium": "35.0%"
     },
     {
+      "rank": 5,
       "team": "Bangladesh",
-      "gold": 0.05,
-      "silver": 0.10,
-      "bronze": 0.15,
-      "probability": 0.05,
-      "rank": 5
+      "gold": "5.0%",
+      "silver": "10.0%",
+      "bronze": "15.0%",
+      "podium": "30.0%"
     }
   ],
   "women": [
     {
+      "rank": 1,
       "team": "India",
-      "gold": 0.65,
-      "silver": 0.20,
-      "bronze": 0.10,
-      "probability": 0.65,
-      "rank": 1
+      "gold": "65.0%",
+      "silver": "20.0%",
+      "bronze": "10.0%",
+      "podium": "95.0%"
     },
     {
+      "rank": 2,
       "team": "Sri Lanka",
-      "gold": 0.20,
-      "silver": 0.40,
-      "bronze": 0.25,
-      "probability": 0.20,
-      "rank": 2
+      "gold": "20.0%",
+      "silver": "40.0%",
+      "bronze": "25.0%",
+      "podium": "85.0%"
     },
     {
+      "rank": 3,
       "team": "Pakistan",
-      "gold": 0.10,
-      "silver": 0.25,
-      "bronze": 0.35,
-      "probability": 0.10,
-      "rank": 3
+      "gold": "10.0%",
+      "silver": "25.0%",
+      "bronze": "35.0%",
+      "podium": "70.0%"
     },
     {
+      "rank": 4,
       "team": "Bangladesh",
-      "gold": 0.05,
-      "silver": 0.15,
-      "bronze": 0.30,
-      "probability": 0.05,
-      "rank": 4
+      "gold": "4.5%",
+      "silver": "14.5%",
+      "bronze": "29.5%",
+      "podium": "48.5%"
     },
     {
+      "rank": 5,
       "team": "Thailand",
-      "gold": 0.01,
-      "silver": 0.03,
-      "bronze": 0.10,
-      "probability": 0.02,
-      "rank": 5
+      "gold": "0.2%",
+      "silver": "0.3%",
+      "bronze": "0.4%",
+      "podium": "0.9%"
     },
     {
+      "rank": 6,
       "team": "Malaysia",
-      "gold": 0.01,
-      "silver": 0.02,
-      "bronze": 0.05,
-      "probability": 0.01,
-      "rank": 6
+      "gold": "0.1%",
+      "silver": "0.1%",
+      "bronze": "0.1%",
+      "podium": "0.3%"
     },
     {
+      "rank": 7,
       "team": "China",
-      "gold": 0.01,
-      "silver": 0.02,
-      "bronze": 0.05,
-      "probability": 0.01,
-      "rank": 7
+      "gold": "0.1%",
+      "silver": "0.1%",
+      "bronze": "0.1%",
+      "podium": "0.3%"
     },
     {
+      "rank": 8,
       "team": "Japan",
-      "gold": 0.01,
-      "silver": 0.01,
-      "bronze": 0.02,
-      "probability": 0.01,
-      "rank": 8
+      "gold": "0.1%",
+      "silver": "0.1%",
+      "bronze": "0.1%",
+      "podium": "0.3%"
     }
   ]
 }
