@@ -157,8 +157,12 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
         home_name = home.get("NameS") or home.get("Name") or "TBD"
         away_name = away.get("NameS") or away.get("Name") or "TBD"
 
-        home_score = str(home.get("Result", "")).strip()
-        away_score = str(away.get("Result", "")).strip()
+        # Convert "177 - 4" to "177/4" (Standard Cricket Notation) to prevent dashboard parsing bugs
+        home_raw = str(home.get("Result", "")).strip()
+        away_raw = str(away.get("Result", "")).strip()
+        
+        home_score = home_raw.replace(" - ", "/").replace("-", "/")
+        away_score = away_raw.replace(" - ", "/").replace("-", "/")
 
         winner = ""
         try:
@@ -173,7 +177,7 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
 
         round_name = m.get("UnitDescS") or m.get("UnitDescA") or m.get("PhaseDescS", "Group Stage")
         
-        # Combine the scores to match the basketball schema ("92 - 7" or "vs")
+        # Combine the scores (e.g., "177/4 - 178/2" or "vs")
         score_str = f"{home_score} - {away_score}" if (home_score != "" and away_score != "") else "vs"
 
         output.append({
