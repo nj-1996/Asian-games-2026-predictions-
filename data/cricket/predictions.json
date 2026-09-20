@@ -74,6 +74,30 @@
       "bronze": 0.30,
       "probability": 0.05,
       "rank": 4
+    },
+    {
+      "team": "Thailand",
+      "gold": 0.01,
+      "silver": 0.03,
+      "bronze": 0.10,
+      "probability": 0.02,
+      "rank": 5
+    },
+    {
+      "team": "Malaysia",
+      "gold": 0.01,
+      "silver": 0.02,
+      "bronze": 0.05,
+      "probability": 0.01,
+      "rank": 6
+    },
+    {
+      "team": "China",
+      "gold": 0.01,
+      "silver": 0.02,
+      "bronze": 0.05,
+      "probability": 0.01,
+      "rank": 7
     }
   ]
 }
