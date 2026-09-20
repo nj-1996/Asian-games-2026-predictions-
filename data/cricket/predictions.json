@@ -98,6 +98,14 @@
       "bronze": 0.05,
       "probability": 0.01,
       "rank": 7
+    },
+    {
+      "team": "Japan",
+      "gold": 0.01,
+      "silver": 0.01,
+      "bronze": 0.02,
+      "probability": 0.01,
+      "rank": 8
     }
   ]
 }
