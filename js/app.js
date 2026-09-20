@@ -281,12 +281,12 @@ function renderView() {
 // --- Sport Engine Registry & Universal Dispatchers ---
 window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 
-// Register baseline basketball engine from loaded global functions
-window.SPORT_ENGINES['basketball'] = {
+// Register baseline basketball engine if not already populated
+window.SPORT_ENGINES['basketball'] = window.SPORT_ENGINES['basketball'] || (typeof BASKETBALL_ENGINE !== 'undefined' ? BASKETBALL_ENGINE : {
   icon: '🏀',
   renderStandingsTable: typeof renderStandingsTable === 'function' ? renderStandingsTable : null,
   renderKnockoutBracket: typeof renderKnockoutBracket === 'function' ? renderKnockoutBracket : null
-};
+});
 
 // Universal Standings Dispatcher
 window.renderStandingsTable = function(matches) {

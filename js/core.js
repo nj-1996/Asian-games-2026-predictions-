@@ -167,8 +167,8 @@ function formatStageName(stageStr) {
     return g ? `Semifinals • Game ${g[1]}` : 'Semifinals';
   }
 
-  if (/bronze|3rd/i.test(s)) return 'Bronze Medal Match';
-  if (/gold|final/i.test(s)) return 'Gold Medal Match';
+  if (/\b(?:bm|f\s*bm)\b|bronze|3rd/i.test(s)) return 'Bronze Medal Match';
+  if (/\b(?:gm|f\s*gm)\b|gold|final/i.test(s)) return 'Gold Medal Match';
 
   const grp = s.match(/(?:group|pool)\s+([a-z0-9]+)/i);
   const g = s.match(/(?:game|g)\s*(\d+)/i);
@@ -438,8 +438,8 @@ const BASKETBALL_ENGINE = {
 
     const qfMatches = parsed.filter(m => getStage(m).includes('quarter') || getStage(m).includes('qf'));
     const sfMatches = parsed.filter(m => getStage(m).includes('semi') || getStage(m).includes('sf'));
-    const finalMatch = parsed.find(m => getStage(m).includes('gold') || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
-    const bronzeMatch = parsed.find(m => getStage(m).includes('bronze') || getStage(m).includes('3rd'));
+    const finalMatch = parsed.find(m => getStage(m).includes('gold') || /\b(?:gm|f\s*gm)\b/i.test(m.stage) || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
+    const bronzeMatch = parsed.find(m => getStage(m).includes('bronze') || /\b(?:bm|f\s*bm)\b/i.test(m.stage) || getStage(m).includes('3rd'));
 
     const getGame = (list, num) => list.find(m => new RegExp(`game\\s*${num}`, 'i').test(m.stage)) || list[num - 1];
 
@@ -614,38 +614,81 @@ function renderMatchesView(container, matches) {
 function renderScheduleAndHero(matches) {
   const parsed = matches.map(m => parseMatchData(m));
 
+  const isTournamentComplete = parsed.length > 0 && parsed.every(m => m.isFinished);
   const liveMatch = parsed.find(m => m.status.toLowerCase().includes('live'));
   const upcomingMatches = parsed.filter(m => !m.isFinished && !m.status.toLowerCase().includes('live'));
   const upcomingWithTeams = upcomingMatches.filter(m => m.t1 !== 'TBD' && m.t2 !== 'TBD');
-  const heroTarget = liveMatch || upcomingWithTeams[0] || upcomingMatches[0] || parsed[0];
+
+  let heroTarget = null;
+  if (liveMatch) {
+    heroTarget = liveMatch;
+  } else if (upcomingWithTeams.length > 0) {
+    heroTarget = upcomingWithTeams[0];
+  } else if (upcomingMatches.length > 0) {
+    heroTarget = upcomingMatches[0];
+  } else if (isTournamentComplete) {
+    heroTarget = parsed.find(m => /gold|\bgm\b|final/i.test(m.stage)) || parsed[parsed.length - 1];
+  }
 
   let heroHtml = '';
   if (heroTarget) {
     const isLive = heroTarget.status.toLowerCase().includes('live');
     const displayDateTime = formatMatchDateTime(heroTarget.date, heroTarget.time) || heroTarget.status || 'Scheduled';
-    const activeSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
-    const upcomingLabel = activeSport === 'football' ? '⏳ NEXT KICK-OFF' : '⏳ NEXT TIP-OFF';
+    const activeSport = (window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball')).toLowerCase();
+
+    let upcomingLabel = '⏳ NEXT MATCH';
+    if (activeSport === 'football') upcomingLabel = '⏳ NEXT KICK-OFF';
+    else if (activeSport === 'basketball') upcomingLabel = '⏳ NEXT TIP-OFF';
+
+    let badgeText = upcomingLabel;
+    let badgeBg = 'rgba(59,130,246,0.2)';
+    let badgeColor = '#60a5fa';
+
+    if (isLive) {
+      badgeText = '🔴 LIVE NOW';
+      badgeBg = 'rgba(239,68,68,0.2)';
+      badgeColor = '#ef4444';
+    } else if (isTournamentComplete) {
+      badgeText = '🏆 TOURNAMENT COMPLETED';
+      badgeBg = 'rgba(250,204,21,0.2)';
+      badgeColor = '#facc15';
+    }
+
+    const t1Won = heroTarget.isFinished && heroTarget.winner
+      ? cleanTeamName(heroTarget.winner) === cleanTeamName(heroTarget.t1)
+      : (heroTarget.isFinished && Number(heroTarget.s1) > Number(heroTarget.s2));
+    const t2Won = heroTarget.isFinished && heroTarget.winner
+      ? cleanTeamName(heroTarget.winner) === cleanTeamName(heroTarget.t2)
+      : (heroTarget.isFinished && Number(heroTarget.s2) > Number(heroTarget.s1));
+
+    const subtitle = isTournamentComplete && heroTarget.winner
+      ? `Gold Medal Champion: <strong>${heroTarget.winner}</strong> 🥇`
+      : `${displayDateTime} • ${heroTarget.stage}`;
 
     heroHtml = `
       <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.8)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center;">
-        <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.2rem 0.65rem; border-radius:9999px; background:${isLive ? 'rgba(239,68,68,0.2)' : 'rgba(59,130,246,0.2)'}; color:${isLive ? '#ef4444' : '#60a5fa'}; margin-bottom:0.75rem;">
-          ${isLive ? '🔴 LIVE NOW' : upcomingLabel}
+        <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.2rem 0.65rem; border-radius:9999px; background:${badgeBg}; color:${badgeColor}; margin-bottom:0.75rem;">
+          ${badgeText}
         </div>
         <div style="display:flex; justify-content:space-around; align-items:center; margin:0.75rem 0;">
           <div style="flex:1;">
             <div style="font-size:1.8rem;">${getFlagEmoji(heroTarget.t1)}</div>
-            <div style="font-weight:700; font-size:1rem; margin-top:0.25rem;">${heroTarget.t1}</div>
+            <div style="font-weight:700; font-size:1rem; margin-top:0.25rem; color:${t1Won ? '#facc15' : 'inherit'};">
+              ${heroTarget.t1}${t1Won ? ' 🥇' : ''}
+            </div>
           </div>
           <div style="font-family:monospace; font-size:1.6rem; font-weight:800; min-width:80px;">
-            ${heroTarget.s1 !== '-' ? `${heroTarget.s1} :${heroTarget.s2}` : 'VS'}
+            ${heroTarget.s1 !== '-' ? `${heroTarget.s1} : ${heroTarget.s2}` : 'VS'}
           </div>
           <div style="flex:1;">
             <div style="font-size:1.8rem;">${getFlagEmoji(heroTarget.t2)}</div>
-            <div style="font-weight:700; font-size:1rem; margin-top:0.25rem;">${heroTarget.t2}</div>
+            <div style="font-weight:700; font-size:1rem; margin-top:0.25rem; color:${t2Won ? '#facc15' : 'inherit'};">
+              ${heroTarget.t2}${t2Won ? ' 🥇' : ''}
+            </div>
           </div>
         </div>
         <div style="font-size:0.8rem; color:#94a3b8;">
-          ${displayDateTime} • ${heroTarget.stage}
+          ${subtitle}
         </div>
       </div>
     `;

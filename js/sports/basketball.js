@@ -112,8 +112,8 @@ window.SPORT_ENGINES['basketball'] = {
 
     const qfMatches = parsed.filter(m => getStage(m).includes('quarter') || getStage(m).includes('qf'));
     const sfMatches = parsed.filter(m => getStage(m).includes('semi') || getStage(m).includes('sf'));
-    const finalMatch = parsed.find(m => getStage(m).includes('gold') || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
-    const bronzeMatch = parsed.find(m => getStage(m).includes('bronze') || getStage(m).includes('3rd'));
+    const finalMatch = parsed.find(m => getStage(m).includes('gold') || /\b(?:gm|f\s*gm)\b/i.test(m.stage) || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
+    const bronzeMatch = parsed.find(m => getStage(m).includes('bronze') || /\b(?:bm|f\s*bm)\b/i.test(m.stage) || getStage(m).includes('3rd'));
 
     const getGame = (list, num) => list.find(m => new RegExp(`game\\s*${num}`, 'i').test(m.stage)) || list[num - 1];
 
