@@ -5,7 +5,6 @@
 (function () {
   window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 
-  // --- Smart Fetch Interceptor for Custom Tracker Filenames ---
   const originalFetch = window.fetch;
   window.fetch = function(url, options) {
     const activeSport = window.currentSport || localStorage.getItem('app_sport');
@@ -21,25 +20,20 @@
 
   const clean = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
-  // Helper to adapt the global schema (player1/player2/score) into the 
-  // custom t1/t2/s1/s2 format needed for the Cricket UI components
   const parseMatch = (m) => {
     const base = typeof parseMatchData === 'function' ? parseMatchData(m) : {};
     
     let s1 = base.s1 || m.score1 || '-';
     let s2 = base.s2 || m.score2 || '-';
     
-    // Safely split the new combined score string (e.g. "92 - 7 - 91 - 4" or "160/4 - 74/7")
     const rawScore = m.score || base.score || '';
     if (rawScore && !m.score1 && !m.score2) {
         if (rawScore.includes(' - ')) {
             const parts = rawScore.split(' - ');
             if (parts.length === 4) {
-                // Handles format: "92 - 7 - 91 - 4"
                 s1 = parts[0].trim() + ' - ' + parts[1].trim();
                 s2 = parts[2].trim() + ' - ' + parts[3].trim();
             } else if (parts.length === 2) {
-                // Handles format: "160/4 - 74/7"
                 s1 = parts[0].trim();
                 s2 = parts[1].trim();
             } else {
@@ -115,8 +109,9 @@
         const stateCombined = ((s.state || '') + ' ' + (s.status || '')).toLowerCase();
         const isCancelled = stateCombined.includes('cancel') || stateCombined.includes('rain') || stateCombined.includes('abandon') || (isOfficial && s.winner && s.s1 === '-' && s.s2 === '-');
 
-        const t1Win = isOfficial && clean(s.winner) === clean(s.t1);
-        const t2Win = isOfficial && clean(s.winner) === clean(s.t2);
+        // Resilient check: Award the win if it's official OR cancelled, as long as a winner is provided
+        const t1Win = (isOfficial || isCancelled) && s.winner && clean(s.winner) === clean(s.t1);
+        const t2Win = (isOfficial || isCancelled) && s.winner && clean(s.winner) === clean(s.t2);
 
         return `
           <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem;">
@@ -286,8 +281,10 @@
         const isCancelled = match && (stateCombined.includes('cancel') || stateCombined.includes('rain') || stateCombined.includes('abandon') || (match.isFinished && match.winner && match.s1 === '-' && match.s2 === '-'));
 
         const isFinished = match ? match.isFinished : false;
-        const t1Win = isFinished && clean(match.winner) === clean(t1);
-        const t2Win = isFinished && clean(match.winner) === clean(t2);
+        
+        // Resilient check for bracket advancement
+        const t1Win = (isFinished || isCancelled) && match.winner && clean(match.winner) === clean(t1);
+        const t2Win = (isFinished || isCancelled) && match.winner && clean(match.winner) === clean(t2);
 
         const s1 = isCancelled ? (t1Win ? 'ADV' : '-') : (match ? match.s1 : '-');
         const s2 = isCancelled ? (t2Win ? 'ADV' : '-') : (match ? match.s2 : '-');
