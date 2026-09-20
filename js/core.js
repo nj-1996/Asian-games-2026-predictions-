@@ -614,10 +614,10 @@ function renderMatchesView(container, matches) {
 function renderScheduleAndHero(matches) {
   const parsed = matches.map(m => parseMatchData(m));
 
-  const isTournamentComplete = parsed.length > 0 && parsed.every(m => m.isFinished);
   const liveMatch = parsed.find(m => m.status.toLowerCase().includes('live'));
   const upcomingMatches = parsed.filter(m => !m.isFinished && !m.status.toLowerCase().includes('live'));
   const upcomingWithTeams = upcomingMatches.filter(m => m.t1 !== 'TBD' && m.t2 !== 'TBD');
+  const isTournamentComplete = parsed.length > 0 && !liveMatch && upcomingMatches.length === 0;
 
   let heroTarget = null;
   if (liveMatch) {
@@ -627,7 +627,15 @@ function renderScheduleAndHero(matches) {
   } else if (upcomingMatches.length > 0) {
     heroTarget = upcomingMatches[0];
   } else if (isTournamentComplete) {
-    heroTarget = parsed.find(m => /gold|\bgm\b|final/i.test(m.stage)) || parsed[parsed.length - 1];
+    const isGoldFinal = (m) => {
+      const s = String(m.stage || '').toLowerCase();
+      const r = String(m.round || '').toLowerCase();
+      if (/quarter|semi|1\/4|1\/2|3rd|bronze|\bbm\b/i.test(s) || /quarter|semi|1\/4|1\/2|3rd|bronze|\bbm\b/i.test(r)) {
+        return false;
+      }
+      return /gold|\bgm\b/i.test(s) || /gold|\bgm\b/i.test(r) || /\bfinal\b/i.test(s) || /\bfinal\b/i.test(r);
+    };
+    heroTarget = parsed.slice().reverse().find(isGoldFinal) || parsed[parsed.length - 1];
   }
 
   let heroHtml = '';
