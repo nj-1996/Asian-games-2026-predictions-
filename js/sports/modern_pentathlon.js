@@ -131,10 +131,10 @@
               🏆 TOURNAMENT COMPLETED
             </div>
             <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.3rem;">
-              Individual Champion: <span style="color:#facc15;">Seong Seung-min 🇰🇷</span> 🥇
+              Individual Champion: <span style="color:#facc15;">Seong Seung-min 🇰🇷 (1,492 pts)</span> 🥇
             </div>
             <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:0.6rem;">
-              🥈 Silver: Zhang Mingyu 🇨🇳 • 🥉 Bronze: Wu Xiyao 🇨🇳
+              🥈 Silver: Zhang Mingyu 🇨🇳 (1,460 pts) • 🥉 Bronze: Wu Xiyao 🇨🇳 (1,447 pts)
             </div>
             <div style="display:inline-block; font-size:0.78rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:4px 12px; border-radius:16px; color:#cbd5e1;">
               👥 Team Champions: 🥇 China (4,318 pts) • 🥈 South Korea (4,271 pts) • 🥉 Japan (4,169 pts)
@@ -148,10 +148,10 @@
               🏆 TOURNAMENT COMPLETED
             </div>
             <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.3rem;">
-              Individual Champion: <span style="color:#facc15;">Li Liuchang 🇨🇳</span> 🥇
+              Individual Champion: <span style="color:#facc15;">Li Liuchang 🇨🇳 (1,598 pts)</span> 🥇
             </div>
             <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:0.6rem;">
-              🥈 Silver: Jun Woong-tae 🇰🇷 • 🥉 Bronze: Lee Jong-hyeon 🇰🇷
+              🥈 Silver: Jun Woong-tae 🇰🇷 (1,595 pts) • 🥉 Bronze: Lee Jong-hyeon 🇰🇷 (1,593 pts)
             </div>
             <div style="display:inline-block; font-size:0.78rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:4px 12px; border-radius:16px; color:#cbd5e1;">
               👥 Team Champions: 🥇 South Korea (4,779 pts) • 🥈 China (4,768 pts) • 🥉 Kazakhstan (4,647 pts)
@@ -397,10 +397,11 @@
             name: name,
             country: resolveAthleteCountry(name, c.country),
             fence: '-', obstacle: '-', swim: '-', laser: '-', total: 0,
-            laserRank: 999
+            laserRank: 999,
+            officialTotal: 0
           };
         }
-        var pts = parseInt(c.raw, 10) || parseInt(c.points, 10) || 0;
+        var pts = parseInt(c.points, 10) || parseInt(c.raw, 10) || 0;
         if (disc.includes('fencing')) athletes[name].fence = pts;
         else if (disc.includes('obstacle')) athletes[name].obstacle = pts;
         else if (disc.includes('swim')) athletes[name].swim = pts;
@@ -408,8 +409,22 @@
           athletes[name].laser = pts;
           if (c.rank) athletes[name].laserRank = parseInt(c.rank, 10);
         }
-        athletes[name].total += pts;
+        if (c.total_pts && parseInt(c.total_pts, 10) > 0) {
+          athletes[name].officialTotal = parseInt(c.total_pts, 10);
+        }
       });
+    });
+
+    Object.values(athletes).forEach(function(a) {
+      if (a.officialTotal > 0) {
+        a.total = a.officialTotal;
+      } else {
+        var f = parseInt(a.fence, 10) || 0;
+        var o = parseInt(a.obstacle, 10) || 0;
+        var s = parseInt(a.swim, 10) || 0;
+        var l = parseInt(a.laser, 10) || 0;
+        a.total = f + o + s + l;
+      }
     });
 
     var resultList = Object.values(athletes);
@@ -449,16 +464,33 @@
               country: resolveAthleteCountry(name, c.country),
               totalPts: 0,
               eventsCount: 0,
-              laserRank: 999
+              laserRank: 999,
+              officialTotal: 0,
+              fence: 0, obstacle: 0, swim: 0, laser: 0
             };
           }
-          var ptsNum = parseInt(c.raw, 10) || parseInt(c.points, 10) || 0;
-          athleteTotals[name].totalPts += ptsNum;
+          var ptsNum = parseInt(c.points, 10) || parseInt(c.raw, 10) || 0;
+          if (discName.includes('fencing')) athleteTotals[name].fence = ptsNum;
+          else if (discName.includes('obstacle')) athleteTotals[name].obstacle = ptsNum;
+          else if (discName.includes('swim')) athleteTotals[name].swim = ptsNum;
+          else if (discName.includes('laser')) athleteTotals[name].laser = ptsNum;
+
           athleteTotals[name].eventsCount += 1;
+          if (c.total_pts && parseInt(c.total_pts, 10) > 0) {
+            athleteTotals[name].officialTotal = parseInt(c.total_pts, 10);
+          }
           if (discName.includes('laser') && c.rank) {
             athleteTotals[name].laserRank = parseInt(c.rank, 10);
           }
         });
+      });
+
+      Object.values(athleteTotals).forEach(function(a) {
+        if (a.officialTotal > 0) {
+          a.totalPts = a.officialTotal;
+        } else {
+          a.totalPts = a.fence + a.obstacle + a.swim + a.laser;
+        }
       });
 
       var overallList = Object.values(athleteTotals);
