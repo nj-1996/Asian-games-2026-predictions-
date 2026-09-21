@@ -172,11 +172,20 @@ function formatStageName(stageStr) {
 
   const activeSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : '');
   if (activeSport === 'volleyball') {
+    // Women Playoffs
     if (/\bmatch\s*(19|20|21|22)\b/i.test(s)) return `Quarterfinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
     if (/\bmatch\s*(27|28)\b/i.test(s)) return `Semifinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
     if (/\bmatch\s*(25|26)\b/i.test(s)) return `5th-8th Semifinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
     if (/\bmatch\s*(29|30)\b/i.test(s)) return `9th-12th Semifinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
     if (/\bmatch\s*(23|24)\b/i.test(s)) return `Classification • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
+    // Men Playoffs
+    if (/\bmatch\s*(37|38)\b/i.test(s)) return `5th-8th Semifinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
+    if (/\bmatch\s*(35|36)\b/i.test(s)) return `9th-12th Semifinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
+    if (/\bmatch\s*(33|34)\b/i.test(s)) return `13th-16th Semifinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
+    if (/\bmatch\s*(39|40)\b/i.test(s)) return `Semifinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
+    // Placement Finals
+    const placeMatch = s.match(/\b(\d+(?:st|nd|rd|th)(?:-\d+(?:st|nd|rd|th))?\s+place)\b/i);
+    if (placeMatch) return `${placeMatch[1]} Match`;
   }
 
   const grp = s.match(/(?:group|pool)\s+([a-z0-9]+)/i);
