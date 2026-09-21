@@ -223,15 +223,18 @@
             <span style="font-size:0.75rem; color:#94a3b8; font-weight:400;">${sessions[0]?.venue || 'Anjo Sports Park'}</span>
           </div>
           <div>
-            ${sessions.map(function(ev) {
+            ${sessions.filter(function(ev) {
+              var d = (ev.discipline || ev.round || '').toLowerCase();
+              return !d.includes('team');
+            }).map(function(ev) {
               var isFinished = ev.status === 'Official' || ev.status === 'Finished';
               var isLive = (ev.status || '').toLowerCase() === 'live';
               var disc = ev.discipline || ev.round || 'Session';
               var icon = getDisciplineIcon(disc);
               var isSemiOrSeed = /semi|sf|seed/i.test(phaseHeader);
               var isMedalSession = Boolean(ev.is_medal) && !isSemiOrSeed;
-              var safePhase = encodeURIComponent(phaseHeader);
-              var safeDisc = encodeURIComponent(disc);
+              var safePhase = encodeURIComponent(phaseHeader).replace(/'/g, '%27');
+              var safeDisc = encodeURIComponent(disc).replace(/'/g, '%27');
               var dateTimeFormatted = typeof formatMatchDateTime === 'function'
                 ? formatMatchDateTime(ev.date, ev.time)
                 : (ev.date + ' ' + ev.time);
@@ -293,6 +296,9 @@
   window.openMpnSheet = function (phaseEncoded, discEncoded) {
     var phase = decodeURIComponent(phaseEncoded);
     var disc = decodeURIComponent(discEncoded);
+    if (disc.toLowerCase().includes('team')) {
+      disc = 'Laser Run';
+    }
     activePhaseGroup = phase;
     activeDiscipline = disc;
 
@@ -306,17 +312,22 @@
       ? activePentathlonEvents
       : ((window.currentGender === 'women' ? window.appData?.womenMatches : window.appData?.menMatches) || []);
 
-    var relatedEvents = eventsPool.filter(function(ev) { return getNormalizedPhaseGroup(ev) === phase; });
+    var relatedEvents = eventsPool.filter(function(ev) {
+      var isSamePhase = getNormalizedPhaseGroup(ev) === phase;
+      var d = (ev.discipline || ev.round || '').toLowerCase();
+      return isSamePhase && !d.includes('team');
+    });
     
     var availableDisciplines = [];
     if (relatedEvents.length > 1) {
       availableDisciplines.push('Overall');
       relatedEvents.forEach(function(e) {
         var d = e.discipline || e.round;
-        if (d && !availableDisciplines.includes(d)) availableDisciplines.push(d);
+        if (d && !d.toLowerCase().includes('team') && !availableDisciplines.includes(d)) availableDisciplines.push(d);
       });
     } else if (relatedEvents.length === 1) {
-      availableDisciplines.push(relatedEvents[0].discipline || relatedEvents[0].round);
+      var d = relatedEvents[0].discipline || relatedEvents[0].round;
+      if (d && !d.toLowerCase().includes('team')) availableDisciplines.push(d);
     }
 
     renderDisciplineTabs(availableDisciplines, disc);
@@ -341,9 +352,12 @@
   function renderDisciplineTabs(disciplines, selected) {
     var tabsContainer = document.getElementById('mpn-discipline-tabs');
     if (!tabsContainer) return;
-    tabsContainer.innerHTML = disciplines.map(function(d) {
+    var filtered = (disciplines || []).filter(function(d) {
+      return !d.toLowerCase().includes('team');
+    });
+    tabsContainer.innerHTML = filtered.map(function(d) {
       var isSelected = d === selected;
-      var safeD = encodeURIComponent(d);
+      var safeD = encodeURIComponent(d).replace(/'/g, '%27');
       return `
         <button 
           id="mpn-tab-${safeD}"
@@ -358,21 +372,29 @@
 
   window.selectMpnDiscipline = function (discEncoded) {
     var disc = decodeURIComponent(discEncoded);
+    if (disc.toLowerCase().includes('team')) {
+      disc = 'Laser Run';
+    }
     activeDiscipline = disc;
     var eventsPool = (activePentathlonEvents && activePentathlonEvents.length > 0)
       ? activePentathlonEvents
       : ((window.currentGender === 'women' ? window.appData?.womenMatches : window.appData?.menMatches) || []);
 
-    var relatedEvents = eventsPool.filter(function(ev) { return getNormalizedPhaseGroup(ev) === activePhaseGroup; });
+    var relatedEvents = eventsPool.filter(function(ev) {
+      var isSamePhase = getNormalizedPhaseGroup(ev) === activePhaseGroup;
+      var d = (ev.discipline || ev.round || '').toLowerCase();
+      return isSamePhase && !d.includes('team');
+    });
     var availableDisciplines = [];
     if (relatedEvents.length > 1) {
       availableDisciplines.push('Overall');
       relatedEvents.forEach(function(e) {
         var d = e.discipline || e.round;
-        if (d && !availableDisciplines.includes(d)) availableDisciplines.push(d);
+        if (d && !d.toLowerCase().includes('team') && !availableDisciplines.includes(d)) availableDisciplines.push(d);
       });
     } else if (relatedEvents.length === 1) {
-      availableDisciplines.push(relatedEvents[0].discipline || relatedEvents[0].round);
+      var d = relatedEvents[0].discipline || relatedEvents[0].round;
+      if (d && !d.toLowerCase().includes('team')) availableDisciplines.push(d);
     }
 
     renderDisciplineTabs(availableDisciplines, disc);
@@ -566,35 +588,10 @@
 
     var isTeamEvent = (discipline || '').toLowerCase().includes('team');
     if (isTeamEvent) {
-      content.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-          <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; font-weight:700;">Official Team Results</span>
-          <span style="font-size:0.75rem; color:${isLive ? '#ef4444' : '#4ade80'}; font-weight:600;">${targetEvent.status}</span>
-        </div>
-        <div style="display:grid; grid-template-columns: 32px 1fr 90px; font-size:0.7rem; font-weight:700; color:#64748b; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); text-transform:uppercase;">
-          <span>#</span><span>Nation</span><span style="text-align:right;">Total Score</span>
-        </div>
-        <div style="font-size:0.82rem;">
-          ${competitors.map(function(c, i) {
-            var rank = c.rank || (i + 1);
-            var medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
-            var name = c.name || `Team ${rank}`;
-            var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(name) : '';
-            var pts = (c.raw && c.raw !== '0') ? c.raw : (c.points !== '-' ? c.points : '0');
-            var numPts = parseInt(pts, 10);
-            var displayPts = isNaN(numPts) ? pts : numPts.toLocaleString();
-            return `
-              <div style="display:grid; grid-template-columns: 32px 1fr 90px; align-items:center; padding:0.75rem 0; border-bottom:1px solid rgba(255,255,255,0.04); background:${rank <= 3 ? 'rgba(234,179,8,0.04)' : 'transparent'};">
-                <span style="font-weight:700; font-size:1rem; color:${rank <= 3 ? '#facc15' : '#94a3b8'};">${medal || rank}</span>
-                <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.45rem;">
-                  <span style="font-size:1.15rem;">${flag}</span> <span>${name}</span>
-                </div>
-                <span style="text-align:right; font-weight:700; color:#4ade80; font-size:0.95rem; font-family:monospace;">${displayPts} pts</span>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      `;
+      window.closeMpnSheet();
+      if (typeof window.setMpnStandingsTab === 'function') {
+        window.setMpnStandingsTab('team');
+      }
       return;
     }
 
