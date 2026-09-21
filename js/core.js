@@ -170,6 +170,15 @@ function formatStageName(stageStr) {
   if (/\b(?:bm|f\s*bm)\b|bronze|3rd/i.test(s)) return 'Bronze Medal Match';
   if (/\b(?:gm|f\s*gm)\b|gold|final/i.test(s)) return 'Gold Medal Match';
 
+  const activeSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : '');
+  if (activeSport === 'volleyball') {
+    if (/\bmatch\s*(19|20|21|22)\b/i.test(s)) return `Quarterfinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
+    if (/\bmatch\s*(27|28)\b/i.test(s)) return `Semifinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
+    if (/\bmatch\s*(25|26)\b/i.test(s)) return `5th-8th Semifinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
+    if (/\bmatch\s*(29|30)\b/i.test(s)) return `9th-12th Semifinals • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
+    if (/\bmatch\s*(23|24)\b/i.test(s)) return `Classification • ${s.match(/\bmatch\s*\d+\b/i)[0]}`;
+  }
+
   const grp = s.match(/(?:group|pool)\s+([a-z0-9]+)/i);
   const g = s.match(/(?:game|g)\s*(\d+)/i);
 
