@@ -102,25 +102,25 @@
     },
     {
       "round": "Women Group C G 4",
-      "status": "Upcoming",
-      "state": "Getting Ready",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-21",
       "time": "16:00",
       "player1": "Malaysia",
       "player2": "Chinese Taipei",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "59 - 98",
+      "winner": "Chinese Taipei"
     },
     {
       "round": "Women Group A G 3",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-21",
       "time": "19:00",
       "player1": "China",
       "player2": "Indonesia",
-      "score": "vs",
-      "winner": ""
+      "score": "110 - 41",
+      "winner": "China"
     },
     {
       "round": "Women Group B G 5",
