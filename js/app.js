@@ -276,7 +276,7 @@ function renderView() {
   if (currentTab === 'matches') {
     renderMatchesView(container, matches);
   } else if (currentTab === 'predictions') {
-    renderPredictionsView(container, appData.menPredictions, appData.womenPredictions, currentGender);
+    renderPredictionsView(container, appData.menPredictions, appData.womenPredictions, currentGender, appData.menMatches, appData.womenMatches);
   } else if (currentTab === 'calibration') {
     renderCalibrationView(container, predictions, matches);
   }

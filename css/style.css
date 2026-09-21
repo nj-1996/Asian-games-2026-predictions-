@@ -781,3 +781,106 @@ button.sync-status.is-success {
 
 .medal-gold { background: rgba(234, 179, 8, 0.2); color: #facc15; }
 .medal-bronze { background: rgba(217, 119, 6, 0.2); color: #f59e0b; }
+
+/* ==========================================================================
+   Medal Comparison Table & Event Cards
+   ========================================================================== */
+.medal-comp-wrap {
+  background: var(--card-bg, #131c2e);
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1.25rem;
+}
+
+.medal-comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  text-align: center;
+  min-width: 620px;
+}
+
+.medal-comp-table th, 
+.medal-comp-table td {
+  padding: 0.65rem 0.45rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.medal-comp-table thead tr:first-child th {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.medal-comp-table th.col-actual {
+  background: rgba(74, 222, 128, 0.07);
+  color: #4ade80;
+  border-left: 1px solid rgba(74, 222, 128, 0.2);
+  border-right: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+.medal-comp-table th.col-projected {
+  background: rgba(56, 189, 248, 0.07);
+  color: #38bdf8;
+  border-left: 1px solid rgba(56, 189, 248, 0.2);
+  border-right: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.medal-comp-table td.col-actual-border {
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.medal-comp-table td.col-projected-border {
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.delta-pill {
+  display: inline-block;
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.delta-pos {
+  background: rgba(74, 222, 128, 0.18);
+  color: #4ade80;
+}
+
+.delta-neg {
+  background: rgba(248, 113, 113, 0.18);
+  color: #f87171;
+}
+
+.delta-zero {
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+}
+
+.event-comp-card {
+  background: var(--card-bg, #131c2e);
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  padding: 1.1rem;
+  margin-bottom: 1.25rem;
+  transition: border-color 0.2s;
+}
+
+.event-comp-card:hover {
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.event-comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .event-comp-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
