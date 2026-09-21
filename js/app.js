@@ -2,6 +2,8 @@
 let currentSport = localStorage.getItem('app_sport') || 'basketball';
 let currentTab = 'matches';
 let currentGender = 'men';
+window.currentSport = currentSport;
+window.currentGender = currentGender;
 let isSyncing = false;
 let appData = {
   menMatches: [],
@@ -242,6 +244,7 @@ async function handleManualSync() {
 async function handleSportChange(sport) {
   if (sport === currentSport) return;
   currentSport = sport;
+  window.currentSport = sport;
   localStorage.setItem('app_sport', sport);
   await loadAllData();
 }
@@ -256,6 +259,7 @@ function setTab(tab) {
 
 function setGender(gender) {
   currentGender = gender;
+  window.currentGender = gender;
   document.getElementById('btn-men').classList.toggle('active', gender === 'men');
   document.getElementById('btn-women').classList.toggle('active', gender === 'women');
   renderView();

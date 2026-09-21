@@ -1095,6 +1095,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
   const cardsHtml = `
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
       ${sorted.map(p => {
+        const athleteName = p.athlete || p.player || '';
         const rawTeam = p.team || p.country || p.name || 'Unknown';
         const team = formatTeamDisplayName(rawTeam.replace(/\(host\)/gi, '').trim());
         const isHost = rawTeam.toLowerCase().includes('host');
@@ -1105,13 +1106,26 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender) {
         const rawTotal = getProb(p, ['podium', 'total', 'podium_prob']);
         const total = rawTotal ? parseStatNumber(rawTotal) : (gold + silver + bronze);
 
+        const titleHtml = athleteName ? `
+          <div>
+            <div style="font-weight:700; font-size:0.95rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
+              <span>${getFlagEmoji(team)}</span> <span>${athleteName}</span>
+            </div>
+            <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">
+              ${team}${isHost ? ' (Host)' : ''} ${p.rank ? `• Rank #${p.rank}` : ''}
+            </div>
+          </div>
+        ` : `
+          <div style="font-weight:700; font-size:1rem; display:flex; align-items:center; gap:0.5rem;">
+            <span>${getFlagEmoji(team)}</span> <span>${team}${isHost ? ' (Host)' : ''}</span>
+          </div>
+        `;
+
         return `
           <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-              <div style="font-weight:700; font-size:1rem; display:flex; align-items:center; gap:0.5rem;">
-                <span>${getFlagEmoji(team)}</span> <span>${team}${isHost ? ' (Host)' : ''}</span>
-              </div>
-              <span style="font-size:0.75rem; color:#38bdf8; font-weight:700;">Podium: ${total}%</span>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem;">
+              ${titleHtml}
+              <span style="font-size:0.75rem; color:#38bdf8; font-weight:700; white-space:nowrap; margin-left:0.5rem;">Podium: ${total}%</span>
             </div>
             <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.4rem;">
               <span>🥇 Gold: <strong>${gold}%</strong></span>

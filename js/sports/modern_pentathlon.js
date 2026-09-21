@@ -23,9 +23,9 @@
 
   var MPN_ATHLETE_NOC = {
     // South Korea
-    'SEO CHANGWAN': 'South Korea', 'JUN WOONGTAE': 'South Korea',
+    'SEO CHANGWAN': 'South Korea', 'JUN WOONGTAE': 'South Korea', 'JUN WOONG TAE': 'South Korea',
     'LEE JONGHYEON': 'South Korea', 'KIM YOUNGHA': 'South Korea',
-    'KIM SUNWOO': 'South Korea', 'SEONG SEUNGMIN': 'South Korea',
+    'KIM SUNWOO': 'South Korea', 'SEONG SEUNGMIN': 'South Korea', 'SEONG SEUNG MIN': 'South Korea',
     'JANG HAEUN': 'South Korea', 'KIM SOEUN': 'South Korea',
     'KIM UNJU': 'South Korea', 'SHIN SUMIN': 'South Korea',
 
@@ -42,6 +42,7 @@
     'UCHIDA MISAKI': 'Japan', 'OTA NATSUMI': 'Japan',
     'YOSHIDA HANA': 'Japan', 'SAITO KANA': 'Japan',
     'SAITO AYUMU': 'Japan', 'SUZUKI YURI': 'Japan',
+    'YANO YUHO': 'Japan',
 
     // Kazakhstan
     'ABDRAIMOV TEMIRLAN': 'Kazakhstan', 'VARYOKHIN TIKHON': 'Kazakhstan',
@@ -49,6 +50,7 @@
     'POTAPENKO YELENA': 'Kazakhstan', 'AKHMETOVA ANASTASSIYA': 'Kazakhstan',
     'YAKOVLEVA SOFYA': 'Kazakhstan', 'KULIKOVA KRISTINA': 'Kazakhstan',
     'CHSHEDROVA DIANA': 'Kazakhstan', 'KAZBEKOVA AYANA': 'Kazakhstan',
+    'PETROVA YULIANA': 'Kazakhstan',
 
     // Philippines
     'GERMAN SAMUEL': 'Philippines', 'GODBOUT JOSEPH ANTHONY': 'Philippines',
@@ -58,23 +60,28 @@
 
     // Uzbekistan
     'TRETYAKOV DMITRIY': 'Uzbekistan', 'KAHRAMONOVA MEHRINISO': 'Uzbekistan',
+    'KAHRAMAONOVA MEHRINISO': 'Uzbekistan',
     'ABZALOVA SAMIRA': 'Uzbekistan', 'OSMANOVA RIANA': 'Uzbekistan',
 
     // West & Central Asia
     'YARED MICHAEL ANTOINE': 'Lebanon',
     'ALSUHAIBI MOHAMMAD': 'Kuwait',
+    'ABD ALHUSSAIN RETAJ': 'Kuwait',
+    'ALTHUWAINI HABARI': 'Kuwait',
     'ABDALRHMAN ABDLLAH MOHAMMAD': 'United Arab Emirates',
     'ABUSHABAB OMAR': 'Palestine', 'ABUSHABAB ABDALLAH': 'Palestine',
-    'ERKINBEKOV ATAI': 'Kyrgyzstan', 'AMARSANAA BILEGT': 'Mongolia',
+    'ERKINBEKOV ATAI': 'Kyrgyzstan', 'SHTUKINA MARIIA': 'Kyrgyzstan',
+    'AMARSANAA BILEGT': 'Mongolia',
 
     // Southeast & South Asia
     'YOHUANG PHURIT': 'Thailand', 'THATTHONG PONGKRIT': 'Thailand',
     'PAISANSRISIN PARITA': 'Thailand', 'PAISANGRISIN PARITA': 'Thailand',
-    'WITSAPHAN CHANANAN': 'Thailand',
+    'WITSAPHAN CHANANAN': 'Thailand', 'TRONGTORKIT APHISARAPORN': 'Thailand',
     'MATULATUWA SAMUEL': 'Indonesia', 'IFSAN MUHAMMAD': 'Indonesia',
     'BANGUN CAROLINE': 'Indonesia', 'WAHYUNI SRI': 'Indonesia',
+    'QALBI NURFA INAYAH NURUL': 'Indonesia',
     'AW JIAN TING': 'Malaysia',
-    'ANSARI TAHIR': 'Singapore',
+    'ANSARI TAHIR': 'Singapore', 'LIM PEI YAO': 'Singapore',
     'SILVA OSHADA': 'Sri Lanka', 'KUMARI GAYANI': 'Sri Lanka',
     'SHUM CHUN HEI': 'Hong Kong', 'LIU HEI YU': 'Hong Kong'
   };
@@ -110,8 +117,51 @@
     return pName;
   }
 
-  function renderPentathlonHero(nextSession) {
-    if (!nextSession) return '';
+  function renderPentathlonHero(list, isWomen) {
+    if (!list || list.length === 0) return '';
+    var isTournamentComplete = list.every(function(ev) { return ev.status === 'Official' || ev.status === 'Finished'; });
+    var liveSession = list.find(function(ev) { return (ev.status || '').toLowerCase() === 'live'; });
+    var nextSession = liveSession || list.find(function(ev) { return ev.status !== 'Official' && ev.status !== 'Finished'; });
+
+    if (isTournamentComplete) {
+      if (isWomen) {
+        return `
+          <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.85)); border:1px solid rgba(234,179,8,0.35); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+            <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.25rem 0.75rem; border-radius:9999px; background:rgba(250,204,21,0.2); color:#facc15; margin-bottom:0.75rem;">
+              🏆 TOURNAMENT COMPLETED
+            </div>
+            <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.3rem;">
+              Individual Champion: <span style="color:#facc15;">Seong Seung-min 🇰🇷</span> 🥇
+            </div>
+            <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:0.6rem;">
+              🥈 Silver: Zhang Mingyu 🇨🇳 • 🥉 Bronze: Wu Xiyao 🇨🇳
+            </div>
+            <div style="display:inline-block; font-size:0.78rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:4px 12px; border-radius:16px; color:#cbd5e1;">
+              👥 Team Champions: 🥇 China (4,318 pts) • 🥈 South Korea (4,271 pts) • 🥉 Japan (4,169 pts)
+            </div>
+          </div>
+        `;
+      } else {
+        return `
+          <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.85)); border:1px solid rgba(234,179,8,0.35); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+            <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.25rem 0.75rem; border-radius:9999px; background:rgba(250,204,21,0.2); color:#facc15; margin-bottom:0.75rem;">
+              🏆 TOURNAMENT COMPLETED
+            </div>
+            <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.3rem;">
+              Individual Champion: <span style="color:#facc15;">Li Liuchang 🇨🇳</span> 🥇
+            </div>
+            <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:0.6rem;">
+              🥈 Silver: Jun Woong-tae 🇰🇷 • 🥉 Bronze: Lee Jong-hyeon 🇰🇷
+            </div>
+            <div style="display:inline-block; font-size:0.78rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:4px 12px; border-radius:16px; color:#cbd5e1;">
+              👥 Team Champions: 🥇 South Korea (4,779 pts) • 🥈 China (4,768 pts) • 🥉 Kazakhstan (4,647 pts)
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    if (!nextSession) nextSession = list[0];
     var disc = nextSession.discipline || nextSession.round || 'Modern Pentathlon';
     var icon = getDisciplineIcon(disc);
     var phase = getNormalizedPhaseGroup(nextSession);
@@ -120,11 +170,12 @@
     var dateTimeFormatted = typeof formatMatchDateTime === 'function' 
       ? formatMatchDateTime(nextSession.date, nextSession.time) 
       : (nextSession.date + ' ' + nextSession.time);
+    var isLive = (nextSession.status || '').toLowerCase() === 'live';
 
     return `
       <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-        <div style="font-size: 0.75rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
-          ⏳ Next Session
+        <div style="font-size: 0.75rem; font-weight: 700; color: ${isLive ? '#ef4444' : '#38bdf8'}; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+          ${isLive ? '🔴 LIVE NOW' : '⏳ Next Session'}
         </div>
         <div style="font-size: 2.2rem; line-height: 1; margin: 0.25rem 0;">
           ${icon}
@@ -151,7 +202,9 @@
     }
 
     activePentathlonEvents = list;
-    var nextSession = list.find(function(ev) { return ev.status !== 'Official' && ev.status !== 'Finished'; }) || list[0];
+    var isWomen = (typeof currentGender !== 'undefined' && currentGender === 'women') ||
+                  (window.currentGender === 'women') ||
+                  (list[0] && list[0].id && list[0].id.startsWith('W.'));
 
     var phaseMap = {};
     list.forEach(function(ev) {
@@ -172,7 +225,7 @@
           <div>
             ${sessions.map(function(ev) {
               var isFinished = ev.status === 'Official' || ev.status === 'Finished';
-              var isLive = ev.status === 'Live';
+              var isLive = (ev.status || '').toLowerCase() === 'live';
               var disc = ev.discipline || ev.round || 'Session';
               var icon = getDisciplineIcon(disc);
               var isSemiOrSeed = /semi|sf|seed/i.test(phaseHeader);
@@ -214,7 +267,7 @@
       `;
     }).join('');
 
-    return renderPentathlonHero(nextSession) + timelineHtml + renderBottomSheetTemplate();
+    return renderPentathlonHero(list, isWomen) + timelineHtml + renderBottomSheetTemplate();
   }
 
   function renderBottomSheetTemplate() {
@@ -248,10 +301,23 @@
     if (!backdrop || !sheet) return;
 
     document.getElementById('mpn-sheet-title').innerText = phase;
-    var relatedEvents = activePentathlonEvents.filter(function(ev) { return getNormalizedPhaseGroup(ev) === phase; });
-    var availableDisciplines = relatedEvents.length > 1
-      ? ['Overall', ...relatedEvents.map(function(e) { return e.discipline || e.round; })]
-      : relatedEvents.map(function(e) { return e.discipline || e.round; });
+    
+    var eventsPool = (activePentathlonEvents && activePentathlonEvents.length > 0)
+      ? activePentathlonEvents
+      : ((window.currentGender === 'women' ? window.appData?.womenMatches : window.appData?.menMatches) || []);
+
+    var relatedEvents = eventsPool.filter(function(ev) { return getNormalizedPhaseGroup(ev) === phase; });
+    
+    var availableDisciplines = [];
+    if (relatedEvents.length > 1) {
+      availableDisciplines.push('Overall');
+      relatedEvents.forEach(function(e) {
+        var d = e.discipline || e.round;
+        if (d && !availableDisciplines.includes(d)) availableDisciplines.push(d);
+      });
+    } else if (relatedEvents.length === 1) {
+      availableDisciplines.push(relatedEvents[0].discipline || relatedEvents[0].round);
+    }
 
     renderDisciplineTabs(availableDisciplines, disc);
     loadDisciplineView(relatedEvents, disc);
@@ -293,68 +359,123 @@
   window.selectMpnDiscipline = function (discEncoded) {
     var disc = decodeURIComponent(discEncoded);
     activeDiscipline = disc;
-    var relatedEvents = activePentathlonEvents.filter(function(ev) { return getNormalizedPhaseGroup(ev) === activePhaseGroup; });
-    var availableDisciplines = relatedEvents.length > 1
-      ? ['Overall', ...relatedEvents.map(function(e) { return e.discipline || e.round; })]
-      : relatedEvents.map(function(e) { return e.discipline || e.round; });
+    var eventsPool = (activePentathlonEvents && activePentathlonEvents.length > 0)
+      ? activePentathlonEvents
+      : ((window.currentGender === 'women' ? window.appData?.womenMatches : window.appData?.menMatches) || []);
+
+    var relatedEvents = eventsPool.filter(function(ev) { return getNormalizedPhaseGroup(ev) === activePhaseGroup; });
+    var availableDisciplines = [];
+    if (relatedEvents.length > 1) {
+      availableDisciplines.push('Overall');
+      relatedEvents.forEach(function(e) {
+        var d = e.discipline || e.round;
+        if (d && !availableDisciplines.includes(d)) availableDisciplines.push(d);
+      });
+    } else if (relatedEvents.length === 1) {
+      availableDisciplines.push(relatedEvents[0].discipline || relatedEvents[0].round);
+    }
 
     renderDisciplineTabs(availableDisciplines, disc);
     loadDisciplineView(relatedEvents, disc);
   };
 
-  function buildGroupStandings(sessions) {
+  function buildGroupStandings(sessions, isFinal) {
     var athletes = {};
-    sessions.forEach(function(s) {
+    // Exclude team events so team entities never pollute individual standings!
+    var individualSessions = (sessions || []).filter(function(s) {
+      var d = (s.discipline || s.round || '').toLowerCase();
+      return !d.includes('team');
+    });
+
+    individualSessions.forEach(function(s) {
       var disc = (s.discipline || s.round || '').toLowerCase();
       (s.competitors || []).forEach(function(c) {
         var name = c.name;
+        if (!name) return;
         if (!athletes[name]) {
           athletes[name] = {
             name: name,
             country: resolveAthleteCountry(name, c.country),
-            fence: '-', obstacle: '-', swim: '-', laser: '-', total: 0
+            fence: '-', obstacle: '-', swim: '-', laser: '-', total: 0,
+            laserRank: 999
           };
         }
         var pts = parseInt(c.raw, 10) || parseInt(c.points, 10) || 0;
         if (disc.includes('fencing')) athletes[name].fence = pts;
         else if (disc.includes('obstacle')) athletes[name].obstacle = pts;
         else if (disc.includes('swim')) athletes[name].swim = pts;
-        else if (disc.includes('laser')) athletes[name].laser = pts;
+        else if (disc.includes('laser')) {
+          athletes[name].laser = pts;
+          if (c.rank) athletes[name].laserRank = parseInt(c.rank, 10);
+        }
         athletes[name].total += pts;
       });
     });
-    return Object.values(athletes).sort(function(a, b) { return b.total - a.total; });
+
+    var resultList = Object.values(athletes);
+    // In modern pentathlon, the Laser Run finish order determines the medal classification
+    if (isFinal && resultList.some(function(a) { return a.laserRank < 999; })) {
+      return resultList.sort(function(a, b) { return a.laserRank - b.laserRank; });
+    }
+
+    return resultList.sort(function(a, b) { return b.total - a.total; });
   }
 
   function loadDisciplineView(events, discipline) {
     var content = document.getElementById('mpn-sheet-content');
     if (!content) return;
 
+    var isFinal = activePhaseGroup === 'Final';
+
     if (discipline === 'Overall') {
-      document.getElementById('mpn-sheet-subtitle').innerText = 'Combined Cumulative Points Standings';
+      document.getElementById('mpn-sheet-subtitle').innerText = isFinal
+        ? 'Official Final Classification (Medal Round)'
+        : 'Combined Cumulative Points Standings';
+
+      var individualEvents = events.filter(function(ev) {
+        var d = (ev.discipline || ev.round || '').toLowerCase();
+        return !d.includes('team');
+      });
+
       var athleteTotals = {};
-      events.forEach(function(ev) {
+      individualEvents.forEach(function(ev) {
+        var discName = (ev.discipline || ev.round || '').toLowerCase();
         (ev.competitors || []).forEach(function(c) {
           var name = c.name;
+          if (!name) return;
           if (!athleteTotals[name]) {
             athleteTotals[name] = {
               name: name,
               country: resolveAthleteCountry(name, c.country),
               totalPts: 0,
-              eventsCount: 0
+              eventsCount: 0,
+              laserRank: 999
             };
           }
           var ptsNum = parseInt(c.raw, 10) || parseInt(c.points, 10) || 0;
           athleteTotals[name].totalPts += ptsNum;
           athleteTotals[name].eventsCount += 1;
+          if (discName.includes('laser') && c.rank) {
+            athleteTotals[name].laserRank = parseInt(c.rank, 10);
+          }
         });
       });
 
-      var overallList = Object.values(athleteTotals).sort(function(a, b) { return b.totalPts - a.totalPts; });
+      var overallList = Object.values(athleteTotals);
+      if (isFinal && overallList.some(function(a) { return a.laserRank < 999; })) {
+        overallList.sort(function(a, b) { return a.laserRank - b.laserRank; });
+      } else {
+        overallList.sort(function(a, b) { return b.totalPts - a.totalPts; });
+      }
+
       content.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-          <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; font-weight:700;">Combined Standings</span>
-          <span style="font-size:0.75rem; color:#38bdf8; font-weight:600;">Top 9 Advance to Final</span>
+          <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; font-weight:700;">
+            ${isFinal ? 'Individual Medal Standings' : 'Combined Standings'}
+          </span>
+          <span style="font-size:0.75rem; color:${isFinal ? '#facc15' : '#38bdf8'}; font-weight:600;">
+            ${isFinal ? 'Official Medal Round' : 'Top 9 Advance to Final (Q)'}
+          </span>
         </div>
         <div style="display:grid; grid-template-columns: 32px 1fr 65px 75px; font-size:0.7rem; font-weight:700; color:#64748b; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); text-transform:uppercase;">
           <span>#</span><span>Athlete</span><span style="text-align:center;">Events</span><span style="text-align:right;">Total Pts</span>
@@ -362,11 +483,13 @@
         <div style="font-size:0.82rem;">
           ${overallList.map(function(item, idx) {
             var rank = idx + 1;
-            var isCutoff = rank === 9;
+            var isCutoff = !isFinal && rank === 9;
             var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(item.country) : '';
+            var medal = isFinal && (rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '');
+            var isPodium = isFinal && rank <= 3;
             return `
-              <div style="display:grid; grid-template-columns: 32px 1fr 65px 75px; align-items:center; padding:0.7rem 0; border-bottom:1px solid rgba(255,255,255,0.04);">
-                <span style="font-weight:700; color:${rank <= 9 ? '#38bdf8' : '#64748b'};">${rank}</span>
+              <div style="display:grid; grid-template-columns: 32px 1fr 65px 75px; align-items:center; padding:0.7rem 0; border-bottom:1px solid rgba(255,255,255,0.04); background:${isPodium ? 'rgba(234,179,8,0.04)' : 'transparent'};">
+                <span style="font-weight:700; color:${isPodium ? '#facc15' : rank <= 9 && !isFinal ? '#38bdf8' : '#94a3b8'};">${medal || rank}</span>
                 <div>
                   <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.35rem;">
                     <span>${flag}</span> <span>${item.name}</span>
@@ -374,7 +497,7 @@
                   ${item.country ? `<div style="font-size:0.7rem; color:#94a3b8; margin-left:1.35rem;">${item.country}</div>` : ''}
                 </div>
                 <span style="text-align:center; font-size:0.75rem; color:#94a3b8;">${item.eventsCount} / 4</span>
-                <span style="text-align:right; font-weight:700; color:#4ade80; font-size:0.9rem;">${item.totalPts}</span>
+                <span style="text-align:right; font-weight:700; color:#4ade80; font-size:0.9rem;">${item.totalPts.toLocaleString()}</span>
               </div>
               ${isCutoff ? `
                 <div style="display:flex; align-items:center; margin:0.6rem 0; gap:0.5rem;">
@@ -391,7 +514,7 @@
     }
 
     var targetEvent = events.find(function(e) { return (e.discipline || e.round) === discipline; }) || events[0] || {};
-    var isLive = targetEvent.status === 'Live';
+    var isLive = (targetEvent.status || '').toLowerCase() === 'live';
     var dateTimeFormatted = typeof formatMatchDateTime === 'function'
       ? formatMatchDateTime(targetEvent.date, targetEvent.time)
       : (targetEvent.date + ' • ' + targetEvent.time);
@@ -404,6 +527,40 @@
           <div style="font-size:2rem; margin-bottom:0.5rem;">⏱️</div>
           <div style="font-size:0.95rem; font-weight:600; color:#f8fafc; margin-bottom:0.25rem;">Session Scheduled</div>
           <div style="font-size:0.8rem; line-height:1.4;">Official standings will appear here once the session finishes.</div>
+        </div>
+      `;
+      return;
+    }
+
+    var isTeamEvent = (discipline || '').toLowerCase().includes('team');
+    if (isTeamEvent) {
+      content.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+          <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; font-weight:700;">Official Team Results</span>
+          <span style="font-size:0.75rem; color:${isLive ? '#ef4444' : '#4ade80'}; font-weight:600;">${targetEvent.status}</span>
+        </div>
+        <div style="display:grid; grid-template-columns: 32px 1fr 90px; font-size:0.7rem; font-weight:700; color:#64748b; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); text-transform:uppercase;">
+          <span>#</span><span>Nation</span><span style="text-align:right;">Total Score</span>
+        </div>
+        <div style="font-size:0.82rem;">
+          ${competitors.map(function(c, i) {
+            var rank = c.rank || (i + 1);
+            var medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+            var name = c.name || `Team ${rank}`;
+            var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(name) : '';
+            var pts = (c.raw && c.raw !== '0') ? c.raw : (c.points !== '-' ? c.points : '0');
+            var numPts = parseInt(pts, 10);
+            var displayPts = isNaN(numPts) ? pts : numPts.toLocaleString();
+            return `
+              <div style="display:grid; grid-template-columns: 32px 1fr 90px; align-items:center; padding:0.75rem 0; border-bottom:1px solid rgba(255,255,255,0.04); background:${rank <= 3 ? 'rgba(234,179,8,0.04)' : 'transparent'};">
+                <span style="font-weight:700; font-size:1rem; color:${rank <= 3 ? '#facc15' : '#94a3b8'};">${medal || rank}</span>
+                <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.45rem;">
+                  <span style="font-size:1.15rem;">${flag}</span> <span>${name}</span>
+                </div>
+                <span style="text-align:right; font-weight:700; color:#4ade80; font-size:0.95rem; font-family:monospace;">${displayPts} pts</span>
+              </div>
+            `;
+          }).join('')}
         </div>
       `;
       return;
@@ -512,7 +669,7 @@
         <div style="padding:0.85rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center;">
           <span>${title}</span>
           <span style="font-size:0.75rem; color:${isFinal ? '#facc15' : '#38bdf8'}; font-weight:600;">
-            ${isFinal ? 'Official Medal Round' : 'Top 9 Advance (Q)'}
+            ${isFinal ? '🥇 Official Medal Classification' : 'Top 9 Advance (Q)'}
           </span>
         </div>
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
@@ -532,11 +689,12 @@
               var isQualified = !isFinal && rank <= 9;
               var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(a.country) : '';
               var isPodium = isFinal && rank <= 3;
+              var medal = isFinal && (rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '');
               return `
                 <tr style="border-bottom:${rank === 9 && !isFinal ? '2px solid #ef4444' : '1px solid rgba(255,255,255,0.03)'}; background:${isPodium ? 'rgba(234,179,8,0.06)' : isQualified ? 'rgba(56,189,248,0.03)' : 'transparent'};">
                   <td style="padding:0.65rem 0.5rem; text-align:left;">
                     <div style="display:flex; align-items:center; gap:0.4rem;">
-                      <span style="display:inline-block; width:18px; font-weight:700; color:${isPodium ? (rank === 1 ? '#facc15' : rank === 2 ? '#cbd5e1' : '#f59e0b') : isQualified ? '#38bdf8' : '#94a3b8'};">${rank}</span>
+                      <span style="display:inline-block; width:22px; font-weight:700; font-size:${isPodium ? '1rem' : '0.85rem'}; color:${isPodium ? '#facc15' : isQualified ? '#38bdf8' : '#94a3b8'};">${medal || rank}</span>
                       <div>
                         <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.35rem;">
                           <span>${flag}</span> <span>${a.name}</span>${isQualified ? `<span style="font-size:0.65rem; background:rgba(56,189,248,0.2); color:#38bdf8; padding:1px 5px; border-radius:4px; font-weight:700;">Q</span>` : ''}
@@ -549,7 +707,7 @@
                   <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.obstacle}</td>
                   <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.swim}</td>
                   <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.laser}</td>
-                  <td style="padding:0.65rem 0.5rem; font-family:monospace; font-weight:700; color:#4ade80;">${a.total}</td>
+                  <td style="padding:0.65rem 0.5rem; font-family:monospace; font-weight:700; color:#4ade80;">${a.total.toLocaleString()}</td>
                 </tr>
               `;
             }).join('')}
@@ -559,34 +717,21 @@
     `;
   }
 
-  function renderOfficialTeamView(finalStandings, semiAStandings, semiBStandings) {
-    var hasFinalScores = finalStandings && finalStandings.length > 0 && finalStandings.some(function(a) { return a.total > 0; });
+  function renderOfficialTeamView(finalStandings, semiAStandings, semiBStandings, allEvents, isWomen) {
+    var teamEvent = (allEvents || []).find(function(ev) {
+      var d = (ev.discipline || '').toLowerCase();
+      return d.includes('team final') || d.includes('team');
+    });
 
-    if (hasFinalScores) {
-      var nationFinalists = {};
-      finalStandings.forEach(function(a) {
-        var c = a.country || 'Other';
-        if (!nationFinalists[c]) nationFinalists[c] = [];
-        nationFinalists[c].push(a);
-      });
-
-      var medalContenders = [];
-      var dnqTeams = [];
-
-      Object.entries(nationFinalists).forEach(function(entry) {
-        var country = entry[0];
-        var athletes = entry[1];
-        athletes.sort(function(a, b) { return b.total - a.total; });
-        if (athletes.length >= 3) {
-          var top3 = athletes.slice(0, 3);
-          var totalPts = top3.reduce(function(s, x) { return s + x.total; }, 0);
-          medalContenders.push({ country: country, top3: top3, totalPts: totalPts });
-        } else {
-          dnqTeams.push({ country: country, athletes: athletes, count: athletes.length });
+    if (teamEvent && teamEvent.competitors && teamEvent.competitors.length > 0) {
+      var athletesByCountry = {};
+      (finalStandings || []).forEach(function(a) {
+        var c = a.country || '';
+        if (c) {
+          if (!athletesByCountry[c]) athletesByCountry[c] = [];
+          athletesByCountry[c].push(a);
         }
       });
-
-      medalContenders.sort(function(a, b) { return b.totalPts - a.totalPts; });
 
       return `
         <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow:hidden;">
@@ -595,53 +740,34 @@
             <span style="font-size:0.75rem; color:#facc15; font-weight:600;">Final Results</span>
           </div>
           <div style="padding:0.75rem 1rem; background:rgba(234,179,8,0.08); border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.75rem; color:#cbd5e1; line-height:1.4;">
-            🥇 Official Team Medals are awarded exclusively to countries with 3 athletes competing in the 18-person Final, ranked by cumulative Final score.
+            🥇 Official Team Medals are awarded based on cumulative scores of each nation's finalists in the Medal Round on September 20.
           </div>
           <div style="font-size:0.85rem;">
-            ${medalContenders.map(function(team, idx) {
-              var rank = idx + 1;
-              var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(team.country) : '';
+            ${teamEvent.competitors.map(function(c, idx) {
+              var rank = c.rank || (idx + 1);
               var medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+              var countryName = c.name;
+              var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(countryName) : '';
+              var pts = parseInt(c.raw, 10) || parseInt(c.points, 10) || 0;
+              var athletes = athletesByCountry[countryName] || athletesByCountry[resolveAthleteCountry(countryName, countryName)] || [];
               return `
                 <div style="padding:0.9rem 1rem; border-bottom:1px solid rgba(255,255,255,0.04); background:${rank <= 3 ? 'rgba(234,179,8,0.04)' : 'transparent'};">
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
                     <div style="display:flex; align-items:center; gap:0.5rem;">
                       <span style="font-weight:700; font-size:1.1rem; width:24px;">${medal || rank}</span>
                       <span style="font-size:1.2rem;">${flag}</span>
-                      <span style="font-weight:700; color:#f8fafc; font-size:0.95rem;">${team.country}</span>
+                      <span style="font-weight:700; color:#f8fafc; font-size:0.95rem;">${countryName}</span>
                     </div>
-                    <span style="font-family:monospace; font-weight:700; font-size:1.05rem; color:#4ade80;">${team.totalPts.toLocaleString()} pts</span>
+                    <span style="font-family:monospace; font-weight:700; font-size:1.05rem; color:#4ade80;">${pts.toLocaleString()} pts</span>
                   </div>
-                  <div style="margin-left:2rem; padding-left:0.5rem; border-left:2px solid rgba(255,255,255,0.1); font-size:0.75rem; color:#94a3b8; display:flex; flex-direction:column; gap:0.2rem;">
-                    ${team.top3.map(function(a) {
-                      return `
-                        <div style="display:flex; justify-content:space-between;">
-                          <span>• ${a.name}</span>
-                          <span style="font-family:monospace; color:#cbd5e1;">${a.total.toLocaleString()} pts</span>
-                        </div>
-                      `;
-                    }).join('')}
-                  </div>
+                  ${athletes.length > 0 ? `
+                    <div style="margin-left:2rem; font-size:0.75rem; color:#94a3b8;">
+                      ${athletes.map(function(a) { return a.name; }).join(' • ')}
+                    </div>
+                  ` : ''}
                 </div>
               `;
             }).join('')}
-            ${dnqTeams.length > 0 ? `
-              <div style="padding:0.6rem 1rem; background:rgba(0,0,0,0.2); font-size:0.7rem; color:#64748b; font-weight:700; text-transform:uppercase;">
-                Ineligible for Team Podium (&lt; 3 Finalists)
-              </div>
-              ${dnqTeams.map(function(t) {
-                var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(t.country) : '';
-                return `
-                  <div style="padding:0.65rem 1rem; border-bottom:1px solid rgba(255,255,255,0.02); display:flex; justify-content:space-between; align-items:center; opacity:0.6;">
-                    <div style="display:flex; align-items:center; gap:0.5rem;">
-                      <span>${flag}</span>
-                      <span style="color:#cbd5e1; font-size:0.82rem;">${t.country}</span>
-                    </div>
-                    <span style="font-size:0.75rem; color:#ef4444; font-weight:600;">${t.count} finalist${t.count > 1 ? 's' : ''} (DNQ)</span>
-                  </div>
-                `;
-              }).join('')}
-            ` : ''}
           </div>
         </div>
       `;
@@ -689,7 +815,7 @@
                     <span style="font-weight:700; color:#f8fafc;">${team.country}</span>
                   </div>
                   <span style="font-size:0.75rem; background:rgba(74,222,128,0.15); color:#4ade80; border:1px solid rgba(74,222,128,0.3); padding:2px 8px; border-radius:12px; font-weight:700;">
-                    3 / 3 Finalists
+                    ${team.athletes.length} Finalists
                   </span>
                 </div>
                 <div style="margin-left:1.8rem; font-size:0.75rem; color:#94a3b8;">
@@ -730,42 +856,42 @@
     if (!predData) {
       return `<div style="text-align:center; padding:2rem; color:#94a3b8;">Loading statistical predictions...</div>`;
     }
-    var genderData = isWomen ? predData.women : predData.men;
-    if (!genderData) {
+    var individual = (isWomen ? predData.women : predData.men) || [];
+    if (!Array.isArray(individual) || individual.length === 0) {
       return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No predictions available.</div>`;
     }
 
-    var individual = genderData.individual || [];
-    var teamList = genderData.team || [];
     var top3 = individual.slice(0, 3);
+    var teamEvent = (predData.events || []).find(function(e) {
+      return (isWomen ? e.event.includes("Women's Team") : e.event.includes("Men's Team"));
+    });
+    var teamList = teamEvent ? (teamEvent.rankings || []) : [];
 
     return `
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
         ${top3.map(function(a, idx) {
           var medal = idx === 0 ? '🥇 Gold Favorite' : idx === 1 ? '🥈 Silver Contender' : '🥉 Bronze Contender';
           var medalColor = idx === 0 ? '#facc15' : idx === 1 ? '#cbd5e1' : '#f59e0b';
-          var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(a.country) : '';
+          var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(a.team || a.country) : '';
+          var winProb = a.gold || a.win_prob || '0%';
+          var podProb = a.podium || a.medal_prob || '0%';
           return `
             <div style="background:var(--card-bg, #1e293b); border:1px solid ${medalColor}40; border-radius:12px; padding:1.2rem; box-shadow:0 4px 15px rgba(0,0,0,0.25);">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
                 <span style="font-size:0.75rem; font-weight:700; color:${medalColor}; text-transform:uppercase; letter-spacing:0.05em;">${medal}</span>
-                <span style="font-size:0.75rem; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:12px; font-weight:700; color:#38bdf8;">${a.win_prob}% Win</span>
+                <span style="font-size:0.75rem; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:12px; font-weight:700; color:#38bdf8;">${winProb} Win</span>
               </div>
               <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.2rem; display:flex; align-items:center; gap:0.4rem;">
-                <span>${flag}</span> <span>${a.name}</span>
+                <span>${flag}</span> <span>${a.athlete || a.name}</span>
               </div>
-              <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.75rem;">${a.country} •${a.badge}</div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0.6rem; background:rgba(0,0,0,0.25); border-radius:8px; font-size:0.75rem;">
-                <span style="color:#94a3b8;">Projected Total</span>
-                <span style="font-family:monospace; font-weight:700; color:#4ade80; font-size:0.95rem;">${a.total} pts</span>
-              </div>
+              <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.75rem;">${a.team || a.country}</div>
               <div style="margin-top:0.6rem;">
                 <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#94a3b8; margin-bottom:0.25rem;">
                   <span>Podium Probability</span>
-                  <span style="font-weight:700; color:#cbd5e1;">${a.medal_prob}%</span>
+                  <span style="font-weight:700; color:#cbd5e1;">${podProb}</span>
                 </div>
                 <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden;">
-                  <div style="width:${a.medal_prob}\%; height:100\%; background:${medalColor};"></div>
+                  <div style="width:${parseInt(podProb, 10) || 0}%; height:100%; background:${medalColor};"></div>
                 </div>
               </div>
             </div>
@@ -775,25 +901,23 @@
 
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow-x:auto;">
         <div style="padding:0.85rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02);">
-          <span>🔮 Pre-Tournament Statistical Projection</span>
-          <span style="font-size:0.72rem; color:#94a3b8;">Historical Benchmark Model</span>
+          <span>🔮 Individual Medal Projections</span>
+          <span style="font-size:0.72rem; color:#94a3b8;">Monte Carlo Simulation (50,000 Runs)</span>
         </div>
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:center;">
           <thead>
             <tr style="color:#94a3b8; font-size:0.72rem; border-bottom:1px solid rgba(255,255,255,0.05); background:rgba(0,0,0,0.15);">
               <th style="padding:0.65rem 0.6rem; text-align:left;"># Contender</th>
-              <th style="padding:0.65rem 0.3rem;">Proj. Fencing</th>
-              <th style="padding:0.65rem 0.3rem;">Proj. Obstacle</th>
-              <th style="padding:0.65rem 0.3rem;">Proj. Swim</th>
-              <th style="padding:0.65rem 0.3rem;">Proj. Laser</th>
-              <th style="padding:0.65rem 0.6rem; font-weight:700; color:#f8fafc;">Proj. Total</th>
-              <th style="padding:0.65rem 0.5rem; text-align:right;">Win %</th>
+              <th style="padding:0.65rem 0.4rem; color:#facc15;">🥇 Gold</th>
+              <th style="padding:0.65rem 0.4rem; color:#cbd5e1;">🥈 Silver</th>
+              <th style="padding:0.65rem 0.4rem; color:#f59e0b;">🥉 Bronze</th>
+              <th style="padding:0.65rem 0.5rem; text-align:right; color:#38bdf8;">Podium</th>
             </tr>
           </thead>
           <tbody>
             ${individual.map(function(a, idx) {
               var rank = a.rank || (idx + 1);
-              var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(a.country) : '';
+              var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(a.team || a.country) : '';
               return `
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${rank <= 3 ? 'rgba(234,179,8,0.03)' : 'transparent'};">
                   <td style="padding:0.65rem 0.6rem; text-align:left;">
@@ -801,18 +925,16 @@
                       <span style="width:18px; font-weight:700; color:${rank === 1 ? '#facc15' : rank === 2 ? '#cbd5e1' : rank === 3 ? '#f59e0b' : '#94a3b8'};">${rank}</span>
                       <div>
                         <div style="font-weight:600; color:#f8fafc; display:flex; align-items:center; gap:0.35rem;">
-                          <span>${flag}</span> <span>${a.name}</span>
+                          <span>${flag}</span> <span>${a.athlete || a.name}</span>
                         </div>
-                        <div style="font-size:0.7rem; color:#94a3b8; margin-left:1.35rem;">${a.country}</div>
+                        <div style="font-size:0.7rem; color:#94a3b8; margin-left:1.35rem;">${a.team || a.country}</div>
                       </div>
                     </div>
                   </td>
-                  <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.fence}</td>
-                  <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.obs}</td>
-                  <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.swim}</td>
-                  <td style="padding:0.65rem 0.3rem; font-family:monospace; color:#cbd5e1;">${a.lr}</td>
-                  <td style="padding:0.65rem 0.6rem; font-family:monospace; font-weight:700; color:#4ade80;">${a.total}</td>
-                  <td style="padding:0.65rem 0.5rem; text-align:right; font-weight:700; color:${a.win_prob > 10 ? '#38bdf8' : '#94a3b8'};">${a.win_prob}%</td>
+                  <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#facc15; font-weight:700;">${a.gold}</td>
+                  <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#cbd5e1;">${a.silver}</td>
+                  <td style="padding:0.65rem 0.4rem; font-family:monospace; color:#f59e0b;">${a.bronze}</td>
+                  <td style="padding:0.65rem 0.5rem; text-align:right; font-weight:700; color:#38bdf8;">${a.podium}</td>
                 </tr>
               `;
             }).join('')}
@@ -820,59 +942,36 @@
         </table>
       </div>
 
-      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow:hidden;">
-        <div style="padding:0.85rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02);">
-          <span>🎯 Projected Laser Run Handicap Board</span>
-          <span style="font-size:0.72rem; color:#38bdf8;">1 Point = 1 Second Deficit</span>
-        </div>
-        <div style="font-size:0.82rem;">
-          ${individual.map(function(a, idx) {
-            var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(a.country) : '';
-            var isLeader = a.start_delay === '00:00';
-            return `
-              <div style="display:grid; grid-template-columns:28px 1fr 90px 85px; align-items:center; padding:0.65rem 1rem; border-bottom:1px solid rgba(255,255,255,0.03);">
-                <span style="font-weight:700; color:#94a3b8;">${idx + 1}</span>
-                <div style="display:flex; align-items:center; gap:0.4rem;">
-                  <span>${flag}</span>
-                  <span style="font-weight:600; color:#f8fafc;">${a.name}</span>
-                </div>
-                <span style="font-family:monospace; color:#cbd5e1; text-align:right;">${a.pre_lr_points} pts</span>
-                <span style="font-family:monospace; font-weight:700; text-align:right; color:${isLeader ? '#4ade80' : '#facc15'};">
-                  ${a.start_delay}
-                </span>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-
-      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow:hidden;">
-        <div style="padding:0.85rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02);">
-          <span>👥 Projected Team Medals (Top 3 Baseline Aggregation)</span>
-          <span style="font-size:0.72rem; color:#facc15;">3 Finalists Required</span>
-        </div>
-        <div style="font-size:0.85rem;">
-          ${teamList.map(function(team, idx) {
-            var medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '';
-            var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(team.country) : '';
-            return `
-              <div style="padding:0.85rem 1rem; border-bottom:1px solid rgba(255,255,255,0.04); background:${idx <= 2 ? 'rgba(234,179,8,0.03)' : 'transparent'};">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
-                  <div style="display:flex; align-items:center; gap:0.5rem;">
-                    <span style="font-weight:700; width:22px;">${medal || idx + 1}</span>
-                    <span style="font-size:1.15rem;">${flag}</span>
-                    <span style="font-weight:700; color:#f8fafc;">${team.country}</span>
+      ${teamList.length > 0 ? `
+        <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:1.5rem; overflow:hidden;">
+          <div style="padding:0.85rem 1rem; font-weight:700; font-size:0.95rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02);">
+            <span>👥 Team Medal Projections</span>
+            <span style="font-size:0.72rem; color:#facc15;">3 Finalists Required</span>
+          </div>
+          <div style="font-size:0.85rem;">
+            ${teamList.map(function(team, idx) {
+              var medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '';
+              var flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(team.team || team.country) : '';
+              return `
+                <div style="padding:0.85rem 1rem; border-bottom:1px solid rgba(255,255,255,0.04); background:${idx <= 2 ? 'rgba(234,179,8,0.03)' : 'transparent'};">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                      <span style="font-weight:700; width:22px;">${medal || idx + 1}</span>
+                      <span style="font-size:1.15rem;">${flag}</span>
+                      <span style="font-weight:700; color:#f8fafc;">${team.team || team.country}</span>
+                    </div>
+                    <div style="display:flex; gap:0.75rem; font-family:monospace; font-size:0.82rem;">
+                      <span style="color:#facc15;">🥇 ${team.gold}</span>
+                      <span style="color:#cbd5e1;">🥈 ${team.silver}</span>
+                      <span style="color:#f59e0b;">🥉 ${team.bronze}</span>
+                    </div>
                   </div>
-                  <span style="font-family:monospace; font-weight:700; color:#4ade80;">${team.total_score.toLocaleString()} pts</span>
                 </div>
-                <div style="margin-left:2rem; font-size:0.75rem; color:#94a3b8;">
-                  ${(team.athletes || []).map(function(a) { return `${a.name} (${a.score})`; }).join(' • ')}
-                </div>
-              </div>
-            `;
-          }).join('')}
+              `;
+            }).join('')}
+          </div>
         </div>
-      </div>
+      ` : ''}
     `;
   }
 
@@ -916,7 +1015,10 @@
           return `<div style="text-align:center; padding:2rem; color:#94a3b8;">No standings data available.</div>`;
         }
 
-        var isWomen = (data && data.sport && data.sport.toLowerCase().includes('women')) ||
+        var isWomen = (typeof currentGender !== 'undefined' && currentGender === 'women') ||
+                      (window.currentGender === 'women') ||
+                      (data && data.sport && data.sport.toLowerCase().includes('women')) ||
+                      (list[0] && list[0].id && list[0].id.startsWith('W.')) ||
                       (list[0] && list[0].discipline && list[0].discipline.toLowerCase().includes('women')) ||
                       (list[0] && list[0].round && list[0].round.toLowerCase().includes('women'));
 
@@ -924,16 +1026,16 @@
         var groupBEvents = list.filter(function(ev) { return getNormalizedPhaseGroup(ev).includes('Group B'); });
         var finalEvents = list.filter(function(ev) { return getNormalizedPhaseGroup(ev) === 'Final' && (ev.competitors || []).length > 0; });
 
-        var groupAStandings = buildGroupStandings(groupAEvents);
-        var groupBStandings = buildGroupStandings(groupBEvents);
-        var finalStandings = finalEvents.length > 0 ? buildGroupStandings(finalEvents) : [];
+        var groupAStandings = buildGroupStandings(groupAEvents, false);
+        var groupBStandings = buildGroupStandings(groupBEvents, false);
+        var finalStandings = finalEvents.length > 0 ? buildGroupStandings(finalEvents, true) : [];
 
         var indivHtml = '';
         if (finalStandings.length > 0) indivHtml += renderGroupTable('Final Classification', finalStandings, true);
         if (groupAStandings.length > 0) indivHtml += renderGroupTable('Semi-final • Group A', groupAStandings, false);
         if (groupBStandings.length > 0) indivHtml += renderGroupTable('Semi-final • Group B', groupBStandings, false);
 
-        var teamHtml = renderOfficialTeamView(finalStandings, groupAStandings, groupBStandings);
+        var teamHtml = renderOfficialTeamView(finalStandings, groupAStandings, groupBStandings, list, isWomen);
 
         return `
           <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem;">
@@ -951,7 +1053,7 @@
               </div>
             </div>
             <p style="color:#94a3b8; font-size:0.82rem; margin:0; line-height:1.4;">
-              The top 9 athletes from Group A and top 9 from Group B advance to the 18-athlete Final. Team medals are determined strictly by the aggregate points of each nation's 3 finalists in the medal session.
+              The top 9 athletes from Group A and top 9 from Group B advance to the 18-athlete Final. Team medals are determined strictly by the aggregate points of each nation's finalists in the medal session.
             </p>
           </div>
 
@@ -963,6 +1065,7 @@
               ${teamHtml}
             </div>
           </div>
+          ${renderBottomSheetTemplate()}
         `;
       } catch (err) {
         console.error("MPN renderStandingsTable error:", err);
@@ -972,8 +1075,10 @@
 
     renderPredictions: function (data) {
       try {
-        var isWomen = (data && data.sport && data.sport.toLowerCase().includes('women')) ||
-                      (activePentathlonEvents[0] && (activePentathlonEvents[0].discipline || activePentathlonEvents[0].round || '').toLowerCase().includes('women'));
+        var isWomen = (typeof currentGender !== 'undefined' && currentGender === 'women') ||
+                      (window.currentGender === 'women') ||
+                      (data && data.sport && data.sport.toLowerCase().includes('women')) ||
+                      (activePentathlonEvents[0] && (activePentathlonEvents[0].id && activePentathlonEvents[0].id.startsWith('W.')));
 
         if (data && (data.men || data.women)) {
           mpnPredictionsCache = data;
@@ -989,7 +1094,7 @@
             .then(function(r) { return r.json(); })
             .then(function(pData) {
               mpnPredictionsCache = pData;
-              var target = document.getElementById('predictions-container') || document.getElementById('tab-content');
+              var target = document.getElementById('predictions-container') || document.getElementById('content-cards');
               if (target) target.innerHTML = renderPredictionsLayout(pData, isWomen);
             })
             .catch(function(e) { console.error("Could not fetch predictions.json", e); });
