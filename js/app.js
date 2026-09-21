@@ -9,7 +9,8 @@ let appData = {
   menMatches: [],
   womenMatches: [],
   menPredictions: [],
-  womenPredictions: []
+  womenPredictions: [],
+  predictionEvents: []
 };
 
 // --- Fast Concurrent Multi-Path Resolver ---
@@ -56,6 +57,8 @@ async function loadAllData() {
 
     appData.menMatches = extractList(menTrackerRaw);
     appData.womenMatches = extractList(womenTrackerRaw);
+
+    appData.predictionEvents = (predRaw && Array.isArray(predRaw.events)) ? predRaw.events : [];
 
     if (predRaw && !Array.isArray(predRaw) && (predRaw.men || predRaw.women)) {
       appData.menPredictions = extractList(predRaw.men);
@@ -260,8 +263,10 @@ function setTab(tab) {
 function setGender(gender) {
   currentGender = gender;
   window.currentGender = gender;
-  document.getElementById('btn-men').classList.toggle('active', gender === 'men');
-  document.getElementById('btn-women').classList.toggle('active', gender === 'women');
+  const btnMen = document.getElementById('btn-men');
+  const btnWomen = document.getElementById('btn-women');
+  if (btnMen) btnMen.classList.toggle('active', gender === 'men');
+  if (btnWomen) btnWomen.classList.toggle('active', gender === 'women');
   renderView();
 }
 
