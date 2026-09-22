@@ -347,3 +347,19 @@ if (document.readyState === 'loading') {
 }
 
 loadAllData();
+
+// Periodic background auto-refresh (every 60 seconds when tab is active)
+setInterval(() => {
+  if (!isSyncing && typeof document !== 'undefined' && document.visibilityState !== 'hidden') {
+    loadAllData();
+  }
+}, 60000);
+
+// Instant re-fetch whenever the user returns to the tab
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && !isSyncing) {
+      loadAllData();
+    }
+  });
+}
