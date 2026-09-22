@@ -124,8 +124,8 @@
     },
     {
       "round": "Women Group B G 5",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "10:00",
       "player1": "Kazakhstan",
@@ -135,24 +135,24 @@
     },
     {
       "round": "Women Group B G 6",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "13:00",
       "player1": "Japan",
       "player2": "Philippines",
-      "score": "11 - 3",
+      "score": "89 - 67",
       "winner": "Japan"
     },
     {
       "round": "Women Group C G 5",
       "status": "Upcoming",
-      "state": "Start List",
+      "state": "Getting Ready",
       "date": "2026-09-22",
       "time": "16:00",
       "player1": "Korea",
       "player2": "Chinese Taipei",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {

@@ -344,46 +344,46 @@
     },
     {
       "round": "5th-6th Place - Match 35",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "13:00",
       "player1": "Chinese Taipei",
       "player2": "Indonesia",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "3 - 0",
+      "winner": "Chinese Taipei"
     },
     {
       "round": "13th-14th Place - Match 31",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "13:00",
       "player1": "Kyrgyzstan",
       "player2": "Qatar",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "3 - 0",
+      "winner": "Kyrgyzstan"
     },
     {
       "round": "Bronze Medal Final - Match 36",
       "status": "Upcoming",
-      "state": "Start List",
+      "state": "Getting Ready",
       "date": "2026-09-22",
       "time": "16:00",
       "player1": "Korea",
       "player2": "Thailand",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {
       "round": "11th-12th Place - Match 32",
       "status": "Upcoming",
-      "state": "Start List",
+      "state": "Getting Ready",
       "date": "2026-09-22",
       "time": "16:00",
       "player1": "Nepal",
       "player2": "Mongolia",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {

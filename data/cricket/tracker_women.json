@@ -81,8 +81,8 @@
     },
     {
       "round": "Bronze Medal Match",
-      "status": "Upcoming",
-      "state": "Unofficial",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "09:00",
       "player1": "Pakistan",
@@ -94,15 +94,15 @@
     },
     {
       "round": "Gold Medal Match",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-22",
       "time": "14:00",
       "player1": "Sri Lanka",
       "player2": "India",
-      "score": "vs",
-      "score1": "-",
-      "score2": "-",
+      "score": "3 - 216",
+      "score1": "3/0",
+      "score2": "216/3",
       "winner": ""
     }
   ]
