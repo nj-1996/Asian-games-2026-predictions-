@@ -388,25 +388,25 @@
     },
     {
       "round": "9th-10th Place - Match 33",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "19:00",
       "player1": "Hong Kong, China",
       "player2": "Philippines",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "0 - 3",
+      "winner": "Philippines"
     },
     {
       "round": "Gold Medal Final  - Match 37",
-      "status": "Upcoming",
-      "state": "Getting Ready",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "19:20",
       "player1": "Japan",
       "player2": "China",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "0 - 3",
+      "winner": "China"
     }
   ]
 }

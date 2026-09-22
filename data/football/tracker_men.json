@@ -179,14 +179,14 @@
     },
     {
       "round": "Group D",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "19:00",
       "player1": "Korea",
       "player2": "Saudi Arabia",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "2 - 0",
+      "winner": "Korea"
     },
     {
       "round": "Group B",
@@ -239,7 +239,7 @@
       "date": "2026-09-25",
       "time": "14:00",
       "player1": "Uzbekistan",
-      "player2": "TBD",
+      "player2": "Saudi Arabia",
       "score": "vs",
       "winner": ""
     },
@@ -249,7 +249,7 @@
       "state": "Scheduled",
       "date": "2026-09-25",
       "time": "19:30",
-      "player1": "TBD",
+      "player1": "Korea",
       "player2": "Vietnam",
       "score": "vs",
       "winner": ""
