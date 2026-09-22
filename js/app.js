@@ -12,6 +12,7 @@ let appData = {
   womenPredictions: [],
   predictionEvents: []
 };
+window.appData = appData;
 
 // --- Fast Concurrent Multi-Path Resolver ---
 async function fetchFastJson(paths) {
@@ -72,6 +73,7 @@ async function loadAllData() {
       ]);
       appData.womenPredictions = extractList(womenPredRaw);
     }
+    window.appData = appData;
   } catch (err) {
     console.error("Load failed:", err);
   } finally {
