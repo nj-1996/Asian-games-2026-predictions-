@@ -355,12 +355,23 @@ async function handleSportChange(sport, force) {
   if (typeof window.setTeqEventFilter === 'function') {
     window.setTeqEventFilter(null, false);
   }
+  if (typeof window.setTeqStandingsEvent === 'function') {
+    window.setTeqStandingsEvent(null, false);
+  }
+  if (typeof window.setTeqBracketEvent === 'function') {
+    window.setTeqBracketEvent(null, false);
+  }
+  if (typeof window.setTeqCalibrationEvent === 'function') {
+    window.setTeqCalibrationEvent(null, false);
+  }
   if (typeof window.setScheduleEventFilter === 'function') {
     window.setScheduleEventFilter(null, false);
   }
   if (typeof window.setMpnEventFilter === 'function') {
     window.setMpnEventFilter('individual', false);
   }
+  window.activePredictionsEventFilter = null;
+  window.activeUniversalEventFilter = null;
 
   await loadAllData();
 }
@@ -371,18 +382,6 @@ function setTab(tab) {
   document.querySelectorAll('.nav-btn').forEach(b => {
     b.classList.toggle('active', b.id === `tab-${tab}`);
   });
-
-  if (tab === 'predictions') {
-    if (typeof window.setPredictionsSubView === 'function') {
-      window.setPredictionsSubView('table');
-      return;
-    } else if (typeof activePredictionsSubView !== 'undefined') {
-      activePredictionsSubView = 'table';
-    }
-    if (typeof window.activePredictionsSubView !== 'undefined') {
-      window.activePredictionsSubView = 'table';
-    }
-  }
 
   renderView();
 }
@@ -400,12 +399,23 @@ function setGender(gender) {
   if (typeof window.setTeqEventFilter === 'function') {
     window.setTeqEventFilter(null, false);
   }
+  if (typeof window.setTeqStandingsEvent === 'function') {
+    window.setTeqStandingsEvent(null, false);
+  }
+  if (typeof window.setTeqBracketEvent === 'function') {
+    window.setTeqBracketEvent(null, false);
+  }
+  if (typeof window.setTeqCalibrationEvent === 'function') {
+    window.setTeqCalibrationEvent(null, false);
+  }
   if (typeof window.setScheduleEventFilter === 'function') {
     window.setScheduleEventFilter(null, false);
   }
   if (typeof window.setMpnEventFilter === 'function') {
     window.setMpnEventFilter('individual', false);
   }
+  window.activePredictionsEventFilter = null;
+  window.activeUniversalEventFilter = null;
 
   renderView();
 }

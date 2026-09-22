@@ -7,9 +7,9 @@
 
   let activeTeqEventFilter = null; // defaults to first event in active category
   let activeTeqPhaseFilter = 'all'; // 'all' | 'groups' | 'knockout' | 'finals'
-  let activeTeqStandingsEvent = 'all';
-  let activeTeqBracketEvent = 'all';
-  let activeTeqCalibrationEvent = 'all';
+  let activeTeqStandingsEvent = null;
+  let activeTeqBracketEvent = null;
+  let activeTeqCalibrationEvent = null;
 
   function clean(s) {
     return (s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
@@ -620,32 +620,35 @@
         }
       });
 
-      const eventsAvailable = Object.keys(poolGroups);
-      if (activeTeqStandingsEvent !== 'all' && !poolGroups[activeTeqStandingsEvent]) {
-        activeTeqStandingsEvent = 'all';
+      const rawEvents = Object.keys(poolGroups);
+      const score = (ev) => {
+        const s = (ev || '').toLowerCase();
+        if (s.includes('singles')) return 1;
+        if (s.includes('doubles') && !s.includes('mixed')) return 2;
+        if (s.includes('mixed')) return 3;
+        if (s.includes('team')) return 4;
+        return 10;
+      };
+      const eventsAvailable = rawEvents.sort((a, b) => score(a) - score(b) || a.localeCompare(b));
+
+      if (!activeTeqStandingsEvent || activeTeqStandingsEvent === 'all' || !eventsAvailable.includes(activeTeqStandingsEvent)) {
+        activeTeqStandingsEvent = eventsAvailable[0] || '';
       }
 
-      // Filter tabs
-      const filterPills = eventsAvailable.map(ev => {
-        const isActive = activeTeqStandingsEvent === ev;
-        return `
-          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" data-event="${escapeAttr(ev)}" onclick="window.setTeqStandingsEvent(this.getAttribute('data-event'))">
-            ${ev}
-          </button>
-        `;
-      }).join('');
-
-      const navHtml = `
-        <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-          <span style="font-size:0.72rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-right:4px;">Division:</span>
-          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeTeqStandingsEvent === 'all' ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${activeTeqStandingsEvent === 'all' ? '#fff' : '#94a3b8'};" onclick="window.setTeqStandingsEvent('all')">All Divisions</button>
-          ${filterPills}
+      const navHtml = eventsAvailable.length > 0 ? `
+        <div class="event-filter-bar" style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.6rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; gap:8px;">
+          <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase;">Select Event:</label>
+          <select class="event-dropdown" onchange="window.setTeqStandingsEvent(this.value)">
+            ${eventsAvailable.map(ev => `
+              <option value="${escapeAttr(ev)}" ${activeTeqStandingsEvent === ev ? 'selected' : ''}>${ev}</option>
+            `).join('')}
+          </select>
         </div>
-      `;
+      ` : '';
 
       let tablesHtml = '';
       eventsAvailable.forEach(ev => {
-        if (activeTeqStandingsEvent !== 'all' && activeTeqStandingsEvent !== ev) return;
+        if (activeTeqStandingsEvent && activeTeqStandingsEvent !== ev) return;
 
         const groupsObj = poolGroups[ev];
         let groupTablesHtml = '';
@@ -747,31 +750,35 @@
         byEvent[ev].push(m);
       });
 
-      const eventsAvailable = Object.keys(byEvent);
-      if (activeTeqBracketEvent !== 'all' && !byEvent[activeTeqBracketEvent]) {
-        activeTeqBracketEvent = 'all';
+      const rawEvents = Object.keys(byEvent);
+      const score = (ev) => {
+        const s = (ev || '').toLowerCase();
+        if (s.includes('singles')) return 1;
+        if (s.includes('doubles') && !s.includes('mixed')) return 2;
+        if (s.includes('mixed')) return 3;
+        if (s.includes('team')) return 4;
+        return 10;
+      };
+      const eventsAvailable = rawEvents.sort((a, b) => score(a) - score(b) || a.localeCompare(b));
+
+      if (!activeTeqBracketEvent || activeTeqBracketEvent === 'all' || !eventsAvailable.includes(activeTeqBracketEvent)) {
+        activeTeqBracketEvent = eventsAvailable[0] || '';
       }
 
-      const bracketPills = eventsAvailable.map(ev => {
-        const isActive = activeTeqBracketEvent === ev;
-        return `
-          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" data-event="${escapeAttr(ev)}" onclick="window.setTeqBracketEvent(this.getAttribute('data-event'))">
-            ${ev}
-          </button>
-        `;
-      }).join('');
-
-      const navHtml = `
-        <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-          <span style="font-size:0.72rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-right:4px;">Division:</span>
-          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeTeqBracketEvent === 'all' ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${activeTeqBracketEvent === 'all' ? '#fff' : '#94a3b8'};" onclick="window.setTeqBracketEvent('all')">All Divisions</button>
-          ${bracketPills}
+      const navHtml = eventsAvailable.length > 0 ? `
+        <div class="event-filter-bar" style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.6rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; gap:8px;">
+          <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase;">Select Event:</label>
+          <select class="event-dropdown" onchange="window.setTeqBracketEvent(this.value)">
+            ${eventsAvailable.map(ev => `
+              <option value="${escapeAttr(ev)}" ${activeTeqBracketEvent === ev ? 'selected' : ''}>${ev}</option>
+            `).join('')}
+          </select>
         </div>
-      `;
+      ` : '';
 
       let bracketHtml = '';
       eventsAvailable.forEach(ev => {
-        if (activeTeqBracketEvent !== 'all' && activeTeqBracketEvent !== ev) return;
+        if (activeTeqBracketEvent && activeTeqBracketEvent !== ev) return;
 
         const evMatches = byEvent[ev];
         const quarters = evMatches.filter(m => /quarter/i.test(m.stage || m.round || ''));
@@ -1027,7 +1034,7 @@
       const teqEventDefs = [
         { id: 'teq_men_singles',    event: "Men's Singles",    gender: 'men',    icon: '🏓', shortName: "Men's Singles" },
         { id: 'teq_men_doubles',    event: "Men's Doubles",    gender: 'men',    icon: '🏓', shortName: "Men's Doubles" },
-        { id: 'teq_mixed_doubles',  event: "Mixed Doubles",    gender: 'men',    icon: '🏓', shortName: "Mixed Doubles" },
+        { id: 'teq_mixed_doubles',  event: "Mixed Doubles",    gender: 'mixed',  icon: '🏓', shortName: "Mixed Doubles" },
         { id: 'teq_women_singles',  event: "Women's Singles",  gender: 'women',  icon: '🏓', shortName: "Women's Singles" },
         { id: 'teq_women_doubles',  event: "Women's Doubles",  gender: 'women',  icon: '🏓', shortName: "Women's Doubles" }
       ];
@@ -1036,7 +1043,9 @@
         let predEvent = predEvents.find(e => e.id === def.id || clean(e.event || e.name || '') === clean(def.event));
         let rankings = predEvent ? (predEvent.rankings || []) : [];
         if (!rankings || rankings.length === 0) {
-          const pool = def.gender === 'women' ? (womenPreds || []) : (menPreds || []);
+          const pool = def.gender === 'women'
+            ? (womenPreds || [])
+            : (def.gender === 'mixed' ? (window.appData?.mixedPredictions || menPreds || []) : (menPreds || []));
           if (Array.isArray(pool)) {
             rankings = pool.filter(p => clean(p.event || '') === clean(def.event));
           }
@@ -1049,7 +1058,9 @@
         const projBronzes = [projBronze1, projBronze2].filter(Boolean);
         const projBronze = projBronze1;
 
-        const matchPool = def.gender === 'women' ? (womenMatches || []) : (menMatches || []);
+        const matchPool = def.gender === 'women'
+          ? (womenMatches || [])
+          : (def.gender === 'mixed' ? (window.appData?.mixedMatches || allMatchesBoth || []) : (menMatches || []));
         const { gold: actualGold, silver: actualSilver, bronze: actualBronze, bronzes: actualBronzes, status, matchInfo, goldScoreInfo, bronzeScoreInfo } = resolveActuals(def.event, matchPool);
 
         medalEvents.push({
@@ -1241,14 +1252,22 @@
 
       const finishedMatches = allMatches.filter(m => m.isFinished);
 
-      // Event definitions
-      const eventsAvailable = [
-        "Men's Singles",
-        "Men's Doubles",
-        "Mixed Doubles",
-        "Women's Singles",
-        "Women's Doubles"
-      ];
+      // Event definitions strictly for active gender
+      const gender = (typeof currentGender !== 'undefined' ? currentGender : window.currentGender) || 'men';
+      let eventsAvailable = [];
+      if (gender === 'men') {
+        eventsAvailable = ["Men's Singles", "Men's Doubles"];
+      } else if (gender === 'women') {
+        eventsAvailable = ["Women's Singles", "Women's Doubles"];
+      } else if (gender === 'mixed') {
+        eventsAvailable = ["Mixed Doubles"];
+      } else {
+        eventsAvailable = ["Men's Singles", "Men's Doubles"];
+      }
+
+      if (!activeTeqCalibrationEvent || activeTeqCalibrationEvent === 'all' || !eventsAvailable.includes(activeTeqCalibrationEvent)) {
+        activeTeqCalibrationEvent = eventsAvailable[0] || '';
+      }
 
       // Build event ranking map
       const eventRankMap = {};
@@ -1264,11 +1283,8 @@
         eventRankMap[evName] = rMap;
       });
 
-      // Filter matches by selected event
-      let evalMatches = finishedMatches;
-      if (activeTeqCalibrationEvent !== 'all') {
-        evalMatches = evalMatches.filter(m => clean(m.event) === clean(activeTeqCalibrationEvent));
-      }
+      // Filter matches by selected event (defaults to first event of gender, no 'all')
+      let evalMatches = finishedMatches.filter(m => clean(m.event) === clean(activeTeqCalibrationEvent));
 
       let evaluatedMatches = 0;
       let correctFavorites = 0;
@@ -1346,23 +1362,16 @@
         ? `${medalKpi.exactHits}/${medalKpi.decidedMedals} exact medals`
         : (medalKpi ? `${medalKpi.decidedMedals}/${medalKpi.totalMedalsInSport} decided` : 'Medals');
 
-      // Filter pills HTML
-      const eventPillsHtml = eventsAvailable.map(ev => {
-        const isActive = activeTeqCalibrationEvent === ev;
-        return `
-          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" data-event="${escapeAttr(ev)}" onclick="window.setTeqCalibrationEvent(this.getAttribute('data-event'))">
-            ${ev}
-          </button>
-        `;
-      }).join('');
-
-      const navHtml = `
-        <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-          <span style="font-size:0.72rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-right:4px;">Filter Event:</span>
-          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeTeqCalibrationEvent === 'all' ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${activeTeqCalibrationEvent === 'all' ? '#fff' : '#94a3b8'};" onclick="window.setTeqCalibrationEvent('all')">All Events</button>
-          ${eventPillsHtml}
+      const navHtml = eventsAvailable.length > 0 ? `
+        <div class="event-filter-bar" style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.6rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; gap:8px;">
+          <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase;">Select Event:</label>
+          <select class="event-dropdown" onchange="window.setTeqCalibrationEvent(this.value)">
+            ${eventsAvailable.map(ev => `
+              <option value="${escapeAttr(ev)}" ${activeTeqCalibrationEvent === ev ? 'selected' : ''}>${ev}</option>
+            `).join('')}
+          </select>
         </div>
-      `;
+      ` : '';
 
       container.innerHTML = `
         ${navHtml}
@@ -1435,19 +1444,19 @@
     if (typeof renderView === 'function') renderView();
   };
 
-  window.setTeqStandingsEvent = function (ev) {
+  window.setTeqStandingsEvent = function (ev, renderAfter) {
     activeTeqStandingsEvent = ev;
-    if (typeof renderView === 'function') renderView();
+    if (renderAfter !== false && typeof renderView === 'function') renderView();
   };
 
-  window.setTeqBracketEvent = function (ev) {
+  window.setTeqBracketEvent = function (ev, renderAfter) {
     activeTeqBracketEvent = ev;
-    if (typeof renderView === 'function') renderView();
+    if (renderAfter !== false && typeof renderView === 'function') renderView();
   };
 
-  window.setTeqCalibrationEvent = function (ev) {
+  window.setTeqCalibrationEvent = function (ev, renderAfter) {
     activeTeqCalibrationEvent = ev;
-    if (typeof renderView === 'function') renderView();
+    if (renderAfter !== false && typeof renderView === 'function') renderView();
   };
 
   // Register in Sport Engine Registry

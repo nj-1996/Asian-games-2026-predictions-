@@ -870,11 +870,13 @@ function getGlobalAppData() {
 let activeMatchesSubView = 'schedule';
 let activePredictionsSubView = 'table'; // 'table' | 'event_<id>' | 'odds'
 let activeMedalTableMode = 'comparison'; // 'comparison' | 'actual' | 'projected'
+let activePredictionsEventFilter = null;
 
 if (typeof window !== 'undefined') {
   window.activeMatchesSubView = activeMatchesSubView;
   window.activePredictionsSubView = activePredictionsSubView;
   window.activeMedalTableMode = activeMedalTableMode;
+  window.activePredictionsEventFilter = activePredictionsEventFilter;
 }
 
 function setMatchesSubView(subView) {
@@ -884,7 +886,9 @@ function setMatchesSubView(subView) {
   if (container) {
     const data = getGlobalAppData();
     const g = window.currentGender || 'men';
-    const matches = g === 'men' ? (data.menMatches || []) : (data.womenMatches || []);
+    const matches = g === 'men'
+      ? (data.menMatches || [])
+      : (g === 'women' ? (data.womenMatches || []) : (data.mixedMatches || []));
     renderMatchesView(container, matches);
   }
 }
@@ -902,7 +906,9 @@ function setPredictionsSubView(subView) {
       data.womenPredictions,
       window.currentGender || 'men',
       data.menMatches,
-      data.womenMatches
+      data.womenMatches,
+      data.mixedPredictions,
+      data.mixedMatches
     );
   }
 }
@@ -919,11 +925,33 @@ function setMedalTableMode(mode) {
       data.womenPredictions,
       window.currentGender || 'men',
       data.menMatches,
-      data.womenMatches
+      data.womenMatches,
+      data.mixedPredictions,
+      data.mixedMatches
     );
   }
 }
 window.setMedalTableMode = setMedalTableMode;
+
+function setPredictionsEventFilter(eventId) {
+  activePredictionsEventFilter = eventId;
+  if (typeof window !== 'undefined') window.activePredictionsEventFilter = eventId;
+  const container = document.getElementById('content-cards');
+  if (container) {
+    const data = getGlobalAppData();
+    renderPredictionsView(
+      container,
+      data.menPredictions,
+      data.womenPredictions,
+      window.currentGender || 'men',
+      data.menMatches,
+      data.womenMatches,
+      data.mixedPredictions,
+      data.mixedMatches
+    );
+  }
+}
+window.setPredictionsEventFilter = setPredictionsEventFilter;
 
 function setDivisionOddsGender(gender) {
   currentGender = gender;
@@ -1941,7 +1969,7 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
 }
 
 // --- Predictions & Dynamic Medal Table (All Sports) ---
-function renderPredictionsView(container, menPreds, womenPreds, currentGender, menMatches, womenMatches) {
+function renderPredictionsView(container, menPreds, womenPreds, currentGender, menMatches, womenMatches, mixedPreds, mixedMatches) {
   const activeSport = (window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball')).toLowerCase();
 
   const globalData = getGlobalAppData();
@@ -1949,219 +1977,141 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
   if (!womenMatches || womenMatches.length === 0) womenMatches = globalData.womenMatches || [];
   if (!menPreds || menPreds.length === 0) menPreds = globalData.menPredictions || [];
   if (!womenPreds || womenPreds.length === 0) womenPreds = globalData.womenPredictions || [];
+  if (!mixedMatches || mixedMatches.length === 0) mixedMatches = globalData.mixedMatches || [];
+  if (!mixedPreds || mixedPreds.length === 0) mixedPreds = globalData.mixedPredictions || [];
   if (!currentGender) currentGender = window.currentGender || 'men';
 
-  const analytics = extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPreds, womenPreds);
+  const analytics = extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPreds, womenPreds, mixedMatches, mixedPreds);
   const kpi = analytics.kpi;
 
-  const curSub = (typeof window !== 'undefined' && window.activePredictionsSubView)
-    ? window.activePredictionsSubView
-    : activePredictionsSubView;
+  // --- 1. FULL MEDAL TABLE (PROJECTED & ACTUAL) AT TOP ---
+  const accuracyColor = kpi.accuracyPct != null ? (kpi.accuracyPct >= 60 ? '#4ade80' : kpi.accuracyPct >= 30 ? '#facc15' : '#f87171') : '#94a3b8';
+  const accuracyDisplay = kpi.accuracyPct != null ? `${kpi.accuracyPct}%` : '--%';
+  const decidedDisplay = `${kpi.decidedMedals} of ${kpi.totalMedalsInSport} medals decided`;
 
-  let isTableActive = curSub === 'table';
-  const isOddsActive = curSub === 'odds';
-  let activeEvent = null;
-  if (!isTableActive && !isOddsActive) {
-    const targetId = curSub.startsWith('event_')
-      ? curSub.replace('event_', '')
-      : curSub;
-    activeEvent = analytics.events.find(e => e.id === targetId || ('event_' + e.id) === curSub);
-    if (!activeEvent) {
-      activePredictionsSubView = 'table';
-      if (typeof window !== 'undefined') window.activePredictionsSubView = 'table';
-      isTableActive = true;
-    }
-  }
-
-  // Top Dynamic Navigation Pills Bar
-  const pillsHeader = `
-    <div style="display:flex; flex-wrap:wrap; gap:6px; background:rgba(15,23,42,0.6); padding:4px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); margin-bottom:1.25rem;">
-      <button style="flex:1; min-width:140px; padding:7px 10px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${isTableActive ? '#2563eb' : 'transparent'}; color:${isTableActive ? '#fff' : '#94a3b8'};" onclick="setPredictionsSubView('table')">
-        🏅 Full Medal Table
-      </button>
-      ${analytics.events.map(ev => {
-        const isThisEvent = activeEvent && activeEvent.id === ev.id;
-        return `
-          <button style="flex:1; min-width:115px; padding:7px 10px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${isThisEvent ? '#2563eb' : 'transparent'}; color:${isThisEvent ? '#fff' : '#94a3b8'};" onclick="setPredictionsSubView('event_${ev.id}')">
-            ${ev.icon || '🎯'} ${ev.shortName || ev.name}
-          </button>
-        `;
-      }).join('')}
-      <button style="flex:1; min-width:115px; padding:7px 10px; font-size:0.75rem; font-weight:600; border-radius:7px; border:none; cursor:pointer; transition:all 0.2s; background:${isOddsActive ? '#2563eb' : 'transparent'}; color:${isOddsActive ? '#fff' : '#94a3b8'};" onclick="setPredictionsSubView('odds')">
-        📊 Division Odds
-      </button>
+  const sportTitle = activeSport.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const unifiedHeaderHtml = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1.15rem; margin-bottom:1rem;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.5rem;">${(window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport]?.icon) || '🏅'}</span>
+        <div>
+          <div style="font-size:1rem; font-weight:800; color:#f8fafc;">${sportTitle} Medal Standings</div>
+          <div style="font-size:0.74rem; color:#94a3b8; margin-top:2px;">
+            ${decidedDisplay} • Prediction Accuracy: <strong style="color:${accuracyColor};">${accuracyDisplay}</strong>
+            ${kpi.decidedMedals > 0 ? `<span style="color:#64748b;"> (${kpi.exactHits}/${kpi.decidedMedals} exact picks)</span>` : ''}
+          </div>
+        </div>
+      </div>
+      <div style="display:inline-flex; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:3px; gap:3px;">
+        <button style="padding:5px 12px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeMedalTableMode === 'comparison' ? '#2563eb' : 'transparent'}; color:${activeMedalTableMode === 'comparison' ? '#fff' : '#94a3b8'};" onclick="setMedalTableMode('comparison')">⚖️ Side-by-Side</button>
+        <button style="padding:5px 12px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeMedalTableMode === 'actual' ? '#2563eb' : 'transparent'}; color:${activeMedalTableMode === 'actual' ? '#fff' : '#94a3b8'};" onclick="setMedalTableMode('actual')">🏆 Actual</button>
+        <button style="padding:5px 12px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeMedalTableMode === 'projected' ? '#2563eb' : 'transparent'}; color:${activeMedalTableMode === 'projected' ? '#fff' : '#94a3b8'};" onclick="setMedalTableMode('projected')">🔮 Projected</button>
+      </div>
     </div>
   `;
 
-  // --- SUBVIEW 1: FULL MEDAL TABLE (MAIN UNCLUTTERED VIEW) ---
-  if (isTableActive) {
-    const accuracyColor = kpi.accuracyPct != null ? (kpi.accuracyPct >= 60 ? '#4ade80' : kpi.accuracyPct >= 30 ? '#facc15' : '#f87171') : '#94a3b8';
-    const accuracyDisplay = kpi.accuracyPct != null ? `${kpi.accuracyPct}%` : '--%';
-    const decidedDisplay = `${kpi.decidedMedals} of ${kpi.totalMedalsInSport} medals decided`;
+  let mainTableHtml = '';
 
-    const sportTitle = activeSport.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-    const unifiedHeaderHtml = `
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1.15rem; margin-bottom:1rem;">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <span style="font-size:1.5rem;">${(window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport]?.icon) || '🏅'}</span>
-          <div>
-            <div style="font-size:1rem; font-weight:800; color:#f8fafc;">${sportTitle} Medal Standings</div>
-            <div style="font-size:0.74rem; color:#94a3b8; margin-top:2px;">
-              ${decidedDisplay} • Prediction Accuracy: <strong style="color:${accuracyColor};">${accuracyDisplay}</strong>
-              ${kpi.decidedMedals > 0 ? `<span style="color:#64748b;"> (${kpi.exactHits}/${kpi.decidedMedals} exact picks)</span>` : ''}
-            </div>
-          </div>
-        </div>
-        <div style="display:inline-flex; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:3px; gap:3px;">
-          <button style="padding:5px 12px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeMedalTableMode === 'comparison' ? '#2563eb' : 'transparent'}; color:${activeMedalTableMode === 'comparison' ? '#fff' : '#94a3b8'};" onclick="setMedalTableMode('comparison')">⚖️ Side-by-Side</button>
-          <button style="padding:5px 12px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeMedalTableMode === 'actual' ? '#2563eb' : 'transparent'}; color:${activeMedalTableMode === 'actual' ? '#fff' : '#94a3b8'};" onclick="setMedalTableMode('actual')">🏆 Actual</button>
-          <button style="padding:5px 12px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeMedalTableMode === 'projected' ? '#2563eb' : 'transparent'}; color:${activeMedalTableMode === 'projected' ? '#fff' : '#94a3b8'};" onclick="setMedalTableMode('projected')">🔮 Projected</button>
-        </div>
+  if (activeMedalTableMode === 'comparison') {
+    const rows = analytics.comparisonTable;
+    const totalActG = rows.reduce((s, r) => s + r.actual.gold, 0);
+    const totalActS = rows.reduce((s, r) => s + r.actual.silver, 0);
+    const totalActB = rows.reduce((s, r) => s + r.actual.bronze, 0);
+    const totalActTot = rows.reduce((s, r) => s + r.actual.total, 0);
+
+    const totalPrjG = rows.reduce((s, r) => s + r.projected.gold, 0);
+    const totalPrjS = rows.reduce((s, r) => s + r.projected.silver, 0);
+    const totalPrjB = rows.reduce((s, r) => s + r.projected.bronze, 0);
+    const totalPrjTot = rows.reduce((s, r) => s + r.projected.total, 0);
+
+    mainTableHtml = `
+      <div class="medal-comp-wrap">
+        <table class="medal-comp-table">
+          <thead>
+            <tr style="background:rgba(0,0,0,0.3); font-size:0.74rem;">
+              <th rowspan="2" style="text-align:left; padding-left:0.75rem; width:22%;"># Nation</th>
+              <th colspan="4" class="col-actual">🏆 ACTUAL MEDALS (LIVE)</th>
+              <th colspan="4" class="col-projected">🔮 PROJECTED (SIMULATION)</th>
+              <th rowspan="2" style="color:#facc15; width:9%;">Δ Total</th>
+              <th rowspan="2" style="color:#94a3b8; width:13%;">Status</th>
+            </tr>
+            <tr style="background:rgba(0,0,0,0.15); font-size:0.7rem; color:#94a3b8;">
+              <th style="color:#facc15;">🥇 G</th>
+              <th style="color:#cbd5e1;">🥈 S</th>
+              <th style="color:#f59e0b;">🥉 B</th>
+              <th style="color:#4ade80; font-weight:700;">Tot</th>
+              <th style="color:#facc15;">🥇 G</th>
+              <th style="color:#cbd5e1;">🥈 S</th>
+              <th style="color:#f59e0b;">🥉 B</th>
+              <th style="color:#38bdf8; font-weight:700;">Tot</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((r, idx) => {
+              const deltaClass = r.diffTotal > 0 ? 'delta-pos' : (r.diffTotal < 0 ? 'delta-neg' : 'delta-zero');
+              const deltaSign = r.diffTotal > 0 ? `+${r.diffTotal}` : `${r.diffTotal}`;
+              const isExact = r.actual.total > 0 && r.diffTotal === 0 && r.actual.gold === r.projected.gold && r.actual.silver === r.projected.silver;
+              const statusBadgeColor = isExact ? '#4ade80' : (r.diffTotal > 0 ? '#38bdf8' : (r.diffTotal < 0 ? '#f87171' : '#94a3b8'));
+
+              return `
+                <tr style="background:${idx < 3 ? 'rgba(59,130,246,0.02)' : 'transparent'};">
+                  <td style="text-align:left; font-weight:600; padding-left:0.75rem;">
+                    <div style="display:flex; align-items:center;">
+                      <span style="display:inline-block; width:16px; color:#94a3b8; font-size:0.75rem;">${idx + 1}</span>
+                      <span>${r.flag}</span>
+                      <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
+                    </div>
+                    ${(r.projectedAthletes && r.projectedAthletes.length > 0) ? `
+                      <div style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
+                        ${r.projectedAthletes.map(a => `<span style="white-space:nowrap; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px;">${a.medal} <strong>${a.athlete}</strong></span>`).join('')}
+                      </div>
+                    ` : ''}
+                  </td>
+                  <td style="font-family:monospace; font-weight:${r.actual.gold > 0 ? '700' : '400'}; color:#facc15;" class="col-actual-border">${r.actual.gold}</td>
+                  <td style="font-family:monospace; color:#cbd5e1;">${r.actual.silver}</td>
+                  <td style="font-family:monospace; color:#f59e0b;">${r.actual.bronze}</td>
+                  <td style="font-family:monospace; font-weight:700; color:#4ade80;">${r.actual.total}</td>
+                  <td style="font-family:monospace; font-weight:${r.projected.gold > 0 ? '700' : '400'}; color:#facc15;" class="col-projected-border">${r.projected.gold}</td>
+                  <td style="font-family:monospace; color:#cbd5e1;">${r.projected.silver}</td>
+                  <td style="font-family:monospace; color:#f59e0b;">${r.projected.bronze}</td>
+                  <td style="font-family:monospace; font-weight:700; color:#38bdf8;">${r.projected.total}</td>
+                  <td>
+                    <span class="delta-pill ${deltaClass}">${deltaSign}</span>
+                  </td>
+                  <td>
+                    <span style="font-size:0.68rem; font-weight:600; color:${statusBadgeColor};">${r.status}</span>
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+            <tr style="border-top:1px solid rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); font-weight:700; font-size:0.78rem;">
+              <td style="text-align:left; padding-left:0.75rem; color:#94a3b8;">Total Medals</td>
+              <td style="color:#facc15;">${totalActG}</td>
+              <td style="color:#cbd5e1;">${totalActS}</td>
+              <td style="color:#f59e0b;">${totalActB}</td>
+              <td style="color:#4ade80;">${totalActTot}</td>
+              <td style="color:#facc15;">${totalPrjG}</td>
+              <td style="color:#cbd5e1;">${totalPrjS}</td>
+              <td style="color:#f59e0b;">${totalPrjB}</td>
+              <td style="color:#38bdf8;">${totalPrjTot}</td>
+              <td style="color:#facc15;">${totalActTot - totalPrjTot >= 0 ? `+${totalActTot - totalPrjTot}` : totalActTot - totalPrjTot}</td>
+              <td style="color:#94a3b8; font-size:0.7rem;">${kpi.decidedMedals}/${kpi.totalMedalsInSport} Awarded</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     `;
-
-    let mainTableHtml = '';
-
-    if (activeMedalTableMode === 'comparison') {
-      const rows = analytics.comparisonTable;
-      const totalActG = rows.reduce((s, r) => s + r.actual.gold, 0);
-      const totalActS = rows.reduce((s, r) => s + r.actual.silver, 0);
-      const totalActB = rows.reduce((s, r) => s + r.actual.bronze, 0);
-      const totalActTot = rows.reduce((s, r) => s + r.actual.total, 0);
-
-      const totalPrjG = rows.reduce((s, r) => s + r.projected.gold, 0);
-      const totalPrjS = rows.reduce((s, r) => s + r.projected.silver, 0);
-      const totalPrjB = rows.reduce((s, r) => s + r.projected.bronze, 0);
-      const totalPrjTot = rows.reduce((s, r) => s + r.projected.total, 0);
-
+  } else if (activeMedalTableMode === 'actual') {
+    const actRows = analytics.actualTable;
+    if (actRows.length === 0) {
       mainTableHtml = `
-        <div class="medal-comp-wrap">
-          <table class="medal-comp-table">
-            <thead>
-              <tr style="background:rgba(0,0,0,0.3); font-size:0.74rem;">
-                <th rowspan="2" style="text-align:left; padding-left:0.75rem; width:22%;"># Nation</th>
-                <th colspan="4" class="col-actual">🏆 ACTUAL MEDALS (LIVE)</th>
-                <th colspan="4" class="col-projected">🔮 PROJECTED (SIMULATION)</th>
-                <th rowspan="2" style="color:#facc15; width:9%;">Δ Total</th>
-                <th rowspan="2" style="color:#94a3b8; width:13%;">Status</th>
-              </tr>
-              <tr style="background:rgba(0,0,0,0.15); font-size:0.7rem; color:#94a3b8;">
-                <th style="color:#facc15;">🥇 G</th>
-                <th style="color:#cbd5e1;">🥈 S</th>
-                <th style="color:#f59e0b;">🥉 B</th>
-                <th style="color:#4ade80; font-weight:700;">Tot</th>
-                <th style="color:#facc15;">🥇 G</th>
-                <th style="color:#cbd5e1;">🥈 S</th>
-                <th style="color:#f59e0b;">🥉 B</th>
-                <th style="color:#38bdf8; font-weight:700;">Tot</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows.map((r, idx) => {
-                const deltaClass = r.diffTotal > 0 ? 'delta-pos' : (r.diffTotal < 0 ? 'delta-neg' : 'delta-zero');
-                const deltaSign = r.diffTotal > 0 ? `+${r.diffTotal}` : `${r.diffTotal}`;
-                const isExact = r.actual.total > 0 && r.diffTotal === 0 && r.actual.gold === r.projected.gold && r.actual.silver === r.projected.silver;
-                const statusBadgeColor = isExact ? '#4ade80' : (r.diffTotal > 0 ? '#38bdf8' : (r.diffTotal < 0 ? '#f87171' : '#94a3b8'));
-
-                return `
-                  <tr style="background:${idx < 3 ? 'rgba(59,130,246,0.02)' : 'transparent'};">
-                    <td style="text-align:left; font-weight:600; padding-left:0.75rem;">
-                      <div style="display:flex; align-items:center;">
-                        <span style="display:inline-block; width:16px; color:#94a3b8; font-size:0.75rem;">${idx + 1}</span>
-                        <span>${r.flag}</span>
-                        <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
-                      </div>
-                      ${(r.projectedAthletes && r.projectedAthletes.length > 0) ? `
-                        <div style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
-                          ${r.projectedAthletes.map(a => `<span style="white-space:nowrap; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px;">${a.medal} <strong>${a.athlete}</strong></span>`).join('')}
-                        </div>
-                      ` : ''}
-                    </td>
-                    <td style="font-family:monospace; font-weight:${r.actual.gold > 0 ? '700' : '400'}; color:#facc15;" class="col-actual-border">${r.actual.gold}</td>
-                    <td style="font-family:monospace; color:#cbd5e1;">${r.actual.silver}</td>
-                    <td style="font-family:monospace; color:#f59e0b;">${r.actual.bronze}</td>
-                    <td style="font-family:monospace; font-weight:700; color:#4ade80;">${r.actual.total}</td>
-                    <td style="font-family:monospace; font-weight:${r.projected.gold > 0 ? '700' : '400'}; color:#facc15;" class="col-projected-border">${r.projected.gold}</td>
-                    <td style="font-family:monospace; color:#cbd5e1;">${r.projected.silver}</td>
-                    <td style="font-family:monospace; color:#f59e0b;">${r.projected.bronze}</td>
-                    <td style="font-family:monospace; font-weight:700; color:#38bdf8;">${r.projected.total}</td>
-                    <td>
-                      <span class="delta-pill ${deltaClass}">${deltaSign}</span>
-                    </td>
-                    <td>
-                      <span style="font-size:0.68rem; font-weight:600; color:${statusBadgeColor};">${r.status}</span>
-                    </td>
-                  </tr>
-                `;
-              }).join('')}
-              <tr style="border-top:1px solid rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); font-weight:700; font-size:0.78rem;">
-                <td style="text-align:left; padding-left:0.75rem; color:#94a3b8;">Total Medals</td>
-                <td style="color:#facc15;">${totalActG}</td>
-                <td style="color:#cbd5e1;">${totalActS}</td>
-                <td style="color:#f59e0b;">${totalActB}</td>
-                <td style="color:#4ade80;">${totalActTot}</td>
-                <td style="color:#facc15;">${totalPrjG}</td>
-                <td style="color:#cbd5e1;">${totalPrjS}</td>
-                <td style="color:#f59e0b;">${totalPrjB}</td>
-                <td style="color:#38bdf8;">${totalPrjTot}</td>
-                <td style="color:#facc15;">${totalActTot - totalPrjTot >= 0 ? `+${totalActTot - totalPrjTot}` : totalActTot - totalPrjTot}</td>
-                <td style="color:#94a3b8; font-size:0.7rem;">${kpi.decidedMedals}/${kpi.totalMedalsInSport} Awarded</td>
-              </tr>
-            </tbody>
-          </table>
+        <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:2.5rem 1rem; text-align:center; color:#94a3b8;">
+          <div style="font-size:1.8rem; margin-bottom:0.5rem;">🏅</div>
+          <div style="font-weight:700; color:#f8fafc; margin-bottom:0.25rem;">No Medals Decided Yet</div>
+          <div style="font-size:0.75rem;">Medal matches for this tournament are currently upcoming or in progress. Check the <strong>Side-by-Side</strong> view to see projected standings!</div>
         </div>
       `;
-    } else if (activeMedalTableMode === 'actual') {
-      const actRows = analytics.actualTable;
-      if (actRows.length === 0) {
-        mainTableHtml = `
-          <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:2.5rem 1rem; text-align:center; color:#94a3b8;">
-            <div style="font-size:1.8rem; margin-bottom:0.5rem;">🏅</div>
-            <div style="font-weight:700; color:#f8fafc; margin-bottom:0.25rem;">No Medals Decided Yet</div>
-            <div style="font-size:0.75rem;">Medal matches for this tournament are currently upcoming or in progress. Check the <strong>Side-by-Side</strong> view to see projected standings!</div>
-          </div>
-        `;
-      } else {
-        mainTableHtml = `
-          <div class="medal-comp-wrap">
-            <table class="medal-comp-table">
-              <thead>
-                <tr style="background:rgba(0,0,0,0.3); font-size:0.74rem;">
-                  <th style="text-align:left; padding-left:0.75rem; width:35%;"># Nation</th>
-                  <th style="color:#facc15;">🥇 Gold</th>
-                  <th style="color:#cbd5e1;">🥈 Silver</th>
-                  <th style="color:#f59e0b;">🥉 Bronze</th>
-                  <th style="color:#4ade80; font-weight:700;">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${actRows.map((r, idx) => `
-                  <tr>
-                    <td style="text-align:left; padding-left:0.75rem; font-weight:600;">
-                      <div style="display:flex; align-items:center;">
-                        <span style="display:inline-block; width:16px; color:#94a3b8;">${idx + 1}</span>
-                        <span>${r.flag}</span>
-                        <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
-                      </div>
-                      ${(r.athletes && r.athletes.length > 0) ? `
-                        <div style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
-                          ${r.athletes.map(a => `<span style="white-space:nowrap; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px;">${a.medal} <strong>${a.athlete}</strong></span>`).join('')}
-                        </div>
-                      ` : ''}
-                    </td>
-                    <td style="font-family:monospace; font-weight:${r.gold > 0 ? '700' : '400'}; color:#facc15;">${r.gold}</td>
-                    <td style="font-family:monospace; color:#cbd5e1;">${r.silver}</td>
-                    <td style="font-family:monospace; color:#f59e0b;">${r.bronze}</td>
-                    <td style="font-family:monospace; font-weight:700; color:#4ade80;">${r.total}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        `;
-      }
-    } else if (activeMedalTableMode === 'projected') {
-      const prjRows = analytics.projectedTable;
+    } else {
       mainTableHtml = `
         <div class="medal-comp-wrap">
           <table class="medal-comp-table">
@@ -2171,11 +2121,11 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                 <th style="color:#facc15;">🥇 Gold</th>
                 <th style="color:#cbd5e1;">🥈 Silver</th>
                 <th style="color:#f59e0b;">🥉 Bronze</th>
-                <th style="color:#38bdf8; font-weight:700;">Total</th>
+                <th style="color:#4ade80; font-weight:700;">Total</th>
               </tr>
             </thead>
             <tbody>
-              ${prjRows.map((r, idx) => `
+              ${actRows.map((r, idx) => `
                 <tr>
                   <td style="text-align:left; padding-left:0.75rem; font-weight:600;">
                     <div style="display:flex; align-items:center;">
@@ -2192,7 +2142,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                   <td style="font-family:monospace; font-weight:${r.gold > 0 ? '700' : '400'}; color:#facc15;">${r.gold}</td>
                   <td style="font-family:monospace; color:#cbd5e1;">${r.silver}</td>
                   <td style="font-family:monospace; color:#f59e0b;">${r.bronze}</td>
-                  <td style="font-family:monospace; font-weight:700; color:#38bdf8;">${r.total}</td>
+                  <td style="font-family:monospace; font-weight:700; color:#4ade80;">${r.total}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2200,73 +2150,84 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
         </div>
       `;
     }
-
-    // Direct, uncluttered event navigation list allowing the user to explore each event separately
-    const formatProjectedPickWithFinish = (pick, hit, medalEmoji) => {
-      if (!pick) return 'TBD';
-      const base = formatContenderDisplay(pick);
-      if (hit) {
-        return `${base} <span style="color:#4ade80; font-size:0.7rem; font-weight:700; background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.25); padding:1px 5px; border-radius:4px;">[🎯 ${medalEmoji}]</span>`;
-      }
-      if (pick.actualFinish) {
-        return `${base} <span style="color:${pick.actualFinish.badgeColor}; font-size:0.7rem; font-weight:700; background:${pick.actualFinish.badgeBg}; border:1px solid ${pick.actualFinish.badgeBorder}; padding:1px 5px; border-radius:4px;">[${pick.actualFinish.shortText}]</span>`;
-      }
-      return base;
-    };
-
-    const eventsListHtml = `
-      <div style="margin-top:1.25rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.65rem; flex-wrap:wrap; gap:6px;">
-          <div style="font-size:0.85rem; font-weight:700; color:#f8fafc; display:flex; align-items:center; gap:6px;">
-            <span>🎯</span> <span>Individual & Team Events in ${activeSport}</span>
-          </div>
-          <span style="font-size:0.72rem; color:#94a3b8;">Click any event to view dedicated podium, match scores & contender odds</span>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:0.6rem;">
-          ${analytics.events.map(ev => {
-            const isOfficial = ev.status.toLowerCase().includes('finish') || ev.status.toLowerCase().includes('official');
-            const isLive = ev.status.toLowerCase().includes('live');
-            const statusColor = isOfficial ? '#4ade80' : (isLive ? '#f87171' : '#94a3b8');
-            const statusText = isOfficial ? 'Official' : (isLive ? 'Live' : 'Scheduled');
-
-            return `
-              <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.75rem 1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(59,130,246,0.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <span style="font-size:1.3rem;">${ev.icon || '🏅'}</span>
-                  <div>
-                    <div style="font-weight:700; font-size:0.9rem; color:#f8fafc;">${ev.name}</div>
-                    <div style="font-size:0.73rem; color:#94a3b8; margin-top:3px;">
-                      ${ev.actual.gold ? `
-                        <div style="margin-bottom:2px;"><span style="color:#4ade80; font-weight:700;">Official:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.actual.gold)}</strong> • 🥈 ${formatContenderDisplay(ev.actual.silver)} • 🥉 ${(Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 1) ? ev.actual.bronzes.map(b => formatContenderDisplay(b)).join(' & ') : formatContenderDisplay(ev.actual.bronze)}</div>
-                        <div><span style="color:#38bdf8; font-weight:700;">Projected:</span> 🥇 <strong style="color:#f8fafc;">${formatProjectedPickWithFinish(ev.projected.gold, ev.evaluation.goldHit, 'Gold')}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatProjectedPickWithFinish(ev.projected.silver, ev.evaluation.silverHit, 'Silver')} • 🥉 ${(Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.length > 1) ? ev.projected.bronzes.map(b => formatProjectedPickWithFinish(b, ev.evaluation.bronzeHit, 'Bronze')).join(' & ') : formatProjectedPickWithFinish(ev.projected.bronze, ev.evaluation.bronzeHit, 'Bronze')}</div>
-                      ` : `
-                        <div><span style="color:#38bdf8; font-weight:700;">Projected Picks:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.projected.gold)}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatContenderDisplay(ev.projected.silver)} • 🥉 ${(Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.length > 1) ? ev.projected.bronzes.map(b => formatContenderDisplay(b)).join(' & ') : formatContenderDisplay(ev.projected.bronze)}</div>
-                      `}
-                    </div>
+  } else if (activeMedalTableMode === 'projected') {
+    const prjRows = analytics.projectedTable;
+    mainTableHtml = `
+      <div class="medal-comp-wrap">
+        <table class="medal-comp-table">
+          <thead>
+            <tr style="background:rgba(0,0,0,0.3); font-size:0.74rem;">
+              <th style="text-align:left; padding-left:0.75rem; width:35%;"># Nation</th>
+              <th style="color:#facc15;">🥇 Gold</th>
+              <th style="color:#cbd5e1;">🥈 Silver</th>
+              <th style="color:#f59e0b;">🥉 Bronze</th>
+              <th style="color:#38bdf8; font-weight:700;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${prjRows.map((r, idx) => `
+              <tr>
+                <td style="text-align:left; padding-left:0.75rem; font-weight:600;">
+                  <div style="display:flex; align-items:center;">
+                    <span style="display:inline-block; width:16px; color:#94a3b8;">${idx + 1}</span>
+                    <span>${r.flag}</span>
+                    <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
                   </div>
-                </div>
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <span style="font-size:0.7rem; font-weight:700; color:${statusColor}; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px;">${statusText}</span>
-                  <button onclick="setPredictionsSubView('event_${ev.id}')" style="background:rgba(37,99,235,0.15); border:1px solid rgba(37,99,235,0.4); color:#38bdf8; padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;" onmouseover="this.style.background='#2563eb'; this.style.color='#fff';" onmouseout="this.style.background='rgba(37,99,235,0.15)'; this.style.color='#38bdf8';">
-                    View Podium & Odds →
-                  </button>
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
+                  ${(r.athletes && r.athletes.length > 0) ? `
+                    <div style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
+                      ${r.athletes.map(a => `<span style="white-space:nowrap; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px;">${a.medal} <strong>${a.athlete}</strong></span>`).join('')}
+                    </div>
+                  ` : ''}
+                </td>
+                <td style="font-family:monospace; font-weight:${r.gold > 0 ? '700' : '400'}; color:#facc15;">${r.gold}</td>
+                <td style="font-family:monospace; color:#cbd5e1;">${r.silver}</td>
+                <td style="font-family:monospace; color:#f59e0b;">${r.bronze}</td>
+                <td style="font-family:monospace; font-weight:700; color:#38bdf8;">${r.total}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
       </div>
     `;
-
-    container.innerHTML = `${pillsHeader}${unifiedHeaderHtml}${mainTableHtml}${eventsListHtml}`;
-    return;
   }
 
-  // --- SUBVIEW 2: DEDICATED SINGLE-EVENT DRILLDOWN ---
-  if (activeEvent) {
+  // --- 2. FILTER EVENTS STRICTLY BY CURRENT GENDER (MEN / WOMEN / MIXED) ---
+  const curGender = String(currentGender || 'men').toLowerCase();
+  const genderEvents = (analytics.events || []).filter(ev => {
+    if (ev.gender) return ev.gender.toLowerCase() === curGender;
+    const s = (ev.name || ev.id || '').toLowerCase();
+    if (curGender === 'men') return (s.includes('men') || s.includes('male')) && !s.includes('women');
+    if (curGender === 'women') return s.includes('women') || s.includes('female');
+    if (curGender === 'mixed') return s.includes('mixed');
+    return true;
+  });
+
+  const score = (ev) => {
+    const s = (ev.name || ev.id || '').toLowerCase();
+    if (s.includes('singles') || s.includes('indiv')) return 1;
+    if (s.includes('doubles') && !s.includes('mixed')) return 2;
+    if (s.includes('mixed')) return 3;
+    if (s.includes('team')) return 4;
+    return 10;
+  };
+  genderEvents.sort((a, b) => score(a) - score(b) || (a.name || '').localeCompare(b.name || ''));
+
+  let selectedEventId = (typeof window !== 'undefined' && window.activePredictionsEventFilter)
+    ? window.activePredictionsEventFilter
+    : null;
+  let activeEvent = genderEvents.find(e => e.id === selectedEventId);
+  if (!activeEvent && genderEvents.length > 0) {
+    activeEvent = genderEvents[0];
+    selectedEventId = activeEvent.id;
+    if (typeof window !== 'undefined') window.activePredictionsEventFilter = selectedEventId;
+  }
+
+  // --- 3. EVENT DROPDOWN FOLLOWED BY PODIUM & CONTENDER ODDS ---
+  let eventSectionHtml = '';
+  if (genderEvents.length > 0 && activeEvent) {
     const ev = activeEvent;
     const isConcluded = !!(ev.actual && ev.actual.gold);
-    const isLive = ev.status.toLowerCase().includes('live');
+    const isLive = (ev.status || '').toLowerCase().includes('live');
     const statusBadge = isConcluded 
       ? `<span style="background:rgba(74,222,128,0.15); color:#4ade80; padding:3px 9px; border-radius:4px; font-size:0.72rem; font-weight:700;">🟢 Official Results</span>`
       : (isLive 
@@ -2274,16 +2235,26 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
           : `<span style="background:rgba(148,163,184,0.15); color:#94a3b8; padding:3px 9px; border-radius:4px; font-size:0.72rem; font-weight:600;">⚪ Scheduled</span>`);
 
     let accuracyBadge = '';
-    if (ev.evaluation.decidedCount > 0) {
+    if (ev.evaluation && ev.evaluation.decidedCount > 0) {
       const acc = ev.evaluation.accuracyPct;
       const accColor = acc >= 60 ? '#4ade80' : (acc >= 30 ? '#facc15' : '#f87171');
       accuracyBadge = `<span style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:${accColor}; padding:3px 9px; border-radius:4px; font-size:0.72rem; font-weight:700;">Podium Accuracy: ${acc}% (${ev.evaluation.exactHits}/${ev.evaluation.decidedCount} exact)</span>`;
     }
 
+    const eventDropdownHtml = `
+      <div class="event-filter-bar" style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.6rem 1rem; margin-top:1.5rem; margin-bottom:1.25rem; display:flex; align-items:center; gap:8px;">
+        <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase;">Select Event:</label>
+        <select class="event-dropdown" onchange="window.setPredictionsEventFilter(this.value)">
+          ${genderEvents.map(e => `
+            <option value="${escapeAttr(e.id)}" ${ev.id === e.id ? 'selected' : ''}>${e.name}</option>
+          `).join('')}
+        </select>
+      </div>
+    `;
+
     let podiumSectionHtml = '';
 
     if (isConcluded) {
-      // Official concluded podium showcase
       podiumSectionHtml = `
         <div style="background:linear-gradient(135deg, rgba(30,58,138,0.25), rgba(15,23,42,0.9)); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:1.25rem; margin-bottom:1.25rem;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:0.6rem; flex-wrap:wrap; gap:6px;">
@@ -2374,9 +2345,8 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
         </div>
       `;
     } else {
-      // Upcoming or in-progress event projected podium banner
       podiumSectionHtml = `
-        <div style="background:rgba(30,58,138,0.2); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.25rem;">
+        <div style="background:linear-gradient(135deg, rgba(30,58,138,0.18), rgba(15,23,42,0.85)); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:1.25rem; margin-bottom:1.25rem;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:0.6rem; flex-wrap:wrap; gap:6px;">
             <div style="font-size:0.85rem; font-weight:800; color:#38bdf8; display:flex; align-items:center; gap:6px;">
               <span>🔮</span> <span>PROJECTED PODIUM FAVORITES</span>
@@ -2448,7 +2418,6 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
       `;
     }
 
-    // Contender field rankings for this specific event
     const rankingsList = Array.isArray(ev.rankings) ? ev.rankings : [];
     const sortedRankings = [...rankingsList].sort((a, b) => {
       return parseStatNumber(getProb(b, ['gold', 'gold_prob', 'gold_pct', 'p_gold'])) - 
@@ -2528,7 +2497,8 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
       `;
     }
 
-    const singleEventHtml = `
+    eventSectionHtml = `
+      ${eventDropdownHtml}
       <div style="margin-bottom:0.85rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div style="display:flex; align-items:center; gap:8px;">
           <span style="font-size:1.3rem;">${ev.icon || '🏅'}</span>
@@ -2540,154 +2510,22 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           ${accuracyBadge}
           ${statusBadge}
-          <button onclick="setPredictionsSubView('table')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#38bdf8; padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;" onmouseover="this.style.background='rgba(56,189,248,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
-            ← Full Medal Table
-          </button>
         </div>
       </div>
 
       ${podiumSectionHtml}
 
       ${contenderFieldHtml}
-
-      <!-- Bottom navigation between events -->
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.25rem; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.06); flex-wrap:wrap; gap:8px;">
-        <button onclick="setPredictionsSubView('table')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#94a3b8; padding:6px 14px; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;">
-          ← Return to Full Medal Table
-        </button>
-        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          ${analytics.events.filter(e => e.id !== ev.id).map(otherEv => `
-            <button onclick="setPredictionsSubView('event_${otherEv.id}')" style="background:rgba(37,99,235,0.12); border:1px solid rgba(37,99,235,0.3); color:#38bdf8; padding:6px 12px; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;">
-              Go to ${otherEv.shortName || otherEv.name} →
-            </button>
-          `).join('')}
-        </div>
+    `;
+  } else if (genderEvents.length === 0) {
+    eventSectionHtml = `
+      <div style="text-align:center; padding:2rem 1rem; color:#94a3b8; background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; margin-top:1.5rem;">
+        No events currently scheduled for this category.
       </div>
     `;
-
-    container.innerHTML = `${pillsHeader}${singleEventHtml}`;
-    return;
   }
 
-  // --- SUBVIEW 3: DIVISION ODDS (CRASH-PROOF & MULTI-GENDER) ---
-  const sourceData = currentGender === 'women'
-    ? womenPreds
-    : (currentGender === 'mixed' ? (window.appData?.mixedPredictions || []) : menPreds);
-  let rawList = [];
-  if (Array.isArray(sourceData)) {
-    rawList = sourceData;
-  } else if (sourceData && typeof sourceData === 'object') {
-    if (Array.isArray(sourceData[currentGender])) {
-      rawList = sourceData[currentGender];
-    } else if (Array.isArray(sourceData.rankings)) {
-      rawList = sourceData.rankings;
-    } else if (Array.isArray(sourceData.predictions)) {
-      rawList = sourceData.predictions;
-    } else if (Array.isArray(sourceData.events) && sourceData.events[0]) {
-      rawList = sourceData.events[0].rankings || sourceData.events[0].predictions || [];
-    } else {
-      const arrKey = Object.keys(sourceData).find(k => Array.isArray(sourceData[k]));
-      if (arrKey) rawList = sourceData[arrKey];
-    }
-  }
-
-  if ((!rawList || rawList.length === 0) && currentGender === 'mixed') {
-    const mixedEv = analytics.events.find(e => e.gender === 'mixed' || (e.name || '').toLowerCase().includes('mixed'));
-    if (mixedEv && mixedEv.rankings && mixedEv.rankings.length > 0) {
-      rawList = mixedEv.rankings;
-    }
-  }
-
-  const hasMixedOdds = (window.appData?.mixedMatches && window.appData.mixedMatches.length > 0) ||
-                       (window.appData?.mixedPredictions && window.appData.mixedPredictions.length > 0) ||
-                       (analytics.events && analytics.events.some(e => e.gender === 'mixed' || (e.name || '').toLowerCase().includes('mixed')));
-
-  const oddsHeaderHtml = `
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:1rem;">
-      <button onclick="setPredictionsSubView('table')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#38bdf8; padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;">
-        ← Back to Full Medal Table
-      </button>
-      <div style="display:inline-flex; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:2px; gap:2px;">
-        <button style="padding:4px 10px; font-size:0.72rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${currentGender === 'men' ? '#3b82f6' : 'transparent'}; color:${currentGender === 'men' ? '#fff' : '#94a3b8'};" onclick="setDivisionOddsGender('men')">👨 Men's Division</button>
-        <button style="padding:4px 10px; font-size:0.72rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${currentGender === 'women' ? '#3b82f6' : 'transparent'}; color:${currentGender === 'women' ? '#fff' : '#94a3b8'};" onclick="setDivisionOddsGender('women')">👩 Women's Division</button>
-        ${hasMixedOdds ? `<button style="padding:4px 10px; font-size:0.72rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${currentGender === 'mixed' ? '#3b82f6' : 'transparent'}; color:${currentGender === 'mixed' ? '#fff' : '#94a3b8'};" onclick="setDivisionOddsGender('mixed')">🤝 Mixed Division</button>` : ''}
-      </div>
-    </div>
-  `;
-
-  if (!rawList || rawList.length === 0) {
-    container.innerHTML = `${pillsHeader}${oddsHeaderHtml}<div style="text-align:center; padding:3rem 1rem; color:#94a3b8; background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px;">No simulation models currently available for this division.</div>`;
-    return;
-  }
-
-  const sorted = [...rawList].sort((a, b) => {
-    return parseStatNumber(getProb(b, ['gold', 'gold_prob', 'gold_pct', 'p_gold'])) - 
-           parseStatNumber(getProb(a, ['gold', 'gold_prob', 'gold_pct', 'p_gold']));
-  });
-
-  const cardsHtml = `
-    ${oddsHeaderHtml}
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
-      ${sorted.map(p => {
-        const athleteName = p.athlete || p.player || '';
-        const rawTeam = p.team || p.country || p.name || 'Unknown';
-        const team = formatTeamDisplayName(rawTeam.replace(/\(host\)/gi, '').trim());
-        const isHost = rawTeam.toLowerCase().includes('host');
-
-        const divEv = analytics.events.find(e => e.gender === currentGender || (currentGender === 'mixed' && (e.name || '').toLowerCase().includes('mixed'))) || analytics.events[0];
-        const divMatches = currentGender === 'women' ? womenMatches : (currentGender === 'mixed' ? (window.appData?.mixedMatches || []) : menMatches);
-        const trackerRaw = currentGender === 'women' ? window.appData?.womenTrackerRaw : (currentGender === 'mixed' ? (window.appData?.mixedTrackerRaw || window.appData?.menTrackerRaw) : window.appData?.menTrackerRaw);
-        const pFinish = p.actualFinish || resolveActualFinish(p, divEv, divMatches, trackerRaw);
-
-        const gold = parseStatNumber(getProb(p, ['gold', 'gold_prob', 'gold_pct', 'p_gold']));
-        const silver = parseStatNumber(getProb(p, ['silver', 'silver_prob', 'silver_pct', 'p_silver']));
-        const bronze = parseStatNumber(getProb(p, ['bronze', 'bronze_prob', 'bronze_pct', 'p_bronze']));
-        const rawTotal = getProb(p, ['podium', 'total', 'podium_prob']);
-        const total = rawTotal ? parseStatNumber(rawTotal) : (gold + silver + bronze);
-
-        const finishBadge = pFinish ? `
-          <span style="color:${pFinish.badgeColor}; background:${pFinish.badgeBg}; border:1px solid ${pFinish.badgeBorder}; font-size:0.68rem; font-weight:700; padding:1px 6px; border-radius:4px; margin-left:6px; white-space:nowrap;">Actual: ${pFinish.shortText}</span>
-        ` : '';
-
-        const titleHtml = athleteName ? `
-          <div>
-            <div style="font-weight:700; font-size:0.95rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
-              <span>${getFlagEmoji(team)}</span> <span>${athleteName}</span>
-              ${finishBadge}
-            </div>
-            <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">
-              ${team}${isHost ? ' (Host)' : ''} ${p.rank ? `• Rank #${p.rank}` : ''}
-            </div>
-          </div>
-        ` : `
-          <div style="font-weight:700; font-size:1rem; display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-            <span>${getFlagEmoji(team)}</span> <span>${team}${isHost ? ' (Host)' : ''}</span>
-            ${finishBadge}
-          </div>
-        `;
-
-        return `
-          <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem;">
-              ${titleHtml}
-              <span style="font-size:0.75rem; color:#38bdf8; font-weight:700; white-space:nowrap; margin-left:0.5rem;">Podium: ${total}%</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.4rem;">
-              <span>🥇 Gold: <strong>${gold}%</strong></span>
-              <span>🥈 Silver: <strong>${silver}%</strong></span>
-              <span>🥉 Bronze: <strong>${bronze}%</strong></span>
-            </div>
-            <div style="height:6px; width:100%; background:rgba(255,255,255,0.06); border-radius:999px; overflow:hidden; display:flex;">
-              <div style="width:${gold}%; background:#eab308;"></div>
-              <div style="width:${silver}%; background:#94a3b8;"></div>
-              <div style="width:${bronze}%; background:#d97706;"></div>
-            </div>
-          </div>
-        `;
-      }).join('')}
-    </div>
-  `;
-  container.innerHTML = `${pillsHeader}${cardsHtml}`;
+  container.innerHTML = `${unifiedHeaderHtml}${mainTableHtml}${eventSectionHtml}`;
 }
 
 // --- Modern Pentathlon Calibration Engine (Option 1: Cutoff & Prior Accuracy) ---
