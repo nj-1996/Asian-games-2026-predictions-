@@ -272,6 +272,175 @@ function formatStageName(stageStr) {
   return s;
 }
 
+// --- Universal Actual Competition Finish & Stage Resolver ---
+function resolveActualFinish(contender, ev, matches, trackerRaw) {
+  if (!contender) return null;
+  const ath = contender.athlete || contender.player || '';
+  const rawTeam = contender.name || contender.team || contender.country || (typeof contender === 'string' ? contender : '');
+  const cln = cleanTeamName(rawTeam);
+
+  // Fallbacks if matches or trackerRaw were omitted
+  if ((!matches || matches.length === 0) && typeof window !== 'undefined' && window.appData) {
+    matches = (ev && ev.gender === 'women') ? window.appData.womenMatches : window.appData.menMatches;
+  }
+  if (!trackerRaw && typeof window !== 'undefined' && window.appData) {
+    trackerRaw = (ev && ev.gender === 'women') ? window.appData.womenTrackerRaw : window.appData.menTrackerRaw;
+  }
+
+  // 1. Check top 3 actual podium in event if available
+  if (ev && ev.actual) {
+    if (ev.actual.gold) {
+      const matchAth = ath && ev.actual.gold.athlete && areAthletesMatching(ath, ev.actual.gold.athlete);
+      const matchTeam = !ath && cleanTeamName(ev.actual.gold.name) === cln;
+      if (matchAth || matchTeam) {
+        return {
+          text: '🥇 Gold Medalist (Champion)',
+          shortText: '🥇 Gold',
+          rank: 1,
+          medal: 'gold',
+          badgeColor: '#facc15',
+          badgeBg: 'rgba(234,179,8,0.12)',
+          badgeBorder: 'rgba(234,179,8,0.3)'
+        };
+      }
+    }
+    if (ev.actual.silver) {
+      const matchAth = ath && ev.actual.silver.athlete && areAthletesMatching(ath, ev.actual.silver.athlete);
+      const matchTeam = !ath && cleanTeamName(ev.actual.silver.name) === cln;
+      if (matchAth || matchTeam) {
+        return {
+          text: '🥈 Silver Medalist (Runner-Up)',
+          shortText: '🥈 Silver',
+          rank: 2,
+          medal: 'silver',
+          badgeColor: '#cbd5e1',
+          badgeBg: 'rgba(203,213,225,0.12)',
+          badgeBorder: 'rgba(203,213,225,0.3)'
+        };
+      }
+    }
+    if (ev.actual.bronze) {
+      const matchAth = ath && ev.actual.bronze.athlete && areAthletesMatching(ath, ev.actual.bronze.athlete);
+      const matchTeam = !ath && cleanTeamName(ev.actual.bronze.name) === cln;
+      if (matchAth || matchTeam) {
+        return {
+          text: '🥉 Bronze Medalist (3rd Place)',
+          shortText: '🥉 Bronze',
+          rank: 3,
+          medal: 'bronze',
+          badgeColor: '#f59e0b',
+          badgeBg: 'rgba(245,158,11,0.12)',
+          badgeBorder: 'rgba(245,158,11,0.3)'
+        };
+      }
+    }
+  }
+
+  // 2. Individual Athlete with trackerRaw.final_ranks (e.g. Modern Pentathlon)
+  if (ath && trackerRaw && Array.isArray(trackerRaw.final_ranks)) {
+    for (const r of trackerRaw.final_ranks) {
+      if (r && r.name && areAthletesMatching(ath, r.name)) {
+        const rank = Number(r.rank);
+        const pts = r.total_pts ? `${r.total_pts} pts` : '';
+        if (rank === 1) {
+          return { text: pts ? `🥇 Gold (Rank 1, ${pts})` : '🥇 Gold Medalist (Rank 1)', shortText: '🥇 Gold', rank: 1, medal: 'gold', badgeColor: '#facc15', badgeBg: 'rgba(234,179,8,0.12)', badgeBorder: 'rgba(234,179,8,0.3)' };
+        } else if (rank === 2) {
+          return { text: pts ? `🥈 Silver (Rank 2, ${pts})` : '🥈 Silver Medalist (Rank 2)', shortText: '🥈 Silver', rank: 2, medal: 'silver', badgeColor: '#cbd5e1', badgeBg: 'rgba(203,213,225,0.12)', badgeBorder: 'rgba(203,213,225,0.3)' };
+        } else if (rank === 3) {
+          return { text: pts ? `🥉 Bronze (Rank 3, ${pts})` : '🥉 Bronze Medalist (Rank 3)', shortText: '🥉 Bronze', rank: 3, medal: 'bronze', badgeColor: '#f59e0b', badgeBg: 'rgba(245,158,11,0.12)', badgeBorder: 'rgba(245,158,11,0.3)' };
+        } else {
+          return { text: pts ? `Rank ${rank} (${pts})` : `Rank ${rank}`, shortText: `Rank ${rank}`, rank: rank, medal: null, badgeColor: rank <= 10 ? '#38bdf8' : '#94a3b8', badgeBg: 'rgba(255,255,255,0.04)', badgeBorder: 'rgba(255,255,255,0.08)' };
+        }
+      }
+    }
+  }
+
+  // 3. Team Events in Modern Pentathlon (Men's Team, Women's Team 4th place)
+  if (ev && (ev.id === 'mpn_men_team' || ev.id === 'mpn_women_team')) {
+    if (cln.includes('japan') && ev.id === 'mpn_men_team') {
+      return { text: '4th Place', shortText: '4th Place', rank: 4, badgeColor: '#94a3b8', badgeBg: 'rgba(255,255,255,0.04)', badgeBorder: 'rgba(255,255,255,0.08)' };
+    }
+    if (cln.includes('kazakhstan') && ev.id === 'mpn_women_team') {
+      return { text: '4th Place', shortText: '4th Place', rank: 4, badgeColor: '#94a3b8', badgeBg: 'rgba(255,255,255,0.04)', badgeBorder: 'rgba(255,255,255,0.08)' };
+    }
+  }
+
+  // 4. Team Match Sports (Basketball, Football, Volleyball, Cricket)
+  const matchList = Array.isArray(matches) ? matches : (Array.isArray(trackerRaw?.matches) ? trackerRaw.matches : []);
+  if (cln && matchList.length > 0) {
+    const teamMatches = matchList.filter(m => {
+      const p1 = cleanTeamName(m.player1 || m.team1 || '');
+      const p2 = cleanTeamName(m.player2 || m.team2 || '');
+      return p1 === cln || p2 === cln;
+    });
+
+    if (teamMatches.length > 0) {
+      // Find Gold Match
+      const hasGoldMatch = teamMatches.find(m => {
+        const r = (m.round || m.stage || '').toLowerCase();
+        return r.includes('f gm') || r.includes('gold') || (r.includes('final') && !r.includes('semi') && !r.includes('1/2') && !r.includes('quarter') && !r.includes('1/4') && !r.includes('3rd') && !r.includes('bm'));
+      });
+      // Find Bronze Match
+      const hasBronzeMatch = teamMatches.find(m => {
+        const r = (m.round || m.stage || '').toLowerCase();
+        return r.includes('f bm') || r.includes('bronze') || r.includes('3rd');
+      });
+      // Semifinals
+      const hasSemi = teamMatches.find(m => {
+        const r = (m.round || m.stage || '').toLowerCase();
+        return r.includes('1/2') || r.includes('semi');
+      });
+      // Quarterfinals
+      const hasQuarter = teamMatches.find(m => {
+        const r = (m.round || m.stage || '').toLowerCase();
+        return r.includes('1/4') || r.includes('quarter');
+      });
+      // Round of 16
+      const hasRound16 = teamMatches.find(m => {
+        const r = (m.round || m.stage || '').toLowerCase();
+        return r.includes('1/8') || r.includes('r16');
+      });
+
+      if (hasGoldMatch) {
+        const isFin = (hasGoldMatch.status || hasGoldMatch.state || '').toLowerCase().includes('finish') || (hasGoldMatch.status || hasGoldMatch.state || '').toLowerCase().includes('official');
+        if (isFin) {
+          const w = cleanTeamName(hasGoldMatch.winner || '');
+          if (w === cln) {
+            return { text: '🥇 Gold Medalist (Champion)', shortText: '🥇 Gold', rank: 1, medal: 'gold', badgeColor: '#facc15', badgeBg: 'rgba(234,179,8,0.12)', badgeBorder: 'rgba(234,179,8,0.3)' };
+          } else {
+            return { text: '🥈 Silver Medalist (Runner-Up)', shortText: '🥈 Silver', rank: 2, medal: 'silver', badgeColor: '#cbd5e1', badgeBg: 'rgba(203,213,225,0.12)', badgeBorder: 'rgba(203,213,225,0.3)' };
+          }
+        }
+      }
+
+      if (hasBronzeMatch) {
+        const isFin = (hasBronzeMatch.status || hasBronzeMatch.state || '').toLowerCase().includes('finish') || (hasBronzeMatch.status || hasBronzeMatch.state || '').toLowerCase().includes('official');
+        if (isFin) {
+          const w = cleanTeamName(hasBronzeMatch.winner || '');
+          if (w === cln) {
+            return { text: '🥉 Bronze Medalist (3rd Place)', shortText: '🥉 Bronze', rank: 3, medal: 'bronze', badgeColor: '#f59e0b', badgeBg: 'rgba(245,158,11,0.12)', badgeBorder: 'rgba(245,158,11,0.3)' };
+          } else {
+            return { text: '4th Place (Semifinals)', shortText: '4th Place', rank: 4, badgeColor: '#a855f7', badgeBg: 'rgba(168,85,247,0.1)', badgeBorder: 'rgba(168,85,247,0.25)' };
+          }
+        }
+      }
+
+      if (hasSemi) {
+        return { text: 'Semifinals', shortText: 'Semifinals', rank: null, stage: 'semi', badgeColor: '#a855f7', badgeBg: 'rgba(168,85,247,0.1)', badgeBorder: 'rgba(168,85,247,0.25)' };
+      }
+      if (hasQuarter) {
+        return { text: 'Quarterfinals', shortText: 'Quarterfinals', rank: null, stage: 'quarter', badgeColor: '#94a3b8', badgeBg: 'rgba(255,255,255,0.04)', badgeBorder: 'rgba(255,255,255,0.08)' };
+      }
+      if (hasRound16) {
+        return { text: 'Round of 16', shortText: 'Round of 16', rank: null, stage: 'r16', badgeColor: '#64748b', badgeBg: 'rgba(255,255,255,0.03)', badgeBorder: 'rgba(255,255,255,0.06)' };
+      }
+      return { text: 'Group Stage', shortText: 'Group Stage', rank: null, stage: 'group', badgeColor: '#64748b', badgeBg: 'rgba(255,255,255,0.03)', badgeBorder: 'rgba(255,255,255,0.06)' };
+    }
+  }
+
+  return null;
+}
+
 function parseStatNumber(val) {
   if (val == null) return 0;
   if (typeof val === 'object') {
@@ -1542,6 +1711,25 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
       accuracyPct: evDecided > 0 ? Math.round((evExact / evDecided) * 100) : null,
       podiumRatePct: evDecided > 0 ? Math.round((evPodium / evDecided) * 100) : null
     };
+
+    const evMatches = ev.gender === 'women' ? womenMatches : menMatches;
+    const trackerRaw = ev.gender === 'women' ? window.appData?.womenTrackerRaw : window.appData?.menTrackerRaw;
+
+    if (ev.projected.gold) {
+      ev.projected.gold.actualFinish = resolveActualFinish(ev.projected.gold, ev, evMatches, trackerRaw);
+    }
+    if (ev.projected.silver) {
+      ev.projected.silver.actualFinish = resolveActualFinish(ev.projected.silver, ev, evMatches, trackerRaw);
+    }
+    if (ev.projected.bronze) {
+      ev.projected.bronze.actualFinish = resolveActualFinish(ev.projected.bronze, ev, evMatches, trackerRaw);
+    }
+
+    if (Array.isArray(ev.rankings)) {
+      ev.rankings.forEach(c => {
+        c.actualFinish = resolveActualFinish(c, ev, evMatches, trackerRaw);
+      });
+    }
   });
 
   const totalMedalsInSport = medalEvents.length * 3;
@@ -1879,6 +2067,18 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
     }
 
     // Direct, uncluttered event navigation list allowing the user to explore each event separately
+    const formatProjectedPickWithFinish = (pick, hit, medalEmoji) => {
+      if (!pick) return 'TBD';
+      const base = formatContenderDisplay(pick);
+      if (hit) {
+        return `${base} <span style="color:#4ade80; font-size:0.7rem; font-weight:700; background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.25); padding:1px 5px; border-radius:4px;">[🎯 ${medalEmoji}]</span>`;
+      }
+      if (pick.actualFinish) {
+        return `${base} <span style="color:${pick.actualFinish.badgeColor}; font-size:0.7rem; font-weight:700; background:${pick.actualFinish.badgeBg}; border:1px solid ${pick.actualFinish.badgeBorder}; padding:1px 5px; border-radius:4px;">[${pick.actualFinish.shortText}]</span>`;
+      }
+      return base;
+    };
+
     const eventsListHtml = `
       <div style="margin-top:1.25rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.65rem; flex-wrap:wrap; gap:6px;">
@@ -1903,7 +2103,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                     <div style="font-size:0.73rem; color:#94a3b8; margin-top:3px;">
                       ${ev.actual.gold ? `
                         <div style="margin-bottom:2px;"><span style="color:#4ade80; font-weight:700;">Official:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.actual.gold)}</strong> • 🥈 ${formatContenderDisplay(ev.actual.silver)} • 🥉 ${formatContenderDisplay(ev.actual.bronze)}</div>
-                        <div><span style="color:#38bdf8; font-weight:700;">Projected:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.projected.gold)}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatContenderDisplay(ev.projected.silver)} • 🥉 ${formatContenderDisplay(ev.projected.bronze)}</div>
+                        <div><span style="color:#38bdf8; font-weight:700;">Projected:</span> 🥇 <strong style="color:#f8fafc;">${formatProjectedPickWithFinish(ev.projected.gold, ev.evaluation.goldHit, 'Gold')}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatProjectedPickWithFinish(ev.projected.silver, ev.evaluation.silverHit, 'Silver')} • 🥉 ${formatProjectedPickWithFinish(ev.projected.bronze, ev.evaluation.bronzeHit, 'Bronze')}</div>
                       ` : `
                         <div><span style="color:#38bdf8; font-weight:700;">Projected Picks:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.projected.gold)}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatContenderDisplay(ev.projected.silver)} • 🥉 ${formatContenderDisplay(ev.projected.bronze)}</div>
                       `}
@@ -1974,7 +2174,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                 ${ev.goldScoreInfo || 'Won Gold'}
               </div>
               <div style="font-size:0.72rem; color:${ev.evaluation.goldHit ? '#4ade80' : '#38bdf8'}; margin-top:4px; font-weight:600;">
-                ${ev.evaluation.goldHit ? '🎯 Simulation Pick: Exact Gold Hit' : `Projected pick was ${formatContenderDisplay(ev.projected.gold)}`}
+                ${ev.evaluation.goldHit ? '🎯 Simulation Pick: Exact Gold Hit' : `Projected pick was ${formatContenderDisplay(ev.projected.gold)}${ev.projected.gold?.actualFinish ? ` • Actual: <strong style="color:${ev.projected.gold.actualFinish.badgeColor};">${ev.projected.gold.actualFinish.text}</strong>` : ''}`}
               </div>
             </div>
 
@@ -1991,7 +2191,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                 Finalist Runner-Up
               </div>
               <div style="font-size:0.72rem; color:${ev.evaluation.silverHit ? '#4ade80' : '#94a3b8'}; margin-top:4px; font-weight:600;">
-                ${ev.evaluation.silverHit ? '🎯 Simulation Pick: Exact Silver Hit' : `Projected pick was ${formatContenderDisplay(ev.projected.silver)}`}
+                ${ev.evaluation.silverHit ? '🎯 Simulation Pick: Exact Silver Hit' : `Projected pick was ${formatContenderDisplay(ev.projected.silver)}${ev.projected.silver?.actualFinish ? ` • Actual: <strong style="color:${ev.projected.silver.actualFinish.badgeColor};">${ev.projected.silver.actualFinish.text}</strong>` : ''}`}
               </div>
             </div>
 
@@ -2008,7 +2208,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                 ${ev.bronzeScoreInfo || 'Won Bronze Match'}
               </div>
               <div style="font-size:0.72rem; color:${ev.evaluation.bronzeHit ? '#4ade80' : '#94a3b8'}; margin-top:4px; font-weight:600;">
-                ${ev.evaluation.bronzeHit ? '🎯 Simulation Pick: Exact Bronze Hit' : `Projected pick was ${formatContenderDisplay(ev.projected.bronze)}`}
+                ${ev.evaluation.bronzeHit ? '🎯 Simulation Pick: Exact Bronze Hit' : `Projected pick was ${formatContenderDisplay(ev.projected.bronze)}${ev.projected.bronze?.actualFinish ? ` • Actual: <strong style="color:${ev.projected.bronze.actualFinish.badgeColor};">${ev.projected.bronze.actualFinish.text}</strong>` : ''}`}
               </div>
             </div>
           </div>
@@ -2097,12 +2297,13 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
             <table class="medal-comp-table">
               <thead>
                 <tr style="background:rgba(0,0,0,0.3); font-size:0.74rem;">
-                  <th style="text-align:left; padding-left:0.75rem; width:34%;"># Contender</th>
-                  <th style="color:#facc15; width:13%;">🥇 Gold %</th>
-                  <th style="color:#cbd5e1; width:13%;">🥈 Silver %</th>
-                  <th style="color:#f59e0b; width:13%;">🥉 Bronze %</th>
-                  <th style="color:#38bdf8; font-weight:700; width:13%;">🏅 Podium %</th>
-                  <th style="width:14%;">Odds Distribution</th>
+                  <th style="text-align:left; padding-left:0.75rem; width:${isConcluded ? '28%' : '34%'};"># Contender</th>
+                  ${isConcluded ? `<th style="color:#38bdf8; width:18%;">Actual Finish</th>` : ''}
+                  <th style="color:#facc15; width:${isConcluded ? '11%' : '13%'};">🥇 Gold %</th>
+                  <th style="color:#cbd5e1; width:${isConcluded ? '11%' : '13%'};">🥈 Silver %</th>
+                  <th style="color:#f59e0b; width:${isConcluded ? '11%' : '13%'};">🥉 Bronze %</th>
+                  <th style="color:#38bdf8; font-weight:700; width:${isConcluded ? '11%' : '13%'};">🏅 Podium %</th>
+                  <th style="width:${isConcluded ? '10%' : '14%'};">Odds Distribution</th>
                 </tr>
               </thead>
               <tbody>
@@ -2127,6 +2328,11 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                           ${athleteName ? `<strong>${athleteName}</strong> <span style="color:#94a3b8; font-weight:400;">(${team})</span>` : `<strong>${team}</strong>`}${isHost ? ' (Host)' : ''}
                         </span>
                       </td>
+                      ${isConcluded ? `
+                        <td style="font-size:0.74rem; font-weight:600;">
+                          ${c.actualFinish ? `<span style="color:${c.actualFinish.badgeColor}; background:${c.actualFinish.badgeBg}; border:1px solid ${c.actualFinish.badgeBorder}; padding:2px 7px; border-radius:4px; white-space:nowrap;">${c.actualFinish.shortText}</span>` : '<span style="color:#64748b;">--</span>'}
+                        </td>
+                      ` : ''}
                       <td style="font-family:monospace; font-weight:${gold > 0 ? '700' : '400'}; color:#facc15;">${gold}%</td>
                       <td style="font-family:monospace; color:#cbd5e1;">${silver}%</td>
                       <td style="font-family:monospace; color:#f59e0b;">${bronze}%</td>
@@ -2240,24 +2446,35 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
         const team = formatTeamDisplayName(rawTeam.replace(/\(host\)/gi, '').trim());
         const isHost = rawTeam.toLowerCase().includes('host');
 
+        const divEv = analytics.events.find(e => e.gender === currentGender) || analytics.events[0];
+        const divMatches = currentGender === 'women' ? womenMatches : menMatches;
+        const trackerRaw = currentGender === 'women' ? window.appData?.womenTrackerRaw : window.appData?.menTrackerRaw;
+        const pFinish = p.actualFinish || resolveActualFinish(p, divEv, divMatches, trackerRaw);
+
         const gold = parseStatNumber(getProb(p, ['gold', 'gold_prob', 'gold_pct', 'p_gold']));
         const silver = parseStatNumber(getProb(p, ['silver', 'silver_prob', 'silver_pct', 'p_silver']));
         const bronze = parseStatNumber(getProb(p, ['bronze', 'bronze_prob', 'bronze_pct', 'p_bronze']));
         const rawTotal = getProb(p, ['podium', 'total', 'podium_prob']);
         const total = rawTotal ? parseStatNumber(rawTotal) : (gold + silver + bronze);
 
+        const finishBadge = pFinish ? `
+          <span style="color:${pFinish.badgeColor}; background:${pFinish.badgeBg}; border:1px solid ${pFinish.badgeBorder}; font-size:0.68rem; font-weight:700; padding:1px 6px; border-radius:4px; margin-left:6px; white-space:nowrap;">Actual: ${pFinish.shortText}</span>
+        ` : '';
+
         const titleHtml = athleteName ? `
           <div>
-            <div style="font-weight:700; font-size:0.95rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem;">
+            <div style="font-weight:700; font-size:0.95rem; color:#f8fafc; display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
               <span>${getFlagEmoji(team)}</span> <span>${athleteName}</span>
+              ${finishBadge}
             </div>
             <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">
               ${team}${isHost ? ' (Host)' : ''} ${p.rank ? `• Rank #${p.rank}` : ''}
             </div>
           </div>
         ` : `
-          <div style="font-weight:700; font-size:1rem; display:flex; align-items:center; gap:0.5rem;">
+          <div style="font-weight:700; font-size:1rem; display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
             <span>${getFlagEmoji(team)}</span> <span>${team}${isHost ? ' (Host)' : ''}</span>
+            ${finishBadge}
           </div>
         `;
 
