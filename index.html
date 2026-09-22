@@ -54,30 +54,12 @@
   <!-- Sync Toast Notification -->
   <div id="sync-toast" class="sync-toast">Fetching complete!</div>
 
-  <!-- Auto-versioned Script Loader -->
-  <script>
-    (function() {
-      const v = Date.now();
-      const scripts = [
-        `js/core.js?v=${v}`,
-        `js/sports/basketball.js?v=${v}`,
-        `js/sports/football.js?v=${v}`,
-        `js/sports/volleyball.js?v=${v}`,
-        `js/sports/modern_pentathlon.js?v=${v}`,
-        `js/sports/cricket.js?v=${v}`,
-        `js/app.js?v=${v}`
-      ];
-
-      function loadNext(index) {
-        if (index >= scripts.length) return;
-        const s = document.createElement('script');
-        s.src = scripts[index];
-        s.onload = () => loadNext(index + 1);
-        document.body.appendChild(s);
-      }
-
-      loadNext(0);
-    })();
-  </script>
+  <script src="js/core.js"></script>
+  <script src="js/sports/basketball.js"></script>
+  <script src="js/sports/football.js"></script>
+  <script src="js/sports/volleyball.js"></script>
+  <script src="js/sports/modern_pentathlon.js"></script>
+  <script src="js/sports/cricket.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

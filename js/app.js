@@ -16,6 +16,7 @@ window.appData = appData;
 
 // --- Fast Concurrent Multi-Path Resolver ---
 async function fetchFastJson(paths) {
+  if (!Array.isArray(paths) || paths.length === 0) return null;
   const fetchAttempt = async (p) => {
     const res = await fetch(`${p}?t=${Date.now()}`);
     if (!res.ok) throw new Error(`404: ${p}`);
@@ -25,9 +26,14 @@ async function fetchFastJson(paths) {
   };
 
   try {
-    return await Promise.any(paths.map(p => fetchAttempt(p)));
-  } catch (e) {
-    return null;
+    return await fetchAttempt(paths[0]);
+  } catch (err) {
+    if (paths.length === 1) return null;
+    try {
+      return await Promise.any(paths.slice(1).map(p => fetchAttempt(p)));
+    } catch (e) {
+      return null;
+    }
   }
 }
 

@@ -1865,12 +1865,13 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
     const accuracyDisplay = kpi.accuracyPct != null ? `${kpi.accuracyPct}%` : '--%';
     const decidedDisplay = `${kpi.decidedMedals} of ${kpi.totalMedalsInSport} medals decided`;
 
+    const sportTitle = activeSport.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     const unifiedHeaderHtml = `
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1.15rem; margin-bottom:1rem;">
         <div style="display:flex; align-items:center; gap:10px;">
           <span style="font-size:1.5rem;">${(window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport]?.icon) || '🏅'}</span>
           <div>
-            <div style="font-size:1rem; font-weight:800; color:#f8fafc; text-transform:capitalize;">${activeSport} Medal Standings</div>
+            <div style="font-size:1rem; font-weight:800; color:#f8fafc;">${sportTitle} Medal Standings</div>
             <div style="font-size:0.74rem; color:#94a3b8; margin-top:2px;">
               ${decidedDisplay} • Prediction Accuracy: <strong style="color:${accuracyColor};">${accuracyDisplay}</strong>
               ${kpi.decidedMedals > 0 ? `<span style="color:#64748b;"> (${kpi.exactHits}/${kpi.decidedMedals} exact picks)</span>` : ''}
@@ -2873,34 +2874,29 @@ function renderCalibrationView(container, predictions, matches) {
   `;
 }
 
-// --- Global App Navigation & State Handlers ---
+// --- Global App Navigation & State Fallbacks ---
 function setTab(tabName) {
-  activeTab = tabName;
-  const container = document.getElementById('content-cards');
-  if (container && typeof renderCurrentView === 'function') {
-    renderCurrentView(container);
-  } else {
-    window.location.reload();
+  if (typeof window !== 'undefined' && typeof window.setTab === 'function' && window.setTab !== setTab) {
+    window.setTab(tabName);
+  } else if (typeof renderView === 'function') {
+    renderView();
   }
 }
 
 function setGender(gender) {
-  currentGender = gender;
-  const container = document.getElementById('content-cards');
-  if (container && typeof renderCurrentView === 'function') {
-    renderCurrentView(container);
-  } else {
-    window.location.reload();
+  if (typeof window !== 'undefined' && typeof window.setGender === 'function' && window.setGender !== setGender) {
+    window.setGender(gender);
+  } else if (typeof renderView === 'function') {
+    renderView();
   }
 }
 
 function handleSportChange(sportKey) {
   window.currentSport = sportKey;
   localStorage.setItem('app_sport', sportKey);
-  activeMatchesSubView = 'schedule';
-  if (typeof initApp === 'function') {
-    initApp();
-  } else {
-    window.location.reload();
+  if (typeof window !== 'undefined' && typeof window.handleSportChange === 'function' && window.handleSportChange !== handleSportChange) {
+    window.handleSportChange(sportKey);
+  } else if (typeof loadAllData === 'function') {
+    loadAllData();
   }
 }
