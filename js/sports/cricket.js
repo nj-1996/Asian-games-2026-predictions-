@@ -55,7 +55,7 @@
       stage: base.stage || m.round || m.stage || 'Match',
       date: base.date || m.date || '',
       time: base.time || m.time || '',
-      isFinished: base.isFinished || (m.status || '').toLowerCase().includes('finish') || (m.status || '').toLowerCase().includes('official')
+      isFinished: base.isFinished || (m.status || '').toLowerCase().includes('finish') || (m.status || '').toLowerCase().includes('official') || (m.state || '').toLowerCase().includes('cancel') || (m.status || '').toLowerCase().includes('cancel')
     };
   };
 
@@ -73,7 +73,8 @@
 
       const liveSession = parsed.find(s => (s.status || '').toLowerCase().includes('live') || (s.state || '').toLowerCase().includes('live'));
       const upcomingSessions = parsed.filter(s => !s.isFinished && (s.date || '') >= todayStr);
-      const heroTarget = liveSession || upcomingSessions[0] || parsed.find(s => !s.isFinished) || parsed[0];
+      const nextUnfinished = parsed.find(s => !s.isFinished);
+      const heroTarget = liveSession || upcomingSessions[0] || nextUnfinished;
 
       let heroHtml = '';
       if (heroTarget) {
@@ -96,6 +97,29 @@
             </div>
             <div style="font-size:0.8rem; color:#94a3b8;">
               ${displayDateTime} • ${heroTarget.stage}
+            </div>
+          </div>
+        `;
+      } else {
+        // All matches concluded: Render Tournament Concluded Banner with Podium Summary
+        const goldMatch = parsed.find(s => /gold/i.test(s.stage) || (/final/i.test(s.stage) && !/semi|quarter|bronze/i.test(s.stage)));
+        const bronzeMatch = parsed.find(s => /bronze/i.test(s.stage));
+        const champion = goldMatch?.winner;
+        const runnerUp = goldMatch ? (clean(goldMatch.winner) === clean(goldMatch.t1) ? goldMatch.t2 : goldMatch.t1) : '';
+        const bronzeWinner = bronzeMatch?.winner;
+
+        heroHtml = `
+          <div style="background:linear-gradient(135deg, rgba(202,138,4,0.18), rgba(15,23,42,0.85)); border:1px solid rgba(234,179,8,0.35); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center;">
+            <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.25rem 0.75rem; border-radius:9999px; background:rgba(234,179,8,0.2); color:#facc15; margin-bottom:0.6rem;">
+              🏆 TOURNAMENT CONCLUDED
+            </div>
+            <div style="font-size:1.15rem; font-weight:800; color:#f8fafc; margin-bottom:0.5rem;">
+              ${champion ? `🥇 Champion: ${getFlagEmoji(champion)} ${champion}` : 'Tournament Finished'}
+            </div>
+            <div style="display:flex; justify-content:center; gap:1.25rem; font-size:0.85rem; color:#cbd5e1; flex-wrap:wrap;">
+              ${champion ? `<span>🥇 <strong>Gold:</strong> ${champion}</span>` : ''}
+              ${runnerUp ? `<span>🥈 <strong>Silver:</strong> ${runnerUp}</span>` : ''}
+              ${bronzeWinner ? `<span>🥉 <strong>Bronze:</strong> ${bronzeWinner}</span>` : ''}
             </div>
           </div>
         `;

@@ -104,7 +104,12 @@
       } else if (activeTeqPhaseFilter === 'knockout') {
         filtered = filtered.filter(m => /quarter|repechage|semi/i.test(m.stage || m.round || ''));
       } else if (activeTeqPhaseFilter === 'finals') {
-        filtered = filtered.filter(m => /gold|final|bronze/i.test(m.stage || m.round || ''));
+        filtered = filtered.filter(m => {
+          const r = (m.stage || m.round || '').toLowerCase();
+          if (/gold|final|bronze/i.test(r)) return true;
+          if (/semi/i.test(r) && clean(m.event).includes('womensdoubles')) return true;
+          return false;
+        });
       }
 
       // Filter Bar HTML
@@ -135,6 +140,18 @@
         </div>
       `;
 
+      let eventNoticeHtml = '';
+      if (clean(activeTeqEventFilter).includes('womensdoubles')) {
+        eventNoticeHtml = `
+          <div style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); border-radius:8px; padding:0.65rem 0.95rem; margin-bottom:1rem; font-size:0.75rem; color:#f8fafc; display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.2rem;">🥉</span>
+            <div>
+              <strong>Tournament Notice:</strong> In Women's Doubles, there was no separate 3rd-place playoff match. Both losing semifinalists (<strong>Cambodia 🇰🇭</strong> and <strong>Lebanon 🇱🇧</strong>) were officially awarded Bronze medals directly from the semifinals.
+            </div>
+          </div>
+        `;
+      }
+
       // Group matches by Date
       const byDate = {};
       filtered.forEach(m => {
@@ -157,6 +174,7 @@
           const isRepechage = /repechage/i.test(m.stage || m.round || '');
           const isSemi = /semi/i.test(m.stage || m.round || '');
           const isQuarter = /quarter/i.test(m.stage || m.round || '');
+          const isWdSemi = isSemi && clean(m.event).includes('womensdoubles');
 
           let stageBadgeBg = 'rgba(255,255,255,0.06)';
           let stageBadgeColor = '#94a3b8';
@@ -166,7 +184,7 @@
             stageBadgeBg = 'rgba(234,179,8,0.15)';
             stageBadgeColor = '#facc15';
             stageBorder = 'rgba(234,179,8,0.3)';
-          } else if (isBronze) {
+          } else if (isBronze || isWdSemi) {
             stageBadgeBg = 'rgba(245,158,11,0.15)';
             stageBadgeColor = '#f59e0b';
             stageBorder = 'rgba(245,158,11,0.3)';
@@ -195,9 +213,10 @@
             : `${m.time} JST`;
 
           return `
-            <div style="background:var(--card-bg, #1e293b); border:1px solid ${isGold ? 'rgba(234,179,8,0.35)' : 'rgba(255,255,255,0.08)'}; border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem; transition:transform 0.15s; position:relative; overflow:hidden;">
+            <div style="background:var(--card-bg, #1e293b); border:1px solid ${isGold ? 'rgba(234,179,8,0.35)' : isBronze || isWdSemi ? 'rgba(245,158,11,0.35)' : 'rgba(255,255,255,0.08)'}; border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem; transition:transform 0.15s; position:relative; overflow:hidden;">
               ${isGold ? `<div style="position:absolute; top:0; right:0; background:#eab308; color:#000; font-size:0.62rem; font-weight:800; padding:2px 8px; border-bottom-left-radius:6px;">🥇 GOLD FINAL</div>` : ''}
               ${isBronze ? `<div style="position:absolute; top:0; right:0; background:#f59e0b; color:#000; font-size:0.62rem; font-weight:800; padding:2px 8px; border-bottom-left-radius:6px;">🥉 BRONZE MATCH</div>` : ''}
+              ${isWdSemi ? `<div style="position:absolute; top:0; right:0; background:#f59e0b; color:#000; font-size:0.62rem; font-weight:800; padding:2px 8px; border-bottom-left-radius:6px;">🥉 BRONZE DECIDER (LOSER AWARDS BRONZE)</div>` : ''}
 
               <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.74rem; margin-bottom:8px; gap:8px;">
                 <span style="background:${stageBadgeBg}; color:${stageBadgeColor}; border:1px solid ${stageBorder}; padding:2px 7px; border-radius:4px; font-weight:700;">
@@ -214,7 +233,7 @@
                   <div style="display:flex; align-items:center; gap:6px; font-weight:${w1 ? '700' : '600'}; font-size:0.88rem; color:${w1 ? '#f8fafc' : '#cbd5e1'};">
                     <span style="font-size:1.1rem;">${f1}</span>
                     <span>${m.team1 || m.t1}</span>
-                    ${w1 ? '<span style="color:#22c55e; font-size:0.7rem;">✓</span>' : ''}
+                    ${w1 ? '<span style="color:#22c55e; font-size:0.7rem;">✓</span>' : (isWdSemi && m.isFinished && !w1 ? '<span style="color:#f59e0b; font-size:0.68rem; font-weight:700; margin-left:4px; padding:1px 5px; border-radius:3px; background:rgba(245,158,11,0.15);">🥉 Bronze</span>' : '')}
                   </div>
                   ${m.athlete1 && m.athlete1 !== m.team1 ? `<div style="font-size:0.72rem; color:#94a3b8; padding-left:1.5rem;">${m.athlete1}</div>` : ''}
                 </div>
@@ -230,7 +249,7 @@
                 <!-- Team 2 -->
                 <div style="flex:1; display:flex; flex-direction:column; align-items:flex-end; gap:2px; opacity:${w1 ? '0.6' : '1'}; text-align:right;">
                   <div style="display:flex; align-items:center; gap:6px; font-weight:${w2 ? '700' : '600'}; font-size:0.88rem; color:${w2 ? '#f8fafc' : '#cbd5e1'};">
-                    ${w2 ? '<span style="color:#22c55e; font-size:0.7rem;">✓</span>' : ''}
+                    ${w2 ? '<span style="color:#22c55e; font-size:0.7rem;">✓</span>' : (isWdSemi && m.isFinished && !w2 ? '<span style="color:#f59e0b; font-size:0.68rem; font-weight:700; margin-right:4px; padding:1px 5px; border-radius:3px; background:rgba(245,158,11,0.15);">🥉 Bronze</span>' : '')}
                     <span>${m.team2 || m.t2}</span>
                     <span style="font-size:1.1rem;">${f2}</span>
                   </div>
@@ -253,7 +272,7 @@
         `;
       });
 
-      return filterBarHtml + matchesHtml;
+      return filterBarHtml + eventNoticeHtml + matchesHtml;
     },
 
     // --- Standings & Groups Renderer ---
@@ -649,12 +668,16 @@
           if (gB !== gA) return gB - gA;
           const sA = parseP(getProb(a, ['silver', 'silver_prob']));
           const sB = parseP(getProb(b, ['silver', 'silver_prob']));
-          return sB - sA;
+          if (sB !== sA) return sB - sA;
+          const bA = parseP(getProb(a, ['bronze', 'bronze_prob']));
+          const bB = parseP(getProb(b, ['bronze', 'bronze_prob']));
+          return bB - bA;
         });
         const res = [];
         if (sorted[0]) res.push({ medal: 'gold', item: sorted[0] });
         if (sorted[1]) res.push({ medal: 'silver', item: sorted[1] });
         if (sorted[2]) res.push({ medal: 'bronze', item: sorted[2] });
+        if (sorted[3]) res.push({ medal: 'bronze', item: sorted[3] });
         return res;
       };
 
@@ -765,12 +788,21 @@
       ];
 
       teqEventDefs.forEach(def => {
-        const predEvent = predEvents.find(e => e.id === def.id) || {};
-        const rankings = predEvent.rankings || [];
+        let predEvent = predEvents.find(e => e.id === def.id || clean(e.event || e.name || '') === clean(def.event));
+        let rankings = predEvent ? (predEvent.rankings || []) : [];
+        if (!rankings || rankings.length === 0) {
+          const pool = def.gender === 'women' ? (womenPreds || []) : (menPreds || []);
+          if (Array.isArray(pool)) {
+            rankings = pool.filter(p => clean(p.event || '') === clean(def.event));
+          }
+        }
         const podium = projectPodium(rankings);
-        const projGold = formatC(podium.find(p => p.medal === 'gold')?.item, true);
-        const projSilver = formatC(podium.find(p => p.medal === 'silver')?.item, true);
-        const projBronze = formatC(podium.find(p => p.medal === 'bronze')?.item, true);
+        const projGold = formatC(podium[0]?.item, true);
+        const projSilver = formatC(podium[1]?.item, true);
+        const projBronze1 = formatC(podium[2]?.item, true);
+        const projBronze2 = formatC(podium[3]?.item, true);
+        const projBronzes = [projBronze1, projBronze2].filter(Boolean);
+        const projBronze = projBronze1;
 
         const matchPool = def.gender === 'women' ? (womenMatches || []) : (menMatches || []);
         const { gold: actualGold, silver: actualSilver, bronze: actualBronze, bronzes: actualBronzes, status, matchInfo, goldScoreInfo, bronzeScoreInfo } = resolveActuals(def.event, matchPool);
@@ -787,7 +819,7 @@
           goldScoreInfo,
           bronzeScoreInfo,
           rankings,
-          projected: { gold: projGold, silver: projSilver, bronze: projBronze },
+          projected: { gold: projGold, silver: projSilver, bronze: projBronze, bronzes: projBronzes },
           actual: { gold: actualGold, silver: actualSilver, bronze: actualBronze, bronzes: actualBronzes }
         });
       });
@@ -818,7 +850,11 @@
       medalEvents.forEach(ev => {
         recordMedal(projectedTableMap, ev.projected.gold, 'gold');
         recordMedal(projectedTableMap, ev.projected.silver, 'silver');
-        recordMedal(projectedTableMap, ev.projected.bronze, 'bronze');
+        if (Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.length > 0) {
+          ev.projected.bronzes.forEach(b => recordMedal(projectedTableMap, b, 'bronze'));
+        } else {
+          recordMedal(projectedTableMap, ev.projected.bronze, 'bronze');
+        }
 
         recordMedal(actualTableMap, ev.actual.gold, 'gold');
         recordMedal(actualTableMap, ev.actual.silver, 'silver');
@@ -828,7 +864,8 @@
           recordMedal(actualTableMap, ev.actual.bronze, 'bronze');
         }
 
-        const projTop3 = [ev.projected.gold?.cleaned, ev.projected.silver?.cleaned, ev.projected.bronze?.cleaned].filter(Boolean);
+        const projBronzesCleaned = Array.isArray(ev.projected.bronzes) ? ev.projected.bronzes.map(b => b?.cleaned) : [ev.projected.bronze?.cleaned];
+        const projTop3 = [ev.projected.gold?.cleaned, ev.projected.silver?.cleaned, ...projBronzesCleaned].filter(Boolean);
         let evDecided = 0, evExact = 0, evPodium = 0;
 
         if (ev.actual.gold) {
@@ -841,21 +878,21 @@
           if (ev.actual.silver.cleaned === ev.projected.silver?.cleaned) { evExact++; totalExactHits++; }
           if (projTop3.includes(ev.actual.silver.cleaned)) { evPodium++; totalPodiumHits++; }
         }
+        let bronzeHitVal = null;
         if (Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 0) {
+          bronzeHitVal = false;
           ev.actual.bronzes.forEach(b => {
             evDecided++; totalDecidedMedals++;
-            if (b.cleaned === ev.projected.bronze?.cleaned) { evExact++; totalExactHits++; }
+            const hit = (Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.some(pb => pb.cleaned === b.cleaned)) || (ev.projected.bronze?.cleaned === b.cleaned);
+            if (hit) { evExact++; totalExactHits++; bronzeHitVal = true; }
             if (projTop3.includes(b.cleaned)) { evPodium++; totalPodiumHits++; }
           });
         } else if (ev.actual.bronze) {
           evDecided++; totalDecidedMedals++;
-          if (ev.actual.bronze.cleaned === ev.projected.bronze?.cleaned) { evExact++; totalExactHits++; }
+          const hit = (Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.some(pb => pb.cleaned === ev.actual.bronze.cleaned)) || (ev.projected.bronze?.cleaned === ev.actual.bronze.cleaned);
+          if (hit) { evExact++; totalExactHits++; bronzeHitVal = true; } else { bronzeHitVal = false; }
           if (projTop3.includes(ev.actual.bronze.cleaned)) { evPodium++; totalPodiumHits++; }
         }
-
-        const bronzeHitVal = (Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 0)
-          ? ev.actual.bronzes.some(b => b.cleaned === ev.projected.bronze?.cleaned)
-          : (ev.actual.bronze ? ev.actual.bronze.cleaned === ev.projected.bronze?.cleaned : null);
 
         ev.evaluation = {
           decidedCount: evDecided, exactHits: evExact, podiumHits: evPodium,
@@ -868,7 +905,8 @@
 
         // Resolve actual finish for projected picks
         const matchPool = ev.gender === 'women' ? womenMatches : menMatches;
-        [ev.projected.gold, ev.projected.silver, ev.projected.bronze].forEach(pick => {
+        const allProjPicks = [ev.projected.gold, ev.projected.silver, ...(Array.isArray(ev.projected.bronzes) ? ev.projected.bronzes : [ev.projected.bronze])];
+        allProjPicks.forEach(pick => {
           if (!pick) return;
           if (typeof resolveActualFinish === 'function') {
             pick.actualFinish = resolveActualFinish(pick, ev, matchPool, null);

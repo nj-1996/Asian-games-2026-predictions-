@@ -1679,14 +1679,23 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
     // Record projected podium
     recordTableMedal(projectedTableMap, ev.projected.gold, 'gold', isIndiv);
     recordTableMedal(projectedTableMap, ev.projected.silver, 'silver', isIndiv);
-    recordTableMedal(projectedTableMap, ev.projected.bronze, 'bronze', isIndiv);
+    if (Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.length > 0) {
+      ev.projected.bronzes.forEach(b => recordTableMedal(projectedTableMap, b, 'bronze', isIndiv));
+    } else {
+      recordTableMedal(projectedTableMap, ev.projected.bronze, 'bronze', isIndiv);
+    }
 
     // Record actual podium
     recordTableMedal(actualTableMap, ev.actual.gold, 'gold', isIndiv);
     recordTableMedal(actualTableMap, ev.actual.silver, 'silver', isIndiv);
-    recordTableMedal(actualTableMap, ev.actual.bronze, 'bronze', isIndiv);
+    if (Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 0) {
+      ev.actual.bronzes.forEach(b => recordTableMedal(actualTableMap, b, 'bronze', isIndiv));
+    } else {
+      recordTableMedal(actualTableMap, ev.actual.bronze, 'bronze', isIndiv);
+    }
 
-    const projTop3 = [ev.projected.gold?.cleaned, ev.projected.silver?.cleaned, ev.projected.bronze?.cleaned].filter(Boolean);
+    const projBronzesCleaned = Array.isArray(ev.projected.bronzes) ? ev.projected.bronzes.map(b => b?.cleaned) : [ev.projected.bronze?.cleaned];
+    const projTop3 = [ev.projected.gold?.cleaned, ev.projected.silver?.cleaned, ...projBronzesCleaned].filter(Boolean);
     let evDecided = 0;
     let evExact = 0;
     let evPodium = 0;
@@ -1729,10 +1738,27 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
       }
     }
 
-    if (ev.actual.bronze) {
+    if (Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 0) {
+      bronzeHit = false;
+      ev.actual.bronzes.forEach(b => {
+        evDecided++;
+        totalDecidedMedals++;
+        const matchFound = (Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.some(pb => pb?.cleaned === b?.cleaned)) || (ev.projected.bronze?.cleaned === b?.cleaned);
+        if (matchFound) {
+          evExact++;
+          totalExactHits++;
+          bronzeHit = true;
+        }
+        if (projTop3.includes(b?.cleaned)) {
+          evPodium++;
+          totalPodiumHits++;
+        }
+      });
+    } else if (ev.actual.bronze) {
       evDecided++;
       totalDecidedMedals++;
-      if (ev.actual.bronze.cleaned === ev.projected.bronze?.cleaned) {
+      const matchFound = (Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.some(pb => pb?.cleaned === ev.actual.bronze?.cleaned)) || (ev.actual.bronze?.cleaned === ev.projected.bronze?.cleaned);
+      if (matchFound) {
         evExact++;
         totalExactHits++;
         bronzeHit = true;
@@ -1764,6 +1790,11 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
     }
     if (ev.projected.silver) {
       ev.projected.silver.actualFinish = resolveActualFinish(ev.projected.silver, ev, evMatches, trackerRaw);
+    }
+    if (Array.isArray(ev.projected.bronzes)) {
+      ev.projected.bronzes.forEach(b => {
+        b.actualFinish = resolveActualFinish(b, ev, evMatches, trackerRaw);
+      });
     }
     if (ev.projected.bronze) {
       ev.projected.bronze.actualFinish = resolveActualFinish(ev.projected.bronze, ev, evMatches, trackerRaw);
@@ -2154,9 +2185,9 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                     <div style="font-size:0.73rem; color:#94a3b8; margin-top:3px;">
                       ${ev.actual.gold ? `
                         <div style="margin-bottom:2px;"><span style="color:#4ade80; font-weight:700;">Official:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.actual.gold)}</strong> • 🥈 ${formatContenderDisplay(ev.actual.silver)} • 🥉 ${(Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 1) ? ev.actual.bronzes.map(b => formatContenderDisplay(b)).join(' & ') : formatContenderDisplay(ev.actual.bronze)}</div>
-                        <div><span style="color:#38bdf8; font-weight:700;">Projected:</span> 🥇 <strong style="color:#f8fafc;">${formatProjectedPickWithFinish(ev.projected.gold, ev.evaluation.goldHit, 'Gold')}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatProjectedPickWithFinish(ev.projected.silver, ev.evaluation.silverHit, 'Silver')} • 🥉 ${formatProjectedPickWithFinish(ev.projected.bronze, ev.evaluation.bronzeHit, 'Bronze')}</div>
+                        <div><span style="color:#38bdf8; font-weight:700;">Projected:</span> 🥇 <strong style="color:#f8fafc;">${formatProjectedPickWithFinish(ev.projected.gold, ev.evaluation.goldHit, 'Gold')}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatProjectedPickWithFinish(ev.projected.silver, ev.evaluation.silverHit, 'Silver')} • 🥉 ${(Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.length > 1) ? ev.projected.bronzes.map(b => formatProjectedPickWithFinish(b, ev.evaluation.bronzeHit, 'Bronze')).join(' & ') : formatProjectedPickWithFinish(ev.projected.bronze, ev.evaluation.bronzeHit, 'Bronze')}</div>
                       ` : `
-                        <div><span style="color:#38bdf8; font-weight:700;">Projected Picks:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.projected.gold)}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatContenderDisplay(ev.projected.silver)} • 🥉 ${formatContenderDisplay(ev.projected.bronze)}</div>
+                        <div><span style="color:#38bdf8; font-weight:700;">Projected Picks:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.projected.gold)}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatContenderDisplay(ev.projected.silver)} • 🥉 ${(Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.length > 1) ? ev.projected.bronzes.map(b => formatContenderDisplay(b)).join(' & ') : formatContenderDisplay(ev.projected.bronze)}</div>
                       `}
                     </div>
                   </div>
@@ -2247,23 +2278,29 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
             </div>
 
             <!-- 🥉 BRONZE -->
-            ${(Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 1) ? ev.actual.bronzes.map((b, bIdx) => `
+            ${(Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 1) ? ev.actual.bronzes.map((b, bIdx) => {
+              const projPick = (Array.isArray(ev.projected.bronzes) && ev.projected.bronzes[bIdx])
+                ? ev.projected.bronzes[bIdx]
+                : (ev.projected.bronze || (Array.isArray(ev.projected.bronzes) && ev.projected.bronzes[0]));
+              const isExactHit = (Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.some(pb => pb?.cleaned === b?.cleaned)) || (ev.projected.bronze?.cleaned === b?.cleaned);
+              return `
               <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:1rem; text-align:center;">
                 <div style="font-size:1.8rem; margin-bottom:4px;">🥉</div>
-                <div style="font-size:0.7rem; font-weight:800; color:#f59e0b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">BRONZE MEDALIST • ${ev.bronzeScoreInfo ? `BRONZE ${bIdx + 1}` : `SEMIFINALIST`}</div>
+                <div style="font-size:0.7rem; font-weight:800; color:#f59e0b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">BRONZE MEDALIST • ${ev.bronzeScoreInfo && ev.bronzeScoreInfo.includes('Bronze Match') ? `BRONZE ${bIdx + 1}` : `SEMIFINALIST`}</div>
                 <div style="font-size:2rem; margin-bottom:4px;">${b ? b.flag : '⚪'}</div>
                 <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
                   ${b ? (b.athlete ? b.athlete : `${b.name}${b.isHost ? ' (Host)' : ''}`) : 'TBD'}
                 </div>
                 ${b && b.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${b.name}${b.isHost ? ' (Host)' : ''}</div>` : ''}
                 <div style="font-size:0.74rem; color:#94a3b8; margin-top:8px; padding-top:6px; border-top:1px solid rgba(245,158,11,0.15);">
-                  ${ev.bronzeScoreInfo ? 'Won Bronze Match' : 'Semifinalist Bronze Medalist'}
+                  ${ev.bronzeScoreInfo && ev.bronzeScoreInfo.includes('Bronze Match') ? 'Won Bronze Match' : 'Semifinalist Bronze Medalist'}
                 </div>
-                <div style="font-size:0.72rem; color:${(ev.evaluation.bronzeHit && ev.projected.bronze?.cleaned === b.cleaned) ? '#4ade80' : '#94a3b8'}; margin-top:4px; font-weight:600;">
-                  ${(ev.evaluation.bronzeHit && ev.projected.bronze?.cleaned === b.cleaned) ? '🎯 Simulation Pick: Exact Bronze Hit' : 'Official Medalist'}
+                <div style="font-size:0.72rem; color:${isExactHit ? '#4ade80' : '#94a3b8'}; margin-top:4px; font-weight:600;">
+                  ${isExactHit ? '🎯 Simulation Pick: Exact Bronze Hit' : `Projected pick was ${formatContenderDisplay(projPick)}${projPick?.actualFinish ? ` • Actual: <strong style="color:${projPick.actualFinish.badgeColor};">${projPick.actualFinish.text}</strong>` : ''}`}
                 </div>
               </div>
-            `).join('') : `
+            `;
+            }).join('') : `
               <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:1rem; text-align:center;">
                 <div style="font-size:1.8rem; margin-bottom:4px;">🥉</div>
                 <div style="font-size:0.7rem; font-weight:800; color:#f59e0b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">BRONZE MEDALIST • 3RD PLACE</div>
@@ -2305,7 +2342,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
               <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
                 ${ev.projected.gold?.athlete ? ev.projected.gold.athlete : (ev.projected.gold ? `${ev.projected.gold.name}${ev.projected.gold.isHost ? ' (Host)' : ''}` : 'TBD')}
               </div>
-              ${ev.projected.gold?.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${ev.projected.gold.name}${ev.projected.gold.isHost ? ' (Host)' : ''}</div>` : ''}
+              ${ev.projected.gold && ev.projected.gold.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${ev.projected.gold.name}${ev.projected.gold.isHost ? ' (Host)' : ''}</div>` : ''}
               <div style="font-size:0.75rem; font-weight:700; color:#facc15; margin-top:8px;">
                 ${ev.projected.gold && ev.projected.gold.goldProb ? `${ev.projected.gold.goldProb} Win Probability` : ''}
               </div>
@@ -2326,18 +2363,33 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
             </div>
 
             <!-- Projected 🥉 -->
-            <div style="background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:1rem; text-align:center;">
-              <div style="font-size:1.8rem; margin-bottom:4px;">🥉</div>
-              <div style="font-size:0.7rem; font-weight:800; color:#f59e0b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">PROJECTED BRONZE</div>
-              <div style="font-size:2rem; margin-bottom:4px;">${ev.projected.bronze ? ev.projected.bronze.flag : '⚪'}</div>
-              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
-                ${ev.projected.bronze?.athlete ? ev.projected.bronze.athlete : (ev.projected.bronze ? `${ev.projected.bronze.name}${ev.projected.bronze.isHost ? ' (Host)' : ''}` : 'TBD')}
+            ${(Array.isArray(ev.projected.bronzes) && ev.projected.bronzes.length > 1) ? ev.projected.bronzes.map((pb, pbIdx) => `
+              <div style="background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:1rem; text-align:center;">
+                <div style="font-size:1.8rem; margin-bottom:4px;">🥉</div>
+                <div style="font-size:0.7rem; font-weight:800; color:#f59e0b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">PROJECTED BRONZE ${pbIdx + 1}</div>
+                <div style="font-size:2rem; margin-bottom:4px;">${pb ? pb.flag : '⚪'}</div>
+                <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
+                  ${pb?.athlete ? pb.athlete : (pb ? `${pb.name}${pb.isHost ? ' (Host)' : ''}` : 'TBD')}
+                </div>
+                ${pb && pb.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${pb.name}${pb.isHost ? ' (Host)' : ''}</div>` : ''}
+                <div style="font-size:0.75rem; color:#f59e0b; margin-top:8px;">
+                  ${pb && pb.bronzeProb ? `${pb.bronzeProb} Bronze Probability` : ''}
+                </div>
               </div>
-              ${ev.projected.bronze && ev.projected.bronze.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${ev.projected.bronze.name}${ev.projected.bronze.isHost ? ' (Host)' : ''}</div>` : ''}
-              <div style="font-size:0.75rem; color:#f59e0b; margin-top:8px;">
-                ${ev.projected.bronze && ev.projected.bronze.bronzeProb ? `${ev.projected.bronze.bronzeProb} Bronze Probability` : ''}
+            `).join('') : `
+              <div style="background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.2); border-radius:10px; padding:1rem; text-align:center;">
+                <div style="font-size:1.8rem; margin-bottom:4px;">🥉</div>
+                <div style="font-size:0.7rem; font-weight:800; color:#f59e0b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">PROJECTED BRONZE</div>
+                <div style="font-size:2rem; margin-bottom:4px;">${ev.projected.bronze ? ev.projected.bronze.flag : '⚪'}</div>
+                <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
+                  ${ev.projected.bronze?.athlete ? ev.projected.bronze.athlete : (ev.projected.bronze ? `${ev.projected.bronze.name}${ev.projected.bronze.isHost ? ' (Host)' : ''}` : 'TBD')}
+                </div>
+                ${ev.projected.bronze && ev.projected.bronze.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${ev.projected.bronze.name}${ev.projected.bronze.isHost ? ' (Host)' : ''}</div>` : ''}
+                <div style="font-size:0.75rem; color:#f59e0b; margin-top:8px;">
+                  ${ev.projected.bronze && ev.projected.bronze.bronzeProb ? `${ev.projected.bronze.bronzeProb} Bronze Probability` : ''}
+                </div>
               </div>
-            </div>
+            `}
           </div>
         </div>
       `;
