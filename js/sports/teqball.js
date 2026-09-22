@@ -14,6 +14,10 @@
     return (s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
   }
 
+  function escapeAttr(str) {
+    return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   function parseMatch(m) {
     const base = typeof parseMatchData === 'function' ? parseMatchData(m) : {};
     const t1 = base.t1 || m.player1 || m.team1 || 'TBD';
@@ -82,7 +86,7 @@
       const eventPills = eventsList.map(ev => {
         const isActive = activeTeqEventFilter === ev;
         return `
-          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" onclick="window.setTeqEventFilter('${ev}')">
+          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" data-event="${escapeAttr(ev)}" onclick="window.setTeqEventFilter(this.getAttribute('data-event'))">
             ${ev}
           </button>
         `;
@@ -324,7 +328,7 @@
       const filterPills = eventsAvailable.map(ev => {
         const isActive = activeTeqStandingsEvent === ev;
         return `
-          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" onclick="window.setTeqStandingsEvent('${ev}')">
+          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" data-event="${escapeAttr(ev)}" onclick="window.setTeqStandingsEvent(this.getAttribute('data-event'))">
             ${ev}
           </button>
         `;
@@ -450,7 +454,7 @@
       const bracketPills = eventsAvailable.map(ev => {
         const isActive = activeTeqBracketEvent === ev;
         return `
-          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" onclick="window.setTeqBracketEvent('${ev}')">
+          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" data-event="${escapeAttr(ev)}" onclick="window.setTeqBracketEvent(this.getAttribute('data-event'))">
             ${ev}
           </button>
         `;
