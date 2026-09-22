@@ -366,25 +366,25 @@
     },
     {
       "round": "Bronze Medal Final - Match 36",
-      "status": "Upcoming",
-      "state": "Getting Ready",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-22",
       "time": "16:00",
       "player1": "Korea",
       "player2": "Thailand",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "0 - 1",
+      "winner": "Thailand"
     },
     {
       "round": "11th-12th Place - Match 32",
-      "status": "Upcoming",
-      "state": "Getting Ready",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-22",
       "time": "16:00",
       "player1": "Nepal",
       "player2": "Mongolia",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "0 - 1",
+      "winner": "Mongolia"
     },
     {
       "round": "9th-10th Place - Match 33",

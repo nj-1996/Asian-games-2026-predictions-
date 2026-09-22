@@ -157,19 +157,19 @@
     },
     {
       "round": "Group C",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "14:00",
       "player1": "Philippines",
       "player2": "Kuwait",
-      "score": "1 - 1",
-      "winner": ""
+      "score": "2 - 1",
+      "winner": "Philippines"
     },
     {
       "round": "Group C",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "14:00",
       "player1": "Vietnam",
@@ -238,7 +238,7 @@
       "state": "Scheduled",
       "date": "2026-09-25",
       "time": "14:00",
-      "player1": "TBD",
+      "player1": "Uzbekistan",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
@@ -250,7 +250,7 @@
       "date": "2026-09-25",
       "time": "19:30",
       "player1": "TBD",
-      "player2": "TBD",
+      "player2": "Vietnam",
       "score": "vs",
       "winner": ""
     },
