@@ -1037,10 +1037,10 @@ function renderMatchesView(container, matches) {
   container.innerHTML = `${pillsHeader}${contentHtml}`;
 }
 
-let activeUniversalEventFilter = 'all';
-window.setScheduleEventFilter = function(ev) {
+let activeUniversalEventFilter = null;
+window.setScheduleEventFilter = function(ev, renderAfter) {
   activeUniversalEventFilter = ev;
-  if (typeof renderView === 'function') renderView();
+  if (renderAfter !== false && typeof renderView === 'function') renderView();
 };
 
 function escapeAttr(str) {
@@ -1052,19 +1052,27 @@ function renderScheduleAndHero(matches) {
   const parsed = (matches || []).map(m => parseMatchData(m));
 
   // Extract distinct events if sport has multiple events
-  const eventSet = new Set(parsed.map(m => m.event || m.discipline).filter(Boolean));
-  const distinctEvents = Array.from(eventSet);
+  const rawEvents = Array.from(new Set(parsed.map(m => m.event || m.discipline).filter(Boolean)));
+  const score = (ev) => {
+    const s = (ev || '').toLowerCase();
+    if (s.includes('singles') || s.includes('individual')) return 1;
+    if (s.includes('doubles') && !s.includes('mixed')) return 2;
+    if (s.includes('mixed')) return 3;
+    if (s.includes('team')) return 4;
+    return 10;
+  };
+  const distinctEvents = rawEvents.sort((a, b) => score(a) - score(b) || a.localeCompare(b));
 
-  if (activeUniversalEventFilter !== 'all' && !eventSet.has(activeUniversalEventFilter)) {
-    activeUniversalEventFilter = 'all';
+  if (!activeUniversalEventFilter || activeUniversalEventFilter === 'all' || !distinctEvents.includes(activeUniversalEventFilter)) {
+    activeUniversalEventFilter = distinctEvents[0] || '';
   }
 
   let filtered = parsed;
-  if (activeUniversalEventFilter !== 'all') {
-    filtered = filtered.filter(m => (m.event || m.discipline) === activeUniversalEventFilter);
+  if (distinctEvents.length > 1 && activeUniversalEventFilter) {
+    filtered = parsed.filter(m => (m.event || m.discipline) === activeUniversalEventFilter);
   }
 
-  // Event Selector Dropdown HTML (if multiple events exist)
+  // Event Selector Dropdown HTML (if multiple events exist, rendered FIRST)
   let eventFilterHtml = '';
   if (distinctEvents.length > 1) {
     eventFilterHtml = `
@@ -1073,7 +1081,6 @@ function renderScheduleAndHero(matches) {
           <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
           <div class="event-selector-wrap">
             <select class="event-dropdown" onchange="window.setScheduleEventFilter(this.value)">
-              <option value="all" ${activeUniversalEventFilter === 'all' ? 'selected' : ''}>All Events (${distinctEvents.length})</option>
               ${distinctEvents.map(ev => `<option value="${escapeAttr(ev)}" ${activeUniversalEventFilter === ev ? 'selected' : ''}>${ev}</option>`).join('')}
             </select>
           </div>

@@ -5,7 +5,7 @@
 (function () {
   window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 
-  let activeTeqEventFilter = 'all'; // 'all' | "Men's Singles" | "Men's Doubles" | etc.
+  let activeTeqEventFilter = null; // defaults to first event in active category
   let activeTeqPhaseFilter = 'all'; // 'all' | 'groups' | 'knockout' | 'finals'
   let activeTeqStandingsEvent = 'all';
   let activeTeqBracketEvent = 'all';
@@ -84,13 +84,7 @@
       const f2 = getFlagEmoji(liveMatch.team2 || liveMatch.t2);
       return `
         <div style="background:linear-gradient(135deg, rgba(239,68,68,0.18), rgba(15,23,42,0.9)); border:1px solid rgba(239,68,68,0.4); border-radius:12px; padding:1.25rem; position:relative; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-          ${isSingleView ? `
-            <div style="margin-bottom:8px;">
-              <button style="background:none; border:none; color:#38bdf8; font-size:0.75rem; font-weight:600; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px;" onclick="window.setTeqEventFilter('all')">
-                <span>&larr;</span> <span>All Teqball Events</span>
-              </button>
-            </div>
-          ` : ''}
+
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:6px;">
             <span style="font-size:0.95rem; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:6px;">
               <span>🏓</span> <span>${evName}</span>
@@ -140,13 +134,7 @@
 
       return `
         <div style="background:linear-gradient(135deg, rgba(30,58,138,0.35), rgba(15,23,42,0.9)); border:1px solid rgba(59,130,246,0.35); border-radius:12px; padding:1.25rem; position:relative; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-          ${isSingleView ? `
-            <div style="margin-bottom:8px;">
-              <button style="background:none; border:none; color:#38bdf8; font-size:0.75rem; font-weight:600; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px;" onclick="window.setTeqEventFilter('all')">
-                <span>&larr;</span> <span>All Teqball Events</span>
-              </button>
-            </div>
-          ` : ''}
+
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:6px;">
             <span style="font-size:0.95rem; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:6px;">
               <span>🏓</span> <span>${evName}</span>
@@ -230,13 +218,7 @@
     return `
       <div style="background:linear-gradient(135deg, rgba(202,138,4,0.15), rgba(15,23,42,0.9)); border:1px solid rgba(234,179,8,0.32); border-radius:12px; padding:1.15rem; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
         <div>
-          ${isSingleView ? `
-            <div style="margin-bottom:8px;">
-              <button style="background:none; border:none; color:#38bdf8; font-size:0.75rem; font-weight:600; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px;" onclick="window.setTeqEventFilter('all')">
-                <span>&larr;</span> <span>All Teqball Events</span>
-              </button>
-            </div>
-          ` : ''}
+
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:6px;">
             <span style="font-size:0.95rem; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:6px;">
               <span>🏓</span> <span>${evName}</span>
@@ -335,19 +317,24 @@
       const parsedMatches = matches.map(m => parseMatch(m));
       const currentGender = window.currentGender || 'men';
 
-      // Available events for this gender
-      const eventSet = new Set(parsedMatches.map(m => m.event).filter(Boolean));
-      const eventsList = Array.from(eventSet);
+      // Available events for this category
+      const rawEvents = Array.from(new Set(parsedMatches.map(m => m.event).filter(Boolean)));
+      const score = (ev) => {
+        const s = (ev || '').toLowerCase();
+        if (s.includes('singles')) return 1;
+        if (s.includes('doubles') && !s.includes('mixed')) return 2;
+        if (s.includes('mixed')) return 3;
+        if (s.includes('team')) return 4;
+        return 10;
+      };
+      const eventsList = rawEvents.sort((a, b) => score(a) - score(b) || a.localeCompare(b));
 
-      if (activeTeqEventFilter !== 'all' && !eventSet.has(activeTeqEventFilter)) {
-        activeTeqEventFilter = 'all';
+      if (!activeTeqEventFilter || activeTeqEventFilter === 'all' || !eventsList.includes(activeTeqEventFilter)) {
+        activeTeqEventFilter = eventsList[0] || '';
       }
 
-      // Filter matches
-      let filtered = parsedMatches;
-      if (activeTeqEventFilter !== 'all') {
-        filtered = filtered.filter(m => m.event === activeTeqEventFilter);
-      }
+      // Filter matches by selected event
+      let filtered = activeTeqEventFilter ? parsedMatches.filter(m => m.event === activeTeqEventFilter) : parsedMatches;
 
       if (activeTeqPhaseFilter === 'groups') {
         filtered = filtered.filter(m => /group/i.test(m.stage || m.round || ''));
@@ -362,38 +349,7 @@
         });
       }
 
-      // Hero Banner HTML (per event or multi-event overview)
-      let heroHtml = '';
-      if (activeTeqEventFilter !== 'all') {
-        const evMatches = parsedMatches.filter(m => m.event === activeTeqEventFilter);
-        heroHtml = `
-          <div style="margin-bottom:1.25rem;">
-            ${renderTeqballEventHeroCard(activeTeqEventFilter, evMatches, true)}
-          </div>
-        `;
-      } else {
-        const cards = eventsList.map(ev => {
-          const evMatches = parsedMatches.filter(m => m.event === ev);
-          return renderTeqballEventHeroCard(ev, evMatches, false);
-        }).filter(Boolean).join('');
-
-        if (cards) {
-          heroHtml = `
-            <div style="margin-bottom:1.5rem;">
-              <div style="font-size:0.8rem; font-weight:800; color:#cbd5e1; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
-                <span>🏆 Event Highlights & Champions</span>
-                <span style="height:1px; flex:1; background:rgba(255,255,255,0.08);"></span>
-                <span style="font-size:0.72rem; color:#64748b; font-weight:600;">${eventsList.length} Events</span>
-              </div>
-              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1rem;">
-                ${cards}
-              </div>
-            </div>
-          `;
-        }
-      }
-
-      // Filter Bar HTML
+      // Event Selector Dropdown & Phase Filters HTML (Rendered FIRST)
       const filterBarHtml = `
         <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; flex-direction:column; gap:8px;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
@@ -401,7 +357,6 @@
               <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
               <div class="event-selector-wrap">
                 <select class="event-dropdown" onchange="window.setTeqEventFilter(this.value)">
-                  <option value="all" ${activeTeqEventFilter === 'all' ? 'selected' : ''}>All Events (${eventsList.length})</option>
                   ${eventsList.map(ev => `<option value="${escapeAttr(ev)}" ${activeTeqEventFilter === ev ? 'selected' : ''}>${ev}</option>`).join('')}
                 </select>
               </div>
@@ -417,6 +372,18 @@
           </div>
         </div>
       `;
+
+      // Hero Banner HTML (Rendered AFTER event selection)
+      let heroHtml = '';
+      if (activeTeqEventFilter) {
+        const evMatches = parsedMatches.filter(m => m.event === activeTeqEventFilter);
+        heroHtml = `
+          <div style="margin-bottom:1.25rem;">
+            ${renderTeqballEventHeroCard(activeTeqEventFilter, evMatches, true)}
+          </div>
+        `;
+      }
+
 
       let eventNoticeHtml = '';
       if (clean(activeTeqEventFilter).includes('womensdoubles')) {
@@ -550,7 +517,7 @@
         `;
       });
 
-      return heroHtml + filterBarHtml + eventNoticeHtml + matchesHtml;
+      return filterBarHtml + heroHtml + eventNoticeHtml + matchesHtml;
     },
 
     // --- Standings & Groups Renderer ---
@@ -1458,9 +1425,9 @@
   };
 
   // Filter setters
-  window.setTeqEventFilter = function (ev) {
+  window.setTeqEventFilter = function (ev, renderAfter) {
     activeTeqEventFilter = ev;
-    if (typeof renderView === 'function') renderView();
+    if (renderAfter !== false && typeof renderView === 'function') renderView();
   };
 
   window.setTeqPhaseFilter = function (phase) {

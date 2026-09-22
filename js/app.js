@@ -135,7 +135,7 @@ async function loadAllData() {
     // Toggle Mixed Button visibility
     const btnMixed = document.getElementById('btn-mixed');
     if (btnMixed) {
-      btnMixed.style.display = hasMixed ? 'inline-block' : 'none';
+      btnMixed.style.display = hasMixed ? '' : 'none';
     }
 
     // Reset currentGender to 'men' if currently 'mixed' but this sport has no mixed events
@@ -325,8 +325,8 @@ async function handleManualSync() {
 }
 
 // --- Navigation Handlers ---
-async function handleSportChange(sport) {
-  if (sport === currentSport) return;
+async function handleSportChange(sport, force) {
+  if (sport === currentSport && !force) return;
   currentSport = sport;
   window.currentSport = sport;
   localStorage.setItem('app_sport', sport);
@@ -350,6 +350,16 @@ async function handleSportChange(sport) {
   }
   if (typeof window.activePredictionsSubView !== 'undefined') {
     window.activePredictionsSubView = 'table';
+  }
+
+  if (typeof window.setTeqEventFilter === 'function') {
+    window.setTeqEventFilter(null, false);
+  }
+  if (typeof window.setScheduleEventFilter === 'function') {
+    window.setScheduleEventFilter(null, false);
+  }
+  if (typeof window.setMpnEventFilter === 'function') {
+    window.setMpnEventFilter('individual', false);
   }
 
   await loadAllData();
@@ -386,6 +396,17 @@ function setGender(gender) {
   if (btnMen) btnMen.classList.toggle('active', gender === 'men');
   if (btnWomen) btnWomen.classList.toggle('active', gender === 'women');
   if (btnMixed) btnMixed.classList.toggle('active', gender === 'mixed');
+
+  if (typeof window.setTeqEventFilter === 'function') {
+    window.setTeqEventFilter(null, false);
+  }
+  if (typeof window.setScheduleEventFilter === 'function') {
+    window.setScheduleEventFilter(null, false);
+  }
+  if (typeof window.setMpnEventFilter === 'function') {
+    window.setMpnEventFilter('individual', false);
+  }
+
   renderView();
 }
 

@@ -117,10 +117,10 @@
     return pName;
   }
 
-  var activeMpnEventFilter = 'all';
-  window.setMpnEventFilter = function(ev) {
+  var activeMpnEventFilter = 'individual';
+  window.setMpnEventFilter = function(ev, renderAfter) {
     activeMpnEventFilter = ev;
-    if (typeof renderView === 'function') renderView();
+    if (renderAfter !== false && typeof renderView === 'function') renderView();
   };
 
   function renderPentathlonHero(list, isWomen, activeEventFilter) {
@@ -242,6 +242,10 @@
                   (window.currentGender === 'women') ||
                   (list[0] && list[0].id && list[0].id.startsWith('W.'));
 
+    if (activeMpnEventFilter !== 'individual' && activeMpnEventFilter !== 'team') {
+      activeMpnEventFilter = 'individual';
+    }
+
     var indivLabel = isWomen ? "Women's Individual" : "Men's Individual";
     var teamLabel = isWomen ? "Women's Team" : "Men's Team";
     var eventFilterHtml = `
@@ -250,13 +254,12 @@
           <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
           <div class="event-selector-wrap">
             <select class="event-dropdown" onchange="window.setMpnEventFilter(this.value)">
-              <option value="all" ${activeMpnEventFilter === 'all' ? 'selected' : ''}>All Events (2)</option>
               <option value="individual" ${activeMpnEventFilter === 'individual' ? 'selected' : ''}>${indivLabel}</option>
               <option value="team" ${activeMpnEventFilter === 'team' ? 'selected' : ''}>${teamLabel}</option>
             </select>
           </div>
         </div>
-        <span style="font-size:0.72rem; color:#64748b;">Showing ${activeMpnEventFilter === 'all' ? 'All Events' : (activeMpnEventFilter === 'team' ? teamLabel : indivLabel)}</span>
+        <span style="font-size:0.72rem; color:#64748b;">Showing ${activeMpnEventFilter === 'team' ? teamLabel : indivLabel}</span>
       </div>
     `;
 
@@ -339,7 +342,7 @@
       `;
     }).join('');
 
-    return renderPentathlonHero(list, isWomen, activeMpnEventFilter) + eventFilterHtml + timelineHtml + renderBottomSheetTemplate();
+    return eventFilterHtml + renderPentathlonHero(filteredList, isWomen, activeMpnEventFilter) + timelineHtml + renderBottomSheetTemplate();
   }
 
   function renderBottomSheetTemplate() {

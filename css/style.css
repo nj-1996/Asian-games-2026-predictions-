@@ -177,9 +177,9 @@ header {
 
 .nav-controls {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  align-items: center;
-  justify-content: space-between;
+  width: 100%;
 }
 
 .tab-group, .gender-group {
@@ -187,19 +187,22 @@ header {
   background: #080b12;
   border: 1px solid var(--card-border);
   border-radius: 8px;
-  padding: 2px;
+  padding: 3px;
+  width: 100%;
 }
 
 .nav-btn {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  padding: 6px 12px;
+  padding: 7px 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex: 1;
+  text-align: center;
 }
 
 .nav-btn.active {
@@ -211,16 +214,20 @@ header {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  padding: 6px 10px;
+  padding: 7px 12px;
   border-radius: 6px;
   cursor: pointer;
+  flex: 1;
+  text-align: center;
+  transition: all 0.15s ease;
 }
 
 .gender-btn.active {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   color: var(--text-main);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* --- Layout Container --- */
