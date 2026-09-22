@@ -104,6 +104,48 @@ header {
   border-top: 5px solid #60a5fa;
 }
 
+.event-selector-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.event-dropdown {
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(30, 41, 59, 0.85);
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.event-dropdown:focus,
+.event-dropdown:active {
+  background: rgba(30, 41, 59, 1);
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+  color: #ffffff;
+}
+
+.event-selector-wrap::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #94a3b8;
+}
+
 @media (max-width: 380px) {
   .event-name {
     font-size: 0.98rem;

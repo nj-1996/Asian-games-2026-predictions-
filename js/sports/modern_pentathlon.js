@@ -117,47 +117,83 @@
     return pName;
   }
 
-  function renderPentathlonHero(list, isWomen) {
+  var activeMpnEventFilter = 'all';
+  window.setMpnEventFilter = function(ev) {
+    activeMpnEventFilter = ev;
+    if (typeof renderView === 'function') renderView();
+  };
+
+  function renderPentathlonHero(list, isWomen, activeEventFilter) {
     if (!list || list.length === 0) return '';
     var isTournamentComplete = list.every(function(ev) { return ev.status === 'Official' || ev.status === 'Finished'; });
     var liveSession = list.find(function(ev) { return (ev.status || '').toLowerCase() === 'live'; });
     var nextSession = liveSession || list.find(function(ev) { return ev.status !== 'Official' && ev.status !== 'Finished'; });
 
     if (isTournamentComplete) {
-      if (isWomen) {
+      if (activeEventFilter === 'individual') {
         return `
           <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.85)); border:1px solid rgba(234,179,8,0.35); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
             <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.25rem 0.75rem; border-radius:9999px; background:rgba(250,204,21,0.2); color:#facc15; margin-bottom:0.75rem;">
-              🏆 TOURNAMENT COMPLETED
+              🏆 ${isWomen ? "WOMEN'S INDIVIDUAL COMPLETED" : "MEN'S INDIVIDUAL COMPLETED"}
             </div>
             <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.3rem;">
-              Individual Champion: <span style="color:#facc15;">Seong Seung-min 🇰🇷 (1,492 pts)</span> 🥇
+              🥇 Individual Champion: <span style="color:#facc15;">${isWomen ? 'Seong Seung-min 🇰🇷 (1,492 pts)' : 'Li Liuchang 🇨🇳 (1,598 pts)'}</span>
             </div>
-            <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:0.6rem;">
-              🥈 Silver: Zhang Mingyu 🇨🇳 (1,460 pts) • 🥉 Bronze: Wu Xiyao 🇨🇳 (1,447 pts)
+            <div style="font-size:0.85rem; color:#cbd5e1; margin-top:0.4rem;">
+              🥈 Silver: ${isWomen ? 'Zhang Mingyu 🇨🇳 (1,460 pts)' : 'Jun Woong-tae 🇰🇷 (1,595 pts)'} • 🥉 Bronze: ${isWomen ? 'Wu Xiyao 🇨🇳 (1,447 pts)' : 'Lee Jong-hyeon 🇰🇷 (1,593 pts)'}
             </div>
-            <div style="display:inline-block; font-size:0.78rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:4px 12px; border-radius:16px; color:#cbd5e1;">
-              👥 Team Champions: 🥇 China (4,318 pts) • 🥈 South Korea (4,271 pts) • 🥉 Japan (4,169 pts)
+          </div>
+        `;
+      } else if (activeEventFilter === 'team') {
+        return `
+          <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.85)); border:1px solid rgba(234,179,8,0.35); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+            <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.25rem 0.75rem; border-radius:9999px; background:rgba(250,204,21,0.2); color:#facc15; margin-bottom:0.75rem;">
+              🏆 ${isWomen ? "WOMEN'S TEAM COMPLETED" : "MEN'S TEAM COMPLETED"}
+            </div>
+            <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.3rem;">
+              🥇 Team Champions: <span style="color:#facc15;">${isWomen ? 'China 🇨🇳 (4,318 pts)' : 'South Korea 🇰🇷 (4,779 pts)'}</span>
+            </div>
+            <div style="font-size:0.85rem; color:#cbd5e1; margin-top:0.4rem;">
+              🥈 Silver: ${isWomen ? 'South Korea 🇰🇷 (4,271 pts)' : 'China 🇨🇳 (4,768 pts)'} • 🥉 Bronze: ${isWomen ? 'Japan 🇯🇵 (4,169 pts)' : 'Kazakhstan 🇰🇿 (4,647 pts)'}
             </div>
           </div>
         `;
       } else {
-        return `
-          <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.85)); border:1px solid rgba(234,179,8,0.35); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
-            <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.25rem 0.75rem; border-radius:9999px; background:rgba(250,204,21,0.2); color:#facc15; margin-bottom:0.75rem;">
-              🏆 TOURNAMENT COMPLETED
+        if (isWomen) {
+          return `
+            <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.85)); border:1px solid rgba(234,179,8,0.35); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+              <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.25rem 0.75rem; border-radius:9999px; background:rgba(250,204,21,0.2); color:#facc15; margin-bottom:0.75rem;">
+                🏆 TOURNAMENT COMPLETED
+              </div>
+              <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.3rem;">
+                Individual Champion: <span style="color:#facc15;">Seong Seung-min 🇰🇷 (1,492 pts)</span> 🥇
+              </div>
+              <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:0.6rem;">
+                🥈 Silver: Zhang Mingyu 🇨🇳 (1,460 pts) • 🥉 Bronze: Wu Xiyao 🇨🇳 (1,447 pts)
+              </div>
+              <div style="display:inline-block; font-size:0.78rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:4px 12px; border-radius:16px; color:#cbd5e1;">
+                👥 Team Champions: 🥇 China (4,318 pts) • 🥈 South Korea (4,271 pts) • 🥉 Japan (4,169 pts)
+              </div>
             </div>
-            <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.3rem;">
-              Individual Champion: <span style="color:#facc15;">Li Liuchang 🇨🇳 (1,598 pts)</span> 🥇
+          `;
+        } else {
+          return `
+            <div style="background:linear-gradient(135deg, rgba(30,58,138,0.4), rgba(15,23,42,0.85)); border:1px solid rgba(234,179,8,0.35); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+              <div style="display:inline-block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:0.25rem 0.75rem; border-radius:9999px; background:rgba(250,204,21,0.2); color:#facc15; margin-bottom:0.75rem;">
+                🏆 TOURNAMENT COMPLETED
+              </div>
+              <div style="font-size:1.15rem; font-weight:700; color:#f8fafc; margin-bottom:0.3rem;">
+                Individual Champion: <span style="color:#facc15;">Li Liuchang 🇨🇳 (1,598 pts)</span> 🥇
+              </div>
+              <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:0.6rem;">
+                🥈 Silver: Jun Woong-tae 🇰🇷 (1,595 pts) • 🥉 Bronze: Lee Jong-hyeon 🇰🇷 (1,593 pts)
+              </div>
+              <div style="display:inline-block; font-size:0.78rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:4px 12px; border-radius:16px; color:#cbd5e1;">
+                👥 Team Champions: 🥇 South Korea (4,779 pts) • 🥈 China (4,768 pts) • 🥉 Kazakhstan (4,647 pts)
+              </div>
             </div>
-            <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:0.6rem;">
-              🥈 Silver: Jun Woong-tae 🇰🇷 (1,595 pts) • 🥉 Bronze: Lee Jong-hyeon 🇰🇷 (1,593 pts)
-            </div>
-            <div style="display:inline-block; font-size:0.78rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:4px 12px; border-radius:16px; color:#cbd5e1;">
-              👥 Team Champions: 🥇 South Korea (4,779 pts) • 🥈 China (4,768 pts) • 🥉 Kazakhstan (4,647 pts)
-            </div>
-          </div>
-        `;
+          `;
+        }
       }
     }
 
@@ -206,8 +242,39 @@
                   (window.currentGender === 'women') ||
                   (list[0] && list[0].id && list[0].id.startsWith('W.'));
 
+    var indivLabel = isWomen ? "Women's Individual" : "Men's Individual";
+    var teamLabel = isWomen ? "Women's Team" : "Men's Team";
+    var eventFilterHtml = `
+      <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.65rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
+          <div class="event-selector-wrap">
+            <select class="event-dropdown" onchange="window.setMpnEventFilter(this.value)">
+              <option value="all" ${activeMpnEventFilter === 'all' ? 'selected' : ''}>All Events (2)</option>
+              <option value="individual" ${activeMpnEventFilter === 'individual' ? 'selected' : ''}>${indivLabel}</option>
+              <option value="team" ${activeMpnEventFilter === 'team' ? 'selected' : ''}>${teamLabel}</option>
+            </select>
+          </div>
+        </div>
+        <span style="font-size:0.72rem; color:#64748b;">Showing ${activeMpnEventFilter === 'all' ? 'All Events' : (activeMpnEventFilter === 'team' ? teamLabel : indivLabel)}</span>
+      </div>
+    `;
+
+    var filteredList = list;
+    if (activeMpnEventFilter === 'individual') {
+      filteredList = list.filter(function(ev) {
+        var d = (ev.discipline || ev.round || ev.id || '').toLowerCase();
+        return !d.includes('team');
+      });
+    } else if (activeMpnEventFilter === 'team') {
+      filteredList = list.filter(function(ev) {
+        var d = (ev.discipline || ev.round || ev.id || '').toLowerCase();
+        return d.includes('team');
+      });
+    }
+
     var phaseMap = {};
-    list.forEach(function(ev) {
+    filteredList.forEach(function(ev) {
       var pName = getNormalizedPhaseGroup(ev);
       if (!phaseMap[pName]) phaseMap[pName] = [];
       phaseMap[pName].push(ev);
@@ -225,7 +292,9 @@
           <div>
             ${sessions.filter(function(ev) {
               var d = (ev.discipline || ev.round || '').toLowerCase();
-              return !d.includes('team');
+              if (activeMpnEventFilter === 'team') return d.includes('team');
+              if (activeMpnEventFilter === 'individual') return !d.includes('team');
+              return true;
             }).map(function(ev) {
               var isFinished = ev.status === 'Official' || ev.status === 'Finished';
               var isLive = (ev.status || '').toLowerCase() === 'live';
@@ -270,7 +339,7 @@
       `;
     }).join('');
 
-    return renderPentathlonHero(list, isWomen) + timelineHtml + renderBottomSheetTemplate();
+    return renderPentathlonHero(list, isWomen, activeMpnEventFilter) + eventFilterHtml + timelineHtml + renderBottomSheetTemplate();
   }
 
   function renderBottomSheetTemplate() {

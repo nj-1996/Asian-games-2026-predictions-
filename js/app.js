@@ -8,8 +8,10 @@ let isSyncing = false;
 let appData = {
   menMatches: [],
   womenMatches: [],
+  mixedMatches: [],
   menPredictions: [],
   womenPredictions: [],
+  mixedPredictions: [],
   predictionEvents: []
 };
 window.appData = appData;
@@ -44,7 +46,7 @@ async function loadAllData() {
   try {
     const sport = currentSport;
 
-    const [menTrackerRaw, womenTrackerRaw, predRaw] = await Promise.all([
+    const [menTrackerRaw, womenTrackerRaw, mixedTrackerRaw, predRaw] = await Promise.all([
       fetchFastJson([
         `data/${sport}/tracker_men.json`,
         `data/${sport}/tracker.json`,
@@ -57,6 +59,11 @@ async function loadAllData() {
         `tracker_women.json`
       ]),
       fetchFastJson([
+        `data/${sport}/tracker_mixed.json`,
+        `data/tracker_mixed.json`,
+        `tracker_mixed.json`
+      ]),
+      fetchFastJson([
         `data/${sport}/predictions.json`,
         `data/${sport}/predictions_men.json`,
         `data/predictions.json`,
@@ -66,26 +73,82 @@ async function loadAllData() {
 
     if (loadId !== currentLoadId) return;
 
-    appData.menMatches = extractList(menTrackerRaw);
-    appData.womenMatches = extractList(womenTrackerRaw);
-    appData.menTrackerRaw = menTrackerRaw;
-    appData.womenTrackerRaw = womenTrackerRaw;
+    const rawMen = extractList(menTrackerRaw) || [];
+    const rawWomen = extractList(womenTrackerRaw) || [];
+    const rawMixed = extractList(mixedTrackerRaw) || [];
+
+    const isMixedMatch = (m) => {
+      const ev = String(m.event || m.gender || m.round || m.discipline || '').toLowerCase();
+      return ev.includes('mixed');
+    };
+
+    // Collect all mixed matches from rawMixed, rawMen, and rawWomen
+    const allMatches = [...rawMixed, ...rawMen, ...rawWomen];
+    const mixedMatchMap = new Map();
+    allMatches.filter(isMixedMatch).forEach(m => {
+      const id = m.id || `${m.event}_${m.team1 || m.t1}_${m.team2 || m.t2}_${m.date}_${m.time}`;
+      if (!mixedMatchMap.has(id)) mixedMatchMap.set(id, m);
+    });
+    const detectedMixedMatches = Array.from(mixedMatchMap.values());
 
     appData.predictionEvents = (predRaw && Array.isArray(predRaw.events)) ? predRaw.events : [];
+    const hasMixedInPredictions = appData.predictionEvents.some(e => String(e.name || e.event || '').toLowerCase().includes('mixed'));
+    const hasMixed = detectedMixedMatches.length > 0 || hasMixedInPredictions;
 
-    if (predRaw && !Array.isArray(predRaw) && (predRaw.men || predRaw.women)) {
+    if (hasMixed) {
+      appData.mixedMatches = detectedMixedMatches;
+      appData.menMatches = rawMen.filter(m => !isMixedMatch(m));
+      appData.womenMatches = rawWomen.filter(m => !isMixedMatch(m));
+    } else {
+      appData.mixedMatches = [];
+      appData.menMatches = rawMen;
+      appData.womenMatches = rawWomen;
+    }
+
+    appData.menTrackerRaw = menTrackerRaw;
+    appData.womenTrackerRaw = womenTrackerRaw;
+    appData.mixedTrackerRaw = mixedTrackerRaw;
+
+    if (predRaw && !Array.isArray(predRaw) && (predRaw.men || predRaw.women || predRaw.mixed)) {
       appData.menPredictions = extractList(predRaw.men);
       appData.womenPredictions = extractList(predRaw.women);
+      appData.mixedPredictions = extractList(predRaw.mixed);
     } else {
       appData.menPredictions = extractList(predRaw);
-      const womenPredRaw = await fetchFastJson([
-        `data/${sport}/predictions_women.json`,
-        `data/predictions_women.json`,
-        `predictions_women.json`
+      const [womenPredRaw, mixedPredRaw] = await Promise.all([
+        fetchFastJson([
+          `data/${sport}/predictions_women.json`,
+          `data/predictions_women.json`,
+          `predictions_women.json`
+        ]),
+        fetchFastJson([
+          `data/${sport}/predictions_mixed.json`,
+          `data/predictions_mixed.json`,
+          `predictions_mixed.json`
+        ])
       ]);
       if (loadId !== currentLoadId) return;
       appData.womenPredictions = extractList(womenPredRaw);
+      appData.mixedPredictions = extractList(mixedPredRaw);
     }
+
+    // Toggle Mixed Button visibility
+    const btnMixed = document.getElementById('btn-mixed');
+    if (btnMixed) {
+      btnMixed.style.display = hasMixed ? 'inline-block' : 'none';
+    }
+
+    // Reset currentGender to 'men' if currently 'mixed' but this sport has no mixed events
+    if (currentGender === 'mixed' && !hasMixed) {
+      currentGender = 'men';
+      window.currentGender = 'men';
+      const btnMen = document.getElementById('btn-men');
+      const btnWomen = document.getElementById('btn-women');
+      if (btnMen) btnMen.classList.add('active');
+      if (btnWomen) btnWomen.classList.remove('active');
+      if (btnMixed) btnMixed.classList.remove('active');
+    }
+
     window.appData = appData;
   } catch (err) {
     if (loadId !== currentLoadId) return;
@@ -268,6 +331,18 @@ async function handleSportChange(sport) {
   window.currentSport = sport;
   localStorage.setItem('app_sport', sport);
 
+  const sel = document.getElementById('sport-select');
+  if (sel && sel.value !== sport) sel.value = sport;
+
+  if (typeof window.setMatchesSubView === 'function') {
+    window.setMatchesSubView('schedule');
+  } else if (typeof activeMatchesSubView !== 'undefined') {
+    activeMatchesSubView = 'schedule';
+  }
+  if (typeof window.activeMatchesSubView !== 'undefined') {
+    window.activeMatchesSubView = 'schedule';
+  }
+
   if (typeof window.setPredictionsSubView === 'function') {
     window.setPredictionsSubView('table');
   } else if (typeof activePredictionsSubView !== 'undefined') {
@@ -307,8 +382,10 @@ function setGender(gender) {
   window.currentGender = gender;
   const btnMen = document.getElementById('btn-men');
   const btnWomen = document.getElementById('btn-women');
+  const btnMixed = document.getElementById('btn-mixed');
   if (btnMen) btnMen.classList.toggle('active', gender === 'men');
   if (btnWomen) btnWomen.classList.toggle('active', gender === 'women');
+  if (btnMixed) btnMixed.classList.toggle('active', gender === 'mixed');
   renderView();
 }
 
@@ -323,13 +400,26 @@ function renderView() {
   const container = document.getElementById('content-cards');
   if (!container) return;
 
-  const matches = currentGender === 'men' ? appData.menMatches : appData.womenMatches;
-  const predictions = currentGender === 'men' ? appData.menPredictions : appData.womenPredictions;
+  const matches = currentGender === 'men'
+    ? appData.menMatches
+    : (currentGender === 'women' ? appData.womenMatches : appData.mixedMatches);
+  const predictions = currentGender === 'men'
+    ? appData.menPredictions
+    : (currentGender === 'women' ? appData.womenPredictions : appData.mixedPredictions);
 
   if (currentTab === 'matches') {
     renderMatchesView(container, matches);
   } else if (currentTab === 'predictions') {
-    renderPredictionsView(container, appData.menPredictions, appData.womenPredictions, currentGender, appData.menMatches, appData.womenMatches);
+    renderPredictionsView(
+      container,
+      appData.menPredictions,
+      appData.womenPredictions,
+      currentGender,
+      appData.menMatches,
+      appData.womenMatches,
+      appData.mixedPredictions,
+      appData.mixedMatches
+    );
   } else if (currentTab === 'calibration') {
     renderCalibrationView(container, predictions, matches);
   }

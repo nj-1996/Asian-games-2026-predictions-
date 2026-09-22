@@ -394,21 +394,19 @@
       }
 
       // Filter Bar HTML
-      const eventPills = eventsList.map(ev => {
-        const isActive = activeTeqEventFilter === ev;
-        return `
-          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" data-event="${escapeAttr(ev)}" onclick="window.setTeqEventFilter(this.getAttribute('data-event'))">
-            ${ev}
-          </button>
-        `;
-      }).join('');
-
       const filterBarHtml = `
         <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; flex-direction:column; gap:8px;">
-          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-            <span style="font-size:0.72rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-right:4px;">Event:</span>
-            <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeTeqEventFilter === 'all' ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${activeTeqEventFilter === 'all' ? '#fff' : '#94a3b8'};" onclick="window.setTeqEventFilter('all')">All Events</button>
-            ${eventPills}
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
+              <div class="event-selector-wrap">
+                <select class="event-dropdown" onchange="window.setTeqEventFilter(this.value)">
+                  <option value="all" ${activeTeqEventFilter === 'all' ? 'selected' : ''}>All Events (${eventsList.length})</option>
+                  ${eventsList.map(ev => `<option value="${escapeAttr(ev)}" ${activeTeqEventFilter === ev ? 'selected' : ''}>${ev}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            <span style="font-size:0.72rem; color:#64748b;">Showing ${filtered.length} of ${parsedMatches.length} matches</span>
           </div>
           <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">
             <span style="font-size:0.72rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-right:4px;">Phase:</span>
@@ -416,7 +414,6 @@
             <button style="padding:3px 8px; font-size:0.72rem; font-weight:600; border-radius:5px; border:none; cursor:pointer; background:${activeTeqPhaseFilter === 'groups' ? '#38bdf8' : 'transparent'}; color:${activeTeqPhaseFilter === 'groups' ? '#0f172a' : '#94a3b8'};" onclick="window.setTeqPhaseFilter('groups')">Groups</button>
             <button style="padding:3px 8px; font-size:0.72rem; font-weight:600; border-radius:5px; border:none; cursor:pointer; background:${activeTeqPhaseFilter === 'knockout' ? '#38bdf8' : 'transparent'}; color:${activeTeqPhaseFilter === 'knockout' ? '#0f172a' : '#94a3b8'};" onclick="window.setTeqPhaseFilter('knockout')">Knockout & Repechages</button>
             <button style="padding:3px 8px; font-size:0.72rem; font-weight:600; border-radius:5px; border:none; cursor:pointer; background:${activeTeqPhaseFilter === 'finals' ? '#38bdf8' : 'transparent'}; color:${activeTeqPhaseFilter === 'finals' ? '#0f172a' : '#94a3b8'};" onclick="window.setTeqPhaseFilter('finals')">Medal Matches</button>
-            <span style="margin-left:auto; font-size:0.72rem; color:#64748b;">Showing ${filtered.length} of ${parsedMatches.length} matches</span>
           </div>
         </div>
       `;

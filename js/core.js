@@ -930,8 +930,10 @@ function setDivisionOddsGender(gender) {
   window.currentGender = gender;
   const btnMen = document.getElementById('btn-men');
   const btnWomen = document.getElementById('btn-women');
+  const btnMixed = document.getElementById('btn-mixed');
   if (btnMen) btnMen.classList.toggle('active', gender === 'men');
   if (btnWomen) btnWomen.classList.toggle('active', gender === 'women');
+  if (btnMixed) btnMixed.classList.toggle('active', gender === 'mixed');
 
   const container = document.getElementById('content-cards');
   if (container) {
@@ -942,7 +944,9 @@ function setDivisionOddsGender(gender) {
       data.womenPredictions,
       gender,
       data.menMatches,
-      data.womenMatches
+      data.womenMatches,
+      data.mixedPredictions,
+      data.mixedMatches
     );
   }
 }
@@ -1033,14 +1037,56 @@ function renderMatchesView(container, matches) {
   container.innerHTML = `${pillsHeader}${contentHtml}`;
 }
 
+let activeUniversalEventFilter = 'all';
+window.setScheduleEventFilter = function(ev) {
+  activeUniversalEventFilter = ev;
+  if (typeof renderView === 'function') renderView();
+};
+
+function escapeAttr(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // --- Schedule & Hero Card ---
 function renderScheduleAndHero(matches) {
-  const parsed = matches.map(m => parseMatchData(m));
+  const parsed = (matches || []).map(m => parseMatchData(m));
 
-  const liveMatch = parsed.find(m => m.status.toLowerCase().includes('live'));
-  const upcomingMatches = parsed.filter(m => !m.isFinished && !m.status.toLowerCase().includes('live'));
+  // Extract distinct events if sport has multiple events
+  const eventSet = new Set(parsed.map(m => m.event || m.discipline).filter(Boolean));
+  const distinctEvents = Array.from(eventSet);
+
+  if (activeUniversalEventFilter !== 'all' && !eventSet.has(activeUniversalEventFilter)) {
+    activeUniversalEventFilter = 'all';
+  }
+
+  let filtered = parsed;
+  if (activeUniversalEventFilter !== 'all') {
+    filtered = filtered.filter(m => (m.event || m.discipline) === activeUniversalEventFilter);
+  }
+
+  // Event Selector Dropdown HTML (if multiple events exist)
+  let eventFilterHtml = '';
+  if (distinctEvents.length > 1) {
+    eventFilterHtml = `
+      <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.65rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
+          <div class="event-selector-wrap">
+            <select class="event-dropdown" onchange="window.setScheduleEventFilter(this.value)">
+              <option value="all" ${activeUniversalEventFilter === 'all' ? 'selected' : ''}>All Events (${distinctEvents.length})</option>
+              ${distinctEvents.map(ev => `<option value="${escapeAttr(ev)}" ${activeUniversalEventFilter === ev ? 'selected' : ''}>${ev}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <span style="font-size:0.72rem; color:#64748b;">Showing ${filtered.length} of ${parsed.length} matches</span>
+      </div>
+    `;
+  }
+
+  const liveMatch = filtered.find(m => m.status.toLowerCase().includes('live'));
+  const upcomingMatches = filtered.filter(m => !m.isFinished && !m.status.toLowerCase().includes('live'));
   const upcomingWithTeams = upcomingMatches.filter(m => m.t1 !== 'TBD' && m.t2 !== 'TBD');
-  const isTournamentComplete = parsed.length > 0 && !liveMatch && upcomingMatches.length === 0;
+  const isTournamentComplete = filtered.length > 0 && !liveMatch && upcomingMatches.length === 0;
 
   let heroTarget = null;
   if (liveMatch) {
@@ -1058,7 +1104,7 @@ function renderScheduleAndHero(matches) {
       }
       return /gold|\bgm\b/i.test(s) || /gold|\bgm\b/i.test(r) || /\bfinal\b/i.test(s) || /\bfinal\b/i.test(r);
     };
-    heroTarget = parsed.slice().reverse().find(isGoldFinal) || parsed[parsed.length - 1];
+    heroTarget = filtered.slice().reverse().find(isGoldFinal) || filtered[filtered.length - 1];
   }
 
   let heroHtml = '';
@@ -1125,7 +1171,7 @@ function renderScheduleAndHero(matches) {
     `;
   }
 
-  const cardsHtml = parsed.map(m => {
+  const cardsHtml = filtered.map(m => {
     const t1Win = m.winner ? cleanTeamName(m.winner) === cleanTeamName(m.t1) : (m.isFinished && Number(m.s1) > Number(m.s2));
     const t2Win = m.winner ? cleanTeamName(m.winner) === cleanTeamName(m.t2) : (m.isFinished && Number(m.s2) > Number(m.s1));
     const displayDateTime = formatMatchDateTime(m.date, m.time) || m.status || '';
@@ -1153,7 +1199,7 @@ function renderScheduleAndHero(matches) {
     `;
   }).join('');
 
-  return heroHtml + cardsHtml;
+  return eventFilterHtml + heroHtml + cardsHtml;
 }
 
 // --- Universal Sport Medal Analytics & Comparison Engine ---
@@ -2517,7 +2563,9 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
   }
 
   // --- SUBVIEW 3: DIVISION ODDS (CRASH-PROOF & MULTI-GENDER) ---
-  const sourceData = currentGender === 'women' ? womenPreds : menPreds;
+  const sourceData = currentGender === 'women'
+    ? womenPreds
+    : (currentGender === 'mixed' ? (window.appData?.mixedPredictions || []) : menPreds);
   let rawList = [];
   if (Array.isArray(sourceData)) {
     rawList = sourceData;
@@ -2536,6 +2584,17 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
     }
   }
 
+  if ((!rawList || rawList.length === 0) && currentGender === 'mixed') {
+    const mixedEv = analytics.events.find(e => e.gender === 'mixed' || (e.name || '').toLowerCase().includes('mixed'));
+    if (mixedEv && mixedEv.rankings && mixedEv.rankings.length > 0) {
+      rawList = mixedEv.rankings;
+    }
+  }
+
+  const hasMixedOdds = (window.appData?.mixedMatches && window.appData.mixedMatches.length > 0) ||
+                       (window.appData?.mixedPredictions && window.appData.mixedPredictions.length > 0) ||
+                       (analytics.events && analytics.events.some(e => e.gender === 'mixed' || (e.name || '').toLowerCase().includes('mixed')));
+
   const oddsHeaderHtml = `
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:1rem;">
       <button onclick="setPredictionsSubView('table')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#38bdf8; padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:600; cursor:pointer;">
@@ -2544,6 +2603,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
       <div style="display:inline-flex; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:2px; gap:2px;">
         <button style="padding:4px 10px; font-size:0.72rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${currentGender === 'men' ? '#3b82f6' : 'transparent'}; color:${currentGender === 'men' ? '#fff' : '#94a3b8'};" onclick="setDivisionOddsGender('men')">👨 Men's Division</button>
         <button style="padding:4px 10px; font-size:0.72rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${currentGender === 'women' ? '#3b82f6' : 'transparent'}; color:${currentGender === 'women' ? '#fff' : '#94a3b8'};" onclick="setDivisionOddsGender('women')">👩 Women's Division</button>
+        ${hasMixedOdds ? `<button style="padding:4px 10px; font-size:0.72rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${currentGender === 'mixed' ? '#3b82f6' : 'transparent'}; color:${currentGender === 'mixed' ? '#fff' : '#94a3b8'};" onclick="setDivisionOddsGender('mixed')">🤝 Mixed Division</button>` : ''}
       </div>
     </div>
   `;
@@ -2567,9 +2627,9 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
         const team = formatTeamDisplayName(rawTeam.replace(/\(host\)/gi, '').trim());
         const isHost = rawTeam.toLowerCase().includes('host');
 
-        const divEv = analytics.events.find(e => e.gender === currentGender) || analytics.events[0];
-        const divMatches = currentGender === 'women' ? womenMatches : menMatches;
-        const trackerRaw = currentGender === 'women' ? window.appData?.womenTrackerRaw : window.appData?.menTrackerRaw;
+        const divEv = analytics.events.find(e => e.gender === currentGender || (currentGender === 'mixed' && (e.name || '').toLowerCase().includes('mixed'))) || analytics.events[0];
+        const divMatches = currentGender === 'women' ? womenMatches : (currentGender === 'mixed' ? (window.appData?.mixedMatches || []) : menMatches);
+        const trackerRaw = currentGender === 'women' ? window.appData?.womenTrackerRaw : (currentGender === 'mixed' ? (window.appData?.mixedTrackerRaw || window.appData?.menTrackerRaw) : window.appData?.menTrackerRaw);
         const pFinish = p.actualFinish || resolveActualFinish(p, divEv, divMatches, trackerRaw);
 
         const gold = parseStatNumber(getProb(p, ['gold', 'gold_prob', 'gold_pct', 'p_gold']));
