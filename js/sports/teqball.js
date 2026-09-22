@@ -564,6 +564,270 @@
       });
 
       return navHtml + bracketHtml;
+    },
+
+    // --- Medal Analytics Hook (for Predictions & Calibration) ---
+    extractMedalAnalytics(menMatches, womenMatches, menPreds, womenPreds) {
+      const predEvents = (window.appData && Array.isArray(window.appData.predictionEvents))
+        ? window.appData.predictionEvents : [];
+
+      const getProb = (obj, keys) => {
+        if (!obj) return 0;
+        for (const k of keys) { if (obj[k] != null && obj[k] !== '') return obj[k]; }
+        return 0;
+      };
+
+      const parseP = (v) => {
+        if (v == null) return 0;
+        if (typeof v === 'number') return v;
+        return parseFloat(('' + v).replace('%', '')) || 0;
+      };
+
+      const projectPodium = (list) => {
+        if (!Array.isArray(list) || list.length === 0) return [];
+        const sorted = [...list].sort((a, b) => {
+          const gA = parseP(getProb(a, ['gold', 'gold_prob']));
+          const gB = parseP(getProb(b, ['gold', 'gold_prob']));
+          if (gB !== gA) return gB - gA;
+          const sA = parseP(getProb(a, ['silver', 'silver_prob']));
+          const sB = parseP(getProb(b, ['silver', 'silver_prob']));
+          return sB - sA;
+        });
+        const res = [];
+        if (sorted[0]) res.push({ medal: 'gold', item: sorted[0] });
+        if (sorted[1]) res.push({ medal: 'silver', item: sorted[1] });
+        if (sorted[2]) res.push({ medal: 'bronze', item: sorted[2] });
+        return res;
+      };
+
+      const formatC = (item, isIndiv) => {
+        if (!item) return null;
+        const rawName = item.team || item.country || item.name || '';
+        const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(rawName) : '🏅';
+        const displayName = rawName.replace(/\(host\)/gi, '').trim();
+        const athlete = isIndiv ? (item.athlete || item.player || '') : '';
+        const cleaned = typeof cleanTeamName === 'function' ? cleanTeamName(rawName) : rawName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return { raw: rawName, cleaned, name: displayName, flag, athlete, isHost: false, goldProb: item.gold || '', silverProb: item.silver || '', bronzeProb: item.bronze || '' };
+      };
+
+      // Find actual gold/silver/bronze from match data for a specific event
+      const resolveActuals = (eventName, allMatches) => {
+        const matches = allMatches.map(m => parseMatch(m));
+        const finalMatch = matches.find(m => {
+          const r = (m.round || m.stage || '').toLowerCase();
+          const ev = (m.event || '').toLowerCase();
+          if (!ev.includes(eventName.split(' ')[1].toLowerCase())) return false;
+          return /\bfinal\b/i.test(r) && !/semi|quarter|bronze|repechage/i.test(r);
+        });
+        const bronzeMatch = matches.find(m => {
+          const r = (m.round || m.stage || '').toLowerCase();
+          const ev = (m.event || '').toLowerCase();
+          if (!ev.includes(eventName.split(' ')[1].toLowerCase())) return false;
+          return /bronze/i.test(r);
+        });
+
+        let gold = null, silver = null, bronze = null;
+        let status = 'Upcoming', matchInfo = '', goldScoreInfo = '', bronzeScoreInfo = '';
+
+        if (finalMatch && finalMatch.isFinished) {
+          status = 'Finished';
+          const winner = finalMatch.winner || finalMatch.t1;
+          const loser = typeof cleanTeamName === 'function'
+            ? (cleanTeamName(winner) === cleanTeamName(finalMatch.t1) ? finalMatch.t2 : finalMatch.t1)
+            : (winner === finalMatch.t1 ? finalMatch.t2 : finalMatch.t1);
+          // For individual events, extract athlete names
+          const gAthleteRaw = finalMatch.winner
+            ? (cleanTeamName(finalMatch.winner) === cleanTeamName(finalMatch.t1) ? finalMatch.athlete1 : finalMatch.athlete2)
+            : finalMatch.athlete1;
+          const sAthleteRaw = finalMatch.winner
+            ? (cleanTeamName(finalMatch.winner) === cleanTeamName(finalMatch.t1) ? finalMatch.athlete2 : finalMatch.athlete1)
+            : finalMatch.athlete2;
+          gold = formatC({ team: winner, athlete: gAthleteRaw }, true);
+          silver = formatC({ team: loser, athlete: sAthleteRaw }, true);
+          const s = finalMatch.score || `${finalMatch.s1 || '-'} - ${finalMatch.s2 || '-'}`;
+          goldScoreInfo = `Final: ${finalMatch.t1} ${s} ${finalMatch.t2} (Official)`;
+          matchInfo = goldScoreInfo;
+        } else if (finalMatch) {
+          const s = `${finalMatch.date || ''} ${finalMatch.time || ''}`.trim();
+          goldScoreInfo = `Final: ${finalMatch.t1} vs ${finalMatch.t2}${s ? ' — ' + s : ''}`;
+          matchInfo = goldScoreInfo;
+        }
+
+        if (bronzeMatch && bronzeMatch.isFinished) {
+          const bWinner = bronzeMatch.winner || bronzeMatch.t1;
+          const bAthlete = bronzeMatch.winner
+            ? (cleanTeamName(bronzeMatch.winner) === cleanTeamName(bronzeMatch.t1) ? bronzeMatch.athlete1 : bronzeMatch.athlete2)
+            : bronzeMatch.athlete1;
+          bronze = formatC({ team: bWinner, athlete: bAthlete }, true);
+          const bS = bronzeMatch.score || `${bronzeMatch.s1 || '-'} - ${bronzeMatch.s2 || '-'}`;
+          bronzeScoreInfo = `Bronze: ${bronzeMatch.t1} ${bS} ${bronzeMatch.t2} (Official)`;
+          matchInfo += (matchInfo ? ' • ' : '') + bronzeScoreInfo;
+        }
+
+        return { gold, silver, bronze, status, matchInfo, goldScoreInfo, bronzeScoreInfo };
+      };
+
+      const allMatchesBoth = [...(menMatches || []), ...(womenMatches || [])];
+      const medalEvents = [];
+
+      const teqEventDefs = [
+        { id: 'teq_men_singles',    event: "Men's Singles",    gender: 'men',    icon: '🏓', shortName: "Men's Singles" },
+        { id: 'teq_men_doubles',    event: "Men's Doubles",    gender: 'men',    icon: '🏓', shortName: "Men's Doubles" },
+        { id: 'teq_mixed_doubles',  event: "Mixed Doubles",    gender: 'men',    icon: '🏓', shortName: "Mixed Doubles" },
+        { id: 'teq_women_singles',  event: "Women's Singles",  gender: 'women',  icon: '🏓', shortName: "Women's Singles" },
+        { id: 'teq_women_doubles',  event: "Women's Doubles",  gender: 'women',  icon: '🏓', shortName: "Women's Doubles" }
+      ];
+
+      teqEventDefs.forEach(def => {
+        const predEvent = predEvents.find(e => e.id === def.id) || {};
+        const rankings = predEvent.rankings || [];
+        const podium = projectPodium(rankings);
+        const projGold = formatC(podium.find(p => p.medal === 'gold')?.item, true);
+        const projSilver = formatC(podium.find(p => p.medal === 'silver')?.item, true);
+        const projBronze = formatC(podium.find(p => p.medal === 'bronze')?.item, true);
+
+        const matchPool = def.gender === 'women' ? (womenMatches || []) : (menMatches || []);
+        const { gold: actualGold, silver: actualSilver, bronze: actualBronze, status, matchInfo, goldScoreInfo, bronzeScoreInfo } = resolveActuals(def.event, matchPool);
+
+        medalEvents.push({
+          id: def.id,
+          name: def.event,
+          shortName: def.shortName,
+          icon: def.icon,
+          gender: def.gender,
+          type: 'individual',
+          status,
+          matchInfo,
+          goldScoreInfo,
+          bronzeScoreInfo,
+          rankings,
+          projected: { gold: projGold, silver: projSilver, bronze: projBronze },
+          actual: { gold: actualGold, silver: actualSilver, bronze: actualBronze }
+        });
+      });
+
+      // Build medal tables & KPI
+      const actualTableMap = {};
+      const projectedTableMap = {};
+      const medalWeight = { gold: 1, silver: 2, bronze: 3 };
+      let totalDecidedMedals = 0, totalExactHits = 0, totalPodiumHits = 0;
+      let totalDecidedGold = 0, totalGoldHits = 0;
+
+      const recordMedal = (tableMap, item, type) => {
+        if (!item) return;
+        const cln = item.cleaned;
+        if (!cln) return;
+        if (!tableMap[cln]) tableMap[cln] = { name: item.name, flag: item.flag || '🏓', isHost: false, gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
+        tableMap[cln][type] += 1;
+        tableMap[cln].total += 1;
+        if (item.athlete) {
+          const icon = type === 'gold' ? '🥇' : type === 'silver' ? '🥈' : '🥉';
+          if (!tableMap[cln].athletes.some(a => a.athlete === item.athlete && a.medalType === type)) {
+            tableMap[cln].athletes.push({ athlete: item.athlete, medal: icon, medalType: type });
+            tableMap[cln].athletes.sort((a, b) => (medalWeight[a.medalType] || 99) - (medalWeight[b.medalType] || 99));
+          }
+        }
+      };
+
+      medalEvents.forEach(ev => {
+        recordMedal(projectedTableMap, ev.projected.gold, 'gold');
+        recordMedal(projectedTableMap, ev.projected.silver, 'silver');
+        recordMedal(projectedTableMap, ev.projected.bronze, 'bronze');
+        recordMedal(actualTableMap, ev.actual.gold, 'gold');
+        recordMedal(actualTableMap, ev.actual.silver, 'silver');
+        recordMedal(actualTableMap, ev.actual.bronze, 'bronze');
+
+        const projTop3 = [ev.projected.gold?.cleaned, ev.projected.silver?.cleaned, ev.projected.bronze?.cleaned].filter(Boolean);
+        let evDecided = 0, evExact = 0, evPodium = 0;
+
+        if (ev.actual.gold) {
+          evDecided++; totalDecidedMedals++; totalDecidedGold++;
+          if (ev.actual.gold.cleaned === ev.projected.gold?.cleaned) { evExact++; totalExactHits++; totalGoldHits++; }
+          if (projTop3.includes(ev.actual.gold.cleaned)) { evPodium++; totalPodiumHits++; }
+        }
+        if (ev.actual.silver) {
+          evDecided++; totalDecidedMedals++;
+          if (ev.actual.silver.cleaned === ev.projected.silver?.cleaned) { evExact++; totalExactHits++; }
+          if (projTop3.includes(ev.actual.silver.cleaned)) { evPodium++; totalPodiumHits++; }
+        }
+        if (ev.actual.bronze) {
+          evDecided++; totalDecidedMedals++;
+          if (ev.actual.bronze.cleaned === ev.projected.bronze?.cleaned) { evExact++; totalExactHits++; }
+          if (projTop3.includes(ev.actual.bronze.cleaned)) { evPodium++; totalPodiumHits++; }
+        }
+
+        ev.evaluation = {
+          decidedCount: evDecided, exactHits: evExact, podiumHits: evPodium,
+          goldHit: ev.actual.gold ? ev.actual.gold.cleaned === ev.projected.gold?.cleaned : null,
+          silverHit: ev.actual.silver ? ev.actual.silver.cleaned === ev.projected.silver?.cleaned : null,
+          bronzeHit: ev.actual.bronze ? ev.actual.bronze.cleaned === ev.projected.bronze?.cleaned : null,
+          accuracyPct: evDecided > 0 ? Math.round((evExact / evDecided) * 100) : null,
+          podiumRatePct: evDecided > 0 ? Math.round((evPodium / evDecided) * 100) : null
+        };
+
+        // Resolve actual finish for projected picks
+        const matchPool = ev.gender === 'women' ? womenMatches : menMatches;
+        [ev.projected.gold, ev.projected.silver, ev.projected.bronze].forEach(pick => {
+          if (!pick) return;
+          if (typeof resolveActualFinish === 'function') {
+            pick.actualFinish = resolveActualFinish(pick, ev, matchPool, null);
+          }
+        });
+        if (Array.isArray(ev.rankings)) {
+          ev.rankings.forEach(c => {
+            const cObj = formatC(c, true);
+            if (typeof resolveActualFinish === 'function') {
+              c.actualFinish = resolveActualFinish(cObj, ev, matchPool, null);
+            }
+          });
+        }
+      });
+
+      const totalMedalsInSport = medalEvents.length * 3;
+      const actualTable = Object.values(actualTableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze);
+      const projectedTable = Object.values(projectedTableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze);
+
+      const allNations = new Set([...Object.keys(actualTableMap), ...Object.keys(projectedTableMap)]);
+      const comparisonTable = Array.from(allNations).map(cln => {
+        const act = actualTableMap[cln] || { name: '', gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
+        const prj = projectedTableMap[cln] || { name: '', gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
+        const name = act.name || prj.name || cln;
+        const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(name) : '🏓';
+        const diffTotal = act.total - prj.total;
+        let status = '⚪ Scheduled';
+        if (totalDecidedMedals > 0) {
+          if (act.total > 0 && act.total === prj.total && act.gold === prj.gold && act.silver === prj.silver && act.bronze === prj.bronze) status = '🎯 Exact Hit';
+          else if (diffTotal > 0) status = `🟢 Over (+${diffTotal})`;
+          else if (act.total > 0 && diffTotal < 0) status = `🔻 Under (${diffTotal})`;
+          else if (act.total > 0) status = '🟡 Position Shift';
+          else status = '⏳ Pending / Awaiting';
+        }
+        return { cleaned: cln, name, flag, isHost: false, actual: act, projected: prj, diffTotal, diffGold: act.gold - prj.gold, status, actualAthletes: act.athletes || [], projectedAthletes: prj.athletes || [] };
+      }).sort((a, b) => {
+        if (b.actual.gold !== a.actual.gold) return b.actual.gold - a.actual.gold;
+        if (b.actual.silver !== a.actual.silver) return b.actual.silver - a.actual.silver;
+        if (b.actual.bronze !== a.actual.bronze) return b.actual.bronze - a.actual.bronze;
+        if (b.projected.gold !== a.projected.gold) return b.projected.gold - a.projected.gold;
+        return b.projected.silver - a.projected.silver;
+      });
+
+      return {
+        events: medalEvents,
+        actualTable,
+        projectedTable,
+        comparisonTable,
+        kpi: {
+          totalMedalsInSport,
+          decidedMedals: totalDecidedMedals,
+          exactHits: totalExactHits,
+          podiumHits: totalPodiumHits,
+          decidedGoldEvents: totalDecidedGold,
+          goldHits: totalGoldHits,
+          accuracyPct: totalDecidedMedals > 0 ? Math.round((totalExactHits / totalDecidedMedals) * 100) : null,
+          podiumRatePct: totalDecidedMedals > 0 ? Math.round((totalPodiumHits / totalDecidedMedals) * 100) : null,
+          goldAccuracyPct: totalDecidedGold > 0 ? Math.round((totalGoldHits / totalDecidedGold) * 100) : null
+        }
+      };
     }
   };
 

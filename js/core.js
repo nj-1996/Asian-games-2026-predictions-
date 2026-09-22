@@ -1122,6 +1122,12 @@ function renderScheduleAndHero(matches) {
 function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPreds, womenPreds) {
   const isPentathlon = activeSport.includes('pentathlon');
 
+  // Allow sport engines to provide their own medal analytics hook
+  const engine = window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport];
+  if (!isPentathlon && engine && typeof engine.extractMedalAnalytics === 'function') {
+    return engine.extractMedalAnalytics(menMatches, womenMatches, menPreds, womenPreds);
+  }
+
   const getProb = (obj, keys) => {
     if (!obj) return 0;
     for (const k of keys) {
