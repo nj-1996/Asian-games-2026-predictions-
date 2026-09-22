@@ -58,6 +58,8 @@ async function loadAllData() {
 
     appData.menMatches = extractList(menTrackerRaw);
     appData.womenMatches = extractList(womenTrackerRaw);
+    appData.menTrackerRaw = menTrackerRaw;
+    appData.womenTrackerRaw = womenTrackerRaw;
 
     appData.predictionEvents = (predRaw && Array.isArray(predRaw.events)) ? predRaw.events : [];
 

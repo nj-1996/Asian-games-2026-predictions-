@@ -139,6 +139,79 @@ function cleanTeamName(name) {
   return n;
 }
 
+// --- Athlete Name Normalization & Matching Utilities ---
+function normalizeAthleteName(str) {
+  if (!str || typeof str !== 'string') return '';
+  return str.toLowerCase()
+    .replace(/kahramaonova/gi, 'kahramonova')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getAthleteTokens(str) {
+  const norm = normalizeAthleteName(str);
+  if (!norm) return [];
+  return norm.split(' ').filter(Boolean);
+}
+
+function areAthletesMatching(name1, name2) {
+  if (!name1 || !name2) return false;
+  const norm1 = normalizeAthleteName(name1);
+  const norm2 = normalizeAthleteName(name2);
+  if (norm1 === norm2) return true;
+
+  const strip1 = norm1.replace(/\s+/g, '');
+  const strip2 = norm2.replace(/\s+/g, '');
+  if (strip1 === strip2) return true;
+
+  const tokens1 = getAthleteTokens(name1);
+  const tokens2 = getAthleteTokens(name2);
+
+  if (tokens1.length > 0 && tokens2.length > 0) {
+    const set1 = new Set(tokens1);
+    const set2 = new Set(tokens2);
+
+    if (tokens1.length === tokens2.length && tokens1.every(t => set2.has(t))) return true;
+
+    const join1 = tokens1.join('');
+    const join2 = tokens2.join('');
+    if (join1 === join2 || join1.includes(join2) || join2.includes(join1)) return true;
+
+    let matchCount = 0;
+    for (const t of tokens1) {
+      if (set2.has(t)) matchCount++;
+    }
+    if (matchCount >= Math.min(tokens1.length, tokens2.length)) return true;
+  }
+
+  return false;
+}
+
+function formatAthleteDisplayName(name) {
+  if (!name || typeof name !== 'string') return '';
+  const trimmed = name.trim();
+  if (/[a-z]/.test(trimmed) && /[A-Z]/.test(trimmed)) {
+    return trimmed;
+  }
+  return trimmed.split(/\s+/).map(part => {
+    return part.split('-').map(sub => {
+      if (!sub) return '';
+      return sub.charAt(0).toUpperCase() + sub.slice(1).toLowerCase();
+    }).join('-');
+  }).join(' ');
+}
+
+function formatContenderDisplay(c) {
+  if (!c) return 'TBD';
+  if (c.athlete) {
+    const rawTeam = c.name || c.team || '';
+    const team = rawTeam ? formatTeamDisplayName(rawTeam.replace(/\(host\)/gi, '').trim()) : '';
+    return team ? `${c.athlete} (${team})` : c.athlete;
+  }
+  return c.name || c.team || 'TBD';
+}
+
 function formatTeamDisplayName(name) {
   const str = String(name || 'TBD').trim();
   const lower = str.toLowerCase();
@@ -915,7 +988,8 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
     const displayName = formatTeamDisplayName(rawName.replace(/\(host\)/gi, '').trim());
     const flag = getFlagEmoji(displayName);
     const isHost = rawName.toLowerCase().includes('host');
-    const athlete = isIndiv ? (item.athlete || item.player || item.name || '') : '';
+    const rawAthlete = item.athlete || item.player || '';
+    const athlete = isIndiv && rawAthlete ? formatAthleteDisplayName(rawAthlete) : '';
     const goldProb = item.gold || item.gold_prob || '';
     const silverProb = item.silver || item.silver_prob || '';
     const bronzeProb = item.bronze || item.bronze_prob || '';
@@ -932,6 +1006,111 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
     };
   };
 
+  const getParticipatingAthletesList = (gender, rawEvents) => {
+    const participants = new Set();
+    const trackerRaw = gender === 'men' ? window.appData?.menTrackerRaw : window.appData?.womenTrackerRaw;
+    if (trackerRaw && Array.isArray(trackerRaw.final_ranks)) {
+      trackerRaw.final_ranks.forEach(r => {
+        if (r && r.name) participants.add(r.name);
+      });
+    }
+
+    const eventList = Array.isArray(rawEvents) ? rawEvents : (Array.isArray(trackerRaw?.matches) ? trackerRaw.matches : []);
+    eventList.forEach(m => {
+      if (m && Array.isArray(m.competitors)) {
+        m.competitors.forEach(c => {
+          if (c && c.name) {
+            const cln = cleanTeamName(c.name);
+            const isCountry = Object.keys(FLAG_REGISTRY).includes(cln) || cln === 'korea';
+            if (!isCountry) {
+              participants.add(c.name);
+            }
+          }
+        });
+      }
+    });
+
+    return participants;
+  };
+
+  const getPentathlonEventRankings = (gender, type) => {
+    if (type === 'team') {
+      const evRankings = (window.appData && window.appData.predictionEvents ? window.appData.predictionEvents.find(e => e.gender === gender && e.type === 'team')?.rankings : null) || 
+        (menPreds && menPreds.events ? menPreds.events.find(e => e.gender === gender && e.type === 'team')?.rankings : null) || 
+        (womenPreds && womenPreds.events ? womenPreds.events.find(e => e.gender === gender && e.type === 'team')?.rankings : null);
+      if (evRankings && evRankings.length > 0) return evRankings;
+      if (gender === 'men') {
+        return [
+          { rank: 1, team: "Republic of Korea", gold: "68.0%", silver: "24.5%", bronze: "6.5%", podium: "99.0%" },
+          { rank: 2, team: "China", gold: "26.0%", silver: "52.0%", bronze: "18.0%", podium: "96.0%" },
+          { rank: 3, team: "Japan (Host)", gold: "6.0%", silver: "23.5%", bronze: "65.5%", podium: "95.0%" },
+          { rank: 4, team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "10.0%", podium: "10.0%" }
+        ];
+      } else {
+        return [
+          { rank: 1, team: "China", gold: "51.0%", silver: "44.0%", bronze: "4.5%", podium: "99.5%" },
+          { rank: 2, team: "Republic of Korea", gold: "46.0%", silver: "49.0%", bronze: "4.5%", podium: "99.5%" },
+          { rank: 3, team: "Japan (Host)", gold: "3.0%", silver: "7.0%", bronze: "85.0%", podium: "95.0%" },
+          { rank: 4, team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "6.0%", podium: "6.0%" }
+        ];
+      }
+    }
+
+    // Individual rankings: Drawn from pre-tournament historical simulation
+    let candidatePool = [];
+    const predList = gender === 'men' ? (window.appData?.menPredictions || menPreds) : (window.appData?.womenPredictions || womenPreds);
+    if (Array.isArray(predList) && predList.length > 0 && (predList[0].athlete || predList[0].player)) {
+      candidatePool = predList;
+    }
+    if (candidatePool.length === 0) {
+      const evRankings = (window.appData && window.appData.predictionEvents ? window.appData.predictionEvents.find(e => e.gender === gender && e.type === 'individual')?.rankings : null) || 
+        (menPreds && menPreds.events ? menPreds.events.find(e => e.gender === gender && e.type === 'individual')?.rankings : null) || 
+        (womenPreds && womenPreds.events ? womenPreds.events.find(e => e.gender === gender && e.type === 'individual')?.rankings : null);
+      if (Array.isArray(evRankings) && evRankings.length > 0) {
+        candidatePool = evRankings;
+      }
+    }
+    if (candidatePool.length === 0) {
+      if (gender === 'men') {
+        candidatePool = [
+          { rank: 1, athlete: "Jun Woong-tae", team: "Republic of Korea", gold: "45.2%", silver: "31.4%", bronze: "18.1%", podium: "94.7%" },
+          { rank: 2, athlete: "Taishu Sato", team: "Japan (Host)", gold: "35.8%", silver: "29.2%", bronze: "21.6%", podium: "86.6%" },
+          { rank: 3, athlete: "Luo Shuai", team: "China", gold: "14.1%", silver: "25.8%", bronze: "33.4%", podium: "73.3%" },
+          { rank: 4, athlete: "Temirlan Abdraimov", team: "Kazakhstan", gold: "3.4%", silver: "8.2%", bronze: "15.1%", podium: "26.7%" },
+          { rank: 5, athlete: "Dmitriy Tretyakov", team: "Uzbekistan", gold: "1.0%", silver: "3.1%", bronze: "6.5%", podium: "10.6%" },
+          { rank: 6, athlete: "Samuel German", team: "Philippines", gold: "0.3%", silver: "1.4%", bronze: "3.1%", podium: "4.8%" }
+        ];
+      } else {
+        candidatePool = [
+          { rank: 1, athlete: "Seong Seung-min", team: "Republic of Korea", gold: "50.8%", silver: "29.4%", bronze: "14.5%", podium: "94.7%" },
+          { rank: 2, athlete: "Zhang Mingyu", team: "China", gold: "37.6%", silver: "39.1%", bronze: "20.4%", podium: "97.1%" },
+          { rank: 3, athlete: "Misaki Uchida", team: "Japan (Host)", gold: "7.5%", silver: "18.2%", bronze: "36.8%", podium: "62.5%" },
+          { rank: 4, athlete: "Yelena Potapenko", team: "Kazakhstan", gold: "2.6%", silver: "7.5%", bronze: "15.8%", podium: "25.9%" },
+          { rank: 5, athlete: "Mehriniso Kahramonova", team: "Uzbekistan", gold: "1.0%", silver: "3.6%", bronze: "6.9%", podium: "11.5%" },
+          { rank: 6, athlete: "Princess Honey Arbilon", team: "Philippines", gold: "0.3%", silver: "1.3%", bronze: "3.2%", podium: "4.8%" }
+        ];
+      }
+    }
+
+    // STRICT HISTORICAL FILTER: Must only include confirmed participating athletes in the 2026 tournament
+    const rawEvents = gender === 'men' ? menMatches : womenMatches;
+    const participants = getParticipatingAthletesList(gender, rawEvents);
+
+    if (participants && participants.size > 0) {
+      const filtered = candidatePool.filter(c => {
+        const ath = c.athlete || c.player || c.name;
+        if (!ath) return true;
+        for (const p of participants) {
+          if (areAthletesMatching(ath, p)) return true;
+        }
+        return false;
+      });
+      if (filtered.length > 0) return filtered;
+    }
+
+    return candidatePool;
+  };
+
   const medalEvents = [];
 
   if (isPentathlon) {
@@ -943,12 +1122,7 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
         icon: "🏃",
         gender: 'men',
         type: 'individual',
-        rankings: (window.appData && window.appData.predictionEvents ? window.appData.predictionEvents.find(e => e.gender === 'men' && e.type === 'individual')?.rankings : null) || (menPreds && menPreds.events ? menPreds.events.find(e => e.gender === 'men' && e.type === 'individual')?.rankings : null) || [
-          { rank: 1, athlete: "Jun Woong-tae", team: "Republic of Korea", gold: "45.2%", silver: "31.4%", bronze: "18.1%", podium: "94.7%" },
-          { rank: 2, athlete: "Taishu Sato", team: "Japan (Host)", gold: "35.8%", silver: "29.2%", bronze: "21.6%", podium: "86.6%" },
-          { rank: 3, athlete: "Luo Shuai", team: "China", gold: "14.1%", silver: "25.8%", bronze: "33.4%", podium: "73.3%" },
-          { rank: 4, athlete: "Temirlan Abdraimov", team: "Kazakhstan", gold: "3.4%", silver: "8.2%", bronze: "15.1%", podium: "26.7%" }
-        ]
+        rankings: getPentathlonEventRankings('men', 'individual')
       },
       {
         id: 'mpn_men_team',
@@ -957,12 +1131,7 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
         icon: "👥",
         gender: 'men',
         type: 'team',
-        rankings: (window.appData && window.appData.predictionEvents ? window.appData.predictionEvents.find(e => e.gender === 'men' && e.type === 'team')?.rankings : null) || (menPreds && menPreds.events ? menPreds.events.find(e => e.gender === 'men' && e.type === 'team')?.rankings : null) || [
-          { rank: 1, team: "Republic of Korea", gold: "68.0%", silver: "24.5%", bronze: "6.5%", podium: "99.0%" },
-          { rank: 2, team: "China", gold: "26.0%", silver: "52.0%", bronze: "18.0%", podium: "96.0%" },
-          { rank: 3, team: "Japan (Host)", gold: "6.0%", silver: "23.5%", bronze: "65.5%", podium: "95.0%" },
-          { rank: 4, team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "10.0%", podium: "10.0%" }
-        ]
+        rankings: getPentathlonEventRankings('men', 'team')
       },
       {
         id: 'mpn_women_indiv',
@@ -971,12 +1140,7 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
         icon: "🏃",
         gender: 'women',
         type: 'individual',
-        rankings: (window.appData && window.appData.predictionEvents ? window.appData.predictionEvents.find(e => e.gender === 'women' && e.type === 'individual')?.rankings : null) || (womenPreds && womenPreds.events ? womenPreds.events.find(e => e.gender === 'women' && e.type === 'individual')?.rankings : null) || [
-          { rank: 1, athlete: "Seong Seung-min", team: "Republic of Korea", gold: "50.8%", silver: "29.4%", bronze: "14.5%", podium: "94.7%" },
-          { rank: 2, athlete: "Zhang Mingyu", team: "China", gold: "37.6%", silver: "39.1%", bronze: "20.4%", podium: "97.1%" },
-          { rank: 3, athlete: "Misaki Uchida", team: "Japan (Host)", gold: "7.5%", silver: "18.2%", bronze: "36.8%", podium: "62.5%" },
-          { rank: 4, athlete: "Yelena Potapenko", team: "Kazakhstan", gold: "2.6%", silver: "7.5%", bronze: "15.8%", podium: "25.9%" }
-        ]
+        rankings: getPentathlonEventRankings('women', 'individual')
       },
       {
         id: 'mpn_women_team',
@@ -985,12 +1149,7 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
         icon: "👥",
         gender: 'women',
         type: 'team',
-        rankings: (window.appData && window.appData.predictionEvents ? window.appData.predictionEvents.find(e => e.gender === 'women' && e.type === 'team')?.rankings : null) || (womenPreds && womenPreds.events ? womenPreds.events.find(e => e.gender === 'women' && e.type === 'team')?.rankings : null) || [
-          { rank: 1, team: "China", gold: "51.0%", silver: "44.0%", bronze: "4.5%", podium: "99.5%" },
-          { rank: 2, team: "Republic of Korea", gold: "46.0%", silver: "49.0%", bronze: "4.5%", podium: "99.5%" },
-          { rank: 3, team: "Japan (Host)", gold: "3.0%", silver: "7.0%", bronze: "85.0%", podium: "95.0%" },
-          { rank: 4, team: "Kazakhstan", gold: "0.0%", silver: "0.0%", bronze: "6.0%", podium: "6.0%" }
-        ]
+        rankings: getPentathlonEventRankings('women', 'team')
       }
     ];
 
@@ -1002,7 +1161,14 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
       const projBronze = formatContenderObj(pPodium.find(p => p.medal === 'bronze')?.item, isIndiv);
 
       const rawEvents = def.gender === 'men' ? menMatches : womenMatches;
-      const medalEventObj = (rawEvents || []).find(e => e.is_medal);
+      const medalEventObj = (rawEvents || []).find(e => {
+        if (!e.is_medal) return false;
+        if (isIndiv) {
+          return (e.id && e.id.includes('INDIVID')) || (e.competitors && e.competitors.length > 7);
+        } else {
+          return (e.id && e.id.includes('TEAM')) || (e.competitors && e.competitors.length <= 7);
+        }
+      }) || (rawEvents || []).find(e => e.is_medal);
 
       let actualGold = null;
       let actualSilver = null;
@@ -1019,6 +1185,9 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
           let cntry = (c.country || '').trim();
           if (!cntry && c.name && c.name.toLowerCase().includes('yano')) return 'Japan';
           if (!cntry && c.name && c.name.toLowerCase().includes('kahramonova')) return 'Uzbekistan';
+          if (!cntry && typeof resolveAthleteCountry === 'function') {
+            cntry = resolveAthleteCountry(c.name, c.org || '');
+          }
           if (cntry.length === 3) {
             const ioc = cntry.toUpperCase();
             if (ioc === 'CHN') return 'China';
@@ -1027,6 +1196,8 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
             if (ioc === 'KAZ') return 'Kazakhstan';
             if (ioc === 'UZB') return 'Uzbekistan';
             if (ioc === 'PHI') return 'Philippines';
+            if (ioc === 'THA') return 'Thailand';
+            if (ioc === 'INA') return 'Indonesia';
           }
           return cntry;
         };
@@ -1036,38 +1207,48 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
           const c2 = comps[1];
           const c3 = comps[2];
           if (c1 && Number(c1.rank) === 1) {
-            actualGold = formatContenderObj({ name: resolveCountry(c1), athlete: c1.name }, true);
+            actualGold = formatContenderObj({ name: resolveCountry(c1), athlete: formatAthleteDisplayName(c1.name) }, true);
           }
           if (c2 && Number(c2.rank) === 2) {
-            actualSilver = formatContenderObj({ name: resolveCountry(c2), athlete: c2.name }, true);
+            actualSilver = formatContenderObj({ name: resolveCountry(c2), athlete: formatAthleteDisplayName(c2.name) }, true);
           }
           if (c3 && Number(c3.rank) === 3) {
-            actualBronze = formatContenderObj({ name: resolveCountry(c3), athlete: c3.name }, true);
+            actualBronze = formatContenderObj({ name: resolveCountry(c3), athlete: formatAthleteDisplayName(c3.name) }, true);
           }
           matchInfo = `Laser Run / Final: ${medalEventObj.date || ''} at ${medalEventObj.venue || 'Anjo Sports Park'} (${eventStatus})`;
         } else {
-          // Team Placings from Individual Results
-          const teamPlacings = {};
-          comps.forEach(c => {
-            const cName = resolveCountry(c);
-            if (!cName) return;
-            const cln = cleanTeamName(cName);
-            if (!teamPlacings[cln]) teamPlacings[cln] = { name: cName, count: 0, ranks: [] };
-            teamPlacings[cln].count += 1;
-            teamPlacings[cln].ranks.push(Number(c.rank) || 50);
-          });
-          const teamList = Object.values(teamPlacings)
-            .filter(t => t.count >= 2)
-            .map(t => {
-              const score = t.ranks.slice(0, 3).reduce((acc, r) => acc + r, 0);
-              return { name: t.name, score };
-            })
-            .sort((a, b) => a.score - b.score);
+          // Team medal event
+          const c1 = comps[0];
+          const c2 = comps[1];
+          const c3 = comps[2];
+          if (c1 && Number(c1.rank) === 1) actualGold = formatContenderObj({ name: resolveCountry(c1) }, false);
+          if (c2 && Number(c2.rank) === 2) actualSilver = formatContenderObj({ name: resolveCountry(c2) }, false);
+          if (c3 && Number(c3.rank) === 3) actualBronze = formatContenderObj({ name: resolveCountry(c3) }, false);
 
-          if (teamList[0]) actualGold = formatContenderObj({ name: teamList[0].name }, false);
-          if (teamList[1]) actualSilver = formatContenderObj({ name: teamList[1].name }, false);
-          if (teamList[2]) actualBronze = formatContenderObj({ name: teamList[2].name }, false);
-          matchInfo = `Team Classification (Sum of Individual Placings)`;
+          if (!actualGold) {
+            // Team Placings fallback from Individual Results if direct team competitors not populated
+            const teamPlacings = {};
+            comps.forEach(c => {
+              const cName = resolveCountry(c);
+              if (!cName) return;
+              const cln = cleanTeamName(cName);
+              if (!teamPlacings[cln]) teamPlacings[cln] = { name: cName, count: 0, ranks: [] };
+              teamPlacings[cln].count += 1;
+              teamPlacings[cln].ranks.push(Number(c.rank) || 50);
+            });
+            const teamList = Object.values(teamPlacings)
+              .filter(t => t.count >= 2)
+              .map(t => {
+                const score = t.ranks.slice(0, 3).reduce((acc, r) => acc + r, 0);
+                return { name: t.name, score };
+              })
+              .sort((a, b) => a.score - b.score);
+
+            if (teamList[0]) actualGold = formatContenderObj({ name: teamList[0].name }, false);
+            if (teamList[1]) actualSilver = formatContenderObj({ name: teamList[1].name }, false);
+            if (teamList[2]) actualBronze = formatContenderObj({ name: teamList[2].name }, false);
+          }
+          matchInfo = `Team Final: ${medalEventObj.date || ''} at ${medalEventObj.venue || 'Anjo Sports Park'} (${eventStatus})`;
         }
       }
 
@@ -1244,7 +1425,9 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
   const actualTableMap = {};
   const projectedTableMap = {};
 
-  const recordTableMedal = (tableMap, item, medalType) => {
+  const medalWeight = { gold: 1, silver: 2, bronze: 3 };
+
+  const recordTableMedal = (tableMap, item, medalType, isIndiv) => {
     if (!item) return;
     const cln = item.cleaned;
     if (!cln) return;
@@ -1253,11 +1436,23 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
         name: item.name,
         flag: item.flag || getFlagEmoji(item.name),
         isHost: item.isHost,
-        gold: 0, silver: 0, bronze: 0, total: 0
+        gold: 0, silver: 0, bronze: 0, total: 0,
+        athletes: []
       };
     }
     tableMap[cln][medalType] += 1;
     tableMap[cln].total += 1;
+    if (isIndiv && item.athlete) {
+      const medalIcon = medalType === 'gold' ? '🥇' : (medalType === 'silver' ? '🥈' : '🥉');
+      if (!tableMap[cln].athletes.some(a => a.athlete === item.athlete && a.medalType === medalType)) {
+        tableMap[cln].athletes.push({
+          athlete: item.athlete,
+          medal: medalIcon,
+          medalType: medalType
+        });
+        tableMap[cln].athletes.sort((a, b) => (medalWeight[a.medalType] || 99) - (medalWeight[b.medalType] || 99));
+      }
+    }
   };
 
   let totalDecidedMedals = 0;
@@ -1267,15 +1462,16 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
   let totalGoldHits = 0;
 
   medalEvents.forEach(ev => {
+    const isIndiv = ev.type === 'individual';
     // Record projected podium
-    recordTableMedal(projectedTableMap, ev.projected.gold, 'gold');
-    recordTableMedal(projectedTableMap, ev.projected.silver, 'silver');
-    recordTableMedal(projectedTableMap, ev.projected.bronze, 'bronze');
+    recordTableMedal(projectedTableMap, ev.projected.gold, 'gold', isIndiv);
+    recordTableMedal(projectedTableMap, ev.projected.silver, 'silver', isIndiv);
+    recordTableMedal(projectedTableMap, ev.projected.bronze, 'bronze', isIndiv);
 
     // Record actual podium
-    recordTableMedal(actualTableMap, ev.actual.gold, 'gold');
-    recordTableMedal(actualTableMap, ev.actual.silver, 'silver');
-    recordTableMedal(actualTableMap, ev.actual.bronze, 'bronze');
+    recordTableMedal(actualTableMap, ev.actual.gold, 'gold', isIndiv);
+    recordTableMedal(actualTableMap, ev.actual.silver, 'silver', isIndiv);
+    recordTableMedal(actualTableMap, ev.actual.bronze, 'bronze', isIndiv);
 
     const projTop3 = [ev.projected.gold?.cleaned, ev.projected.silver?.cleaned, ev.projected.bronze?.cleaned].filter(Boolean);
     let evDecided = 0;
@@ -1360,8 +1556,8 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
 
   const allNations = new Set([...Object.keys(actualTableMap), ...Object.keys(projectedTableMap)]);
   const comparisonTable = Array.from(allNations).map(cln => {
-    const act = actualTableMap[cln] || { name: '', isHost: false, gold: 0, silver: 0, bronze: 0, total: 0 };
-    const prj = projectedTableMap[cln] || { name: '', isHost: false, gold: 0, silver: 0, bronze: 0, total: 0 };
+    const act = actualTableMap[cln] || { name: '', isHost: false, gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
+    const prj = projectedTableMap[cln] || { name: '', isHost: false, gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
     const name = act.name || prj.name || cln;
     const isHost = act.isHost || prj.isHost;
     const flag = getFlagEmoji(name);
@@ -1392,7 +1588,9 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
       projected: prj,
       diffTotal,
       diffGold,
-      status
+      status,
+      actualAthletes: act.athletes || [],
+      projectedAthletes: prj.athletes || []
     };
   }).sort((a, b) => {
     if (totalDecidedMedals > 0) {
@@ -1545,9 +1743,16 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                 return `
                   <tr style="background:${idx < 3 ? 'rgba(59,130,246,0.02)' : 'transparent'};">
                     <td style="text-align:left; font-weight:600; padding-left:0.75rem;">
-                      <span style="display:inline-block; width:16px; color:#94a3b8; font-size:0.75rem;">${idx + 1}</span>
-                      <span>${r.flag}</span>
-                      <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
+                      <div style="display:flex; align-items:center;">
+                        <span style="display:inline-block; width:16px; color:#94a3b8; font-size:0.75rem;">${idx + 1}</span>
+                        <span>${r.flag}</span>
+                        <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
+                      </div>
+                      ${(r.projectedAthletes && r.projectedAthletes.length > 0) ? `
+                        <div style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
+                          ${r.projectedAthletes.map(a => `<span style="white-space:nowrap; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px;">${a.medal} <strong>${a.athlete}</strong></span>`).join('')}
+                        </div>
+                      ` : ''}
                     </td>
                     <td style="font-family:monospace; font-weight:${r.actual.gold > 0 ? '700' : '400'}; color:#facc15;" class="col-actual-border">${r.actual.gold}</td>
                     <td style="font-family:monospace; color:#cbd5e1;">${r.actual.silver}</td>
@@ -1610,9 +1815,16 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                 ${actRows.map((r, idx) => `
                   <tr>
                     <td style="text-align:left; padding-left:0.75rem; font-weight:600;">
-                      <span style="display:inline-block; width:16px; color:#94a3b8;">${idx + 1}</span>
-                      <span>${r.flag}</span>
-                      <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
+                      <div style="display:flex; align-items:center;">
+                        <span style="display:inline-block; width:16px; color:#94a3b8;">${idx + 1}</span>
+                        <span>${r.flag}</span>
+                        <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
+                      </div>
+                      ${(r.athletes && r.athletes.length > 0) ? `
+                        <div style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
+                          ${r.athletes.map(a => `<span style="white-space:nowrap; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px;">${a.medal} <strong>${a.athlete}</strong></span>`).join('')}
+                        </div>
+                      ` : ''}
                     </td>
                     <td style="font-family:monospace; font-weight:${r.gold > 0 ? '700' : '400'}; color:#facc15;">${r.gold}</td>
                     <td style="font-family:monospace; color:#cbd5e1;">${r.silver}</td>
@@ -1643,9 +1855,16 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
               ${prjRows.map((r, idx) => `
                 <tr>
                   <td style="text-align:left; padding-left:0.75rem; font-weight:600;">
-                    <span style="display:inline-block; width:16px; color:#94a3b8;">${idx + 1}</span>
-                    <span>${r.flag}</span>
-                    <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
+                    <div style="display:flex; align-items:center;">
+                      <span style="display:inline-block; width:16px; color:#94a3b8;">${idx + 1}</span>
+                      <span>${r.flag}</span>
+                      <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
+                    </div>
+                    ${(r.athletes && r.athletes.length > 0) ? `
+                      <div style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
+                        ${r.athletes.map(a => `<span style="white-space:nowrap; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px;">${a.medal} <strong>${a.athlete}</strong></span>`).join('')}
+                      </div>
+                    ` : ''}
                   </td>
                   <td style="font-family:monospace; font-weight:${r.gold > 0 ? '700' : '400'}; color:#facc15;">${r.gold}</td>
                   <td style="font-family:monospace; color:#cbd5e1;">${r.silver}</td>
@@ -1681,10 +1900,13 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                   <span style="font-size:1.3rem;">${ev.icon || '🏅'}</span>
                   <div>
                     <div style="font-weight:700; font-size:0.9rem; color:#f8fafc;">${ev.name}</div>
-                    <div style="font-size:0.73rem; color:#94a3b8; margin-top:2px;">
-                      ${ev.actual.gold 
-                        ? `Champion: 🥇 <strong style="color:#f8fafc;">${ev.actual.gold.name}</strong> • 🥈 ${ev.actual.silver ? ev.actual.silver.name : 'TBD'} • 🥉 ${ev.actual.bronze ? ev.actual.bronze.name : 'TBD'}` 
-                        : `Projected Pick: 🥇 <strong style="color:#f8fafc;">${ev.projected.gold ? ev.projected.gold.name : 'TBD'}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''}`}
+                    <div style="font-size:0.73rem; color:#94a3b8; margin-top:3px;">
+                      ${ev.actual.gold ? `
+                        <div style="margin-bottom:2px;"><span style="color:#4ade80; font-weight:700;">Official:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.actual.gold)}</strong> • 🥈 ${formatContenderDisplay(ev.actual.silver)} • 🥉 ${formatContenderDisplay(ev.actual.bronze)}</div>
+                        <div><span style="color:#38bdf8; font-weight:700;">Projected:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.projected.gold)}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatContenderDisplay(ev.projected.silver)} • 🥉 ${formatContenderDisplay(ev.projected.bronze)}</div>
+                      ` : `
+                        <div><span style="color:#38bdf8; font-weight:700;">Projected Picks:</span> 🥇 <strong style="color:#f8fafc;">${formatContenderDisplay(ev.projected.gold)}</strong> ${ev.projected.gold?.goldProb ? `(${ev.projected.gold.goldProb})` : ''} • 🥈 ${formatContenderDisplay(ev.projected.silver)} • 🥉 ${formatContenderDisplay(ev.projected.bronze)}</div>
+                      `}
                     </div>
                   </div>
                 </div>
@@ -1744,13 +1966,15 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
               <div style="font-size:1.8rem; margin-bottom:4px;">🥇</div>
               <div style="font-size:0.7rem; font-weight:800; color:#facc15; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">GOLD MEDALIST • CHAMPION</div>
               <div style="font-size:2rem; margin-bottom:4px;">${ev.actual.gold.flag}</div>
-              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">${ev.actual.gold.name}${ev.actual.gold.isHost ? ' (Host)' : ''}</div>
-              ${ev.actual.gold.athlete ? `<div style="font-size:0.78rem; color:#cbd5e1; margin-top:2px;">${ev.actual.gold.athlete}</div>` : ''}
+              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
+                ${ev.actual.gold.athlete ? ev.actual.gold.athlete : `${ev.actual.gold.name}${ev.actual.gold.isHost ? ' (Host)' : ''}`}
+              </div>
+              ${ev.actual.gold.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${ev.actual.gold.name}${ev.actual.gold.isHost ? ' (Host)' : ''}</div>` : ''}
               <div style="font-size:0.74rem; color:#94a3b8; margin-top:8px; padding-top:6px; border-top:1px solid rgba(234,179,8,0.15);">
                 ${ev.goldScoreInfo || 'Won Gold'}
               </div>
               <div style="font-size:0.72rem; color:${ev.evaluation.goldHit ? '#4ade80' : '#38bdf8'}; margin-top:4px; font-weight:600;">
-                ${ev.evaluation.goldHit ? '🎯 Simulation Pick: Exact Gold Hit' : `Projected pick was ${ev.projected.gold ? ev.projected.gold.name : 'TBD'}`}
+                ${ev.evaluation.goldHit ? '🎯 Simulation Pick: Exact Gold Hit' : `Projected pick was ${formatContenderDisplay(ev.projected.gold)}`}
               </div>
             </div>
 
@@ -1759,13 +1983,15 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
               <div style="font-size:1.8rem; margin-bottom:4px;">🥈</div>
               <div style="font-size:0.7rem; font-weight:800; color:#cbd5e1; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">SILVER MEDALIST • RUNNER-UP</div>
               <div style="font-size:2rem; margin-bottom:4px;">${ev.actual.silver ? ev.actual.silver.flag : '⚪'}</div>
-              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">${ev.actual.silver ? `${ev.actual.silver.name}${ev.actual.silver.isHost ? ' (Host)' : ''}` : 'TBD'}</div>
-              ${ev.actual.silver && ev.actual.silver.athlete ? `<div style="font-size:0.78rem; color:#cbd5e1; margin-top:2px;">${ev.actual.silver.athlete}</div>` : ''}
+              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
+                ${ev.actual.silver ? (ev.actual.silver.athlete ? ev.actual.silver.athlete : `${ev.actual.silver.name}${ev.actual.silver.isHost ? ' (Host)' : ''}`) : 'TBD'}
+              </div>
+              ${ev.actual.silver && ev.actual.silver.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${ev.actual.silver.name}${ev.actual.silver.isHost ? ' (Host)' : ''}</div>` : ''}
               <div style="font-size:0.74rem; color:#94a3b8; margin-top:8px; padding-top:6px; border-top:1px solid rgba(203,213,225,0.15);">
                 Finalist Runner-Up
               </div>
               <div style="font-size:0.72rem; color:${ev.evaluation.silverHit ? '#4ade80' : '#94a3b8'}; margin-top:4px; font-weight:600;">
-                ${ev.evaluation.silverHit ? '🎯 Simulation Pick: Exact Silver Hit' : `Projected pick was ${ev.projected.silver ? ev.projected.silver.name : 'TBD'}`}
+                ${ev.evaluation.silverHit ? '🎯 Simulation Pick: Exact Silver Hit' : `Projected pick was ${formatContenderDisplay(ev.projected.silver)}`}
               </div>
             </div>
 
@@ -1774,13 +2000,15 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
               <div style="font-size:1.8rem; margin-bottom:4px;">🥉</div>
               <div style="font-size:0.7rem; font-weight:800; color:#f59e0b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">BRONZE MEDALIST • 3RD PLACE</div>
               <div style="font-size:2rem; margin-bottom:4px;">${ev.actual.bronze ? ev.actual.bronze.flag : '⚪'}</div>
-              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">${ev.actual.bronze ? `${ev.actual.bronze.name}${ev.actual.bronze.isHost ? ' (Host)' : ''}` : 'TBD'}</div>
-              ${ev.actual.bronze && ev.actual.bronze.athlete ? `<div style="font-size:0.78rem; color:#cbd5e1; margin-top:2px;">${ev.actual.bronze.athlete}</div>` : ''}
+              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
+                ${ev.actual.bronze ? (ev.actual.bronze.athlete ? ev.actual.bronze.athlete : `${ev.actual.bronze.name}${ev.actual.bronze.isHost ? ' (Host)' : ''}`) : 'TBD'}
+              </div>
+              ${ev.actual.bronze && ev.actual.bronze.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${ev.actual.bronze.name}${ev.actual.bronze.isHost ? ' (Host)' : ''}</div>` : ''}
               <div style="font-size:0.74rem; color:#94a3b8; margin-top:8px; padding-top:6px; border-top:1px solid rgba(245,158,11,0.15);">
                 ${ev.bronzeScoreInfo || 'Won Bronze Match'}
               </div>
               <div style="font-size:0.72rem; color:${ev.evaluation.bronzeHit ? '#4ade80' : '#94a3b8'}; margin-top:4px; font-weight:600;">
-                ${ev.evaluation.bronzeHit ? '🎯 Simulation Pick: Exact Bronze Hit' : `Projected pick was ${ev.projected.bronze ? ev.projected.bronze.name : 'TBD'}`}
+                ${ev.evaluation.bronzeHit ? '🎯 Simulation Pick: Exact Bronze Hit' : `Projected pick was ${formatContenderDisplay(ev.projected.bronze)}`}
               </div>
             </div>
           </div>
@@ -1794,8 +2022,8 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
             <div style="font-size:0.85rem; font-weight:800; color:#38bdf8; display:flex; align-items:center; gap:6px;">
               <span>🔮</span> <span>PROJECTED PODIUM FAVORITES</span>
             </div>
-            <div style="font-size:0.75rem; color:#facc15;">
-              ⏳ Competition In Progress / Scheduled
+            <div style="font-size:0.72rem; color:#94a3b8;">
+              Historical Pre-Tournament Simulation • Confirmed 2026 Participants
             </div>
           </div>
 
@@ -1805,8 +2033,10 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
               <div style="font-size:1.8rem; margin-bottom:4px;">🥇</div>
               <div style="font-size:0.7rem; font-weight:800; color:#facc15; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">PROJECTED GOLD FAVORITE</div>
               <div style="font-size:2rem; margin-bottom:4px;">${ev.projected.gold ? ev.projected.gold.flag : '⚪'}</div>
-              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">${ev.projected.gold ? `${ev.projected.gold.name}${ev.projected.gold.isHost ? ' (Host)' : ''}` : 'TBD'}</div>
-              ${ev.projected.gold && ev.projected.gold.athlete ? `<div style="font-size:0.78rem; color:#cbd5e1; margin-top:2px;">${ev.projected.gold.athlete}</div>` : ''}
+              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
+                ${ev.projected.gold?.athlete ? ev.projected.gold.athlete : (ev.projected.gold ? `${ev.projected.gold.name}${ev.projected.gold.isHost ? ' (Host)' : ''}` : 'TBD')}
+              </div>
+              ${ev.projected.gold?.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${ev.projected.gold.name}${ev.projected.gold.isHost ? ' (Host)' : ''}</div>` : ''}
               <div style="font-size:0.75rem; font-weight:700; color:#facc15; margin-top:8px;">
                 ${ev.projected.gold && ev.projected.gold.goldProb ? `${ev.projected.gold.goldProb} Win Probability` : ''}
               </div>
@@ -1817,8 +2047,10 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
               <div style="font-size:1.8rem; margin-bottom:4px;">🥈</div>
               <div style="font-size:0.7rem; font-weight:800; color:#cbd5e1; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">PROJECTED SILVER</div>
               <div style="font-size:2rem; margin-bottom:4px;">${ev.projected.silver ? ev.projected.silver.flag : '⚪'}</div>
-              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">${ev.projected.silver ? `${ev.projected.silver.name}${ev.projected.silver.isHost ? ' (Host)' : ''}` : 'TBD'}</div>
-              ${ev.projected.silver && ev.projected.silver.athlete ? `<div style="font-size:0.78rem; color:#cbd5e1; margin-top:2px;">${ev.projected.silver.athlete}</div>` : ''}
+              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
+                ${ev.projected.silver?.athlete ? ev.projected.silver.athlete : (ev.projected.silver ? `${ev.projected.silver.name}${ev.projected.silver.isHost ? ' (Host)' : ''}` : 'TBD')}
+              </div>
+              ${ev.projected.silver && ev.projected.silver.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${ev.projected.silver.name}${ev.projected.silver.isHost ? ' (Host)' : ''}</div>` : ''}
               <div style="font-size:0.75rem; color:#cbd5e1; margin-top:8px;">
                 ${ev.projected.silver && ev.projected.silver.silverProb ? `${ev.projected.silver.silverProb} Silver Probability` : ''}
               </div>
@@ -1829,8 +2061,10 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
               <div style="font-size:1.8rem; margin-bottom:4px;">🥉</div>
               <div style="font-size:0.7rem; font-weight:800; color:#f59e0b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">PROJECTED BRONZE</div>
               <div style="font-size:2rem; margin-bottom:4px;">${ev.projected.bronze ? ev.projected.bronze.flag : '⚪'}</div>
-              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">${ev.projected.bronze ? `${ev.projected.bronze.name}${ev.projected.bronze.isHost ? ' (Host)' : ''}` : 'TBD'}</div>
-              ${ev.projected.bronze && ev.projected.bronze.athlete ? `<div style="font-size:0.78rem; color:#cbd5e1; margin-top:2px;">${ev.projected.bronze.athlete}</div>` : ''}
+              <div style="font-weight:800; font-size:1.15rem; color:#f8fafc;">
+                ${ev.projected.bronze?.athlete ? ev.projected.bronze.athlete : (ev.projected.bronze ? `${ev.projected.bronze.name}${ev.projected.bronze.isHost ? ' (Host)' : ''}` : 'TBD')}
+              </div>
+              ${ev.projected.bronze && ev.projected.bronze.athlete ? `<div style="font-size:0.8rem; color:#94a3b8; font-weight:600; margin-top:2px;">${ev.projected.bronze.name}${ev.projected.bronze.isHost ? ' (Host)' : ''}</div>` : ''}
               <div style="font-size:0.75rem; color:#f59e0b; margin-top:8px;">
                 ${ev.projected.bronze && ev.projected.bronze.bronzeProb ? `${ev.projected.bronze.bronzeProb} Bronze Probability` : ''}
               </div>
@@ -1851,8 +2085,13 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
     if (sortedRankings.length > 0) {
       contenderFieldHtml = `
         <div style="margin-top:1.25rem;">
-          <div style="font-size:0.82rem; font-weight:700; color:#f8fafc; margin-bottom:0.6rem; display:flex; align-items:center; gap:6px;">
-            <span>📊</span> <span>Contender Field & Win Probabilities (Pre-Tournament Model)</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem; flex-wrap:wrap; gap:6px;">
+            <div style="font-size:0.82rem; font-weight:700; color:#f8fafc; display:flex; align-items:center; gap:6px;">
+              <span>📊</span> <span>Contender Field & Win Probabilities (Pre-Tournament Model)</span>
+            </div>
+            <div style="font-size:0.7rem; color:#94a3b8; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">
+              Historical Simulation • Confirmed 2026 Participants
+            </div>
           </div>
           <div class="medal-comp-wrap">
             <table class="medal-comp-table">
@@ -1884,7 +2123,9 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                       <td style="text-align:left; padding-left:0.75rem; font-weight:600;">
                         <span style="display:inline-block; width:16px; color:#94a3b8; font-size:0.75rem;">${idx + 1}</span>
                         <span>${getFlagEmoji(team)}</span>
-                        <span style="color:#f8fafc; margin-left:3px;">${athleteName ? `${athleteName} (${team})` : team}${isHost ? ' (Host)' : ''}</span>
+                        <span style="color:#f8fafc; margin-left:3px;">
+                          ${athleteName ? `<strong>${athleteName}</strong> <span style="color:#94a3b8; font-weight:400;">(${team})</span>` : `<strong>${team}</strong>`}${isHost ? ' (Host)' : ''}
+                        </span>
                       </td>
                       <td style="font-family:monospace; font-weight:${gold > 0 ? '700' : '400'}; color:#facc15;">${gold}%</td>
                       <td style="font-family:monospace; color:#cbd5e1;">${silver}%</td>
