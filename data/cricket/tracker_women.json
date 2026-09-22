@@ -94,16 +94,16 @@
     },
     {
       "round": "Gold Medal Match",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "14:00",
       "player1": "Sri Lanka",
       "player2": "India",
-      "score": "52 - 216",
-      "score1": "52/6",
+      "score": "69 - 216",
+      "score1": "69/10",
       "score2": "216/3",
-      "winner": ""
+      "winner": "India"
     }
   ]
 }

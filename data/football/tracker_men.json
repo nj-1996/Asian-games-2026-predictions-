@@ -179,13 +179,13 @@
     },
     {
       "round": "Group D",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-22",
       "time": "19:00",
       "player1": "Korea",
       "player2": "Saudi Arabia",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {

@@ -146,25 +146,25 @@
     },
     {
       "round": "Women Group C G 5",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-22",
       "time": "16:00",
       "player1": "Korea",
       "player2": "Chinese Taipei",
-      "score": "33 - 23",
+      "score": "73 - 59",
       "winner": "Korea"
     },
     {
       "round": "Women Group C G 6",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-22",
       "time": "19:00",
       "player1": "Mongolia",
       "player2": "Malaysia",
-      "score": "vs",
-      "winner": ""
+      "score": "11 - 13",
+      "winner": "Malaysia"
     },
     {
       "round": "Women 1/4 G 1",
