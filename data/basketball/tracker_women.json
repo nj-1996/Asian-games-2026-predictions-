@@ -167,35 +167,13 @@
       "winner": "Mongolia"
     },
     {
-      "round": "Women 1/4 G 1",
-      "status": "Upcoming",
-      "state": "Scheduled",
-      "date": "2026-09-24",
-      "time": "10:00",
-      "player1": "TBD",
-      "player2": "TBD",
-      "score": "vs",
-      "winner": ""
-    },
-    {
-      "round": "Women 1/4 G 2",
-      "status": "Upcoming",
-      "state": "Scheduled",
-      "date": "2026-09-24",
-      "time": "13:00",
-      "player1": "TBD",
-      "player2": "TBD",
-      "score": "vs",
-      "winner": ""
-    },
-    {
       "round": "Women 1/4 G 3",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-24",
-      "time": "16:00",
-      "player1": "TBD",
-      "player2": "TBD",
+      "time": "10:00",
+      "player1": "Korea",
+      "player2": "Indonesia",
       "score": "vs",
       "winner": ""
     },
@@ -204,14 +182,36 @@
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-24",
-      "time": "19:20",
-      "player1": "TBD",
-      "player2": "TBD",
+      "time": "13:00",
+      "player1": "Mongolia",
+      "player2": "China",
       "score": "vs",
       "winner": ""
     },
     {
-      "round": "Women 1/2 G 1",
+      "round": "Women 1/4 G 2",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-24",
+      "time": "16:00",
+      "player1": "Chinese Taipei",
+      "player2": "Philippines",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Women 1/4 G 1",
+      "status": "Upcoming",
+      "state": "Scheduled",
+      "date": "2026-09-24",
+      "time": "19:20",
+      "player1": "Japan",
+      "player2": "Thailand",
+      "score": "vs",
+      "winner": ""
+    },
+    {
+      "round": "Women 1/2 G 2",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-25",
@@ -222,7 +222,7 @@
       "winner": ""
     },
     {
-      "round": "Women 1/2 G 2",
+      "round": "Women 1/2 G 1",
       "status": "Upcoming",
       "state": "Scheduled",
       "date": "2026-09-25",
