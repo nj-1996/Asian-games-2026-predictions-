@@ -21,8 +21,28 @@
 
   function parseMatch(m) {
     const base = typeof parseMatchData === 'function' ? parseMatchData(m) : {};
-    const t1 = base.t1 || m.player1 || m.team1 || 'TBD';
-    const t2 = base.t2 || m.player2 || m.team2 || 'TBD';
+
+    // Extract country / national team name
+    let country1 = m.team1 || m.team_1 || '';
+    if (!country1 && m.player1 && m.player1.includes('(')) {
+      const match = m.player1.match(/\(([^)]+)\)/);
+      if (match) country1 = match[1];
+    }
+    if (!country1) country1 = base.t1 || 'TBD';
+
+    let country2 = m.team2 || m.team_2 || '';
+    if (!country2 && m.player2 && m.player2.includes('(')) {
+      const match = m.player2.match(/\(([^)]+)\)/);
+      if (match) country2 = match[1];
+    }
+    if (!country2) country2 = base.t2 || 'TBD';
+
+    const t1 = typeof formatTeamDisplayName === 'function' ? formatTeamDisplayName(country1) : country1;
+    const t2 = typeof formatTeamDisplayName === 'function' ? formatTeamDisplayName(country2) : country2;
+
+    const athlete1 = m.athlete1 || (m.player1 ? m.player1.replace(/\s*\([^)]*\)/g, '').trim() : '');
+    const athlete2 = m.athlete2 || (m.player2 ? m.player2.replace(/\s*\([^)]*\)/g, '').trim() : '');
+
     const s1 = base.s1 || m.score1 || '-';
     const s2 = base.s2 || m.score2 || '-';
 
@@ -31,6 +51,10 @@
       ...base,
       t1,
       t2,
+      team1: t1,
+      team2: t2,
+      athlete1,
+      athlete2,
       s1,
       s2,
       winner: m.winner || base.winner || '',
@@ -564,12 +588,33 @@
                     ${renderBracketCard(finalMatch, 'Championship')}
                   </div>
                 ` : ''}
-                ${bronzes.map((m, i) => `
+                ${bronzes.length > 0 ? bronzes.map((m, i) => `
                   <div style="border:1px solid rgba(245,158,11,0.3); border-radius:8px; padding:2px; margin-bottom:8px; background:rgba(245,158,11,0.04);">
                     <div style="font-size:0.68rem; font-weight:800; color:#f59e0b; text-align:center; padding:3px;">🥉 BRONZE ${i+1}</div>
                     ${renderBracketCard(m, `Bronze Match ${i+1}`)}
                   </div>
-                `).join('')}
+                `).join('') : (semis.length > 0 && semis.every(s => s.isFinished) ? `
+                  <div style="border:1px solid rgba(245,158,11,0.35); border-radius:8px; padding:8px 10px; margin-bottom:8px; background:rgba(245,158,11,0.04); font-size:0.75rem;">
+                    <div style="font-size:0.68rem; font-weight:800; color:#f59e0b; text-align:center; margin-bottom:6px; letter-spacing:0.04em;">🥉 BRONZE MEDALISTS (Semifinalists)</div>
+                    ${semis.map((sm, idx) => {
+                      const w1 = clean(sm.winner) === clean(sm.team1 || sm.t1) || clean(sm.winner) === clean(sm.athlete1);
+                      const loserTeam = w1 ? (sm.team2 || sm.t2) : (sm.team1 || sm.t1);
+                      const loserAthlete = w1 ? sm.athlete2 : sm.athlete1;
+                      const f = getFlagEmoji(loserTeam);
+                      return `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:4px 0; ${idx > 0 ? 'border-top:1px solid rgba(255,255,255,0.06);' : ''}">
+                          <div style="display:flex; align-items:center; gap:6px;">
+                            <span>${f}</span>
+                            <span style="font-weight:700; color:#f8fafc;">${loserTeam}</span>
+                            ${loserAthlete ? `<span style="font-size:0.68rem; color:#94a3b8;">(${loserAthlete})</span>` : ''}
+                          </div>
+                          <span style="font-size:0.7rem; font-weight:700; color:#f59e0b; background:rgba(245,158,11,0.15); padding:1px 6px; border-radius:4px;">Bronze</span>
+                        </div>
+                      `;
+                    }).join('')}
+                    <div style="font-size:0.65rem; color:#94a3b8; margin-top:4px; text-align:center;">Both semifinal losers awarded Bronze</div>
+                  </div>
+                ` : '')}
               </div>
             </div>
           </div>
@@ -647,13 +692,14 @@
         if (finalMatch && finalMatch.isFinished) {
           status = 'Finished';
           const winner = finalMatch.winner || finalMatch.t1;
-          const isT1Winner = clean(winner) === clean(finalMatch.t1);
-          const loser = isT1Winner ? finalMatch.t2 : finalMatch.t1;
+          const isT1Winner = clean(winner) === clean(finalMatch.t1) || clean(winner) === clean(finalMatch.team1) || clean(winner) === clean(finalMatch.athlete1) || clean(finalMatch.t1).includes(clean(winner));
+          const winTeam = isT1Winner ? (finalMatch.team1 || finalMatch.t1) : (finalMatch.team2 || finalMatch.t2);
+          const loseTeam = isT1Winner ? (finalMatch.team2 || finalMatch.t2) : (finalMatch.team1 || finalMatch.t1);
           const gAthleteRaw = isT1Winner ? finalMatch.athlete1 : finalMatch.athlete2;
           const sAthleteRaw = isT1Winner ? finalMatch.athlete2 : finalMatch.athlete1;
 
-          gold = formatC({ team: winner, athlete: gAthleteRaw }, true);
-          silver = formatC({ team: loser, athlete: sAthleteRaw }, true);
+          gold = formatC({ team: winTeam, athlete: gAthleteRaw }, true);
+          silver = formatC({ team: loseTeam, athlete: sAthleteRaw }, true);
           const s = finalMatch.score || `${finalMatch.s1 || '-'} - ${finalMatch.s2 || '-'}`;
           goldScoreInfo = `Final: ${finalMatch.t1} ${s} ${finalMatch.t2} (Official)`;
           matchInfo = goldScoreInfo;
@@ -668,9 +714,10 @@
           bronzeMatches.forEach((bm, bIdx) => {
             if (bm.isFinished) {
               const bWinner = bm.winner || bm.t1;
-              const isB1 = clean(bWinner) === clean(bm.t1);
+              const isB1 = clean(bWinner) === clean(bm.t1) || clean(bWinner) === clean(bm.team1) || clean(bWinner) === clean(bm.athlete1) || clean(bm.t1).includes(clean(bWinner));
+              const bTeam = isB1 ? (bm.team1 || bm.t1) : (bm.team2 || bm.t2);
               const bAthlete = isB1 ? bm.athlete1 : bm.athlete2;
-              const bObj = formatC({ team: bWinner, athlete: bAthlete }, true);
+              const bObj = formatC({ team: bTeam, athlete: bAthlete }, true);
               bronzes.push(bObj);
               if (!bronze) bronze = bObj;
               const bS = bm.score || `${bm.s1 || '-'} - ${bm.s2 || '-'}`;
@@ -687,13 +734,13 @@
           semiMatches.forEach((sm, sIdx) => {
             if (sm.isFinished) {
               const sWinner = sm.winner || sm.t1;
-              const isW1 = clean(sWinner) === clean(sm.t1);
-              const sLoser = isW1 ? sm.t2 : sm.t1;
+              const isW1 = clean(sWinner) === clean(sm.t1) || clean(sWinner) === clean(sm.team1) || clean(sWinner) === clean(sm.athlete1) || clean(sm.t1).includes(clean(sWinner));
+              const sLoserTeam = isW1 ? (sm.team2 || sm.t2) : (sm.team1 || sm.t1);
               const lAthlete = isW1 ? sm.athlete2 : sm.athlete1;
-              const bObj = formatC({ team: sLoser, athlete: lAthlete }, true);
+              const bObj = formatC({ team: sLoserTeam, athlete: lAthlete }, true);
               bronzes.push(bObj);
               if (!bronze) bronze = bObj;
-              const line = `Bronze (SF ${sIdx + 1}): ${sLoser} (${lAthlete || sLoser})`;
+              const line = `Bronze (SF ${sIdx + 1}): ${sLoserTeam} (${lAthlete || sLoserTeam})`;
               bronzeScoreInfo += (bronzeScoreInfo ? ' • ' : '') + line;
             }
           });
@@ -794,17 +841,27 @@
           if (ev.actual.silver.cleaned === ev.projected.silver?.cleaned) { evExact++; totalExactHits++; }
           if (projTop3.includes(ev.actual.silver.cleaned)) { evPodium++; totalPodiumHits++; }
         }
-        if (ev.actual.bronze) {
+        if (Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 0) {
+          ev.actual.bronzes.forEach(b => {
+            evDecided++; totalDecidedMedals++;
+            if (b.cleaned === ev.projected.bronze?.cleaned) { evExact++; totalExactHits++; }
+            if (projTop3.includes(b.cleaned)) { evPodium++; totalPodiumHits++; }
+          });
+        } else if (ev.actual.bronze) {
           evDecided++; totalDecidedMedals++;
           if (ev.actual.bronze.cleaned === ev.projected.bronze?.cleaned) { evExact++; totalExactHits++; }
           if (projTop3.includes(ev.actual.bronze.cleaned)) { evPodium++; totalPodiumHits++; }
         }
 
+        const bronzeHitVal = (Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 0)
+          ? ev.actual.bronzes.some(b => b.cleaned === ev.projected.bronze?.cleaned)
+          : (ev.actual.bronze ? ev.actual.bronze.cleaned === ev.projected.bronze?.cleaned : null);
+
         ev.evaluation = {
           decidedCount: evDecided, exactHits: evExact, podiumHits: evPodium,
           goldHit: ev.actual.gold ? ev.actual.gold.cleaned === ev.projected.gold?.cleaned : null,
           silverHit: ev.actual.silver ? ev.actual.silver.cleaned === ev.projected.silver?.cleaned : null,
-          bronzeHit: ev.actual.bronze ? ev.actual.bronze.cleaned === ev.projected.bronze?.cleaned : null,
+          bronzeHit: bronzeHitVal,
           accuracyPct: evDecided > 0 ? Math.round((evExact / evDecided) * 100) : null,
           podiumRatePct: evDecided > 0 ? Math.round((evPodium / evDecided) * 100) : null
         };
@@ -827,7 +884,12 @@
         }
       });
 
-      const totalMedalsInSport = medalEvents.length * 3;
+      const totalMedalsInSport = medalEvents.reduce((acc, ev) => {
+        const bCount = (Array.isArray(ev.actual?.bronzes) && ev.actual.bronzes.length > 0)
+          ? ev.actual.bronzes.length
+          : 1;
+        return acc + 2 + bCount;
+      }, 0);
       const actualTable = Object.values(actualTableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze);
       const projectedTable = Object.values(projectedTableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze);
 

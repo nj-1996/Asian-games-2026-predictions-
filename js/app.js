@@ -38,7 +38,9 @@ async function fetchFastJson(paths) {
 }
 
 // --- Parallelized Tournament Data Loader ---
+let currentLoadId = 0;
 async function loadAllData() {
+  const loadId = ++currentLoadId;
   try {
     const sport = currentSport;
 
@@ -62,6 +64,8 @@ async function loadAllData() {
       ])
     ]);
 
+    if (loadId !== currentLoadId) return;
+
     appData.menMatches = extractList(menTrackerRaw);
     appData.womenMatches = extractList(womenTrackerRaw);
     appData.menTrackerRaw = menTrackerRaw;
@@ -79,13 +83,17 @@ async function loadAllData() {
         `data/predictions_women.json`,
         `predictions_women.json`
       ]);
+      if (loadId !== currentLoadId) return;
       appData.womenPredictions = extractList(womenPredRaw);
     }
     window.appData = appData;
   } catch (err) {
+    if (loadId !== currentLoadId) return;
     console.error("Load failed:", err);
   } finally {
-    renderView();
+    if (loadId === currentLoadId) {
+      renderView();
+    }
   }
 }
 
@@ -259,14 +267,38 @@ async function handleSportChange(sport) {
   currentSport = sport;
   window.currentSport = sport;
   localStorage.setItem('app_sport', sport);
+
+  if (typeof window.setPredictionsSubView === 'function') {
+    window.setPredictionsSubView('table');
+  } else if (typeof activePredictionsSubView !== 'undefined') {
+    activePredictionsSubView = 'table';
+  }
+  if (typeof window.activePredictionsSubView !== 'undefined') {
+    window.activePredictionsSubView = 'table';
+  }
+
   await loadAllData();
 }
 
 function setTab(tab) {
   currentTab = tab;
+  window.currentTab = tab;
   document.querySelectorAll('.nav-btn').forEach(b => {
     b.classList.toggle('active', b.id === `tab-${tab}`);
   });
+
+  if (tab === 'predictions') {
+    if (typeof window.setPredictionsSubView === 'function') {
+      window.setPredictionsSubView('table');
+      return;
+    } else if (typeof activePredictionsSubView !== 'undefined') {
+      activePredictionsSubView = 'table';
+    }
+    if (typeof window.activePredictionsSubView !== 'undefined') {
+      window.activePredictionsSubView = 'table';
+    }
+  }
+
   renderView();
 }
 
@@ -279,6 +311,12 @@ function setGender(gender) {
   if (btnWomen) btnWomen.classList.toggle('active', gender === 'women');
   renderView();
 }
+
+window.handleSportChange = handleSportChange;
+window.setTab = setTab;
+window.setGender = setGender;
+window.handleManualSync = handleManualSync;
+
 
 // --- Global Router ---
 function renderView() {
