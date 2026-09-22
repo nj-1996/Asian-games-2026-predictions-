@@ -72,6 +72,256 @@
     };
   }
 
+  function renderTeqballEventHeroCard(evName, evMatches, isSingleView) {
+    if (!evMatches || evMatches.length === 0) return '';
+
+    const liveMatch = evMatches.find(m => (m.status || '').toLowerCase().includes('live') || (m.state || '').toLowerCase().includes('live'));
+    const upcomingMatch = evMatches.find(m => !m.isFinished && !((m.status || '').toLowerCase().includes('live')));
+    const finalMatch = evMatches.find(m => /gold|final/i.test(m.stage || m.round || '') && !/semi|quarter|bronze/i.test(m.stage || m.round || ''));
+
+    if (liveMatch) {
+      const f1 = getFlagEmoji(liveMatch.team1 || liveMatch.t1);
+      const f2 = getFlagEmoji(liveMatch.team2 || liveMatch.t2);
+      return `
+        <div style="background:linear-gradient(135deg, rgba(239,68,68,0.18), rgba(15,23,42,0.9)); border:1px solid rgba(239,68,68,0.4); border-radius:12px; padding:1.25rem; position:relative; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+          ${isSingleView ? `
+            <div style="margin-bottom:8px;">
+              <button style="background:none; border:none; color:#38bdf8; font-size:0.75rem; font-weight:600; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px;" onclick="window.setTeqEventFilter('all')">
+                <span>&larr;</span> <span>All Teqball Events</span>
+              </button>
+            </div>
+          ` : ''}
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:6px;">
+            <span style="font-size:0.95rem; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:6px;">
+              <span>🏓</span> <span>${evName}</span>
+            </span>
+            <span style="display:inline-block; font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; padding:2px 8px; border-radius:9999px; background:rgba(239,68,68,0.25); color:#ef4444; border:1px solid rgba(239,68,68,0.4);">
+              🔴 LIVE NOW
+            </span>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-around; margin:0.75rem 0; gap:12px; text-align:center;">
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:1.8rem; line-height:1.2;">${f1}</div>
+              <div style="font-weight:700; font-size:1rem; color:#f8fafc; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${liveMatch.team1 || liveMatch.t1}
+              </div>
+              ${liveMatch.athlete1 ? `<div style="font-size:0.74rem; color:#94a3b8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeAttr(liveMatch.athlete1)}">${liveMatch.athlete1}</div>` : ''}
+            </div>
+            <div style="text-align:center; min-width:80px;">
+              <div style="font-size:0.68rem; font-weight:700; color:#ef4444; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:2px;">
+                ${liveMatch.stage || liveMatch.round}
+              </div>
+              <div style="font-family:monospace; font-size:1.5rem; font-weight:800; color:#ef4444; letter-spacing:1px;">
+                ${liveMatch.s1 !== '-' ? `${liveMatch.s1} : ${liveMatch.s2}` : 'LIVE'}
+              </div>
+              ${liveMatch.set_scores ? `<div style="font-size:0.68rem; color:#94a3b8; font-family:monospace; margin-top:2px;">${liveMatch.set_scores}</div>` : ''}
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:1.8rem; line-height:1.2;">${f2}</div>
+              <div style="font-weight:700; font-size:1rem; color:#f8fafc; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${liveMatch.team2 || liveMatch.t2}
+              </div>
+              ${liveMatch.athlete2 ? `<div style="font-size:0.74rem; color:#94a3b8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeAttr(liveMatch.athlete2)}">${liveMatch.athlete2}</div>` : ''}
+            </div>
+          </div>
+          <div style="font-size:0.75rem; color:#94a3b8; text-align:center; margin-top:0.4rem;">
+            ${liveMatch.court ? `${liveMatch.court} • ` : ''}⏱️ In Progress
+          </div>
+        </div>
+      `;
+    }
+
+    if (upcomingMatch) {
+      const f1 = getFlagEmoji(upcomingMatch.team1 || upcomingMatch.t1);
+      const f2 = getFlagEmoji(upcomingMatch.team2 || upcomingMatch.t2);
+      const timeDisplay = (typeof formatDisplayTime === 'function')
+        ? formatDisplayTime(upcomingMatch.time, upcomingMatch.date)
+        : `${upcomingMatch.time} JST`;
+
+      return `
+        <div style="background:linear-gradient(135deg, rgba(30,58,138,0.35), rgba(15,23,42,0.9)); border:1px solid rgba(59,130,246,0.35); border-radius:12px; padding:1.25rem; position:relative; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+          ${isSingleView ? `
+            <div style="margin-bottom:8px;">
+              <button style="background:none; border:none; color:#38bdf8; font-size:0.75rem; font-weight:600; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px;" onclick="window.setTeqEventFilter('all')">
+                <span>&larr;</span> <span>All Teqball Events</span>
+              </button>
+            </div>
+          ` : ''}
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:6px;">
+            <span style="font-size:0.95rem; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:6px;">
+              <span>🏓</span> <span>${evName}</span>
+            </span>
+            <span style="display:inline-block; font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; padding:2px 8px; border-radius:9999px; background:rgba(59,130,246,0.2); color:#60a5fa; border:1px solid rgba(59,130,246,0.35);">
+              ⏳ NEXT MATCH
+            </span>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-around; margin:0.75rem 0; gap:12px; text-align:center;">
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:1.8rem; line-height:1.2;">${f1}</div>
+              <div style="font-weight:700; font-size:1rem; color:#f8fafc; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${upcomingMatch.team1 || upcomingMatch.t1}
+              </div>
+              ${upcomingMatch.athlete1 ? `<div style="font-size:0.74rem; color:#94a3b8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeAttr(upcomingMatch.athlete1)}">${upcomingMatch.athlete1}</div>` : ''}
+            </div>
+            <div style="text-align:center; min-width:80px;">
+              <div style="font-size:0.68rem; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:2px;">
+                ${upcomingMatch.stage || upcomingMatch.round}
+              </div>
+              <div style="font-family:monospace; font-size:1.3rem; font-weight:800; color:#94a3b8;">
+                VS
+              </div>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:1.8rem; line-height:1.2;">${f2}</div>
+              <div style="font-weight:700; font-size:1rem; color:#f8fafc; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${upcomingMatch.team2 || upcomingMatch.t2}
+              </div>
+              ${upcomingMatch.athlete2 ? `<div style="font-size:0.74rem; color:#94a3b8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeAttr(upcomingMatch.athlete2)}">${upcomingMatch.athlete2}</div>` : ''}
+            </div>
+          </div>
+          <div style="font-size:0.75rem; color:#94a3b8; text-align:center; margin-top:0.4rem;">
+            📅 ${timeDisplay} ${upcomingMatch.court ? `• ${upcomingMatch.court}` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    // Concluded state
+    let goldTeam = '', goldAthlete = '', silverTeam = '', silverAthlete = '';
+    let finalScoreDisplay = '-', finalSetScores = '';
+
+    if (finalMatch) {
+      const w1 = clean(finalMatch.winner) === clean(finalMatch.team1 || finalMatch.t1) || clean(finalMatch.winner) === clean(finalMatch.athlete1);
+      goldTeam = w1 ? (finalMatch.team1 || finalMatch.t1) : (finalMatch.team2 || finalMatch.t2);
+      goldAthlete = w1 ? (finalMatch.athlete1 || finalMatch.player1 || '') : (finalMatch.athlete2 || finalMatch.player2 || '');
+      silverTeam = w1 ? (finalMatch.team2 || finalMatch.t2) : (finalMatch.team1 || finalMatch.t1);
+      silverAthlete = w1 ? (finalMatch.athlete2 || finalMatch.player2 || '') : (finalMatch.athlete1 || finalMatch.player1 || '');
+
+      finalScoreDisplay = w1 ? `${finalMatch.s1} : ${finalMatch.s2}` : `${finalMatch.s2} : ${finalMatch.s1}`;
+      finalSetScores = finalMatch.set_scores || '';
+    }
+
+    const fGold = getFlagEmoji(goldTeam);
+    const fSilver = getFlagEmoji(silverTeam);
+
+    // Extract Bronzes
+    const bronzeMatches = evMatches.filter(m => /bronze/i.test(m.stage || m.round || ''));
+    const semis = evMatches.filter(m => /semi/i.test(m.stage || m.round || ''));
+    let bronzesList = [];
+
+    if (bronzeMatches.length > 0) {
+      bronzesList = bronzeMatches.map(bm => {
+        const bw1 = clean(bm.winner) === clean(bm.team1 || bm.t1) || clean(bm.winner) === clean(bm.athlete1);
+        return {
+          team: bw1 ? (bm.team1 || bm.t1) : (bm.team2 || bm.t2),
+          athlete: bw1 ? (bm.athlete1 || bm.player1 || '') : (bm.athlete2 || bm.player2 || '')
+        };
+      });
+    } else if (semis.length > 0 && semis.every(s => s.isFinished)) {
+      bronzesList = semis.map(sm => {
+        const sw1 = clean(sm.winner) === clean(sm.team1 || sm.t1) || clean(sm.winner) === clean(sm.athlete1);
+        return {
+          team: sw1 ? (sm.team2 || sm.t2) : (sm.team1 || sm.t1),
+          athlete: sw1 ? (sm.athlete2 || sm.player2 || '') : (sm.athlete1 || sm.player1 || '')
+        };
+      });
+    }
+
+    return `
+      <div style="background:linear-gradient(135deg, rgba(202,138,4,0.15), rgba(15,23,42,0.9)); border:1px solid rgba(234,179,8,0.32); border-radius:12px; padding:1.15rem; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+        <div>
+          ${isSingleView ? `
+            <div style="margin-bottom:8px;">
+              <button style="background:none; border:none; color:#38bdf8; font-size:0.75rem; font-weight:600; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px;" onclick="window.setTeqEventFilter('all')">
+                <span>&larr;</span> <span>All Teqball Events</span>
+              </button>
+            </div>
+          ` : ''}
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:6px;">
+            <span style="font-size:0.95rem; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:6px;">
+              <span>🏓</span> <span>${evName}</span>
+            </span>
+            <span style="display:inline-block; font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; padding:2px 8px; border-radius:9999px; background:rgba(234,179,8,0.2); color:#facc15; border:1px solid rgba(234,179,8,0.35);">
+              🏆 EVENT CONCLUDED
+            </span>
+          </div>
+
+          <!-- Gold vs Silver Center Matchup -->
+          <div style="display:flex; align-items:center; justify-content:space-around; margin:0.75rem 0; gap:12px; text-align:center;">
+            <!-- Champion (Gold) -->
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:1.8rem; line-height:1.2;">${fGold}</div>
+              <div style="font-weight:800; font-size:1rem; color:#facc15; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${goldTeam} 🥇
+              </div>
+              ${goldAthlete && goldAthlete !== goldTeam ? `<div style="font-size:0.72rem; color:#cbd5e1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeAttr(goldAthlete)}">${goldAthlete}</div>` : ''}
+            </div>
+
+            <!-- Score Display -->
+            <div style="text-align:center; min-width:80px;">
+              <div style="font-size:0.65rem; font-weight:700; color:#facc15; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:2px;">
+                Gold Final
+              </div>
+              <div style="font-family:monospace; font-size:1.4rem; font-weight:800; color:#f8fafc; letter-spacing:1px;">
+                ${finalScoreDisplay}
+              </div>
+              ${finalSetScores ? `<div style="font-size:0.65rem; color:#94a3b8; font-family:monospace; margin-top:2px;">${finalSetScores}</div>` : ''}
+            </div>
+
+            <!-- Runner-up (Silver) -->
+            <div style="flex:1; min-width:0; opacity:0.85;">
+              <div style="font-size:1.8rem; line-height:1.2;">${fSilver}</div>
+              <div style="font-weight:700; font-size:0.95rem; color:#cbd5e1; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${silverTeam} 🥈
+              </div>
+              ${silverAthlete && silverAthlete !== silverTeam ? `<div style="font-size:0.72rem; color:#94a3b8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeAttr(silverAthlete)}">${silverAthlete}</div>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <!-- Podium Breakdown Table / Bar -->
+        <div style="background:rgba(0,0,0,0.25); border-radius:8px; padding:8px 10px; font-size:0.74rem; margin-top:0.6rem; display:flex; flex-direction:column; gap:5px; border:1px solid rgba(255,255,255,0.05);">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <span style="color:#facc15; font-weight:700; display:flex; align-items:center; gap:5px; white-space:nowrap;">
+              <span>🥇</span> <span>Gold:</span>
+            </span>
+            <span style="color:#f8fafc; font-weight:600; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+              ${fGold} ${goldTeam} ${goldAthlete && goldAthlete !== goldTeam ? `<span style="color:#94a3b8; font-size:0.7rem; font-weight:normal;">(${goldAthlete})</span>` : ''}
+            </span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <span style="color:#cbd5e1; font-weight:700; display:flex; align-items:center; gap:5px; white-space:nowrap;">
+              <span>🥈</span> <span>Silver:</span>
+            </span>
+            <span style="color:#cbd5e1; font-weight:600; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+              ${fSilver} ${silverTeam} ${silverAthlete && silverAthlete !== silverTeam ? `<span style="color:#94a3b8; font-size:0.7rem; font-weight:normal;">(${silverAthlete})</span>` : ''}
+            </span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+            <span style="color:#f59e0b; font-weight:700; display:flex; align-items:center; gap:5px; white-space:nowrap;">
+              <span>🥉</span> <span>Bronze:</span>
+            </span>
+            <div style="color:#f59e0b; font-weight:600; text-align:right; display:flex; flex-direction:column; gap:2px; overflow:hidden;">
+              ${bronzesList.length > 0 ? bronzesList.map(b => `
+                <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                  ${getFlagEmoji(b.team)} ${b.team} ${b.athlete && b.athlete !== b.team ? `<span style="color:#94a3b8; font-size:0.7rem; font-weight:normal;">(${b.athlete})</span>` : ''}
+                </span>
+              `).join('') : '<span style="color:#64748b;">TBD</span>'}
+            </div>
+          </div>
+        </div>
+
+        ${!isSingleView ? `
+          <div style="margin-top:8px; text-align:right;">
+            <button style="background:transparent; border:none; color:#38bdf8; font-size:0.72rem; font-weight:600; cursor:pointer; padding:2px 4px;" data-event="${escapeAttr(evName)}" onclick="window.setTeqEventFilter(this.getAttribute('data-event'))">
+              View ${evName} Schedule &rarr;
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
   const TEQBALL_ENGINE = {
     icon: '🏓',
     hasBracket: true,
@@ -110,6 +360,37 @@
           if (/semi/i.test(r) && clean(m.event).includes('womensdoubles')) return true;
           return false;
         });
+      }
+
+      // Hero Banner HTML (per event or multi-event overview)
+      let heroHtml = '';
+      if (activeTeqEventFilter !== 'all') {
+        const evMatches = parsedMatches.filter(m => m.event === activeTeqEventFilter);
+        heroHtml = `
+          <div style="margin-bottom:1.25rem;">
+            ${renderTeqballEventHeroCard(activeTeqEventFilter, evMatches, true)}
+          </div>
+        `;
+      } else {
+        const cards = eventsList.map(ev => {
+          const evMatches = parsedMatches.filter(m => m.event === ev);
+          return renderTeqballEventHeroCard(ev, evMatches, false);
+        }).filter(Boolean).join('');
+
+        if (cards) {
+          heroHtml = `
+            <div style="margin-bottom:1.5rem;">
+              <div style="font-size:0.8rem; font-weight:800; color:#cbd5e1; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+                <span>🏆 Event Highlights & Champions</span>
+                <span style="height:1px; flex:1; background:rgba(255,255,255,0.08);"></span>
+                <span style="font-size:0.72rem; color:#64748b; font-weight:600;">${eventsList.length} Events</span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1rem;">
+                ${cards}
+              </div>
+            </div>
+          `;
+        }
       }
 
       // Filter Bar HTML
@@ -272,7 +553,7 @@
         `;
       });
 
-      return filterBarHtml + eventNoticeHtml + matchesHtml;
+      return heroHtml + filterBarHtml + eventNoticeHtml + matchesHtml;
     },
 
     // --- Standings & Groups Renderer ---
