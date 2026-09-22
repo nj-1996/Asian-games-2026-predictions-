@@ -81,16 +81,16 @@
     },
     {
       "round": "Bronze Medal Match",
-      "status": "Live",
-      "state": "Running",
+      "status": "Upcoming",
+      "state": "Unofficial",
       "date": "2026-09-22",
       "time": "09:00",
       "player1": "Pakistan",
       "player2": "Bangladesh",
-      "score": "145 - 0",
+      "score": "145 - 114",
       "score1": "145/8",
-      "score2": "0/0",
-      "winner": ""
+      "score2": "114/7",
+      "winner": "Pakistan"
     },
     {
       "round": "Gold Medal Match",
