@@ -9,6 +9,7 @@
   let activeTeqPhaseFilter = 'all'; // 'all' | 'groups' | 'knockout' | 'finals'
   let activeTeqStandingsEvent = 'all';
   let activeTeqBracketEvent = 'all';
+  let activeTeqCalibrationEvent = 'all';
 
   function clean(s) {
     return (s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
@@ -287,7 +288,19 @@
             item2.sw += s2;
             item2.sl += s1;
 
-            if (s1 > s2) {
+            const wClean = clean(m.winner);
+            const c1 = clean(t1);
+            const c2 = clean(t2);
+
+            if (wClean === c1) {
+              item1.w += 1;
+              item1.pts += 2;
+              item2.l += 1;
+            } else if (wClean === c2) {
+              item2.w += 1;
+              item2.pts += 2;
+              item1.l += 1;
+            } else if (s1 > s2) {
               item1.w += 1;
               item1.pts += 2;
               item2.l += 1;
@@ -612,36 +625,33 @@
 
       // Find actual gold/silver/bronze from match data for a specific event
       const resolveActuals = (eventName, allMatches) => {
-        const matches = allMatches.map(m => parseMatch(m));
+        const targetClean = clean(eventName);
+        const matches = allMatches
+          .map(m => parseMatch(m))
+          .filter(m => clean(m.event) === targetClean);
+
         const finalMatch = matches.find(m => {
           const r = (m.round || m.stage || '').toLowerCase();
-          const ev = (m.event || '').toLowerCase();
-          if (!ev.includes(eventName.split(' ')[1].toLowerCase())) return false;
           return /\bfinal\b/i.test(r) && !/semi|quarter|bronze|repechage/i.test(r);
         });
-        const bronzeMatch = matches.find(m => {
+
+        const bronzeMatches = matches.filter(m => {
           const r = (m.round || m.stage || '').toLowerCase();
-          const ev = (m.event || '').toLowerCase();
-          if (!ev.includes(eventName.split(' ')[1].toLowerCase())) return false;
           return /bronze/i.test(r);
         });
 
         let gold = null, silver = null, bronze = null;
+        const bronzes = [];
         let status = 'Upcoming', matchInfo = '', goldScoreInfo = '', bronzeScoreInfo = '';
 
         if (finalMatch && finalMatch.isFinished) {
           status = 'Finished';
           const winner = finalMatch.winner || finalMatch.t1;
-          const loser = typeof cleanTeamName === 'function'
-            ? (cleanTeamName(winner) === cleanTeamName(finalMatch.t1) ? finalMatch.t2 : finalMatch.t1)
-            : (winner === finalMatch.t1 ? finalMatch.t2 : finalMatch.t1);
-          // For individual events, extract athlete names
-          const gAthleteRaw = finalMatch.winner
-            ? (cleanTeamName(finalMatch.winner) === cleanTeamName(finalMatch.t1) ? finalMatch.athlete1 : finalMatch.athlete2)
-            : finalMatch.athlete1;
-          const sAthleteRaw = finalMatch.winner
-            ? (cleanTeamName(finalMatch.winner) === cleanTeamName(finalMatch.t1) ? finalMatch.athlete2 : finalMatch.athlete1)
-            : finalMatch.athlete2;
+          const isT1Winner = clean(winner) === clean(finalMatch.t1);
+          const loser = isT1Winner ? finalMatch.t2 : finalMatch.t1;
+          const gAthleteRaw = isT1Winner ? finalMatch.athlete1 : finalMatch.athlete2;
+          const sAthleteRaw = isT1Winner ? finalMatch.athlete2 : finalMatch.athlete1;
+
           gold = formatC({ team: winner, athlete: gAthleteRaw }, true);
           silver = formatC({ team: loser, athlete: sAthleteRaw }, true);
           const s = finalMatch.score || `${finalMatch.s1 || '-'} - ${finalMatch.s2 || '-'}`;
@@ -653,18 +663,47 @@
           matchInfo = goldScoreInfo;
         }
 
-        if (bronzeMatch && bronzeMatch.isFinished) {
-          const bWinner = bronzeMatch.winner || bronzeMatch.t1;
-          const bAthlete = bronzeMatch.winner
-            ? (cleanTeamName(bronzeMatch.winner) === cleanTeamName(bronzeMatch.t1) ? bronzeMatch.athlete1 : bronzeMatch.athlete2)
-            : bronzeMatch.athlete1;
-          bronze = formatC({ team: bWinner, athlete: bAthlete }, true);
-          const bS = bronzeMatch.score || `${bronzeMatch.s1 || '-'} - ${bronzeMatch.s2 || '-'}`;
-          bronzeScoreInfo = `Bronze: ${bronzeMatch.t1} ${bS} ${bronzeMatch.t2} (Official)`;
+        // Process bronze matches (if scheduled/played)
+        if (bronzeMatches.length > 0) {
+          bronzeMatches.forEach((bm, bIdx) => {
+            if (bm.isFinished) {
+              const bWinner = bm.winner || bm.t1;
+              const isB1 = clean(bWinner) === clean(bm.t1);
+              const bAthlete = isB1 ? bm.athlete1 : bm.athlete2;
+              const bObj = formatC({ team: bWinner, athlete: bAthlete }, true);
+              bronzes.push(bObj);
+              if (!bronze) bronze = bObj;
+              const bS = bm.score || `${bm.s1 || '-'} - ${bm.s2 || '-'}`;
+              const line = `Bronze ${bIdx + 1}: ${bm.t1} ${bS} ${bm.t2} (Official)`;
+              bronzeScoreInfo += (bronzeScoreInfo ? ' • ' : '') + line;
+            }
+          });
+        } else {
+          // No bronze match (e.g. Women's Doubles) - Losing Semifinalists receive Bronze
+          const semiMatches = matches.filter(m => {
+            const r = (m.round || m.stage || '').toLowerCase();
+            return /semi/i.test(r);
+          });
+          semiMatches.forEach((sm, sIdx) => {
+            if (sm.isFinished) {
+              const sWinner = sm.winner || sm.t1;
+              const isW1 = clean(sWinner) === clean(sm.t1);
+              const sLoser = isW1 ? sm.t2 : sm.t1;
+              const lAthlete = isW1 ? sm.athlete2 : sm.athlete1;
+              const bObj = formatC({ team: sLoser, athlete: lAthlete }, true);
+              bronzes.push(bObj);
+              if (!bronze) bronze = bObj;
+              const line = `Bronze (SF ${sIdx + 1}): ${sLoser} (${lAthlete || sLoser})`;
+              bronzeScoreInfo += (bronzeScoreInfo ? ' • ' : '') + line;
+            }
+          });
+        }
+
+        if (bronzeScoreInfo) {
           matchInfo += (matchInfo ? ' • ' : '') + bronzeScoreInfo;
         }
 
-        return { gold, silver, bronze, status, matchInfo, goldScoreInfo, bronzeScoreInfo };
+        return { gold, silver, bronze, bronzes, status, matchInfo, goldScoreInfo, bronzeScoreInfo };
       };
 
       const allMatchesBoth = [...(menMatches || []), ...(womenMatches || [])];
@@ -687,7 +726,7 @@
         const projBronze = formatC(podium.find(p => p.medal === 'bronze')?.item, true);
 
         const matchPool = def.gender === 'women' ? (womenMatches || []) : (menMatches || []);
-        const { gold: actualGold, silver: actualSilver, bronze: actualBronze, status, matchInfo, goldScoreInfo, bronzeScoreInfo } = resolveActuals(def.event, matchPool);
+        const { gold: actualGold, silver: actualSilver, bronze: actualBronze, bronzes: actualBronzes, status, matchInfo, goldScoreInfo, bronzeScoreInfo } = resolveActuals(def.event, matchPool);
 
         medalEvents.push({
           id: def.id,
@@ -702,7 +741,7 @@
           bronzeScoreInfo,
           rankings,
           projected: { gold: projGold, silver: projSilver, bronze: projBronze },
-          actual: { gold: actualGold, silver: actualSilver, bronze: actualBronze }
+          actual: { gold: actualGold, silver: actualSilver, bronze: actualBronze, bronzes: actualBronzes }
         });
       });
 
@@ -733,9 +772,14 @@
         recordMedal(projectedTableMap, ev.projected.gold, 'gold');
         recordMedal(projectedTableMap, ev.projected.silver, 'silver');
         recordMedal(projectedTableMap, ev.projected.bronze, 'bronze');
+
         recordMedal(actualTableMap, ev.actual.gold, 'gold');
         recordMedal(actualTableMap, ev.actual.silver, 'silver');
-        recordMedal(actualTableMap, ev.actual.bronze, 'bronze');
+        if (Array.isArray(ev.actual.bronzes) && ev.actual.bronzes.length > 0) {
+          ev.actual.bronzes.forEach(b => recordMedal(actualTableMap, b, 'bronze'));
+        } else if (ev.actual.bronze) {
+          recordMedal(actualTableMap, ev.actual.bronze, 'bronze');
+        }
 
         const projTop3 = [ev.projected.gold?.cleaned, ev.projected.silver?.cleaned, ev.projected.bronze?.cleaned].filter(Boolean);
         let evDecided = 0, evExact = 0, evPodium = 0;
@@ -828,6 +872,210 @@
           goldAccuracyPct: totalDecidedGold > 0 ? Math.round((totalGoldHits / totalDecidedGold) * 100) : null
         }
       };
+    },
+
+    // --- Calibration View (Multi-Event Favorite Accuracy & Upset Tracker) ---
+    renderCalibration(container, predictions, matches) {
+      const predEvents = (window.appData && Array.isArray(window.appData.predictionEvents))
+        ? window.appData.predictionEvents : [];
+
+      // Combine all finished matches from both files (deduplicated by ID)
+      const allMatchesRaw = [
+        ...(window.appData?.menMatches || []),
+        ...(window.appData?.womenMatches || [])
+      ];
+      const seenIds = new Set();
+      const allMatches = [];
+      allMatchesRaw.forEach(m => {
+        const id = m.id || `${m.event}_${m.round}_${m.match}_${m.team1}_${m.team2}`;
+        if (!seenIds.has(id)) {
+          seenIds.add(id);
+          allMatches.push(parseMatch(m));
+        }
+      });
+
+      const finishedMatches = allMatches.filter(m => m.isFinished);
+
+      // Event definitions
+      const eventsAvailable = [
+        "Men's Singles",
+        "Men's Doubles",
+        "Mixed Doubles",
+        "Women's Singles",
+        "Women's Doubles"
+      ];
+
+      // Build event ranking map
+      const eventRankMap = {};
+      predEvents.forEach(ev => {
+        const evName = clean(ev.event || ev.name || '');
+        const rMap = {};
+        (ev.rankings || []).forEach((c, idx) => {
+          const tClean = clean(c.team || c.country || '');
+          const aClean = clean(c.athlete || c.player || '');
+          if (tClean) rMap[tClean] = idx + 1;
+          if (aClean) rMap[aClean] = idx + 1;
+        });
+        eventRankMap[evName] = rMap;
+      });
+
+      // Filter matches by selected event
+      let evalMatches = finishedMatches;
+      if (activeTeqCalibrationEvent !== 'all') {
+        evalMatches = evalMatches.filter(m => clean(m.event) === clean(activeTeqCalibrationEvent));
+      }
+
+      let evaluatedMatches = 0;
+      let correctFavorites = 0;
+      const upsetLogs = [];
+
+      evalMatches.forEach(m => {
+        const evClean = clean(m.event || '');
+        const rMap = eventRankMap[evClean] || {};
+
+        const t1Clean = clean(m.team1 || m.t1 || '');
+        const t2Clean = clean(m.team2 || m.t2 || '');
+        const a1Clean = clean(m.athlete1 || '');
+        const a2Clean = clean(m.athlete2 || '');
+
+        const r1 = rMap[a1Clean] || rMap[t1Clean] || 99;
+        const r2 = rMap[a2Clean] || rMap[t2Clean] || 99;
+
+        if (r1 !== r2) {
+          evaluatedMatches++;
+          const favTeam = r1 < r2 ? (m.team1 || m.t1) : (m.team2 || m.t2);
+          const dogTeam = r1 < r2 ? (m.team2 || m.t2) : (m.team1 || m.t1);
+          const favAth = r1 < r2 ? m.athlete1 : m.athlete2;
+          const dogAth = r1 < r2 ? m.athlete2 : m.athlete1;
+          const favRank = Math.min(r1, r2);
+          const dogRank = Math.max(r1, r2);
+
+          const wClean = clean(m.winner);
+          const isT1Winner = wClean === t1Clean || clean(m.winner) === clean(m.t1);
+          const isT2Winner = wClean === t2Clean || clean(m.winner) === clean(m.t2);
+
+          let actualWinnerTeam = m.winner;
+          let actualLoserTeam = '';
+          if (isT1Winner) {
+            actualWinnerTeam = m.team1 || m.t1;
+            actualLoserTeam = m.team2 || m.t2;
+          } else if (isT2Winner) {
+            actualWinnerTeam = m.team2 || m.t2;
+            actualLoserTeam = m.team1 || m.t1;
+          }
+
+          const favWon = (r1 < r2 && isT1Winner) || (r2 < r1 && isT2Winner);
+
+          if (favWon) {
+            correctFavorites++;
+          } else {
+            const displayScore = m.set_scores || (m.s1 !== '-' && m.s2 !== '-' ? `${m.s1} - ${m.s2}` : m.score);
+            upsetLogs.push({
+              event: m.event,
+              round: m.stage || m.round,
+              winner: actualWinnerTeam || (r1 < r2 ? dogTeam : favTeam),
+              winnerAth: r1 < r2 ? dogAth : favAth,
+              loser: favTeam,
+              loserAth: favAth,
+              score: displayScore,
+              favRank,
+              dogRank
+            });
+          }
+        }
+      });
+
+      const accuracy = evaluatedMatches > 0 ? Math.round((correctFavorites / evaluatedMatches) * 100) : '--';
+      const skippedCount = evalMatches.length - evaluatedMatches;
+
+      // Get medal KPI from extractMedalAnalytics
+      const medalKpi = this.extractMedalAnalytics(
+        window.appData?.menMatches || [],
+        window.appData?.womenMatches || [],
+        window.appData?.menPredictions || [],
+        window.appData?.womenPredictions || []
+      ).kpi;
+
+      const medalAccDisplay = medalKpi && medalKpi.accuracyPct != null ? `${medalKpi.accuracyPct}%` : '--%';
+      const medalAccSub = medalKpi && medalKpi.decidedMedals > 0
+        ? `${medalKpi.exactHits}/${medalKpi.decidedMedals} exact medals`
+        : (medalKpi ? `${medalKpi.decidedMedals}/${medalKpi.totalMedalsInSport} decided` : 'Medals');
+
+      // Filter pills HTML
+      const eventPillsHtml = eventsAvailable.map(ev => {
+        const isActive = activeTeqCalibrationEvent === ev;
+        return `
+          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${isActive ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${isActive ? '#fff' : '#94a3b8'};" data-event="${escapeAttr(ev)}" onclick="window.setTeqCalibrationEvent(this.getAttribute('data-event'))">
+            ${ev}
+          </button>
+        `;
+      }).join('');
+
+      const navHtml = `
+        <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+          <span style="font-size:0.72rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-right:4px;">Filter Event:</span>
+          <button style="padding:4px 10px; font-size:0.75rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; transition:all 0.15s; background:${activeTeqCalibrationEvent === 'all' ? '#2563eb' : 'rgba(255,255,255,0.06)'}; color:${activeTeqCalibrationEvent === 'all' ? '#fff' : '#94a3b8'};" onclick="window.setTeqCalibrationEvent('all')">All Events</button>
+          ${eventPillsHtml}
+        </div>
+      `;
+
+      container.innerHTML = `
+        ${navHtml}
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+          <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Favorite Accuracy</div>
+            <div style="font-size:1.6rem; font-weight:800; color:#38bdf8;">${accuracy}%</div>
+            <div style="font-size:0.7rem; color:#94a3b8;">${correctFavorites}/${evaluatedMatches} correct</div>
+          </div>
+          <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center; cursor:pointer;" onclick="setTab('predictions')">
+            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Medal Accuracy</div>
+            <div style="font-size:1.6rem; font-weight:800; color:#facc15;">${medalAccDisplay}</div>
+            <div style="font-size:0.7rem; color:#38bdf8; text-decoration:underline;">${medalAccSub} →</div>
+          </div>
+          <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Completed Matches</div>
+            <div style="font-size:1.6rem; font-weight:800; color:#4ade80;">${evalMatches.length}</div>
+            <div style="font-size:0.7rem; color:#94a3b8;">${evaluatedMatches} evaluated (${skippedCount} neutral)</div>
+          </div>
+          <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
+            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Upsets Recorded</div>
+            <div style="font-size:1.6rem; font-weight:800; color:#f87171;">${upsetLogs.length}</div>
+            <div style="font-size:0.7rem; color:#94a3b8;">Underdog victories</div>
+          </div>
+        </div>
+
+        ${upsetLogs.length > 0 ? `
+          <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem;">
+            <div style="font-size:0.85rem; font-weight:700; margin-bottom:0.75rem; color:#f87171; display:flex; justify-content:space-between; align-items:center;">
+              <span>⚡ Teqball Upset Tracker</span>
+              <span style="font-size:0.72rem; color:#94a3b8; font-weight:400;">Pre-Tournament Simulation Favorites vs Official Match Results</span>
+            </div>
+            ${upsetLogs.map(u => `
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.82rem; flex-wrap:wrap; gap:8px;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-size:0.68rem; font-weight:700; background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:3px; color:#38bdf8;">${u.event}</span>
+                    <span style="font-size:0.68rem; color:#64748b;">${u.round}</span>
+                  </div>
+                  <div style="margin-top:3px;">
+                    <span style="color:#4ade80; font-weight:700;">${getFlagEmoji(u.winner)} ${u.winner}</span>
+                    ${u.winnerAth ? `<span style="color:#94a3b8; font-size:0.72rem;"> (${u.winnerAth})</span>` : ''}
+                    <span style="color:#94a3b8;"> def. </span>
+                    <span style="color:#f87171; font-weight:600;">${getFlagEmoji(u.loser)} ${u.loser}</span>
+                    ${u.loserAth ? `<span style="color:#94a3b8; font-size:0.72rem;"> (${u.loserAth})</span>` : ''}
+                    <span style="font-size:0.68rem; color:#facc15; margin-left:4px;">[Fav #${u.favRank} vs #${u.dogRank}]</span>
+                  </div>
+                </div>
+                <span style="font-family:monospace; font-weight:700; color:#cbd5e1; font-size:0.85rem;">${u.score || ''}</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : `
+          <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(74,222,128,0.2); border-radius:10px; padding:1rem; text-align:center; color:#4ade80; font-size:0.85rem;">
+            ✅ All projected favorites won their matches (${correctFavorites}/${evaluatedMatches}) with 0 upsets recorded.
+          </div>
+        `}
+      `;
     }
   };
 
@@ -849,6 +1097,11 @@
 
   window.setTeqBracketEvent = function (ev) {
     activeTeqBracketEvent = ev;
+    if (typeof renderView === 'function') renderView();
+  };
+
+  window.setTeqCalibrationEvent = function (ev) {
+    activeTeqCalibrationEvent = ev;
     if (typeof renderView === 'function') renderView();
   };
 

@@ -365,12 +365,20 @@ function resolveActualFinish(contender, ev, matches, trackerRaw) {
     }
   }
 
-  // 4. Team Match Sports (Basketball, Football, Volleyball, Cricket)
+  // 4. Team & Match Sports (Basketball, Football, Volleyball, Cricket, Teqball)
   const matchList = Array.isArray(matches) ? matches : (Array.isArray(trackerRaw?.matches) ? trackerRaw.matches : []);
   if (cln && matchList.length > 0) {
+    const evTarget = ev && (ev.name || ev.event) ? cleanTeamName(ev.name || ev.event) : '';
     const teamMatches = matchList.filter(m => {
+      if (evTarget && m.event && cleanTeamName(m.event) !== evTarget) return false;
       const p1 = cleanTeamName(m.player1 || m.team1 || '');
       const p2 = cleanTeamName(m.player2 || m.team2 || '');
+      if (ath) {
+        const a1 = m.athlete1 || '';
+        const a2 = m.athlete2 || '';
+        if (a1 && typeof areAthletesMatching === 'function' && areAthletesMatching(ath, a1)) return true;
+        if (a2 && typeof areAthletesMatching === 'function' && areAthletesMatching(ath, a2)) return true;
+      }
       return p1 === cln || p2 === cln;
     });
 
@@ -378,7 +386,7 @@ function resolveActualFinish(contender, ev, matches, trackerRaw) {
       // Find Gold Match
       const hasGoldMatch = teamMatches.find(m => {
         const r = (m.round || m.stage || '').toLowerCase();
-        return r.includes('f gm') || r.includes('gold') || (r.includes('final') && !r.includes('semi') && !r.includes('1/2') && !r.includes('quarter') && !r.includes('1/4') && !r.includes('3rd') && !r.includes('bm'));
+        return r.includes('f gm') || r.includes('gold') || (r.includes('final') && !r.includes('semi') && !r.includes('1/2') && !r.includes('quarter') && !r.includes('1/4') && !r.includes('3rd') && !r.includes('bm') && !r.includes('repechage'));
       });
       // Find Bronze Match
       const hasBronzeMatch = teamMatches.find(m => {
@@ -389,6 +397,11 @@ function resolveActualFinish(contender, ev, matches, trackerRaw) {
       const hasSemi = teamMatches.find(m => {
         const r = (m.round || m.stage || '').toLowerCase();
         return r.includes('1/2') || r.includes('semi');
+      });
+      // Repechages
+      const hasRepechage = teamMatches.find(m => {
+        const r = (m.round || m.stage || '').toLowerCase();
+        return r.includes('repechage');
       });
       // Quarterfinals
       const hasQuarter = teamMatches.find(m => {
@@ -420,13 +433,25 @@ function resolveActualFinish(contender, ev, matches, trackerRaw) {
           if (w === cln) {
             return { text: '🥉 Bronze Medalist (3rd Place)', shortText: '🥉 Bronze', rank: 3, medal: 'bronze', badgeColor: '#f59e0b', badgeBg: 'rgba(245,158,11,0.12)', badgeBorder: 'rgba(245,158,11,0.3)' };
           } else {
-            return { text: '4th Place (Semifinals)', shortText: '4th Place', rank: 4, badgeColor: '#a855f7', badgeBg: 'rgba(168,85,247,0.1)', badgeBorder: 'rgba(168,85,247,0.25)' };
+            return { text: '4th Place (Bronze Match)', shortText: '4th Place', rank: 4, badgeColor: '#a855f7', badgeBg: 'rgba(168,85,247,0.1)', badgeBorder: 'rgba(168,85,247,0.25)' };
           }
         }
       }
 
       if (hasSemi) {
+        const isFin = (hasSemi.status || hasSemi.state || '').toLowerCase().includes('finish') || (hasSemi.status || hasSemi.state || '').toLowerCase().includes('official');
+        // If semi is finished and no bronze match exists for this event (e.g. Women's Doubles), the loser is bronze medalist
+        const eventHasBronze = matchList.some(m => {
+          if (evTarget && m.event && cleanTeamName(m.event) !== evTarget) return false;
+          return /bronze/i.test(m.round || m.stage || '');
+        });
+        if (isFin && !eventHasBronze && cleanTeamName(hasSemi.winner || '') !== cln) {
+          return { text: '🥉 Bronze Medalist (Semifinalist)', shortText: '🥉 Bronze', rank: 3, medal: 'bronze', badgeColor: '#f59e0b', badgeBg: 'rgba(245,158,11,0.12)', badgeBorder: 'rgba(245,158,11,0.3)' };
+        }
         return { text: 'Semifinals', shortText: 'Semifinals', rank: null, stage: 'semi', badgeColor: '#a855f7', badgeBg: 'rgba(168,85,247,0.1)', badgeBorder: 'rgba(168,85,247,0.25)' };
+      }
+      if (hasRepechage) {
+        return { text: 'Repechages', shortText: 'Repechages', rank: null, stage: 'repechage', badgeColor: '#fb7185', badgeBg: 'rgba(244,63,94,0.1)', badgeBorder: 'rgba(244,63,94,0.25)' };
       }
       if (hasQuarter) {
         return { text: 'Quarterfinals', shortText: 'Quarterfinals', rank: null, stage: 'quarter', badgeColor: '#94a3b8', badgeBg: 'rgba(255,255,255,0.04)', badgeBorder: 'rgba(255,255,255,0.08)' };
