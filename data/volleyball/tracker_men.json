@@ -10,6 +10,9 @@
       "player1": "Qatar",
       "player2": "Hong Kong, China",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -21,6 +24,9 @@
       "player1": "IR Iran",
       "player2": "Kyrgyzstan",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -32,6 +38,9 @@
       "player1": "Korea",
       "player2": "Philippines",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -43,6 +52,9 @@
       "player1": "Pakistan",
       "player2": "Kazakhstan",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -54,6 +66,9 @@
       "player1": "India",
       "player2": "Vietnam",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -65,6 +80,9 @@
       "player1": "Indonesia",
       "player2": "Thailand",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -76,6 +94,9 @@
       "player1": "China",
       "player2": "Chinese Taipei",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -87,6 +108,9 @@
       "player1": "Japan",
       "player2": "Uzbekistan",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -98,6 +122,9 @@
       "player1": "India",
       "player2": "Hong Kong, China",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -109,6 +136,9 @@
       "player1": "Indonesia",
       "player2": "Kyrgyzstan",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -120,6 +150,9 @@
       "player1": "China",
       "player2": "Philippines",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -131,6 +164,9 @@
       "player1": "Pakistan",
       "player2": "Uzbekistan",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -142,6 +178,9 @@
       "player1": "Vietnam",
       "player2": "Qatar",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -153,6 +192,9 @@
       "player1": "Thailand",
       "player2": "IR Iran",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -164,6 +206,9 @@
       "player1": "Chinese Taipei",
       "player2": "Korea",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -175,6 +220,9 @@
       "player1": "Kazakhstan",
       "player2": "Japan",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -186,6 +234,9 @@
       "player1": "Hong Kong, China",
       "player2": "Vietnam",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -197,6 +248,9 @@
       "player1": "Kyrgyzstan",
       "player2": "Thailand",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -208,6 +262,9 @@
       "player1": "Philippines",
       "player2": "Chinese Taipei",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -219,6 +276,9 @@
       "player1": "Uzbekistan",
       "player2": "Kazakhstan",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -230,6 +290,9 @@
       "player1": "Qatar",
       "player2": "India",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -241,6 +304,9 @@
       "player1": "IR Iran",
       "player2": "Indonesia",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -252,6 +318,9 @@
       "player1": "Korea",
       "player2": "China",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -263,6 +332,9 @@
       "player1": "Japan",
       "player2": "Pakistan",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -274,6 +346,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -285,6 +360,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -296,6 +374,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -307,6 +388,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -318,6 +402,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -329,6 +416,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -340,6 +430,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -351,6 +444,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -362,6 +458,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -373,6 +472,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -384,6 +486,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -395,6 +500,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -406,6 +514,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -417,6 +528,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -428,6 +542,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -439,6 +556,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -450,6 +570,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -461,6 +584,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -472,6 +598,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -483,6 +612,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -494,6 +626,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -505,6 +640,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -516,6 +654,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     },
     {
@@ -527,6 +668,9 @@
       "player1": "TBD",
       "player2": "TBD",
       "score": "vs",
+      "score1": "-",
+      "score2": "-",
+      "set_scores": "",
       "winner": ""
     }
   ]

@@ -220,6 +220,20 @@ def parse_soft_tennis_match(m, date_str):
 
     court = m.get("LocDescS") or m.get("LocDesc") or m.get("VenueDescS") or "Court"
 
+    # Extract set scores
+    set_scores = ""
+    for ext in m.get("Extensions", []):
+        if ext.get("Code") == "ResultDetailWinner":
+            set_scores = ext.get("Value", "").strip()
+            break
+
+    if not set_scores:
+        splits1 = [sp.get("Res", "") for sp in home.get("Splits", []) if sp.get("Res")]
+        splits2 = [sp.get("Res", "") for sp in away.get("Splits", []) if sp.get("Res")]
+        if splits1 and splits2:
+            pairs = [f"{s1}-{s2}" for s1, s2 in zip(splits1, splits2)]
+            set_scores = ", ".join(pairs)
+
     return {
         "id": m.get("Key") or m.get("ResCode") or f"{event}_{match_date}_{match_time}",
         "event": event,
@@ -242,6 +256,7 @@ def parse_soft_tennis_match(m, date_str):
         "score": score_str,
         "score1": str(home_score) if home_score != "" else "-",
         "score2": str(away_score) if away_score != "" else "-",
+        "set_scores": set_scores,
         "winner": winner
     }
 

@@ -84,6 +84,7 @@
       event: m.event || '',
       phase: m.phase || '',
       court: m.court || '',
+      set_scores: m.set_scores || m.setScores || '',
       isFinished
     };
   }
@@ -121,6 +122,7 @@
               <div style="font-family:monospace; font-size:1.5rem; font-weight:800; color:#f8fafc;">
                 ${liveMatch.s1 !== '-' ? `${liveMatch.s1} - ${liveMatch.s2}` : 'vs'}
               </div>
+              ${liveMatch.set_scores ? `<div style="font-size:0.68rem; color:#94a3b8; font-family:monospace; margin-top:2px;">${liveMatch.set_scores}</div>` : ''}
             </div>
             <div style="flex:1; min-width:0;">
               <div style="font-size:1.8rem; line-height:1.2;">${f2}</div>
@@ -179,6 +181,7 @@
               <div style="font-family:monospace; font-size:1.4rem; font-weight:800; color:#f8fafc;">
                 ${finalMatch.s1 !== '-' ? `${finalMatch.s1} - ${finalMatch.s2}` : 'vs'}
               </div>
+              ${finalMatch.set_scores ? `<div style="font-size:0.68rem; color:#94a3b8; font-family:monospace; margin-top:2px;">${finalMatch.set_scores}</div>` : ''}
               <div style="font-size:0.68rem; color:#94a3b8;">${formatMatchDateTime(finalMatch.date, finalMatch.time)}</div>
             </div>
             <div style="flex:1; min-width:0;">
@@ -359,6 +362,12 @@
                         <span style="font-family:monospace; font-size:1rem; font-weight:700; margin-left:8px;">${s2}</span>
                       </div>
                     </div>
+
+                    ${m.set_scores ? `
+                      <div style="font-size:0.68rem; color:#94a3b8; font-family:monospace; margin-top:2px; text-align:right; border-top:1px dashed rgba(255,255,255,0.06); padding-top:3px;">
+                        Sets: ${m.set_scores}
+                      </div>
+                    ` : ''}
 
                     <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.68rem; color:#64748b; margin-top:2px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.03);">
                       <span>${m.time ? formatMatchDateTime(m.date, m.time) : 'Time TBD'}</span>
@@ -628,6 +637,11 @@
               </div>
               <span class="bracket-score">${s2}</span>
             </div>
+            ${match && match.set_scores ? `
+              <div style="font-size:0.65rem; color:#94a3b8; font-family:monospace; margin-top:4px; text-align:center; border-top:1px dashed rgba(255,255,255,0.06); padding-top:3px;">
+                ${match.set_scores}
+              </div>
+            ` : ''}
           </div>
         `;
       };

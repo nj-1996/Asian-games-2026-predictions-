@@ -452,6 +452,7 @@ window.SPORT_ENGINES['volleyball'] = {
       const t2Win = m && m.winner ? (typeof cleanTeamName === 'function' ? cleanTeamName(m.winner) === cleanTeamName(t2) : m.winner === t2) : (isFinished && Number(s2) > Number(s1));
 
       const dt = m ? (typeof formatMatchDateTime === 'function' ? formatMatchDateTime(m.date, m.time) : `${m.date} ${m.time}`) : 'Scheduled';
+      const setScores = (m && (m.set_scores || m.setScores)) || (match && (match.set_scores || match.setScores)) || '';
 
       return `
         <div class="bracket-match-card">
@@ -468,6 +469,7 @@ window.SPORT_ENGINES['volleyball'] = {
             <div class="bracket-team-info"><span>${typeof getFlagEmoji === 'function' ? getFlagEmoji(t2) : ''}</span> <span>${t2}</span></div>
             <span class="bracket-score">${s2}</span>
           </div>
+          ${setScores ? `<div style="font-size:0.65rem; color:#94a3b8; font-family:monospace; margin-top:4px; text-align:center; border-top:1px dashed rgba(255,255,255,0.06); padding-top:3px;">${setScores}</div>` : ''}
         </div>
       `;
     };

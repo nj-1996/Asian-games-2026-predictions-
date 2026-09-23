@@ -24,11 +24,14 @@ for b in range(256):
             pass
 
 
+import urllib3
+urllib3.disable_warnings()
+
 def fetch_api_day(date_str):
     """Queries and decompresses raw daily schedule items for Volleyball (VVO)."""
     url = f"https://back.results.asiangames2026.org/s/AG2026/en/VVO/schedule/daily/{date_str}"
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp = requests.get(url, headers=HEADERS, timeout=15, verify=False)
     except Exception as e:
         print(f"[{date_str}] Request failed: {e}")
         return []
@@ -158,6 +161,20 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
             elif a_win:
                 winner = away_name
 
+        # Extract set scores
+        set_scores = ""
+        for ext in m.get("Extensions", []):
+            if ext.get("Code") == "ResultDetailWinner":
+                set_scores = ext.get("Value", "").strip()
+                break
+
+        if not set_scores:
+            splits1 = [sp.get("Res", "") for sp in home.get("Splits", []) if sp.get("Res")]
+            splits2 = [sp.get("Res", "") for sp in away.get("Splits", []) if sp.get("Res")]
+            if splits1 and splits2:
+                pairs = [f"{s1}-{s2}" for s1, s2 in zip(splits1, splits2)]
+                set_scores = ", ".join(pairs)
+
         round_raw = m.get("UnitDescS") or m.get("UnitDescA") or m.get("PhaseDescS", "Group Stage")
         clean_round = re.sub(r'^(?:men|women)\s+gr(?:\.|\s+)\s*([a-z0-9]+)', r'Group \1', round_raw, flags=re.IGNORECASE)
         clean_round = re.sub(r'^gr(?:\.|\s+)\s*([a-z0-9]+)', r'Group \1', clean_round, flags=re.IGNORECASE)
@@ -171,6 +188,9 @@ def parse_matches(raw_matches, gender="Men", date_str=""):
             "player1": home_name,
             "player2": away_name,
             "score": score_str,
+            "score1": str(home_score) if home_score != "" else "-",
+            "score2": str(away_score) if away_score != "" else "-",
+            "set_scores": set_scores,
             "winner": winner
         })
 

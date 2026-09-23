@@ -634,6 +634,7 @@ function parseMatchData(m) {
   }
 
   return {
+    ...m,
     t1,
     t2,
     s1,
@@ -643,7 +644,8 @@ function parseMatchData(m) {
     date: m.date || '',
     stage: formatStageName(m.round || m.stage || m.group || 'Group Stage'),
     winner,
-    isFinished
+    isFinished,
+    set_scores: m.set_scores || m.setScores || ''
   };
 }
 
@@ -837,6 +839,7 @@ const BASKETBALL_ENGINE = {
             <div class="bracket-team-info"><span>${getFlagEmoji(t2)}</span> <span>${t2}</span></div>
             <span class="bracket-score">${s2}</span>
           </div>
+          ${match && match.set_scores ? `<div style="font-size:0.65rem; color:#94a3b8; font-family:monospace; margin-top:4px; text-align:center; border-top:1px dashed rgba(255,255,255,0.06); padding-top:3px;">${match.set_scores}</div>` : ''}
         </div>
       `;
     };
@@ -1202,8 +1205,11 @@ function renderScheduleAndHero(matches) {
               ${heroTarget.t1}${t1Won ? ' 🥇' : ''}
             </div>
           </div>
-          <div style="font-family:monospace; font-size:1.6rem; font-weight:800; min-width:80px;">
-            ${heroTarget.s1 !== '-' ? `${heroTarget.s1} : ${heroTarget.s2}` : 'VS'}
+          <div style="min-width:80px; text-align:center;">
+            <div style="font-family:monospace; font-size:1.6rem; font-weight:800;">
+              ${heroTarget.s1 !== '-' ? `${heroTarget.s1} : ${heroTarget.s2}` : 'VS'}
+            </div>
+            ${heroTarget.set_scores ? `<div style="font-size:0.68rem; color:#94a3b8; font-family:monospace; margin-top:3px;">${heroTarget.set_scores}</div>` : ''}
           </div>
           <div style="flex:1;">
             <div style="font-size:1.8rem;">${getFlagEmoji(heroTarget.t2)}</div>
@@ -1223,6 +1229,7 @@ function renderScheduleAndHero(matches) {
     const t1Win = m.winner ? cleanTeamName(m.winner) === cleanTeamName(m.t1) : (m.isFinished && Number(m.s1) > Number(m.s2));
     const t2Win = m.winner ? cleanTeamName(m.winner) === cleanTeamName(m.t2) : (m.isFinished && Number(m.s2) > Number(m.s1));
     const displayDateTime = formatMatchDateTime(m.date, m.time) || m.status || '';
+    const setScores = m.set_scores || m.setScores || '';
 
     return `
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.85rem 1rem; margin-bottom:0.75rem; display:flex; justify-content:space-between; align-items:center;">
@@ -1239,9 +1246,12 @@ function renderScheduleAndHero(matches) {
             </div>
           </div>
         </div>
-        <div style="font-family:monospace; font-size:1.1rem; font-weight:700; text-align:right; min-width:48px;">
-          <div>${m.s1}</div>
-          <div>${m.s2}</div>
+        <div style="text-align:right; min-width:52px;">
+          <div style="font-family:monospace; font-size:1.1rem; font-weight:700;">
+            <div>${m.s1}</div>
+            <div>${m.s2}</div>
+          </div>
+          ${setScores ? `<div style="font-size:0.65rem; color:#94a3b8; font-family:monospace; margin-top:3px;">${setScores}</div>` : ''}
         </div>
       </div>
     `;

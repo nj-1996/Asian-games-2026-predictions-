@@ -10,6 +10,9 @@
       "player1": "Vietnam",
       "player2": "Qatar",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-3, 25-8, 25-9",
       "winner": "Vietnam"
     },
     {
@@ -21,6 +24,9 @@
       "player1": "China",
       "player2": "Philippines",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-18, 25-22, 25-8",
       "winner": "China"
     },
     {
@@ -32,6 +38,9 @@
       "player1": "Korea",
       "player2": "Hong Kong, China",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-23, 25-12, 25-12",
       "winner": "Korea"
     },
     {
@@ -43,6 +52,9 @@
       "player1": "Thailand",
       "player2": "Mongolia",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-12, 25-18, 25-18",
       "winner": "Thailand"
     },
     {
@@ -54,6 +66,9 @@
       "player1": "Chinese Taipei",
       "player2": "Kyrgyzstan",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-14, 25-15, 25-9",
       "winner": "Chinese Taipei"
     },
     {
@@ -65,6 +80,9 @@
       "player1": "Japan",
       "player2": "Nepal",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-8, 25-12, 25-11",
       "winner": "Japan"
     },
     {
@@ -76,6 +94,9 @@
       "player1": "Korea",
       "player2": "Qatar",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-6, 25-6, 25-10",
       "winner": "Korea"
     },
     {
@@ -87,6 +108,9 @@
       "player1": "Kazakhstan",
       "player2": "Philippines",
       "score": "3 - 1",
+      "score1": "3",
+      "score2": "1",
+      "set_scores": "27-29, 26-24, 25-23, 25-19",
       "winner": "Kazakhstan"
     },
     {
@@ -98,6 +122,9 @@
       "player1": "Hong Kong, China",
       "player2": "Vietnam",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "22-25, 15-25, 18-25",
       "winner": "Vietnam"
     },
     {
@@ -109,6 +136,9 @@
       "player1": "Chinese Taipei",
       "player2": "Mongolia",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-22, 25-8, 25-14",
       "winner": "Chinese Taipei"
     },
     {
@@ -120,6 +150,9 @@
       "player1": "Kyrgyzstan",
       "player2": "Thailand",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "13-25, 7-25, 7-25",
       "winner": "Thailand"
     },
     {
@@ -131,6 +164,9 @@
       "player1": "Indonesia",
       "player2": "Nepal",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-12, 25-21, 25-20",
       "winner": "Indonesia"
     },
     {
@@ -142,6 +178,9 @@
       "player1": "Qatar",
       "player2": "Hong Kong, China",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "9-25, 8-25, 12-25",
       "winner": "Hong Kong, China"
     },
     {
@@ -153,6 +192,9 @@
       "player1": "Kazakhstan",
       "player2": "China",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "18-25, 6-25, 14-25",
       "winner": "China"
     },
     {
@@ -164,6 +206,9 @@
       "player1": "Vietnam",
       "player2": "Korea",
       "score": "1 - 3",
+      "score1": "1",
+      "score2": "3",
+      "set_scores": "21-25, 21-25, 28-26, 18-25",
       "winner": "Korea"
     },
     {
@@ -175,6 +220,9 @@
       "player1": "Mongolia",
       "player2": "Kyrgyzstan",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-20, 25-13, 25-15",
       "winner": "Mongolia"
     },
     {
@@ -186,6 +234,9 @@
       "player1": "Chinese Taipei",
       "player2": "Thailand",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "22-25, 22-25, 20-25",
       "winner": "Thailand"
     },
     {
@@ -197,6 +248,9 @@
       "player1": "Indonesia",
       "player2": "Japan",
       "score": "1 - 3",
+      "score1": "1",
+      "score2": "3",
+      "set_scores": "19-25, 13-25, 25-23, 23-25",
       "winner": "Japan"
     },
     {
@@ -208,6 +262,9 @@
       "player1": "Thailand",
       "player2": "Indonesia",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-10, 29-27, 25-16",
       "winner": "Thailand"
     },
     {
@@ -219,6 +276,9 @@
       "player1": "Vietnam",
       "player2": "China",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "16-25, 16-25, 11-25",
       "winner": "China"
     },
     {
@@ -230,6 +290,9 @@
       "player1": "Kazakhstan",
       "player2": "Korea",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "24-26, 25-27, 21-25",
       "winner": "Korea"
     },
     {
@@ -241,6 +304,9 @@
       "player1": "Nepal",
       "player2": "Kyrgyzstan",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-20, 25-16, 25-20",
       "winner": "Nepal"
     },
     {
@@ -252,6 +318,9 @@
       "player1": "Philippines",
       "player2": "Qatar",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-8, 25-2, 25-9",
       "winner": "Philippines"
     },
     {
@@ -263,6 +332,9 @@
       "player1": "Japan",
       "player2": "Chinese Taipei",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-12, 25-16, 25-19",
       "winner": "Japan"
     },
     {
@@ -274,6 +346,9 @@
       "player1": "Chinese Taipei",
       "player2": "Kazakhstan",
       "score": "3 - 2",
+      "score1": "3",
+      "score2": "2",
+      "set_scores": "25-21, 25-23, 22-25, 25-27, 15-10",
       "winner": "Chinese Taipei"
     },
     {
@@ -285,6 +360,9 @@
       "player1": "Indonesia",
       "player2": "Vietnam",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-20, 25-21, 25-18",
       "winner": "Indonesia"
     },
     {
@@ -296,6 +374,9 @@
       "player1": "Nepal",
       "player2": "Hong Kong, China",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "20-25, 19-25, 26-28",
       "winner": "Hong Kong, China"
     },
     {
@@ -307,6 +388,9 @@
       "player1": "Thailand",
       "player2": "China",
       "score": "2 - 3",
+      "score1": "2",
+      "score2": "3",
+      "set_scores": "25-23, 21-25, 11-25, 28-26, 6-15",
       "winner": "China"
     },
     {
@@ -318,6 +402,9 @@
       "player1": "Philippines",
       "player2": "Mongolia",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-13, 25-11, 25-20",
       "winner": "Philippines"
     },
     {
@@ -329,6 +416,9 @@
       "player1": "Japan",
       "player2": "Korea",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-20, 25-22, 25-16",
       "winner": "Japan"
     },
     {
@@ -340,6 +430,9 @@
       "player1": "Kazakhstan",
       "player2": "Vietnam",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "21-25, 19-25, 15-25",
       "winner": "Vietnam"
     },
     {
@@ -351,6 +444,9 @@
       "player1": "Chinese Taipei",
       "player2": "Indonesia",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-15, 25-20, 25-11",
       "winner": "Chinese Taipei"
     },
     {
@@ -362,6 +458,9 @@
       "player1": "Kyrgyzstan",
       "player2": "Qatar",
       "score": "3 - 0",
+      "score1": "3",
+      "score2": "0",
+      "set_scores": "25-13, 25-18, 25-3",
       "winner": "Kyrgyzstan"
     },
     {
@@ -373,6 +472,9 @@
       "player1": "Korea",
       "player2": "Thailand",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "20-25, 19-25, 23-25",
       "winner": "Thailand"
     },
     {
@@ -384,6 +486,9 @@
       "player1": "Nepal",
       "player2": "Mongolia",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "23-25, 17-25, 13-25",
       "winner": "Mongolia"
     },
     {
@@ -395,6 +500,9 @@
       "player1": "Hong Kong, China",
       "player2": "Philippines",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "21-25, 9-25, 28-30",
       "winner": "Philippines"
     },
     {
@@ -406,6 +514,9 @@
       "player1": "Japan",
       "player2": "China",
       "score": "0 - 3",
+      "score1": "0",
+      "score2": "3",
+      "set_scores": "19-25, 20-25, 23-25",
       "winner": "China"
     }
   ]

@@ -23,6 +23,7 @@
       "score": "0 - 3",
       "score1": "0",
       "score2": "3",
+      "set_scores": "",
       "winner": "South Korea"
     },
     {
@@ -47,6 +48,7 @@
       "score": "3 - 0",
       "score1": "3",
       "score2": "0",
+      "set_scores": "",
       "winner": "Japan"
     },
     {
@@ -71,6 +73,7 @@
       "score": "0 - 3",
       "score1": "0",
       "score2": "3",
+      "set_scores": "",
       "winner": "Philippines"
     },
     {
@@ -95,6 +98,7 @@
       "score": "3 - 0",
       "score1": "3",
       "score2": "0",
+      "set_scores": "",
       "winner": "Chinese Taipei"
     },
     {
@@ -119,6 +123,7 @@
       "score": "1 - 2",
       "score1": "1",
       "score2": "2",
+      "set_scores": "",
       "winner": "Philippines"
     },
     {
@@ -143,6 +148,7 @@
       "score": "3 - 0",
       "score1": "3",
       "score2": "0",
+      "set_scores": "",
       "winner": "Japan"
     },
     {
@@ -167,6 +173,7 @@
       "score": "3 - 0",
       "score1": "3",
       "score2": "0",
+      "set_scores": "",
       "winner": "Chinese Taipei"
     },
     {
@@ -191,6 +198,7 @@
       "score": "0 - 3",
       "score1": "0",
       "score2": "3",
+      "set_scores": "",
       "winner": "South Korea"
     },
     {
@@ -215,6 +223,7 @@
       "score": "3 - 0",
       "score1": "3",
       "score2": "0",
+      "set_scores": "",
       "winner": "Thailand"
     },
     {
@@ -239,6 +248,7 @@
       "score": "3 - 0",
       "score1": "3",
       "score2": "0",
+      "set_scores": "",
       "winner": "Chinese Taipei"
     },
     {
@@ -263,6 +273,7 @@
       "score": "3 - 0",
       "score1": "3",
       "score2": "0",
+      "set_scores": "",
       "winner": "Japan"
     },
     {
@@ -287,6 +298,7 @@
       "score": "3 - 0",
       "score1": "3",
       "score2": "0",
+      "set_scores": "",
       "winner": "Cambodia"
     },
     {
@@ -311,6 +323,7 @@
       "score": "1 - 2",
       "score1": "1",
       "score2": "2",
+      "set_scores": "4-5, 4-3, 4-5",
       "winner": "Chinese Taipei"
     },
     {
@@ -335,6 +348,7 @@
       "score": "2 - 0",
       "score1": "2",
       "score2": "0",
+      "set_scores": "5-0, 4-0",
       "winner": "Japan"
     },
     {
@@ -359,6 +373,7 @@
       "score": "2 - 1",
       "score1": "2",
       "score2": "1",
+      "set_scores": "5-0, 1-4, 5-0",
       "winner": "Japan"
     },
     {
@@ -383,6 +398,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "4-1, 4-1, 4-0, 4-0",
       "winner": "South Korea"
     },
     {
@@ -407,6 +423,7 @@
       "score": "1 - 4",
       "score1": "1",
       "score2": "4",
+      "set_scores": "1-4, 4-0, 4-0, 4-2, 6-4",
       "winner": "Thailand"
     },
     {
@@ -431,6 +448,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "4-0, 4-1, 4-0, 4-0",
       "winner": "Japan"
     },
     {
@@ -455,6 +473,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "7-5, 4-2, 4-1, 4-1",
       "winner": "Chinese Taipei"
     },
     {
@@ -479,6 +498,7 @@
       "score": "1 - 4",
       "score1": "1",
       "score2": "4",
+      "set_scores": "0-4, 4-1, 4-1, 5-3, 4-0",
       "winner": "Indonesia"
     },
     {
@@ -503,6 +523,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "4-1, 4-0, 4-0, 4-1",
       "winner": "South Korea"
     },
     {
@@ -527,6 +548,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "4-0, 4-0, 4-0, 4-2",
       "winner": "North Korea"
     },
     {
@@ -551,6 +573,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "4-0, 4-2, 4-1, 4-0",
       "winner": "Japan"
     },
     {
@@ -575,6 +598,7 @@
       "score": "1 - 4",
       "score1": "1",
       "score2": "4",
+      "set_scores": "4-2, 0-4, 4-2, 4-1, 4-2",
       "winner": "North Korea"
     },
     {
@@ -599,6 +623,7 @@
       "score": "0 - 4",
       "score1": "0",
       "score2": "4",
+      "set_scores": "4-0, 4-2, 4-0, 4-1",
       "winner": "Chinese Taipei"
     },
     {
@@ -623,6 +648,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "4-0, 4-1, 4-1, 4-2",
       "winner": "Thailand"
     },
     {
@@ -647,6 +673,7 @@
       "score": "0 - 4",
       "score1": "0",
       "score2": "4",
+      "set_scores": "4-2, 4-0, 4-2, 4-1",
       "winner": "Mongolia"
     },
     {
@@ -671,6 +698,7 @@
       "score": "1 - 4",
       "score1": "1",
       "score2": "4",
+      "set_scores": "4-0, 4-1, 7-5, 5-7, 5-3",
       "winner": "Indonesia"
     },
     {
@@ -695,6 +723,7 @@
       "score": "1 - 4",
       "score1": "1",
       "score2": "4",
+      "set_scores": "4-0, 6-4, 2-4, 5-3, 4-2",
       "winner": "Thailand"
     },
     {
@@ -719,6 +748,7 @@
       "score": "0 - 4",
       "score1": "0",
       "score2": "4",
+      "set_scores": "4-0, 4-2, 4-1, 4-0",
       "winner": "Philippines"
     },
     {
@@ -743,6 +773,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "4-2, 5-3, 4-1, 5-3",
       "winner": "India"
     },
     {
@@ -767,6 +798,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "4-0, 4-0, 4-0, 4-0",
       "winner": "Japan"
     },
     {
@@ -791,6 +823,7 @@
       "score": "1 - 4",
       "score1": "1",
       "score2": "4",
+      "set_scores": "4-1, 3-5, 4-1, 4-0, 4-2",
       "winner": "North Korea"
     },
     {
@@ -815,6 +848,7 @@
       "score": "4 - 1",
       "score1": "4",
       "score2": "1",
+      "set_scores": "4-6, 4-0, 4-1, 4-0, 4-0",
       "winner": "Chinese Taipei"
     },
     {
@@ -839,6 +873,7 @@
       "score": "4 - 2",
       "score1": "4",
       "score2": "2",
+      "set_scores": "2-4, 4-1, 4-2, 4-2, 3-5, 4-0",
       "winner": "South Korea"
     },
     {
@@ -863,6 +898,7 @@
       "score": "4 - 1",
       "score1": "4",
       "score2": "1",
+      "set_scores": "3-5, 4-1, 7-5, 4-1, 4-1",
       "winner": "Japan"
     },
     {
@@ -887,6 +923,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "5-3, 8-6, 6-4, 4-2",
       "winner": "South Korea"
     },
     {
@@ -911,6 +948,7 @@
       "score": "4 - 2",
       "score1": "4",
       "score2": "2",
+      "set_scores": "4-1, 4-0, 4-2, 2-4, 2-4, 4-2",
       "winner": "Japan"
     },
     {
@@ -935,6 +973,7 @@
       "score": "4 - 2",
       "score1": "4",
       "score2": "2",
+      "set_scores": "4-0, 5-3, 4-0, 0-4, 4-6, 4-1",
       "winner": "North Korea"
     },
     {
@@ -959,6 +998,7 @@
       "score": "2 - 4",
       "score1": "2",
       "score2": "4",
+      "set_scores": "4-2, 6-8, 6-8, 4-2, 4-1, 4-1",
       "winner": "Japan"
     },
     {
@@ -983,6 +1023,7 @@
       "score": "4 - 2",
       "score1": "4",
       "score2": "2",
+      "set_scores": "4-1, 4-2, 1-4, 0-4, 5-3, 4-2",
       "winner": "North Korea"
     },
     {
@@ -1007,6 +1048,7 @@
       "score": "4 - 0",
       "score1": "4",
       "score2": "0",
+      "set_scores": "4-1, 4-0, 6-4, 4-1",
       "winner": "Japan"
     },
     {
@@ -1031,6 +1073,7 @@
       "score": "0 - 4",
       "score1": "0",
       "score2": "4",
+      "set_scores": "5-3, 4-1, 4-2, 5-3",
       "winner": "North Korea"
     },
     {
@@ -1042,8 +1085,8 @@
       "court": "Center Court",
       "date": "2026-09-23",
       "time": "13:30",
-      "status": "Upcoming",
-      "state": "Delayed",
+      "status": "Live",
+      "state": "Running",
       "player1": "TEMMA Rena (Japan)",
       "player2": "RI Jin Mi (North Korea)",
       "athlete1": "TEMMA Rena",
@@ -1052,10 +1095,11 @@
       "team2": "North Korea",
       "org1": "JPN",
       "org2": "PRK",
-      "score": "vs",
-      "score1": "-",
-      "score2": "-",
-      "winner": ""
+      "score": "3 - 2",
+      "score1": "3",
+      "score2": "2",
+      "set_scores": "1-4, 2-4, 4-1, 4-1, 0-4",
+      "winner": "Japan"
     }
   ]
 }
