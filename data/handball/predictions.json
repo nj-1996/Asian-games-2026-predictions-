@@ -1,6 +1,285 @@
 {
   "sport": "Handball",
-  "men": [],
-  "women": [],
-  "events": []
+  "simulation_model": "Monte Carlo (50,000 Runs)",
+  "weighting": "IHF World Rankings + 2026 Asian Men's Championship (Kuwait) + 2024 Asian Women's Championship (New Delhi) + 2022 Asian Games (Hangzhou) + Goal Differential",
+  "home_court_boost": "+2.5 goals / +60 Elo (Japan)",
+  "notes": "50,000 tournament simulations modeling round-robin group phase and knockout bracket. Dual bronzes not applicable (single bronze playoff).",
+  "men": [
+    {
+      "team": "Bahrain",
+      "gold": "35.3%",
+      "silver": "21.2%",
+      "bronze": "24.0%",
+      "podium": "80.5%",
+      "rank": 1
+    },
+    {
+      "team": "Qatar",
+      "gold": "26.5%",
+      "silver": "21.3%",
+      "bronze": "18.7%",
+      "podium": "66.5%",
+      "rank": 2
+    },
+    {
+      "team": "Japan (Host)",
+      "gold": "21.2%",
+      "silver": "20.6%",
+      "bronze": "19.1%",
+      "podium": "60.9%",
+      "rank": 3
+    },
+    {
+      "team": "Kuwait",
+      "gold": "10.1%",
+      "silver": "17.1%",
+      "bronze": "17.5%",
+      "podium": "44.7%",
+      "rank": 4
+    },
+    {
+      "team": "Republic of Korea",
+      "gold": "5.3%",
+      "silver": "12.1%",
+      "bronze": "12.9%",
+      "podium": "30.3%",
+      "rank": 5
+    },
+    {
+      "team": "IR Iran",
+      "gold": "1.2%",
+      "silver": "4.9%",
+      "bronze": "4.6%",
+      "podium": "10.8%",
+      "rank": 6
+    },
+    {
+      "team": "China",
+      "gold": "0.4%",
+      "silver": "2.4%",
+      "bronze": "2.7%",
+      "podium": "5.5%",
+      "rank": 7
+    },
+    {
+      "team": "Kazakhstan",
+      "gold": "0.0%",
+      "silver": "0.1%",
+      "bronze": "0.1%",
+      "podium": "0.2%",
+      "rank": 8
+    },
+    {
+      "team": "Hong Kong, China",
+      "gold": "0.0%",
+      "silver": "0.3%",
+      "bronze": "0.4%",
+      "podium": "0.7%",
+      "rank": 9
+    }
+  ],
+  "women": [
+    {
+      "team": "Japan (Host)",
+      "gold": "54.7%",
+      "silver": "34.4%",
+      "bronze": "8.8%",
+      "podium": "97.9%",
+      "rank": 1
+    },
+    {
+      "team": "Republic of Korea",
+      "gold": "40.4%",
+      "silver": "45.3%",
+      "bronze": "11.2%",
+      "podium": "96.9%",
+      "rank": 2
+    },
+    {
+      "team": "China",
+      "gold": "3.2%",
+      "silver": "11.9%",
+      "bronze": "45.6%",
+      "podium": "60.7%",
+      "rank": 3
+    },
+    {
+      "team": "Kazakhstan",
+      "gold": "1.7%",
+      "silver": "8.1%",
+      "bronze": "31.1%",
+      "podium": "40.9%",
+      "rank": 4
+    },
+    {
+      "team": "Hong Kong, China",
+      "gold": "0.0%",
+      "silver": "0.2%",
+      "bronze": "2.3%",
+      "podium": "2.6%",
+      "rank": 5
+    },
+    {
+      "team": "Vietnam",
+      "gold": "0.0%",
+      "silver": "0.1%",
+      "bronze": "0.7%",
+      "podium": "0.8%",
+      "rank": 6
+    },
+    {
+      "team": "Uzbekistan",
+      "gold": "0.0%",
+      "silver": "0.0%",
+      "bronze": "0.2%",
+      "podium": "0.3%",
+      "rank": 7
+    }
+  ],
+  "events": [
+    {
+      "id": "hbl_men",
+      "event": "Men's Tournament",
+      "gender": "men",
+      "type": "team",
+      "rankings": [
+        {
+          "team": "Bahrain",
+          "gold": "35.3%",
+          "silver": "21.2%",
+          "bronze": "24.0%",
+          "podium": "80.5%",
+          "rank": 1
+        },
+        {
+          "team": "Qatar",
+          "gold": "26.5%",
+          "silver": "21.3%",
+          "bronze": "18.7%",
+          "podium": "66.5%",
+          "rank": 2
+        },
+        {
+          "team": "Japan (Host)",
+          "gold": "21.2%",
+          "silver": "20.6%",
+          "bronze": "19.1%",
+          "podium": "60.9%",
+          "rank": 3
+        },
+        {
+          "team": "Kuwait",
+          "gold": "10.1%",
+          "silver": "17.1%",
+          "bronze": "17.5%",
+          "podium": "44.7%",
+          "rank": 4
+        },
+        {
+          "team": "Republic of Korea",
+          "gold": "5.3%",
+          "silver": "12.1%",
+          "bronze": "12.9%",
+          "podium": "30.3%",
+          "rank": 5
+        },
+        {
+          "team": "IR Iran",
+          "gold": "1.2%",
+          "silver": "4.9%",
+          "bronze": "4.6%",
+          "podium": "10.8%",
+          "rank": 6
+        },
+        {
+          "team": "China",
+          "gold": "0.4%",
+          "silver": "2.4%",
+          "bronze": "2.7%",
+          "podium": "5.5%",
+          "rank": 7
+        },
+        {
+          "team": "Kazakhstan",
+          "gold": "0.0%",
+          "silver": "0.1%",
+          "bronze": "0.1%",
+          "podium": "0.2%",
+          "rank": 8
+        },
+        {
+          "team": "Hong Kong, China",
+          "gold": "0.0%",
+          "silver": "0.3%",
+          "bronze": "0.4%",
+          "podium": "0.7%",
+          "rank": 9
+        }
+      ]
+    },
+    {
+      "id": "hbl_women",
+      "event": "Women's Tournament",
+      "gender": "women",
+      "type": "team",
+      "rankings": [
+        {
+          "team": "Japan (Host)",
+          "gold": "54.7%",
+          "silver": "34.4%",
+          "bronze": "8.8%",
+          "podium": "97.9%",
+          "rank": 1
+        },
+        {
+          "team": "Republic of Korea",
+          "gold": "40.4%",
+          "silver": "45.3%",
+          "bronze": "11.2%",
+          "podium": "96.9%",
+          "rank": 2
+        },
+        {
+          "team": "China",
+          "gold": "3.2%",
+          "silver": "11.9%",
+          "bronze": "45.6%",
+          "podium": "60.7%",
+          "rank": 3
+        },
+        {
+          "team": "Kazakhstan",
+          "gold": "1.7%",
+          "silver": "8.1%",
+          "bronze": "31.1%",
+          "podium": "40.9%",
+          "rank": 4
+        },
+        {
+          "team": "Hong Kong, China",
+          "gold": "0.0%",
+          "silver": "0.2%",
+          "bronze": "2.3%",
+          "podium": "2.6%",
+          "rank": 5
+        },
+        {
+          "team": "Vietnam",
+          "gold": "0.0%",
+          "silver": "0.1%",
+          "bronze": "0.7%",
+          "podium": "0.8%",
+          "rank": 6
+        },
+        {
+          "team": "Uzbekistan",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.2%",
+          "podium": "0.3%",
+          "rank": 7
+        }
+      ]
+    }
+  ]
 }

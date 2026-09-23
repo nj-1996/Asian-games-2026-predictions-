@@ -297,5 +297,284 @@ window.SPORT_ENGINES['handball'] = {
         </div>
       </div>
     `;
+  },
+
+  // --- Medal Analytics Engine (Predictions & Standings) ---
+  extractMedalAnalytics(menMatches, womenMatches, menPreds, womenPreds, mixedMatches, mixedPreds, currentGender) {
+    const curGen = String(currentGender || (typeof window !== 'undefined' && window.currentGender) || 'men').toLowerCase();
+
+    const clean = (name) => {
+      if (!name || typeof name !== 'string') return '';
+      return (typeof cleanTeamName === 'function' ? cleanTeamName(name) : name.toLowerCase().replace(/[^a-z0-9]/g, '')).trim();
+    };
+
+    const formatC = (item) => {
+      if (!item) return null;
+      let rawName = item.team || item.country || item.name || '';
+      const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(rawName) : '🤾';
+      const displayName = typeof formatTeamDisplayName === 'function' ? formatTeamDisplayName(rawName.replace(/\(host\)/gi, '').trim()) : rawName.replace(/\(host\)/gi, '').trim();
+      const cleaned = clean(rawName);
+      return {
+        raw: rawName,
+        cleaned,
+        name: displayName,
+        flag,
+        isHost: rawName.toLowerCase().includes('host'),
+        goldProb: item.gold || '',
+        silverProb: item.silver || '',
+        bronzeProb: item.bronze || ''
+      };
+    };
+
+    const getProbNumber = (v) => {
+      if (v == null) return 0;
+      if (typeof v === 'number') return v;
+      return parseFloat(String(v).replace('%', '')) || 0;
+    };
+
+    const projectPodium = (list) => {
+      if (!Array.isArray(list) || list.length === 0) return [];
+      const sorted = [...list].sort((a, b) => {
+        const gA = getProbNumber(a.gold);
+        const gB = getProbNumber(b.gold);
+        if (gB !== gA) return gB - gA;
+        const sA = getProbNumber(a.silver);
+        const sB = getProbNumber(b.silver);
+        if (sB !== sA) return sB - sA;
+        return getProbNumber(b.bronze) - getProbNumber(a.bronze);
+      });
+      const res = [];
+      if (sorted[0]) res.push({ medal: 'gold', item: sorted[0] });
+      if (sorted[1]) res.push({ medal: 'silver', item: sorted[1] });
+      if (sorted[2]) res.push({ medal: 'bronze', item: sorted[2] });
+      return res;
+    };
+
+    const eventDefs = [
+      { id: 'hbl_men', name: "Men's Tournament", shortName: "Men's", gender: 'men', icon: '🤾' },
+      { id: 'hbl_women', name: "Women's Tournament", shortName: "Women's", gender: 'women', icon: '🤾' }
+    ];
+
+    const activeEvents = curGen === 'women'
+      ? eventDefs.filter(e => e.gender === 'women')
+      : (curGen === 'men' ? eventDefs.filter(e => e.gender === 'men') : eventDefs);
+
+    const medalEvents = [];
+    const actualTableMap = {};
+    const projectedTableMap = {};
+
+    let totalDecidedMedals = 0;
+    let totalExactHits = 0;
+    let totalPodiumHits = 0;
+    let totalDecidedGold = 0;
+    let totalGoldHits = 0;
+
+    activeEvents.forEach(def => {
+      const isMen = def.gender === 'men';
+      const mList = isMen ? (menMatches || []) : (womenMatches || []);
+      const pList = isMen ? (menPreds || []) : (womenPreds || []);
+
+      const pPodium = projectPodium(pList);
+      const projGold = formatC(pPodium.find(p => p.medal === 'gold')?.item);
+      const projSilver = formatC(pPodium.find(p => p.medal === 'silver')?.item);
+      const projBronze = formatC(pPodium.find(p => p.medal === 'bronze')?.item);
+
+      let actualGold = null;
+      let actualSilver = null;
+      let actualBronze = null;
+      let status = 'Upcoming';
+      let matchInfo = '';
+      let goldScoreInfo = '';
+      let bronzeScoreInfo = '';
+
+      if (isMen) {
+        const parsed = mList.map(m => (typeof parseMatchData === 'function' ? parseMatchData(m) : m));
+        const finalMatch = parsed.find(m => /gold|\bfinal\b/i.test(m.stage || m.round || '') && !/semi|quarter|bronze/i.test(m.stage || m.round || ''));
+        const bronzeMatch = parsed.find(m => /bronze|3rd/i.test(m.stage || m.round || ''));
+
+        if (finalMatch && finalMatch.isFinished) {
+          status = 'Finished';
+          const w = finalMatch.winner || (Number(finalMatch.s1) > Number(finalMatch.s2) ? finalMatch.t1 : finalMatch.t2);
+          const l = clean(w) === clean(finalMatch.t1) ? finalMatch.t2 : finalMatch.t1;
+          actualGold = formatC({ team: w });
+          actualSilver = formatC({ team: l });
+          goldScoreInfo = `Gold Final: ${finalMatch.t1} ${finalMatch.s1}-${finalMatch.s2} ${finalMatch.t2} (Official)`;
+          matchInfo = goldScoreInfo;
+        } else if (finalMatch) {
+          goldScoreInfo = `Gold Final: ${finalMatch.t1} vs ${finalMatch.t2} (${finalMatch.date} ${finalMatch.time})`;
+          matchInfo = goldScoreInfo;
+          if (mList.some(m => m.isFinished)) status = 'Live';
+        }
+
+        if (bronzeMatch && bronzeMatch.isFinished) {
+          const w = bronzeMatch.winner || (Number(bronzeMatch.s1) > Number(bronzeMatch.s2) ? bronzeMatch.t1 : bronzeMatch.t2);
+          actualBronze = formatC({ team: w });
+          bronzeScoreInfo = `Bronze Match: ${bronzeMatch.t1} ${bronzeMatch.s1}-${bronzeMatch.s2} ${bronzeMatch.t2} (Official)`;
+          matchInfo += (matchInfo ? ' • ' : '') + bronzeScoreInfo;
+        } else if (bronzeMatch) {
+          bronzeScoreInfo = `Bronze Match: ${bronzeMatch.t1} vs ${bronzeMatch.t2} (${bronzeMatch.date} ${bronzeMatch.time})`;
+        }
+      } else {
+        const table = {};
+        let finishedCount = 0;
+        mList.forEach(m => {
+          const t1 = m.player1 || m.t1;
+          const t2 = m.player2 || m.t2;
+          if (!t1 || !t2 || t1 === 'TBD' || t2 === 'TBD') return;
+          if (!table[t1]) table[t1] = { name: t1, pts: 0, gd: 0, gf: 0, ga: 0, gp: 0 };
+          if (!table[t2]) table[t2] = { name: t2, pts: 0, gd: 0, gf: 0, ga: 0, gp: 0 };
+
+          const isFin = m.status === 'Finished' || String(m.state || '').toLowerCase().includes('official');
+          if (isFin && m.score1 != null && m.score2 != null && m.score1 !== '-' && m.score2 !== '-') {
+            finishedCount++;
+            const s1 = Number(m.score1);
+            const s2 = Number(m.score2);
+            table[t1].gp++; table[t2].gp++;
+            table[t1].gf += s1; table[t1].ga += s2;
+            table[t2].gf += s2; table[t2].ga += s1;
+            if (s1 > s2) { table[t1].pts += 2; }
+            else if (s2 > s1) { table[t2].pts += 2; }
+            else { table[t1].pts += 1; table[t2].pts += 1; }
+            table[t1].gd = table[t1].gf - table[t1].ga;
+            table[t2].gd = table[t2].gf - table[t2].ga;
+          }
+        });
+
+        const sortedStandings = Object.values(table).sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
+        if (finishedCount >= 21) {
+          status = 'Finished';
+          if (sortedStandings[0]) actualGold = formatC({ team: sortedStandings[0].name });
+          if (sortedStandings[1]) actualSilver = formatC({ team: sortedStandings[1].name });
+          if (sortedStandings[2]) actualBronze = formatC({ team: sortedStandings[2].name });
+          matchInfo = `Round-Robin Completed • Champion: ${sortedStandings[0]?.name || ''} 🥇`;
+        } else if (finishedCount > 0) {
+          status = 'Live';
+          const leader = sortedStandings[0]?.name || 'Japan';
+          matchInfo = `${finishedCount} of 21 matches completed • Current Leader: ${leader}`;
+        }
+      }
+
+      const recordMedal = (tableMap, item, type) => {
+        if (!item || !item.cleaned) return;
+        const cln = item.cleaned;
+        if (!tableMap[cln]) tableMap[cln] = { name: item.name, flag: item.flag || '🤾', isHost: item.isHost, gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
+        tableMap[cln][type] += 1;
+        tableMap[cln].total += 1;
+      };
+
+      recordMedal(projectedTableMap, projGold, 'gold');
+      recordMedal(projectedTableMap, projSilver, 'silver');
+      recordMedal(projectedTableMap, projBronze, 'bronze');
+
+      if (actualGold) recordMedal(actualTableMap, actualGold, 'gold');
+      if (actualSilver) recordMedal(actualTableMap, actualSilver, 'silver');
+      if (actualBronze) recordMedal(actualTableMap, actualBronze, 'bronze');
+
+      const projTop3 = [projGold?.cleaned, projSilver?.cleaned, projBronze?.cleaned].filter(Boolean);
+      let evDecided = 0, evExact = 0, evPodium = 0;
+
+      if (actualGold) {
+        evDecided++; totalDecidedMedals++; totalDecidedGold++;
+        if (actualGold.cleaned === projGold?.cleaned) { evExact++; totalExactHits++; totalGoldHits++; }
+        if (projTop3.includes(actualGold.cleaned)) { evPodium++; totalPodiumHits++; }
+      }
+      if (actualSilver) {
+        evDecided++; totalDecidedMedals++;
+        if (actualSilver.cleaned === projSilver?.cleaned) { evExact++; totalExactHits++; }
+        if (projTop3.includes(actualSilver.cleaned)) { evPodium++; totalPodiumHits++; }
+      }
+      if (actualBronze) {
+        evDecided++; totalDecidedMedals++;
+        if (actualBronze.cleaned === projBronze?.cleaned) { evExact++; totalExactHits++; }
+        if (projTop3.includes(actualBronze.cleaned)) { evPodium++; totalPodiumHits++; }
+      }
+
+      medalEvents.push({
+        id: def.id,
+        name: def.name,
+        shortName: def.shortName,
+        gender: def.gender,
+        icon: def.icon,
+        type: 'team',
+        status,
+        matchInfo,
+        goldScoreInfo,
+        bronzeScoreInfo,
+        rankings: pList,
+        projected: { gold: projGold, silver: projSilver, bronze: projBronze },
+        actual: { gold: actualGold, silver: actualSilver, bronze: actualBronze },
+        evaluation: {
+          decidedCount: evDecided,
+          exactHits: evExact,
+          podiumHits: evPodium,
+          goldHit: actualGold ? actualGold.cleaned === projGold?.cleaned : null,
+          silverHit: actualSilver ? actualSilver.cleaned === projSilver?.cleaned : null,
+          bronzeHit: actualBronze ? actualBronze.cleaned === projBronze?.cleaned : null,
+          accuracyPct: evDecided > 0 ? Math.round((evExact / evDecided) * 100) : null,
+          podiumRatePct: evDecided > 0 ? Math.round((evPodium / evDecided) * 100) : null
+        }
+      });
+    });
+
+    const totalMedalsInSport = activeEvents.length * 3;
+    const actualTable = Object.values(actualTableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze);
+    const projectedTable = Object.values(projectedTableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze);
+
+    const allNations = new Set([...Object.keys(actualTableMap), ...Object.keys(projectedTableMap)]);
+    const comparisonTable = Array.from(allNations).map(cln => {
+      const act = actualTableMap[cln] || { name: '', gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
+      const prj = projectedTableMap[cln] || { name: '', gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
+      const name = act.name || prj.name || cln;
+      const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(name) : '🤾';
+      const diffTotal = act.total - prj.total;
+
+      let status = '⚪ Scheduled';
+      if (totalDecidedMedals > 0) {
+        if (act.total === prj.total && act.gold === prj.gold && act.silver === prj.silver && act.bronze === prj.bronze) {
+          status = '🟢 Exact Match';
+        } else if (act.total >= prj.total) {
+          status = '🟡 Met/Exceeded';
+        } else {
+          status = '🔴 Behind';
+        }
+      }
+
+      return {
+        key: cln,
+        cleaned: cln,
+        name,
+        flag,
+        isHost: name.toLowerCase().includes('japan'),
+        actual: act,
+        projected: prj,
+        diffTotal,
+        status,
+        projectedAthletes: []
+      };
+    }).sort((a, b) => {
+      if (b.actual.gold !== a.actual.gold) return b.actual.gold - a.actual.gold;
+      if (b.actual.silver !== a.actual.silver) return b.actual.silver - a.actual.silver;
+      if (b.actual.bronze !== a.actual.bronze) return b.actual.bronze - a.actual.bronze;
+      if (b.projected.gold !== a.projected.gold) return b.projected.gold - a.projected.gold;
+      return b.projected.silver - a.projected.silver;
+    });
+
+    return {
+      events: medalEvents,
+      actualTable,
+      projectedTable,
+      comparisonTable,
+      kpi: {
+        totalMedalsInSport,
+        decidedMedals: totalDecidedMedals,
+        exactHits: totalExactHits,
+        podiumHits: totalPodiumHits,
+        decidedGoldEvents: totalDecidedGold,
+        goldHits: totalGoldHits,
+        accuracyPct: totalDecidedMedals > 0 ? Math.round((totalExactHits / totalDecidedMedals) * 100) : null,
+        podiumRatePct: totalDecidedMedals > 0 ? Math.round((totalPodiumHits / totalDecidedMedals) * 100) : null,
+        goldAccuracyPct: totalDecidedGold > 0 ? Math.round((totalGoldHits / totalDecidedGold) * 100) : null
+      }
+    };
   }
 };

@@ -46,7 +46,7 @@ The entire frontend runs client-side as a zero-dependency Single Page Applicatio
 | 🏓 **Teqball** | Men · Women · Mixed | Group Phase Tables | Round of 16 → Final | Set Scores (12-pt Sets) | 50,000 Runs (FITEQ World Tour) | ✅ Dual Bronze (SF Losers) |
 | 🎯 **Modern Pentathlon** | Men · Women | Riding, Fencing, Swim, Laser-Run | Direct Ranking / Points | Event Breakdown | 50,000 Runs (UIPM Cutoff Model) | ❌ Ranked Podium |
 | 🏏 **Cricket** | Men · Women | Group Standings & NRR | Super 8s / Knockouts | Inning Scores & Overs | 50,000 Runs (ICC T20 Rankings) | ❌ Single (Bronze Playoff) |
-| 🤾 **Handball** | Men · Women | Official IHF (2-1-0 Pts, GD) | QFs & SFs → Final | Half-time & Full-time | Monte Carlo Projections | ❌ Single (Bronze Playoff) |
+| 🤾 **Handball** | Men · Women | Official IHF (2-1-0 Pts, GD) | QFs & SFs → Final | Half-time & Full-time | 50,000 Runs (IHF/Asian Champs) | ❌ Single (Bronze Playoff) |
 
 ---
 
@@ -144,6 +144,7 @@ flowchart LR
 │       ├── teqball.js              # 3-set scoring & dual bronze bracket
 │       └── volleyball.js           # Set ratio / points ratio standings engine
 ├── scripts/
+│   ├── simulate_handball.py        # Monte Carlo generator for Handball
 │   ├── simulate_soft_tennis.py     # Monte Carlo generator for Soft Tennis
 │   ├── sync_basketball.py          # Scraper & parser for Basketball
 │   ├── sync_cricket.py             # Scraper & parser for Cricket
