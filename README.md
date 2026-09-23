@@ -46,6 +46,7 @@ The entire frontend runs client-side as a zero-dependency Single Page Applicatio
 | 🏓 **Teqball** | Men · Women · Mixed | Group Phase Tables | Round of 16 → Final | Set Scores (12-pt Sets) | 50,000 Runs (FITEQ World Tour) | ✅ Dual Bronze (SF Losers) |
 | 🎯 **Modern Pentathlon** | Men · Women | Riding, Fencing, Swim, Laser-Run | Direct Ranking / Points | Event Breakdown | 50,000 Runs (UIPM Cutoff Model) | ❌ Ranked Podium |
 | 🏏 **Cricket** | Men · Women | Group Standings & NRR | Super 8s / Knockouts | Inning Scores & Overs | 50,000 Runs (ICC T20 Rankings) | ❌ Single (Bronze Playoff) |
+| 🤾 **Handball** | Men · Women | Official IHF (2-1-0 Pts, GD) | QFs & SFs → Final | Half-time & Full-time | Monte Carlo Projections | ❌ Single (Bronze Playoff) |
 
 ---
 
@@ -123,6 +124,7 @@ flowchart LR
 │   ├── basketball/                 # Data feeds for Basketball (men / women / predictions)
 │   ├── cricket/                    # Data feeds for Cricket
 │   ├── football/                   # Data feeds for Football
+│   ├── handball/                   # Data feeds for Handball
 │   ├── hockey/                     # Data feeds for Hockey
 │   ├── modern_pentathlon/          # Data feeds for Modern Pentathlon
 │   ├── soft_tennis/                # Data feeds for Soft Tennis (men / women / mixed)
@@ -135,6 +137,7 @@ flowchart LR
 │       ├── basketball.js           # FIBA standings & knockout engine
 │       ├── cricket.js              # NRR tables & T20 match parsing
 │       ├── football.js             # Football group tables & bracket
+│       ├── handball.js             # Handball 2-1-0 standings & QF/SF brackets
 │       ├── hockey.js               # FIH pool rules & bracket
 │       ├── modern_pentathlon.js    # Multi-event cutoff model & points table
 │       ├── soft_tennis.js          # Dual bronze resolver & 12-team bracket
@@ -145,6 +148,7 @@ flowchart LR
 │   ├── sync_basketball.py          # Scraper & parser for Basketball
 │   ├── sync_cricket.py             # Scraper & parser for Cricket
 │   ├── sync_football.py            # Scraper & parser for Football
+│   ├── sync_handball.py            # Scraper & parser for Handball
 │   ├── sync_hockey.py              # Scraper & parser for Hockey
 │   ├── sync_modern_pentathlon.py   # Scraper & parser for Modern Pentathlon
 │   ├── sync_soft_tennis.py         # Scraper & parser for Soft Tennis
