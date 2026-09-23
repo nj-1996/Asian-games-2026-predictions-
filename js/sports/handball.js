@@ -17,17 +17,17 @@ window.SPORT_ENGINES['handball'] = {
 
     parsedMatches.forEach(m => {
       const rawStage = String(m.stage || m.round || '');
-      // Match "Group A", "Group B", "Group", "Pool A", etc.
-      const grpMatch = rawStage.match(/(?:group|pool|gr\.?)\s*([a-z0-9]*)/i);
-      if (!grpMatch && !/group|preliminary/i.test(rawStage)) return;
 
-      let grpKey = 'Group Stage';
-      if (grpMatch && grpMatch[1]) {
-        grpKey = `Group ${grpMatch[1].toUpperCase()}`;
-      } else if (/group|preliminary/i.test(rawStage)) {
-        grpKey = 'Preliminary Pool';
+      let grpKey = null;
+      if (/group\s*a\b/i.test(rawStage)) {
+        grpKey = 'Group A';
+      } else if (/group\s*b\b/i.test(rawStage)) {
+        grpKey = 'Group B';
+      } else if (/women/i.test(window.currentGender || '') || /round-robin|group\s*stage/i.test(rawStage)) {
+        grpKey = "Women's Round-Robin";
       }
 
+      if (!grpKey) return;
       if (!groups[grpKey]) groups[grpKey] = {};
 
       const t1 = m.t1 || m.player1 || m.team1;
@@ -84,7 +84,11 @@ window.SPORT_ENGINES['handball'] = {
 
     const badgeStyles = {
       'Q': 'background:rgba(34,197,94,0.18); color:#4ade80; border:1px solid rgba(74,222,128,0.35);',
-      'E': 'background:rgba(148,163,184,0.15); color:#94a3b8; border:1px solid rgba(148,163,184,0.25);'
+      'E': 'background:rgba(148,163,184,0.15); color:#94a3b8; border:1px solid rgba(148,163,184,0.25);',
+      'gold': 'background:rgba(250,204,21,0.2); color:#facc15; border:1px solid rgba(250,204,21,0.4);',
+      'silver': 'background:rgba(226,232,240,0.2); color:#e2e8f0; border:1px solid rgba(226,232,240,0.4);',
+      'bronze': 'background:rgba(217,119,6,0.2); color:#f59e0b; border:1px solid rgba(217,119,6,0.4);',
+      'neutral': 'background:rgba(148,163,184,0.12); color:#94a3b8; border:1px solid rgba(148,163,184,0.2);'
     };
 
     const isMen = (window.currentGender === 'men') || (typeof currentGender !== 'undefined' && currentGender === 'men') || groupKeys.length > 1;
@@ -93,17 +97,14 @@ window.SPORT_ENGINES['handball'] = {
       const teams = Object.values(groups[grpKey]);
       teams.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
 
-      // Qualification rules:
-      // Men: Top 4 from each group advance to Quarterfinals (Q), 5th eliminated (E)
-      // Women: Top 4 from single group advance to Semifinals (Q), 5th-7th eliminated (E)
-      const qCutoff = 4;
-      const subtitleText = isMen
-        ? 'Top 4 teams advance to the Quarterfinals'
-        : 'Top 4 teams advance directly to the Semifinals';
+      const isWomenRoundRobin = grpKey === "Women's Round-Robin";
+      const subtitleText = isWomenRoundRobin
+        ? '7-nation round-robin (Medals decided by final standings: 🥇 Gold, 🥈 Silver, 🥉 Bronze)'
+        : 'Top 4 teams advance to the Quarterfinals';
 
       return `
         <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:0.75rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:0.75rem; flex-wrap:wrap; gap:6px;">
             <div style="font-weight:700; font-size:1.1rem; color:#f8fafc; display:flex; align-items:center; gap:0.5rem;">
               <span>🤾</span> <span>${grpKey}</span>
             </div>
@@ -124,20 +125,37 @@ window.SPORT_ENGINES['handball'] = {
                   <th style="padding:8px 6px; text-align:center;">GA</th>
                   <th style="padding:8px 6px; text-align:center;">GD</th>
                   <th style="padding:8px 6px; text-align:center; font-weight:700; color:#f8fafc;">Pts</th>
-                  <th style="padding:8px 6px; text-align:center; width:36px;">Adv</th>
+                  <th style="padding:8px 6px; text-align:center; min-width:44px;">${isWomenRoundRobin ? 'Rank' : 'Adv'}</th>
                 </tr>
               </thead>
               <tbody>
                 ${teams.map((t, idx) => {
                   const rank = idx + 1;
-                  const qualifies = rank <= qCutoff;
-                  const status = qualifies ? 'Q' : 'E';
-                  const badgeStyle = badgeStyles[status] || '';
+                  let badgeHtml = '';
 
-                  const badgeHtml = `<span style="display:inline-block; font-size:0.65rem; font-weight:700; padding:2px 5px; border-radius:4px; ${badgeStyle}">${status}</span>`;
+                  if (isWomenRoundRobin) {
+                    if (rank === 1) {
+                      badgeHtml = `<span style="display:inline-block; font-size:0.65rem; font-weight:700; padding:2px 6px; border-radius:4px; ${badgeStyles['gold']}">🥇 Gold</span>`;
+                    } else if (rank === 2) {
+                      badgeHtml = `<span style="display:inline-block; font-size:0.65rem; font-weight:700; padding:2px 6px; border-radius:4px; ${badgeStyles['silver']}">🥈 Silver</span>`;
+                    } else if (rank === 3) {
+                      badgeHtml = `<span style="display:inline-block; font-size:0.65rem; font-weight:700; padding:2px 6px; border-radius:4px; ${badgeStyles['bronze']}">🥉 Bronze</span>`;
+                    } else {
+                      badgeHtml = `<span style="display:inline-block; font-size:0.65rem; font-weight:600; padding:2px 6px; border-radius:4px; ${badgeStyles['neutral']}">${rank}th</span>`;
+                    }
+                  } else {
+                    const qualifies = rank <= 4;
+                    const status = qualifies ? 'Q' : 'E';
+                    const badgeStyle = badgeStyles[status] || '';
+                    badgeHtml = `<span style="display:inline-block; font-size:0.65rem; font-weight:700; padding:2px 5px; border-radius:4px; ${badgeStyle}">${status}</span>`;
+                  }
+
+                  const rowHighlight = isWomenRoundRobin
+                    ? (rank <= 3 ? 'rgba(250,204,21,0.03)' : 'transparent')
+                    : (rank <= 4 ? 'rgba(34,197,94,0.03)' : 'transparent');
 
                   return `
-                    <tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:${qualifies ? 'rgba(34,197,94,0.03)' : 'transparent'};">
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:${rowHighlight};">
                       <td style="padding:10px 6px; text-align:center; color:#94a3b8; font-weight:600;">${rank}</td>
                       <td style="padding:10px 6px; font-weight:600; color:#f8fafc;">
                         ${typeof getFlagEmoji === 'function' ? getFlagEmoji(t.name) : ''} ${t.name}
@@ -178,6 +196,28 @@ window.SPORT_ENGINES['handball'] = {
     const finalMatch = parsed.find(m => getStage(m).includes('gold') || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
     const bronzeMatch = parsed.find(m => getStage(m).includes('bronze') || getStage(m).includes('3rd'));
 
+    const hasQFs = qfMatches.length > 0;
+    const hasSFs = sfMatches.length > 0;
+    const hasFinals = finalMatch != null || bronzeMatch != null;
+
+    if (!hasQFs && !hasSFs && !hasFinals) {
+      return `
+        <div style="text-align:center; padding:3rem 1.5rem; color:#94a3b8; background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin:1rem 0;">
+          <div style="font-size:2.5rem; margin-bottom:0.75rem;">🏅</div>
+          <div style="font-weight:700; font-size:1.15rem; color:#f8fafc; margin-bottom:0.5rem;">Women's Round-Robin Tournament</div>
+          <div style="max-width:520px; margin:0 auto; font-size:0.85rem; line-height:1.6; color:#94a3b8;">
+            The Women's Handball tournament is contested as a direct single round-robin group of 7 nations. Medals are awarded based on final group standings:
+            <div style="margin-top:0.85rem; font-weight:700; color:#38bdf8; font-size:0.9rem;">
+              🥇 1st: Gold &bull; 🥈 2nd: Silver &bull; 🥉 3rd: Bronze
+            </div>
+            <div style="margin-top:0.75rem; font-size:0.8rem; color:#64748b;">
+              Check the <strong>Standings</strong> tab for live points, goal difference, and standings.
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     const getGame = (list, num) => list.find(m => new RegExp(`(?:match|qf|sf|quarterfinal|semifinal)\\s*${num}`, 'i').test(m.stage || m.round)) || list[num - 1];
 
     const renderSlot = (title, match, fallback, medalType = null) => {
@@ -213,8 +253,6 @@ window.SPORT_ENGINES['handball'] = {
       `;
     };
 
-    const hasQFs = qfMatches.length > 0;
-
     if (hasQFs) {
       // Men's 8-team Knockout Bracket: QF -> SF -> Finals
       return `
@@ -242,7 +280,7 @@ window.SPORT_ENGINES['handball'] = {
       `;
     }
 
-    // Women's 4-team Knockout Bracket: SF -> Finals
+    // 4-team Knockout Bracket: SF -> Finals
     return `
       <div class="bracket-wrapper">
         <div class="bracket-container">
