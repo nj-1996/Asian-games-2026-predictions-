@@ -841,7 +841,7 @@
         <div>
           ${eventPickerHtml}
           <div class="bracket-wrapper">
-            <div class="bracket-container" style="justify-content:center;">
+            <div class="bracket-container">
               ${bracketRoundsHtml}
             </div>
           </div>

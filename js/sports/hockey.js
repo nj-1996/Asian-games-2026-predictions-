@@ -216,7 +216,7 @@ window.SPORT_ENGINES['hockey'] = {
 
     return `
       <div class="bracket-wrapper">
-        <div class="bracket-container" style="justify-content:center;">
+        <div class="bracket-container">
           <div class="bracket-round">
             <div class="bracket-round-header">Semifinals</div>
             ${renderSlot('SF 1', getGame(sfMatches, 1), defaultSF1)}

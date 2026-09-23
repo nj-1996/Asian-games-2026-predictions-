@@ -721,6 +721,7 @@ button.sync-status.is-success {
   padding: 1rem 0.5rem 1.5rem;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
 }
 
 /* Custom mobile-friendly scrollbar indicator */
@@ -746,11 +747,13 @@ button.sync-status.is-success {
   display: flex;
   gap: 1.5rem;
   min-width: 760px;
+  width: max-content;
   align-items: stretch;
 }
 
 .bracket-round {
   flex: 1;
+  min-width: 250px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
