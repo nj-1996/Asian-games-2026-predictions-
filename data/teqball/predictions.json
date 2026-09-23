@@ -100,7 +100,7 @@
       "id": "teq_mixed_doubles",
       "event": "Mixed Doubles",
       "shortName": "Mixed Doubles",
-      "gender": "men",
+      "gender": "mixed",
       "type": "individual",
       "icon": "🏓",
       "rankings": [

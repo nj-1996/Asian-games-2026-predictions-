@@ -1139,6 +1139,7 @@
           : 2;
         return acc + 2 + bCount;
       }, 0);
+      const isSportFinished = totalMedalsInSport > 0 && totalDecidedMedals >= totalMedalsInSport;
       const actualTable = Object.values(actualTableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze);
       const projectedTable = Object.values(projectedTableMap).sort((a, b) => b.gold - a.gold || b.silver - a.silver || b.bronze - a.bronze);
 
@@ -1149,13 +1150,40 @@
         const name = act.name || prj.name || cln;
         const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(name) : '🎾';
         const diffTotal = act.total - prj.total;
+
+        const hasRemainingEvents = medalEvents.some(ev => {
+          const isEvFinished = ev.status === 'Finished' || (ev.actual?.gold && ev.actual?.silver && (ev.actual?.bronze || (ev.actual?.bronzes && ev.actual.bronzes.length > 0)));
+          if (isEvFinished) return false;
+          const inProj = ev.projected?.gold?.cleaned === cln ||
+                         ev.projected?.silver?.cleaned === cln ||
+                         ev.projected?.bronze?.cleaned === cln ||
+                         (Array.isArray(ev.projected?.bronzes) && ev.projected.bronzes.some(b => b?.cleaned === cln));
+          const inRank = Array.isArray(ev.rankings) && ev.rankings.some(r => {
+            const rCln = r.cleaned || clean(r.team || r.country || r.name || '');
+            return rCln === cln;
+          });
+          return inProj || inRank;
+        });
+
+        const isNationDone = isSportFinished || !hasRemainingEvents;
+
         let status = '⚪ Scheduled';
         if (totalDecidedMedals > 0) {
-          if (act.total > 0 && act.total === prj.total && act.gold === prj.gold && act.silver === prj.silver && act.bronze === prj.bronze) status = '🎯 Exact Hit';
-          else if (diffTotal > 0) status = `🟢 Over (+${diffTotal})`;
-          else if (act.total > 0 && diffTotal < 0) status = `🔻 Under (${diffTotal})`;
-          else if (act.total > 0) status = '🟡 Position Shift';
-          else status = '⏳ Pending / Awaiting';
+          if (act.total === prj.total && act.gold === prj.gold && act.silver === prj.silver && act.bronze === prj.bronze) {
+            status = (act.total > 0 || isNationDone) ? '🎯 Exact Hit' : '⚪ Scheduled';
+          } else if (diffTotal > 0) {
+            status = `🟢 Over (+${diffTotal})`;
+          } else if (diffTotal < 0) {
+            if (isNationDone || act.total > 0) {
+              status = `🔻 Under (${diffTotal})`;
+            } else {
+              status = '⏳ Pending / Awaiting';
+            }
+          } else if (act.total > 0) {
+            status = '🟡 Position Shift';
+          } else {
+            status = isNationDone ? '🎯 Exact Hit' : '⏳ Pending / Awaiting';
+          }
         }
         return { cleaned: cln, name, flag, isHost: false, actual: act, projected: prj, diffTotal, diffGold: act.gold - prj.gold, status, actualAthletes: act.athletes || [], projectedAthletes: prj.athletes || [] };
       }).sort((a, b) => {
