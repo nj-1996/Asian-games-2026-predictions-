@@ -471,16 +471,22 @@
       }
 
       const evLower = (activeSoftTennisStandingsEvent || '').toLowerCase();
-      const isTeamOrMixed = evLower.includes('team') || evLower.includes('doubles');
+      const isWomen = evLower.includes("women");
+      const isTeam = evLower.includes("team");
+      const isDoubles = evLower.includes("doubles") || evLower.includes("mixed");
+      const isSingles = evLower.includes("singles");
+      const isTeamOrMixed = isTeam || isDoubles;
       const qualifyingCount = isTeamOrMixed ? 2 : 1;
 
       let qualifierNote = 'Group winner advances (Q)';
-      if (evLower.includes("women's team")) {
+      if (isWomen && isTeam) {
         qualifierNote = 'Top 2 advance directly to Semifinals (Q)';
       } else if (isTeamOrMixed) {
         qualifierNote = 'Top 2 advance to Knockout Stage (Q)';
-      } else if (evLower.includes("men's singles")) {
+      } else if (!isWomen && isSingles) {
         qualifierNote = 'Group winner advances (Group A winner receives QF BYE) (Q)';
+      } else if (isWomen && isSingles) {
+        qualifierNote = 'Group winner advances to Quarterfinals (Q)';
       }
 
       const tablesHtml = groupKeys.map(grpKey => {
@@ -657,6 +663,10 @@
 
       const evName = activeSoftTennisBracketEvent || '';
       const evLower = evName.toLowerCase();
+      const isWomen = evLower.includes("women");
+      const isTeam = evLower.includes("team");
+      const isSingles = evLower.includes("singles");
+      const isDoubles = evLower.includes("doubles") || evLower.includes("mixed");
 
       const finalMatch = findRound(/gold|\bfinal\b/i) || eventMatches.find(m => /(?:gold\s*medal|\bfinal\b)/i.test(m.stage || m.round || m.match || '') && !/semi|quarter|first/i.test(m.stage || m.round || m.match || ''));
       const sf1 = findRound(/semifinal\s*1\b|sf\s*1\b/i);
@@ -665,70 +675,7 @@
       let bracketRoundsHtml = '';
       let footnotes = ['* In Soft Tennis, both semifinal losers are awarded Bronze medals (no bronze playoff).'];
 
-      if (evLower.includes("men's singles")) {
-        const qf2 = findRound(/quarterfinal\s*2\b|qf\s*2\b/i);
-        const qf3 = findRound(/quarterfinal\s*3\b|qf\s*3\b/i);
-        const qf4 = findRound(/quarterfinal\s*4\b|qf\s*4\b/i);
-
-        footnotes.unshift("* In Men's Singles, Japan's Toshiki Uematsu (Group A Winner / #1 Seed) received a direct BYE in QF 1 into Semifinal 1.");
-
-        bracketRoundsHtml = `
-          <div class="bracket-round">
-            <div class="bracket-round-header">Quarterfinals</div>
-            ${renderByeSlot('QF 1 • Direct BYE', 'Japan', 'UEMATSU Toshiki', 'Seed 1 (Direct to SF1)')}
-            ${renderSlot('QF 2', qf2, { t1: 'South Korea', ath1: 'LEE Haneul', t2: 'Chinese Taipei', ath2: 'CHEN Po-yi' })}
-            ${renderSlot('QF 3', qf3, { t1: 'India', ath1: 'MEENA Jay', t2: 'Philippines', ath2: 'NUGUIT Sherwin' })}
-            ${renderSlot('QF 4', qf4, { t1: 'Japan', ath1: 'KUROSAKA Takuya', t2: 'Chinese Taipei', ath2: 'CHANG Yu-sung' })}
-          </div>
-          <div class="bracket-round">
-            <div class="bracket-round-header">Semifinals (Bronze)</div>
-            ${renderSlot('SF 1', sf1, { t1: 'Japan', ath1: 'UEMATSU Toshiki', t2: 'Chinese Taipei', ath2: 'CHEN Po-yi' }, 'bronze')}
-            ${renderSlot('SF 2', sf2, { t1: 'India', ath1: 'MEENA Jay', t2: 'Japan', ath2: 'KUROSAKA Takuya' }, 'bronze')}
-          </div>
-          <div class="bracket-round">
-            <div class="bracket-round-header">Gold Medal Match</div>
-            ${renderSlot('Gold Medal', finalMatch, { t1: 'Winner SF 1', t2: 'Winner SF 2' }, 'gold')}
-          </div>
-        `;
-      } else if (evLower.includes("men's team")) {
-        const qf2 = findRound(/quarterfinal\s*2\b|qf\s*2\b/i);
-        const qf3 = findRound(/quarterfinal\s*3\b|qf\s*3\b/i);
-
-        footnotes.unshift("* In Men's Team, group winners Japan (Group A) and Chinese Taipei (Group C) received direct BYEs into the Semifinals.");
-
-        bracketRoundsHtml = `
-          <div class="bracket-round">
-            <div class="bracket-round-header">Quarterfinals</div>
-            ${renderByeSlot('QF 1 • Direct BYE', 'Japan', '', 'Group A Winner (Direct to SF1)')}
-            ${renderSlot('QF 2', qf2, { t1: 'India', t2: 'Indonesia' })}
-            ${renderSlot('QF 3', qf3, { t1: 'South Korea', t2: 'Philippines' })}
-            ${renderByeSlot('QF 4 • Direct BYE', 'Chinese Taipei', '', 'Group C Winner (Direct to SF2)')}
-          </div>
-          <div class="bracket-round">
-            <div class="bracket-round-header">Semifinals (Bronze)</div>
-            ${renderSlot('SF 1', sf1, { t1: 'Japan', t2: 'Indonesia' }, 'bronze')}
-            ${renderSlot('SF 2', sf2, { t1: 'Chinese Taipei', t2: 'South Korea' }, 'bronze')}
-          </div>
-          <div class="bracket-round">
-            <div class="bracket-round-header">Gold Medal Match</div>
-            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', t2: 'Chinese Taipei' }, 'gold')}
-          </div>
-        `;
-      } else if (evLower.includes("women's team")) {
-        footnotes.unshift("* In Women's Team, the top 2 teams from Group A and Group B advanced directly to the Semifinals (no Quarterfinals).");
-
-        bracketRoundsHtml = `
-          <div class="bracket-round">
-            <div class="bracket-round-header">Semifinals (Bronze)</div>
-            ${renderSlot('SF 1 (A1 vs B2)', sf1, { t1: 'Japan', t2: 'Philippines' }, 'bronze')}
-            ${renderSlot('SF 2 (B1 vs A2)', sf2, { t1: 'Chinese Taipei', t2: 'South Korea' }, 'bronze')}
-          </div>
-          <div class="bracket-round">
-            <div class="bracket-round-header">Gold Medal Match</div>
-            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', t2: 'Chinese Taipei' }, 'gold')}
-          </div>
-        `;
-      } else if (evLower.includes("women's singles")) {
+      if (isWomen && isSingles) {
         const qf1 = findRound(/quarterfinal\s*1\b|qf\s*1\b/i);
         const qf2 = findRound(/quarterfinal\s*2\b|qf\s*2\b/i);
         const qf3 = findRound(/quarterfinal\s*3\b|qf\s*3\b/i);
@@ -754,7 +701,70 @@
             ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', ath1: 'TEMMA Rena', t2: 'North Korea', ath2: 'RI Jin Mi' }, 'gold')}
           </div>
         `;
-      } else if (evLower.includes("doubles")) {
+      } else if (isWomen && isTeam) {
+        footnotes.unshift("* In Women's Team, the top 2 teams from Group A and Group B advanced directly to the Semifinals (no Quarterfinals).");
+
+        bracketRoundsHtml = `
+          <div class="bracket-round">
+            <div class="bracket-round-header">Semifinals (Bronze)</div>
+            ${renderSlot('SF 1 (A1 vs B2)', sf1, { t1: 'Japan', t2: 'Philippines' }, 'bronze')}
+            ${renderSlot('SF 2 (B1 vs A2)', sf2, { t1: 'Chinese Taipei', t2: 'South Korea' }, 'bronze')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Gold Medal Match</div>
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', t2: 'Chinese Taipei' }, 'gold')}
+          </div>
+        `;
+      } else if (!isWomen && isSingles) {
+        const qf2 = findRound(/quarterfinal\s*2\b|qf\s*2\b/i);
+        const qf3 = findRound(/quarterfinal\s*3\b|qf\s*3\b/i);
+        const qf4 = findRound(/quarterfinal\s*4\b|qf\s*4\b/i);
+
+        footnotes.unshift("* In Men's Singles, Japan's Toshiki Uematsu (Group A Winner / #1 Seed) received a direct BYE in QF 1 into Semifinal 1.");
+
+        bracketRoundsHtml = `
+          <div class="bracket-round">
+            <div class="bracket-round-header">Quarterfinals</div>
+            ${renderByeSlot('QF 1 • Direct BYE', 'Japan', 'UEMATSU Toshiki', 'Seed 1 (Direct to SF1)')}
+            ${renderSlot('QF 2', qf2, { t1: 'South Korea', ath1: 'LEE Haneul', t2: 'Chinese Taipei', ath2: 'CHEN Po-yi' })}
+            ${renderSlot('QF 3', qf3, { t1: 'India', ath1: 'MEENA Jay', t2: 'Philippines', ath2: 'NUGUIT Sherwin' })}
+            ${renderSlot('QF 4', qf4, { t1: 'Japan', ath1: 'KUROSAKA Takuya', t2: 'Chinese Taipei', ath2: 'CHANG Yu-sung' })}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Semifinals (Bronze)</div>
+            ${renderSlot('SF 1', sf1, { t1: 'Japan', ath1: 'UEMATSU Toshiki', t2: 'Chinese Taipei', ath2: 'CHEN Po-yi' }, 'bronze')}
+            ${renderSlot('SF 2', sf2, { t1: 'India', ath1: 'MEENA Jay', t2: 'Japan', ath2: 'KUROSAKA Takuya' }, 'bronze')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Gold Medal Match</div>
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Winner SF 1', t2: 'Winner SF 2' }, 'gold')}
+          </div>
+        `;
+      } else if (!isWomen && isTeam) {
+        const qf2 = findRound(/quarterfinal\s*2\b|qf\s*2\b/i);
+        const qf3 = findRound(/quarterfinal\s*3\b|qf\s*3\b/i);
+
+        footnotes.unshift("* In Men's Team, group winners Japan (Group A) and Chinese Taipei (Group C) received direct BYEs into the Semifinals.");
+
+        bracketRoundsHtml = `
+          <div class="bracket-round">
+            <div class="bracket-round-header">Quarterfinals</div>
+            ${renderByeSlot('QF 1 • Direct BYE', 'Japan', '', 'Group A Winner (Direct to SF1)')}
+            ${renderSlot('QF 2', qf2, { t1: 'India', t2: 'Indonesia' })}
+            ${renderSlot('QF 3', qf3, { t1: 'South Korea', t2: 'Philippines' })}
+            ${renderByeSlot('QF 4 • Direct BYE', 'Chinese Taipei', '', 'Group C Winner (Direct to SF2)')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Semifinals (Bronze)</div>
+            ${renderSlot('SF 1', sf1, { t1: 'Japan', t2: 'Indonesia' }, 'bronze')}
+            ${renderSlot('SF 2', sf2, { t1: 'Chinese Taipei', t2: 'South Korea' }, 'bronze')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Gold Medal Match</div>
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', t2: 'Chinese Taipei' }, 'gold')}
+          </div>
+        `;
+      } else if (isDoubles) {
         // Mixed Doubles
         const r16_2 = findRound(/first\s*round\s*match\s*2\b|r16\s*match\s*2\b/i);
         const r16_3 = findRound(/first\s*round\s*match\s*3\b|r16\s*match\s*3\b/i);
