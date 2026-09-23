@@ -1226,8 +1226,13 @@ function renderScheduleAndHero(matches) {
   }
 
   const cardsHtml = filtered.map(m => {
-    const t1Win = m.winner ? cleanTeamName(m.winner) === cleanTeamName(m.t1) : (m.isFinished && Number(m.s1) > Number(m.s2));
-    const t2Win = m.winner ? cleanTeamName(m.winner) === cleanTeamName(m.t2) : (m.isFinished && Number(m.s2) > Number(m.s1));
+    const isSameTeam = cleanTeamName(m.t1) === cleanTeamName(m.t2);
+    const t1Win = isSameTeam
+      ? (Number(m.s1) > Number(m.s2))
+      : (m.winner ? cleanTeamName(m.winner) === cleanTeamName(m.t1) : (m.isFinished && Number(m.s1) > Number(m.s2)));
+    const t2Win = isSameTeam
+      ? (Number(m.s2) > Number(m.s1))
+      : (m.winner ? cleanTeamName(m.winner) === cleanTeamName(m.t2) : (m.isFinished && Number(m.s2) > Number(m.s1)));
     const displayDateTime = formatMatchDateTime(m.date, m.time) || m.status || '';
     const setScores = m.set_scores || m.setScores || '';
 

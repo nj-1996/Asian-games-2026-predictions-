@@ -603,8 +603,13 @@
         const isFin = match ? (match.isFinished || (match.status || '').toLowerCase().includes('finish') || (match.state || '').toLowerCase().includes('official')) : false;
 
         const cWinner = match && match.winner ? cleanTeamName(match.winner) : '';
-        const t1Win = cWinner ? (cWinner === cleanTeamName(t1) || (ath1 && cWinner === cleanTeamName(ath1)) || cleanTeamName(t1).includes(cWinner) || (ath1 && cleanTeamName(ath1).includes(cWinner))) : (isFin && Number(s1) > Number(s2));
-        const t2Win = cWinner ? (cWinner === cleanTeamName(t2) || (ath2 && cWinner === cleanTeamName(ath2)) || cleanTeamName(t2).includes(cWinner) || (ath2 && cleanTeamName(ath2).includes(cWinner))) : (isFin && Number(s2) > Number(s1));
+        const isSameTeam = cleanTeamName(t1) === cleanTeamName(t2);
+        const t1Win = isSameTeam
+          ? ((ath1 && cWinner === cleanTeamName(ath1)) || Number(s1) > Number(s2))
+          : (cWinner ? (cWinner === cleanTeamName(t1) || (ath1 && cWinner === cleanTeamName(ath1)) || cleanTeamName(t1).includes(cWinner) || (ath1 && cleanTeamName(ath1).includes(cWinner))) : (isFin && Number(s1) > Number(s2)));
+        const t2Win = isSameTeam
+          ? ((ath2 && cWinner === cleanTeamName(ath2)) || Number(s2) > Number(s1))
+          : (cWinner ? (cWinner === cleanTeamName(t2) || (ath2 && cWinner === cleanTeamName(ath2)) || cleanTeamName(t2).includes(cWinner) || (ath2 && cleanTeamName(ath2).includes(cWinner))) : (isFin && Number(s2) > Number(s1)));
 
         let badgeHtml = '';
         if (isFin) {
@@ -758,7 +763,7 @@
           </div>
           <div class="bracket-round">
             <div class="bracket-round-header">Gold Medal Match</div>
-            ${renderSlot('Gold Medal', finalMatch, { t1: 'Winner SF 1', t2: 'Winner SF 2' }, 'gold')}
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', ath1: 'UEMATSU Toshiki', t2: 'Japan', ath2: 'KUROSAKA Takuya' }, 'gold')}
           </div>
         `;
       } else if (!isWomen && isTeam) {
@@ -936,7 +941,10 @@
         if (finalMatch && finalMatch.isFinished) {
           status = 'Finished';
           const winner = finalMatch.winner || finalMatch.t1;
-          const isT1Winner = clean(winner) === clean(finalMatch.t1) || clean(winner) === clean(finalMatch.team1) || clean(winner) === clean(finalMatch.athlete1) || clean(finalMatch.t1).includes(clean(winner));
+          const isSameTeam = clean(finalMatch.t1) === clean(finalMatch.t2);
+          const isT1Winner = isSameTeam
+            ? (clean(winner) === clean(finalMatch.athlete1) || Number(finalMatch.s1) > Number(finalMatch.s2))
+            : (clean(winner) === clean(finalMatch.t1) || clean(winner) === clean(finalMatch.team1) || clean(winner) === clean(finalMatch.athlete1) || clean(finalMatch.t1).includes(clean(winner)));
           const winTeam = isT1Winner ? (finalMatch.team1 || finalMatch.t1) : (finalMatch.team2 || finalMatch.t2);
           const loseTeam = isT1Winner ? (finalMatch.team2 || finalMatch.t2) : (finalMatch.team1 || finalMatch.t1);
           const gAthleteRaw = isT1Winner ? finalMatch.athlete1 : finalMatch.athlete2;
