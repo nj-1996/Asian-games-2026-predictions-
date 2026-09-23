@@ -370,6 +370,18 @@ async function handleSportChange(sport, force) {
   if (typeof window.setMpnEventFilter === 'function') {
     window.setMpnEventFilter('individual', false);
   }
+  if (typeof window.setSoftTennisEventFilter === 'function') {
+    window.setSoftTennisEventFilter(null, false);
+  }
+  if (typeof window.setSoftTennisStandingsEvent === 'function') {
+    window.setSoftTennisStandingsEvent(null, false);
+  }
+  if (typeof window.setSoftTennisBracketEvent === 'function') {
+    window.setSoftTennisBracketEvent(null, false);
+  }
+  if (typeof window.setSoftTennisCalibrationEvent === 'function') {
+    window.setSoftTennisCalibrationEvent(null, false);
+  }
   window.activePredictionsEventFilter = null;
   window.activeUniversalEventFilter = null;
 
@@ -413,6 +425,18 @@ function setGender(gender) {
   }
   if (typeof window.setMpnEventFilter === 'function') {
     window.setMpnEventFilter('individual', false);
+  }
+  if (typeof window.setSoftTennisEventFilter === 'function') {
+    window.setSoftTennisEventFilter(null, false);
+  }
+  if (typeof window.setSoftTennisStandingsEvent === 'function') {
+    window.setSoftTennisStandingsEvent(null, false);
+  }
+  if (typeof window.setSoftTennisBracketEvent === 'function') {
+    window.setSoftTennisBracketEvent(null, false);
+  }
+  if (typeof window.setSoftTennisCalibrationEvent === 'function') {
+    window.setSoftTennisCalibrationEvent(null, false);
   }
   window.activePredictionsEventFilter = null;
   window.activeUniversalEventFilter = null;

@@ -1,0 +1,34 @@
+{
+  "sport": "Soft Tennis",
+  "simulation_model": "Pending user inputs",
+  "events": [
+    {
+      "id": "tst_men_singles",
+      "name": "Men's Singles",
+      "gender": "men"
+    },
+    {
+      "id": "tst_men_team",
+      "name": "Men's Team",
+      "gender": "men"
+    },
+    {
+      "id": "tst_women_singles",
+      "name": "Women's Singles",
+      "gender": "women"
+    },
+    {
+      "id": "tst_women_team",
+      "name": "Women's Team",
+      "gender": "women"
+    },
+    {
+      "id": "tst_mixed_doubles",
+      "name": "Mixed Doubles",
+      "gender": "mixed"
+    }
+  ],
+  "men": [],
+  "women": [],
+  "mixed": []
+}
