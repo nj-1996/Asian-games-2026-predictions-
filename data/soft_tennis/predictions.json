@@ -1,34 +1,1290 @@
 {
   "sport": "Soft Tennis",
-  "simulation_model": "Pending user inputs",
+  "simulation_model": "Monte Carlo (50,000 Runs)",
+  "weighting": "ISTF World Rankings (35%) + 2024 World Championships Anseong (35%) + 2022 Asian Games Hangzhou (20%) + ASTF Regional Form / SEA Games (10%)",
+  "notes": "Pre-tournament Monte Carlo simulation across all 5 events (50,000 tournament runs) factoring ISTF rankings, 2024 World Soft Tennis Championships results, 2022 Asian Games podiums, and official ASTF tournament bracket paths. Dual bronze medals awarded to losing semifinalists in each event.",
+  "men": [
+    {
+      "rank": 1,
+      "team": "Chinese Taipei",
+      "event": "Men's Team",
+      "gold": "22.2%",
+      "silver": "30.1%",
+      "bronze": "44.5%",
+      "podium": "96.8%"
+    },
+    {
+      "rank": 2,
+      "team": "Japan",
+      "event": "Men's Team",
+      "gold": "52.0%",
+      "silver": "26.5%",
+      "bronze": "17.9%",
+      "podium": "96.4%"
+    },
+    {
+      "rank": 3,
+      "athlete": "UEMATSU Toshiki",
+      "team": "Japan",
+      "event": "Men's Singles",
+      "gold": "52.7%",
+      "silver": "19.1%",
+      "bronze": "18.7%",
+      "podium": "90.4%"
+    },
+    {
+      "rank": 4,
+      "team": "South Korea",
+      "event": "Men's Team",
+      "gold": "21.5%",
+      "silver": "22.8%",
+      "bronze": "36.8%",
+      "podium": "81.1%"
+    },
+    {
+      "rank": 5,
+      "team": "Indonesia",
+      "event": "Men's Team",
+      "gold": "2.5%",
+      "silver": "9.5%",
+      "bronze": "50.1%",
+      "podium": "62.0%"
+    },
+    {
+      "rank": 6,
+      "athlete": "MEENA Jay",
+      "team": "India",
+      "event": "Men's Singles",
+      "gold": "1.8%",
+      "silver": "9.4%",
+      "bronze": "48.0%",
+      "podium": "59.3%"
+    },
+    {
+      "rank": 7,
+      "athlete": "CHANG Yu-sung",
+      "team": "Chinese Taipei",
+      "event": "Men's Singles",
+      "gold": "17.7%",
+      "silver": "26.4%",
+      "bronze": "7.8%",
+      "podium": "51.9%"
+    },
+    {
+      "rank": 8,
+      "athlete": "CHEN Po-yi",
+      "team": "Chinese Taipei",
+      "event": "Men's Singles",
+      "gold": "5.6%",
+      "silver": "6.6%",
+      "bronze": "35.0%",
+      "podium": "47.2%"
+    },
+    {
+      "rank": 9,
+      "athlete": "LEE Haneul",
+      "team": "South Korea",
+      "event": "Men's Singles",
+      "gold": "5.4%",
+      "silver": "6.1%",
+      "bronze": "30.7%",
+      "podium": "42.2%"
+    },
+    {
+      "rank": 10,
+      "team": "India",
+      "event": "Men's Team",
+      "gold": "0.4%",
+      "silver": "3.5%",
+      "bronze": "27.4%",
+      "podium": "31.3%"
+    },
+    {
+      "rank": 11,
+      "athlete": "KIM Jinwoong",
+      "team": "South Korea",
+      "event": "Men's Singles",
+      "gold": "9.2%",
+      "silver": "14.7%",
+      "bronze": "4.8%",
+      "podium": "28.7%"
+    },
+    {
+      "rank": 12,
+      "team": "Philippines",
+      "event": "Men's Team",
+      "gold": "1.3%",
+      "silver": "7.1%",
+      "bronze": "17.5%",
+      "podium": "26.0%"
+    },
+    {
+      "rank": 13,
+      "athlete": "FALEVI Muhammad",
+      "team": "Indonesia",
+      "event": "Men's Singles",
+      "gold": "0.3%",
+      "silver": "2.7%",
+      "bronze": "21.4%",
+      "podium": "24.3%"
+    },
+    {
+      "rank": 14,
+      "athlete": "KUROSAKA Takuya",
+      "team": "Japan",
+      "event": "Men's Singles",
+      "gold": "5.9%",
+      "silver": "10.1%",
+      "bronze": "3.3%",
+      "podium": "19.3%"
+    },
+    {
+      "rank": 15,
+      "athlete": "HUTAURUK Tio",
+      "team": "Indonesia",
+      "event": "Men's Singles",
+      "gold": "1.0%",
+      "silver": "2.2%",
+      "bronze": "6.0%",
+      "podium": "9.2%"
+    },
+    {
+      "rank": 16,
+      "athlete": "ARCILLA Joseph",
+      "team": "Philippines",
+      "event": "Men's Singles",
+      "gold": "0.3%",
+      "silver": "0.9%",
+      "bronze": "7.7%",
+      "podium": "8.9%"
+    }
+  ],
+  "women": [
+    {
+      "rank": 1,
+      "team": "Japan",
+      "event": "Women's Team",
+      "gold": "43.9%",
+      "silver": "32.6%",
+      "bronze": "21.5%",
+      "podium": "98.0%"
+    },
+    {
+      "rank": 2,
+      "team": "South Korea",
+      "event": "Women's Team",
+      "gold": "38.1%",
+      "silver": "34.5%",
+      "bronze": "25.0%",
+      "podium": "97.5%"
+    },
+    {
+      "rank": 3,
+      "team": "Chinese Taipei",
+      "event": "Women's Team",
+      "gold": "16.2%",
+      "silver": "22.1%",
+      "bronze": "58.2%",
+      "podium": "96.5%"
+    },
+    {
+      "rank": 4,
+      "team": "Philippines",
+      "event": "Women's Team",
+      "gold": "1.3%",
+      "silver": "7.1%",
+      "bronze": "57.4%",
+      "podium": "65.8%"
+    },
+    {
+      "rank": 5,
+      "athlete": "HWANG Jeongmi",
+      "team": "South Korea",
+      "event": "Women's Singles",
+      "gold": "14.4%",
+      "silver": "16.6%",
+      "bronze": "33.1%",
+      "podium": "64.0%"
+    },
+    {
+      "rank": 6,
+      "athlete": "TEMMA Rena",
+      "team": "Japan",
+      "event": "Women's Singles",
+      "gold": "34.5%",
+      "silver": "19.3%",
+      "bronze": "9.5%",
+      "podium": "63.3%"
+    },
+    {
+      "rank": 7,
+      "athlete": "CHIANG Min-yu",
+      "team": "Chinese Taipei",
+      "event": "Women's Singles",
+      "gold": "19.7%",
+      "silver": "17.4%",
+      "bronze": "21.7%",
+      "podium": "58.8%"
+    },
+    {
+      "rank": 8,
+      "athlete": "RI So Hyang",
+      "team": "North Korea",
+      "event": "Women's Singles",
+      "gold": "3.7%",
+      "silver": "8.1%",
+      "bronze": "36.9%",
+      "podium": "48.8%"
+    },
+    {
+      "rank": 9,
+      "athlete": "MIYAMAE Kiho",
+      "team": "Japan",
+      "event": "Women's Singles",
+      "gold": "8.7%",
+      "silver": "11.0%",
+      "bronze": "16.9%",
+      "podium": "36.6%"
+    },
+    {
+      "rank": 10,
+      "athlete": "RI Jin Mi",
+      "team": "North Korea",
+      "event": "Women's Singles",
+      "gold": "3.5%",
+      "silver": "7.7%",
+      "bronze": "22.9%",
+      "podium": "34.1%"
+    },
+    {
+      "rank": 11,
+      "team": "Thailand",
+      "event": "Women's Team",
+      "gold": "0.4%",
+      "silver": "3.0%",
+      "bronze": "29.8%",
+      "podium": "33.3%"
+    },
+    {
+      "rank": 12,
+      "athlete": "LEE Sujin",
+      "team": "South Korea",
+      "event": "Women's Singles",
+      "gold": "11.2%",
+      "silver": "9.4%",
+      "bronze": "5.7%",
+      "podium": "26.3%"
+    },
+    {
+      "rank": 13,
+      "athlete": "TIWARI Aadhya",
+      "team": "India",
+      "event": "Women's Singles",
+      "gold": "0.4%",
+      "silver": "2.4%",
+      "bronze": "21.1%",
+      "podium": "23.9%"
+    },
+    {
+      "rank": 14,
+      "athlete": "CATINDIG Princess",
+      "team": "Philippines",
+      "event": "Women's Singles",
+      "gold": "0.7%",
+      "silver": "2.1%",
+      "bronze": "13.9%",
+      "podium": "16.7%"
+    },
+    {
+      "rank": 15,
+      "athlete": "HUANG Shih-yuan",
+      "team": "Chinese Taipei",
+      "event": "Women's Singles",
+      "gold": "3.0%",
+      "silver": "4.2%",
+      "bronze": "3.0%",
+      "podium": "10.2%"
+    },
+    {
+      "rank": 16,
+      "team": "Cambodia",
+      "event": "Women's Team",
+      "gold": "0.0%",
+      "silver": "0.5%",
+      "bronze": "3.7%",
+      "podium": "4.2%"
+    }
+  ],
+  "mixed": [
+    {
+      "rank": 1,
+      "athlete": "UEMATSU Toshiki / TEMMA Rena",
+      "team": "Japan",
+      "event": "Mixed Doubles",
+      "gold": "40.8%",
+      "silver": "20.1%",
+      "bronze": "25.5%",
+      "podium": "86.4%"
+    },
+    {
+      "rank": 2,
+      "athlete": "YU Kai-wen / HUANG Shih-yuan",
+      "team": "Chinese Taipei",
+      "event": "Mixed Doubles",
+      "gold": "19.4%",
+      "silver": "21.7%",
+      "bronze": "26.9%",
+      "podium": "68.0%"
+    },
+    {
+      "rank": 3,
+      "athlete": "LIN Wei-chieh / CHIANG Min-yu",
+      "team": "Chinese Taipei",
+      "event": "Mixed Doubles",
+      "gold": "15.5%",
+      "silver": "15.0%",
+      "bronze": "40.1%",
+      "podium": "70.6%"
+    },
+    {
+      "rank": 4,
+      "athlete": "KIM Hyunsoo / LEE Sujin",
+      "team": "South Korea",
+      "event": "Mixed Doubles",
+      "gold": "13.1%",
+      "silver": "18.0%",
+      "bronze": "32.6%",
+      "podium": "63.7%"
+    },
+    {
+      "rank": 5,
+      "athlete": "PARK Jaekyu / KIM Yeon-hwa",
+      "team": "South Korea",
+      "event": "Mixed Doubles",
+      "gold": "5.0%",
+      "silver": "8.8%",
+      "bronze": "16.9%",
+      "podium": "30.7%"
+    },
+    {
+      "rank": 6,
+      "athlete": "MARUYAMA Kaito / MAEDA Rio",
+      "team": "Japan",
+      "event": "Mixed Doubles",
+      "gold": "4.4%",
+      "silver": "9.0%",
+      "bronze": "19.6%",
+      "podium": "33.0%"
+    },
+    {
+      "rank": 7,
+      "athlete": "TIWARI Aadhya / MEENA Jay",
+      "team": "India",
+      "event": "Mixed Doubles",
+      "gold": "0.9%",
+      "silver": "2.9%",
+      "bronze": "12.5%",
+      "podium": "16.4%"
+    },
+    {
+      "rank": 8,
+      "athlete": "SANGER Fernando / ARASY Siti Nur",
+      "team": "Indonesia",
+      "event": "Mixed Doubles",
+      "gold": "0.4%",
+      "silver": "1.6%",
+      "bronze": "7.3%",
+      "podium": "9.3%"
+    },
+    {
+      "rank": 9,
+      "athlete": "SANOSA Christy / NUGUIT Sherwin Ray",
+      "team": "Philippines",
+      "event": "Mixed Doubles",
+      "gold": "0.2%",
+      "silver": "1.3%",
+      "bronze": "5.7%",
+      "podium": "7.2%"
+    },
+    {
+      "rank": 10,
+      "athlete": "LALUYAN Rizky / NAFIIAH Allif",
+      "team": "Indonesia",
+      "event": "Mixed Doubles",
+      "gold": "0.1%",
+      "silver": "0.8%",
+      "bronze": "6.1%",
+      "podium": "7.0%"
+    },
+    {
+      "rank": 11,
+      "athlete": "MANALAC Noelle / NUGUIT Samuel",
+      "team": "Philippines",
+      "event": "Mixed Doubles",
+      "gold": "0.1%",
+      "silver": "0.6%",
+      "bronze": "5.4%",
+      "podium": "6.1%"
+    },
+    {
+      "rank": 12,
+      "athlete": "KAN Sophorn / YEAN Sokhoeun",
+      "team": "Cambodia",
+      "event": "Mixed Doubles",
+      "gold": "0.0%",
+      "silver": "0.0%",
+      "bronze": "0.4%",
+      "podium": "0.4%"
+    },
+    {
+      "rank": 13,
+      "athlete": "CHAO Viva / KHUN Chanroseka",
+      "team": "Cambodia",
+      "event": "Mixed Doubles",
+      "gold": "0.0%",
+      "silver": "0.0%",
+      "bronze": "0.3%",
+      "podium": "0.3%"
+    },
+    {
+      "rank": 14,
+      "athlete": "KHURELBAYAR Khaliunbayar / GANBOLD Khongorzul",
+      "team": "Mongolia",
+      "event": "Mixed Doubles",
+      "gold": "0.0%",
+      "silver": "0.0%",
+      "bronze": "0.5%",
+      "podium": "0.6%"
+    },
+    {
+      "rank": 15,
+      "athlete": "NYAMDORJ Bud / GANBAATAR Enkhkhuslen",
+      "team": "Mongolia",
+      "event": "Mixed Doubles",
+      "gold": "0.0%",
+      "silver": "0.0%",
+      "bronze": "0.1%",
+      "podium": "0.1%"
+    },
+    {
+      "rank": 16,
+      "athlete": "KHAN Sabrina / BASHIR Rafae",
+      "team": "Pakistan",
+      "event": "Mixed Doubles",
+      "gold": "0.0%",
+      "silver": "0.0%",
+      "bronze": "0.0%",
+      "podium": "0.0%"
+    },
+    {
+      "rank": 17,
+      "athlete": "HACNOLATH Souvananh / SIMMALAVONG Sataporn",
+      "team": "Laos",
+      "event": "Mixed Doubles",
+      "gold": "0.0%",
+      "silver": "0.0%",
+      "bronze": "0.1%",
+      "podium": "0.1%"
+    },
+    {
+      "rank": 18,
+      "athlete": "ARAIN Hamza / SHALLWANI Kainaat",
+      "team": "Pakistan",
+      "event": "Mixed Doubles",
+      "gold": "0.0%",
+      "silver": "0.0%",
+      "bronze": "0.0%",
+      "podium": "0.0%"
+    },
+    {
+      "rank": 19,
+      "athlete": "BHANDARI Kamal / CHAUDHARY Georgia",
+      "team": "Nepal",
+      "event": "Mixed Doubles",
+      "gold": "0.0%",
+      "silver": "0.0%",
+      "bronze": "0.0%",
+      "podium": "0.0%"
+    }
+  ],
   "events": [
     {
       "id": "tst_men_singles",
-      "name": "Men's Singles",
-      "gender": "men"
+      "event": "Men's Singles",
+      "shortName": "Men's Singles",
+      "gender": "men",
+      "type": "individual",
+      "icon": "🎾",
+      "rankings": [
+        {
+          "rank": 1,
+          "athlete": "UEMATSU Toshiki",
+          "team": "Japan",
+          "gold": "52.7%",
+          "silver": "19.1%",
+          "bronze": "18.7%",
+          "podium": "90.4%"
+        },
+        {
+          "rank": 2,
+          "athlete": "CHANG Yu-sung",
+          "team": "Chinese Taipei",
+          "gold": "17.7%",
+          "silver": "26.4%",
+          "bronze": "7.8%",
+          "podium": "51.9%"
+        },
+        {
+          "rank": 3,
+          "athlete": "KIM Jinwoong",
+          "team": "South Korea",
+          "gold": "9.2%",
+          "silver": "14.7%",
+          "bronze": "4.8%",
+          "podium": "28.7%"
+        },
+        {
+          "rank": 4,
+          "athlete": "KUROSAKA Takuya",
+          "team": "Japan",
+          "gold": "5.9%",
+          "silver": "10.1%",
+          "bronze": "3.3%",
+          "podium": "19.3%"
+        },
+        {
+          "rank": 5,
+          "athlete": "CHEN Po-yi",
+          "team": "Chinese Taipei",
+          "gold": "5.6%",
+          "silver": "6.6%",
+          "bronze": "35.0%",
+          "podium": "47.2%"
+        },
+        {
+          "rank": 6,
+          "athlete": "LEE Haneul",
+          "team": "South Korea",
+          "gold": "5.4%",
+          "silver": "6.1%",
+          "bronze": "30.7%",
+          "podium": "42.2%"
+        },
+        {
+          "rank": 7,
+          "athlete": "MEENA Jay",
+          "team": "India",
+          "gold": "1.8%",
+          "silver": "9.4%",
+          "bronze": "48.0%",
+          "podium": "59.3%"
+        },
+        {
+          "rank": 8,
+          "athlete": "HUTAURUK Tio",
+          "team": "Indonesia",
+          "gold": "1.0%",
+          "silver": "2.2%",
+          "bronze": "6.0%",
+          "podium": "9.2%"
+        },
+        {
+          "rank": 9,
+          "athlete": "ARCILLA Joseph",
+          "team": "Philippines",
+          "gold": "0.3%",
+          "silver": "0.9%",
+          "bronze": "7.7%",
+          "podium": "8.9%"
+        },
+        {
+          "rank": 10,
+          "athlete": "FALEVI Muhammad",
+          "team": "Indonesia",
+          "gold": "0.3%",
+          "silver": "2.7%",
+          "bronze": "21.4%",
+          "podium": "24.3%"
+        },
+        {
+          "rank": 11,
+          "athlete": "NUGUIT Sherwin",
+          "team": "Philippines",
+          "gold": "0.1%",
+          "silver": "1.6%",
+          "bronze": "13.2%",
+          "podium": "15.0%"
+        },
+        {
+          "rank": 12,
+          "athlete": "THAKUR Aryan",
+          "team": "India",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "1.5%",
+          "podium": "1.6%"
+        },
+        {
+          "rank": 13,
+          "athlete": "DOEUM Samsocheaphearun",
+          "team": "Cambodia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.4%",
+          "podium": "0.4%"
+        },
+        {
+          "rank": 14,
+          "athlete": "ARAIN Hussain",
+          "team": "Pakistan",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "1.0%",
+          "podium": "1.0%"
+        },
+        {
+          "rank": 15,
+          "athlete": "VONGPHAKDY Bekki",
+          "team": "Laos",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.4%",
+          "podium": "0.4%"
+        },
+        {
+          "rank": 16,
+          "athlete": "YI Keavirak",
+          "team": "Cambodia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        },
+        {
+          "rank": 17,
+          "athlete": "ALTANGEREL Bold-erdene",
+          "team": "Mongolia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.1%",
+          "podium": "0.1%"
+        },
+        {
+          "rank": 18,
+          "athlete": "LOUANGSISOMBATH Phatthana",
+          "team": "Laos",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.1%",
+          "podium": "0.1%"
+        },
+        {
+          "rank": 19,
+          "athlete": "ALI Muhammad",
+          "team": "Pakistan",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        },
+        {
+          "rank": 20,
+          "athlete": "KHATRI Pradip",
+          "team": "Nepal",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        },
+        {
+          "rank": 21,
+          "athlete": "BHANDARI Kamal",
+          "team": "Nepal",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        },
+        {
+          "rank": 22,
+          "athlete": "BATAA Munkhtulga",
+          "team": "Mongolia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        }
+      ]
     },
     {
       "id": "tst_men_team",
-      "name": "Men's Team",
-      "gender": "men"
+      "event": "Men's Team",
+      "shortName": "Men's Team",
+      "gender": "men",
+      "type": "team",
+      "icon": "🎾",
+      "rankings": [
+        {
+          "rank": 1,
+          "team": "Japan",
+          "gold": "52.0%",
+          "silver": "26.5%",
+          "bronze": "17.9%",
+          "podium": "96.4%"
+        },
+        {
+          "rank": 2,
+          "team": "Chinese Taipei",
+          "gold": "22.2%",
+          "silver": "30.1%",
+          "bronze": "44.5%",
+          "podium": "96.8%"
+        },
+        {
+          "rank": 3,
+          "team": "South Korea",
+          "gold": "21.5%",
+          "silver": "22.8%",
+          "bronze": "36.8%",
+          "podium": "81.1%"
+        },
+        {
+          "rank": 4,
+          "team": "Indonesia",
+          "gold": "2.5%",
+          "silver": "9.5%",
+          "bronze": "50.1%",
+          "podium": "62.0%"
+        },
+        {
+          "rank": 5,
+          "team": "Philippines",
+          "gold": "1.3%",
+          "silver": "7.1%",
+          "bronze": "17.5%",
+          "podium": "26.0%"
+        },
+        {
+          "rank": 6,
+          "team": "India",
+          "gold": "0.4%",
+          "silver": "3.5%",
+          "bronze": "27.4%",
+          "podium": "31.3%"
+        },
+        {
+          "rank": 7,
+          "team": "Cambodia",
+          "gold": "0.0%",
+          "silver": "0.4%",
+          "bronze": "2.2%",
+          "podium": "2.6%"
+        },
+        {
+          "rank": 8,
+          "team": "Mongolia",
+          "gold": "0.0%",
+          "silver": "0.1%",
+          "bronze": "2.6%",
+          "podium": "2.8%"
+        },
+        {
+          "rank": 9,
+          "team": "Laos",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.6%",
+          "podium": "0.7%"
+        },
+        {
+          "rank": 10,
+          "team": "Nepal",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.4%",
+          "podium": "0.4%"
+        },
+        {
+          "rank": 11,
+          "team": "Pakistan",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.1%",
+          "podium": "0.1%"
+        }
+      ]
     },
     {
       "id": "tst_women_singles",
-      "name": "Women's Singles",
-      "gender": "women"
+      "event": "Women's Singles",
+      "shortName": "Women's Singles",
+      "gender": "women",
+      "type": "individual",
+      "icon": "🎾",
+      "rankings": [
+        {
+          "rank": 1,
+          "athlete": "TEMMA Rena",
+          "team": "Japan",
+          "gold": "34.5%",
+          "silver": "19.3%",
+          "bronze": "9.5%",
+          "podium": "63.3%"
+        },
+        {
+          "rank": 2,
+          "athlete": "CHIANG Min-yu",
+          "team": "Chinese Taipei",
+          "gold": "19.7%",
+          "silver": "17.4%",
+          "bronze": "21.7%",
+          "podium": "58.8%"
+        },
+        {
+          "rank": 3,
+          "athlete": "HWANG Jeongmi",
+          "team": "South Korea",
+          "gold": "14.4%",
+          "silver": "16.6%",
+          "bronze": "33.1%",
+          "podium": "64.0%"
+        },
+        {
+          "rank": 4,
+          "athlete": "LEE Sujin",
+          "team": "South Korea",
+          "gold": "11.2%",
+          "silver": "9.4%",
+          "bronze": "5.7%",
+          "podium": "26.3%"
+        },
+        {
+          "rank": 5,
+          "athlete": "MIYAMAE Kiho",
+          "team": "Japan",
+          "gold": "8.7%",
+          "silver": "11.0%",
+          "bronze": "16.9%",
+          "podium": "36.6%"
+        },
+        {
+          "rank": 6,
+          "athlete": "RI So Hyang",
+          "team": "North Korea",
+          "gold": "3.7%",
+          "silver": "8.1%",
+          "bronze": "36.9%",
+          "podium": "48.8%"
+        },
+        {
+          "rank": 7,
+          "athlete": "RI Jin Mi",
+          "team": "North Korea",
+          "gold": "3.5%",
+          "silver": "7.7%",
+          "bronze": "22.9%",
+          "podium": "34.1%"
+        },
+        {
+          "rank": 8,
+          "athlete": "HUANG Shih-yuan",
+          "team": "Chinese Taipei",
+          "gold": "3.0%",
+          "silver": "4.2%",
+          "bronze": "3.0%",
+          "podium": "10.2%"
+        },
+        {
+          "rank": 9,
+          "athlete": "CATINDIG Princess",
+          "team": "Philippines",
+          "gold": "0.7%",
+          "silver": "2.1%",
+          "bronze": "13.9%",
+          "podium": "16.7%"
+        },
+        {
+          "rank": 10,
+          "athlete": "TIWARI Aadhya",
+          "team": "India",
+          "gold": "0.4%",
+          "silver": "2.4%",
+          "bronze": "21.1%",
+          "podium": "23.9%"
+        },
+        {
+          "rank": 11,
+          "athlete": "SANOSA Christy",
+          "team": "Philippines",
+          "gold": "0.1%",
+          "silver": "0.6%",
+          "bronze": "2.2%",
+          "podium": "2.9%"
+        },
+        {
+          "rank": 12,
+          "athlete": "NAFIIAH Allif",
+          "team": "Indonesia",
+          "gold": "0.1%",
+          "silver": "0.4%",
+          "bronze": "3.7%",
+          "podium": "4.1%"
+        },
+        {
+          "rank": 13,
+          "athlete": "ZIEGLER Alisha",
+          "team": "Thailand",
+          "gold": "0.0%",
+          "silver": "0.4%",
+          "bronze": "6.0%",
+          "podium": "6.4%"
+        },
+        {
+          "rank": 14,
+          "athlete": "ARASY Siti",
+          "team": "Indonesia",
+          "gold": "0.0%",
+          "silver": "0.2%",
+          "bronze": "1.3%",
+          "podium": "1.6%"
+        },
+        {
+          "rank": 15,
+          "athlete": "KLOMKAMOL Chatcha",
+          "team": "Thailand",
+          "gold": "0.0%",
+          "silver": "0.1%",
+          "bronze": "1.2%",
+          "podium": "1.3%"
+        },
+        {
+          "rank": 16,
+          "athlete": "CHHAN Chheavhouy",
+          "team": "Cambodia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.2%",
+          "podium": "0.2%"
+        },
+        {
+          "rank": 17,
+          "athlete": "ERDEMBILEG Namuunkhuslen",
+          "team": "Mongolia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.1%",
+          "podium": "0.1%"
+        },
+        {
+          "rank": 18,
+          "athlete": "GANTUR Anu-ujin",
+          "team": "Mongolia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.5%",
+          "podium": "0.5%"
+        },
+        {
+          "rank": 19,
+          "athlete": "METH Mariyan",
+          "team": "Cambodia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        },
+        {
+          "rank": 20,
+          "athlete": "SHALLWANI Kainaat",
+          "team": "Pakistan",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.1%",
+          "podium": "0.1%"
+        },
+        {
+          "rank": 21,
+          "athlete": "HACNOLATH Souvananh",
+          "team": "Laos",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.1%",
+          "podium": "0.1%"
+        },
+        {
+          "rank": 22,
+          "athlete": "ZAIDI Eraj",
+          "team": "Pakistan",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        },
+        {
+          "rank": 23,
+          "athlete": "CHAUDHARY Georgia",
+          "team": "Nepal",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        }
+      ]
     },
     {
       "id": "tst_women_team",
-      "name": "Women's Team",
-      "gender": "women"
+      "event": "Women's Team",
+      "shortName": "Women's Team",
+      "gender": "women",
+      "type": "team",
+      "icon": "🎾",
+      "rankings": [
+        {
+          "rank": 1,
+          "team": "Japan",
+          "gold": "43.9%",
+          "silver": "32.6%",
+          "bronze": "21.5%",
+          "podium": "98.0%"
+        },
+        {
+          "rank": 2,
+          "team": "South Korea",
+          "gold": "38.1%",
+          "silver": "34.5%",
+          "bronze": "25.0%",
+          "podium": "97.5%"
+        },
+        {
+          "rank": 3,
+          "team": "Chinese Taipei",
+          "gold": "16.2%",
+          "silver": "22.1%",
+          "bronze": "58.2%",
+          "podium": "96.5%"
+        },
+        {
+          "rank": 4,
+          "team": "Philippines",
+          "gold": "1.3%",
+          "silver": "7.1%",
+          "bronze": "57.4%",
+          "podium": "65.8%"
+        },
+        {
+          "rank": 5,
+          "team": "Thailand",
+          "gold": "0.4%",
+          "silver": "3.0%",
+          "bronze": "29.8%",
+          "podium": "33.3%"
+        },
+        {
+          "rank": 6,
+          "team": "Cambodia",
+          "gold": "0.0%",
+          "silver": "0.5%",
+          "bronze": "3.7%",
+          "podium": "4.2%"
+        },
+        {
+          "rank": 7,
+          "team": "Mongolia",
+          "gold": "0.0%",
+          "silver": "0.1%",
+          "bronze": "4.2%",
+          "podium": "4.3%"
+        },
+        {
+          "rank": 8,
+          "team": "Pakistan",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.2%",
+          "podium": "0.2%"
+        }
+      ]
     },
     {
       "id": "tst_mixed_doubles",
-      "name": "Mixed Doubles",
-      "gender": "mixed"
+      "event": "Mixed Doubles",
+      "shortName": "Mixed Doubles",
+      "gender": "mixed",
+      "type": "individual",
+      "icon": "🎾",
+      "rankings": [
+        {
+          "rank": 1,
+          "athlete": "UEMATSU Toshiki / TEMMA Rena",
+          "team": "Japan",
+          "gold": "40.8%",
+          "silver": "20.1%",
+          "bronze": "25.5%",
+          "podium": "86.4%"
+        },
+        {
+          "rank": 2,
+          "athlete": "YU Kai-wen / HUANG Shih-yuan",
+          "team": "Chinese Taipei",
+          "gold": "19.4%",
+          "silver": "21.7%",
+          "bronze": "26.9%",
+          "podium": "68.0%"
+        },
+        {
+          "rank": 3,
+          "athlete": "LIN Wei-chieh / CHIANG Min-yu",
+          "team": "Chinese Taipei",
+          "gold": "15.5%",
+          "silver": "15.0%",
+          "bronze": "40.1%",
+          "podium": "70.6%"
+        },
+        {
+          "rank": 4,
+          "athlete": "KIM Hyunsoo / LEE Sujin",
+          "team": "South Korea",
+          "gold": "13.1%",
+          "silver": "18.0%",
+          "bronze": "32.6%",
+          "podium": "63.7%"
+        },
+        {
+          "rank": 5,
+          "athlete": "PARK Jaekyu / KIM Yeon-hwa",
+          "team": "South Korea",
+          "gold": "5.0%",
+          "silver": "8.8%",
+          "bronze": "16.9%",
+          "podium": "30.7%"
+        },
+        {
+          "rank": 6,
+          "athlete": "MARUYAMA Kaito / MAEDA Rio",
+          "team": "Japan",
+          "gold": "4.4%",
+          "silver": "9.0%",
+          "bronze": "19.6%",
+          "podium": "33.0%"
+        },
+        {
+          "rank": 7,
+          "athlete": "TIWARI Aadhya / MEENA Jay",
+          "team": "India",
+          "gold": "0.9%",
+          "silver": "2.9%",
+          "bronze": "12.5%",
+          "podium": "16.4%"
+        },
+        {
+          "rank": 8,
+          "athlete": "SANGER Fernando / ARASY Siti Nur",
+          "team": "Indonesia",
+          "gold": "0.4%",
+          "silver": "1.6%",
+          "bronze": "7.3%",
+          "podium": "9.3%"
+        },
+        {
+          "rank": 9,
+          "athlete": "SANOSA Christy / NUGUIT Sherwin Ray",
+          "team": "Philippines",
+          "gold": "0.2%",
+          "silver": "1.3%",
+          "bronze": "5.7%",
+          "podium": "7.2%"
+        },
+        {
+          "rank": 10,
+          "athlete": "LALUYAN Rizky / NAFIIAH Allif",
+          "team": "Indonesia",
+          "gold": "0.1%",
+          "silver": "0.8%",
+          "bronze": "6.1%",
+          "podium": "7.0%"
+        },
+        {
+          "rank": 11,
+          "athlete": "MANALAC Noelle / NUGUIT Samuel",
+          "team": "Philippines",
+          "gold": "0.1%",
+          "silver": "0.6%",
+          "bronze": "5.4%",
+          "podium": "6.1%"
+        },
+        {
+          "rank": 12,
+          "athlete": "KAN Sophorn / YEAN Sokhoeun",
+          "team": "Cambodia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.4%",
+          "podium": "0.4%"
+        },
+        {
+          "rank": 13,
+          "athlete": "CHAO Viva / KHUN Chanroseka",
+          "team": "Cambodia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.3%",
+          "podium": "0.3%"
+        },
+        {
+          "rank": 14,
+          "athlete": "KHURELBAYAR Khaliunbayar / GANBOLD Khongorzul",
+          "team": "Mongolia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.5%",
+          "podium": "0.6%"
+        },
+        {
+          "rank": 15,
+          "athlete": "NYAMDORJ Bud / GANBAATAR Enkhkhuslen",
+          "team": "Mongolia",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.1%",
+          "podium": "0.1%"
+        },
+        {
+          "rank": 16,
+          "athlete": "KHAN Sabrina / BASHIR Rafae",
+          "team": "Pakistan",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        },
+        {
+          "rank": 17,
+          "athlete": "HACNOLATH Souvananh / SIMMALAVONG Sataporn",
+          "team": "Laos",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.1%",
+          "podium": "0.1%"
+        },
+        {
+          "rank": 18,
+          "athlete": "ARAIN Hamza / SHALLWANI Kainaat",
+          "team": "Pakistan",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        },
+        {
+          "rank": 19,
+          "athlete": "BHANDARI Kamal / CHAUDHARY Georgia",
+          "team": "Nepal",
+          "gold": "0.0%",
+          "silver": "0.0%",
+          "bronze": "0.0%",
+          "podium": "0.0%"
+        }
+      ]
     }
-  ],
-  "men": [],
-  "women": [],
-  "mixed": []
+  ]
 }
