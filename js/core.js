@@ -2731,13 +2731,36 @@ function renderPentathlonCalibration(container, predictions, matches) {
   const finalistsCount = topQualifiers.length > 0 ? `${topQualifiers.length} / 18` : (hasFinished ? `${finishedSessions.length} Sessions` : '0 / 18');
   const upsetsCount = upsetEvents.length;
 
+  const curGender = (typeof currentGender !== 'undefined' ? currentGender : window.currentGender) || 'men';
+  const medalKpi = typeof extractSportMedalAnalytics === 'function' && window.appData
+    ? extractSportMedalAnalytics(
+        'modern_pentathlon',
+        window.appData.menMatches || [],
+        window.appData.womenMatches || [],
+        window.appData.menPredictions || [],
+        window.appData.womenPredictions || [],
+        window.appData.mixedMatches || [],
+        window.appData.mixedPredictions || [],
+        curGender
+      ).kpi
+    : null;
+  const medalAccDisplay = medalKpi && medalKpi.accuracyPct != null ? `${medalKpi.accuracyPct}%` : '--%';
+  const medalAccSub = medalKpi && medalKpi.decidedMedals > 0 
+    ? `${medalKpi.exactHits}/${medalKpi.decidedMedals} exact medals`
+    : (medalKpi ? `${medalKpi.decidedMedals}/${medalKpi.totalMedalsInSport} decided` : 'Medals');
+
   container.innerHTML = `
     <!-- Metric Cards -->
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
         <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Favorite Accuracy</div>
         <div style="font-size:1.6rem; font-weight:800; color:#38bdf8;">${accuracy}${accuracy !== '--' ? '%' : ''}</div>
         <div style="font-size:0.7rem; color:#94a3b8;">${correctFavorites}/${evaluatedSpots} favorites holding cut</div>
+      </div>
+      <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center; cursor:pointer;" onclick="setTab('predictions')">
+        <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Medal Accuracy</div>
+        <div style="font-size:1.6rem; font-weight:800; color:#facc15;">${medalAccDisplay}</div>
+        <div style="font-size:0.7rem; color:#38bdf8; text-decoration:underline;">${medalAccSub} →</div>
       </div>
       <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:1rem; text-align:center;">
         <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:0.25rem;">Finalists Decided</div>

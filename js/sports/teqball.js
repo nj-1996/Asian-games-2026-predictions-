@@ -1244,10 +1244,12 @@
       const predEvents = (window.appData && Array.isArray(window.appData.predictionEvents))
         ? window.appData.predictionEvents : [];
 
-      // Combine all finished matches from both files (deduplicated by ID)
+      // Combine all finished matches across men, women, and mixed (deduplicated by ID)
       const allMatchesRaw = [
         ...(window.appData?.menMatches || []),
-        ...(window.appData?.womenMatches || [])
+        ...(window.appData?.womenMatches || []),
+        ...(window.appData?.mixedMatches || []),
+        ...(Array.isArray(matches) ? matches : [])
       ];
       const seenIds = new Set();
       const allMatches = [];
@@ -1320,7 +1322,12 @@
           const favRank = Math.min(r1, r2);
           const dogRank = Math.max(r1, r2);
 
-          const wClean = clean(m.winner);
+          let rawWinner = m.winner || '';
+          if (rawWinner.includes('(')) {
+            const match = rawWinner.match(/\(([^)]+)\)/);
+            if (match && match[1]) rawWinner = match[1];
+          }
+          const wClean = clean(rawWinner);
           const isT1Winner = wClean === t1Clean || clean(m.winner) === clean(m.t1);
           const isT2Winner = wClean === t2Clean || clean(m.winner) === clean(m.t2);
 
