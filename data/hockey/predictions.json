@@ -1,7 +1,7 @@
 {
   "sport": "Hockey",
   "simulation_model": "Monte Carlo FIH Elo (50,000 Runs)",
-  "weighting": "FIH World Rankings + 2023 Asian Games + 2024 Paris Olympics + Asian Champions Trophy",
+  "weighting": "FIH World Rankings + 2025 Asia Cup (Rajgir/Hangzhou) + Paris 2024 + 2023 Asian Games",
   "home_pitch_boost": "+0.45 goals (Japan)",
   "events": [
     {
@@ -19,82 +19,82 @@
     {
       "rank": 1,
       "team": "India",
-      "gold": "45.2%",
-      "silver": "25.4%",
+      "gold": "48.8%",
+      "silver": "24.5%",
       "bronze": "16.1%",
-      "podium": "86.7%"
+      "podium": "89.4%"
     },
     {
       "rank": 2,
-      "team": "Japan (Host)",
-      "gold": "21.8%",
-      "silver": "24.6%",
-      "bronze": "24.2%",
-      "podium": "70.6%"
+      "team": "Korea",
+      "gold": "19.8%",
+      "silver": "26.4%",
+      "bronze": "27.0%",
+      "podium": "73.2%"
     },
     {
       "rank": 3,
-      "team": "Korea",
-      "gold": "15.4%",
-      "silver": "21.3%",
-      "bronze": "23.8%",
-      "podium": "60.5%"
+      "team": "Japan (Host)",
+      "gold": "16.5%",
+      "silver": "23.8%",
+      "bronze": "25.5%",
+      "podium": "65.8%"
     },
     {
       "rank": 4,
       "team": "Malaysia",
-      "gold": "9.8%",
-      "silver": "14.5%",
-      "bronze": "18.7%",
-      "podium": "43.0%"
+      "gold": "8.2%",
+      "silver": "13.5%",
+      "bronze": "24.2%",
+      "podium": "45.9%"
     },
     {
       "rank": 5,
       "team": "Pakistan",
-      "gold": "5.4%",
-      "silver": "8.5%",
-      "bronze": "10.8%",
-      "podium": "24.7%"
+      "gold": "4.5%",
+      "silver": "7.2%",
+      "bronze": "10.7%",
+      "podium": "22.4%"
     },
     {
       "rank": 6,
       "team": "China",
-      "gold": "1.8%",
-      "silver": "4.2%",
-      "bronze": "4.9%",
-      "podium": "10.9%"
+      "gold": "2.0%",
+      "silver": "4.1%",
+      "bronze": "7.7%",
+      "podium": "13.8%"
     },
     {
       "rank": 7,
       "team": "Oman",
-      "gold": "0.3%",
-      "silver": "0.7%",
-      "bronze": "0.8%",
-      "podium": "1.8%"
+      "gold": "0.1%",
+      "silver": "0.3%",
+      "bronze": "0.6%",
+      "podium": "1.0%"
     },
     {
       "rank": 8,
       "team": "Bangladesh",
-      "gold": "0.2%",
-      "silver": "0.5%",
-      "bronze": "0.5%",
-      "podium": "1.2%"
+      "gold": "0.1%",
+      "silver": "0.2%",
+      "bronze": "0.4%",
+      "podium": "0.7%"
     },
     {
       "rank": 9,
       "team": "Indonesia",
-      "gold": "0.1%",
-      "silver": "0.1%",
+      "gold": "0.0%",
+      "silver": "0.0%",
       "bronze": "0.1%",
-      "podium": "0.3%"
+      "podium": "0.1%"
     },
     {
       "rank": 10,
       "team": "Thailand",
       "gold": "0.0%",
-      "silver": "0.1%",
+      "silver": "0.0%",
       "bronze": "0.1%",
-      "podium": "0.2%"
+      "podium": "0.1%"
     },
     {
       "rank": 11,
@@ -117,66 +117,66 @@
     {
       "rank": 1,
       "team": "China",
-      "gold": "41.6%",
-      "silver": "25.8%",
-      "bronze": "17.4%",
-      "podium": "84.8%"
+      "gold": "46.8%",
+      "silver": "24.2%",
+      "bronze": "17.2%",
+      "podium": "88.2%"
     },
     {
       "rank": 2,
       "team": "India",
-      "gold": "27.5%",
-      "silver": "26.8%",
-      "bronze": "22.1%",
-      "podium": "76.4%"
+      "gold": "26.4%",
+      "silver": "29.2%",
+      "bronze": "22.9%",
+      "podium": "78.5%"
     },
     {
       "rank": 3,
       "team": "Japan (Host)",
-      "gold": "18.8%",
-      "silver": "24.5%",
-      "bronze": "26.2%",
-      "podium": "69.5%"
+      "gold": "17.2%",
+      "silver": "25.6%",
+      "bronze": "28.4%",
+      "podium": "71.2%"
     },
     {
       "rank": 4,
       "team": "Korea",
-      "gold": "9.4%",
-      "silver": "16.1%",
-      "bronze": "23.4%",
-      "podium": "48.9%"
+      "gold": "7.2%",
+      "silver": "13.8%",
+      "bronze": "23.5%",
+      "podium": "44.5%"
     },
     {
       "rank": 5,
       "team": "Malaysia",
-      "gold": "1.8%",
-      "silver": "4.2%",
-      "bronze": "6.5%",
-      "podium": "12.5%"
+      "gold": "1.6%",
+      "silver": "4.5%",
+      "bronze": "7.2%",
+      "podium": "13.3%"
     },
     {
       "rank": 6,
       "team": "Thailand",
       "gold": "0.5%",
-      "silver": "1.3%",
-      "bronze": "2.4%",
-      "podium": "4.2%"
+      "silver": "1.5%",
+      "bronze": "2.6%",
+      "podium": "4.6%"
     },
     {
       "rank": 7,
       "team": "Singapore",
-      "gold": "0.2%",
+      "gold": "0.1%",
       "silver": "0.5%",
       "bronze": "0.8%",
-      "podium": "1.5%"
+      "podium": "1.4%"
     },
     {
       "rank": 8,
       "team": "Chinese Taipei",
       "gold": "0.1%",
       "silver": "0.4%",
-      "bronze": "0.6%",
-      "podium": "1.1%"
+      "bronze": "0.5%",
+      "podium": "1.0%"
     },
     {
       "rank": 9,
@@ -198,9 +198,9 @@
       "rank": 11,
       "team": "Indonesia",
       "gold": "0.0%",
-      "silver": "0.1%",
+      "silver": "0.0%",
       "bronze": "0.1%",
-      "podium": "0.2%"
+      "podium": "0.1%"
     },
     {
       "rank": 12,
