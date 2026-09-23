@@ -38,6 +38,8 @@ jobs:
           python scripts/sync_volleyball.py
           python scripts/sync_modern_pentathlon.py
           python scripts/sync_cricket.py
+          python scripts/sync_teqball.py
+          python scripts/sync_hockey.py
 
       # Step 5: Check in modified JSON files if scores changed
       - name: Commit and push updates

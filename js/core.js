@@ -1163,6 +1163,7 @@ function renderScheduleAndHero(matches) {
     let upcomingLabel = '⏳ NEXT MATCH';
     if (activeSport === 'football') upcomingLabel = '⏳ NEXT KICK-OFF';
     else if (activeSport === 'basketball') upcomingLabel = '⏳ NEXT TIP-OFF';
+    else if (activeSport === 'hockey') upcomingLabel = '⏳ NEXT PUSH-BACK';
 
     let badgeText = upcomingLabel;
     let badgeBg = 'rgba(59,130,246,0.2)';
