@@ -42,8 +42,19 @@
     const athlete1 = m.athlete1 || (m.player1 && m.player1.includes('(') ? m.player1.replace(/\s*\([^)]*\)/g, '').trim() : '');
     const athlete2 = m.athlete2 || (m.player2 && m.player2.includes('(') ? m.player2.replace(/\s*\([^)]*\)/g, '').trim() : '');
 
-    const s1 = base.s1 || m.score1 || '-';
-    const s2 = base.s2 || m.score2 || '-';
+    let s1 = (m.score1 != null && m.score1 !== '') ? String(m.score1) : '';
+    let s2 = (m.score2 != null && m.score2 !== '') ? String(m.score2) : '';
+    if ((!s1 || !s2) && m.score && String(m.score).includes('-')) {
+      const parts = String(m.score).split('-').map(x => x.trim());
+      if (!s1 && parts[0] !== undefined) s1 = parts[0];
+      if (!s2 && parts[1] !== undefined) s2 = parts[1];
+    }
+    if (!s1) s1 = base.s1 || '-';
+    if (!s2) s2 = base.s2 || '-';
+
+    const rawRound = m.round || m.stage || '';
+    const rawStage = m.stage || m.round || '';
+    const isFinished = Boolean(base.isFinished || (m.status || '').toLowerCase().includes('finish') || (m.status || '').toLowerCase().includes('official') || (m.state || '').toLowerCase().includes('official'));
 
     return {
       ...m,
@@ -56,16 +67,19 @@
       athlete2,
       s1,
       s2,
+      rawRound,
+      rawStage,
+      round: rawRound || base.stage || 'Match',
+      stage: rawRound || base.stage || 'Match',
       winner: m.winner || base.winner || '',
       state: m.state || base.state || '',
       status: m.status || base.status || '',
-      stage: base.stage || m.round || m.stage || 'Match',
       date: base.date || m.date || '',
       time: base.time || m.time || '',
       event: m.event || '',
       phase: m.phase || '',
       court: m.court || '',
-      isFinished: base.isFinished || (m.status || '').toLowerCase().includes('finish') || (m.status || '').toLowerCase().includes('official')
+      isFinished
     };
   }
 
@@ -370,8 +384,19 @@
 
       const parsedMatches = matches.map(m => parseMatch(m));
       const rawEvents = Array.from(new Set(parsedMatches.map(m => m.event).filter(Boolean)));
-      if (!activeSoftTennisStandingsEvent || !rawEvents.includes(activeSoftTennisStandingsEvent)) {
-        activeSoftTennisStandingsEvent = activeSoftTennisEventFilter || rawEvents[0] || '';
+      const score = (ev) => {
+        const s = (ev || '').toLowerCase();
+        if (s.includes('singles')) return 1;
+        if (s.includes('team')) return 2;
+        if (s.includes('doubles')) return 3;
+        return 10;
+      };
+      const eventsList = rawEvents.sort((a, b) => score(a) - score(b) || a.localeCompare(b));
+
+      if (!activeSoftTennisStandingsEvent || !eventsList.includes(activeSoftTennisStandingsEvent)) {
+        activeSoftTennisStandingsEvent = (activeSoftTennisEventFilter && eventsList.includes(activeSoftTennisEventFilter))
+          ? activeSoftTennisEventFilter
+          : (eventsList[0] || '');
       }
 
       const eventMatches = parsedMatches.filter(m => m.event === activeSoftTennisStandingsEvent);
@@ -432,7 +457,7 @@
           <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
           <div class="event-selector-wrap">
             <select class="event-dropdown" onchange="window.setSoftTennisStandingsEvent(this.value)">
-              ${rawEvents.map(ev => `<option value="${escapeAttr(ev)}" ${activeSoftTennisStandingsEvent === ev ? 'selected' : ''}>${ev}</option>`).join('')}
+              ${eventsList.map(ev => `<option value="${escapeAttr(ev)}" ${activeSoftTennisStandingsEvent === ev ? 'selected' : ''}>${ev}</option>`).join('')}
             </select>
           </div>
         </div>
@@ -522,33 +547,59 @@
 
       const parsedMatches = matches.map(m => parseMatch(m));
       const rawEvents = Array.from(new Set(parsedMatches.map(m => m.event).filter(Boolean)));
-      if (!activeSoftTennisBracketEvent || !rawEvents.includes(activeSoftTennisBracketEvent)) {
-        activeSoftTennisBracketEvent = activeSoftTennisEventFilter || rawEvents[0] || '';
+      const score = (ev) => {
+        const s = (ev || '').toLowerCase();
+        if (s.includes('singles')) return 1;
+        if (s.includes('team')) return 2;
+        if (s.includes('doubles')) return 3;
+        return 10;
+      };
+      const eventsList = rawEvents.sort((a, b) => score(a) - score(b) || a.localeCompare(b));
+
+      if (!activeSoftTennisBracketEvent || !eventsList.includes(activeSoftTennisBracketEvent)) {
+        activeSoftTennisBracketEvent = (activeSoftTennisEventFilter && eventsList.includes(activeSoftTennisEventFilter))
+          ? activeSoftTennisEventFilter
+          : (eventsList[0] || '');
       }
 
       const eventMatches = parsedMatches.filter(m => m.event === activeSoftTennisBracketEvent);
-      const findRound = (pattern) => eventMatches.find(m => pattern.test(m.stage || m.round || ''));
+      const findRound = (pattern) => eventMatches.find(m =>
+        pattern.test(m.round || '') ||
+        pattern.test(m.stage || '') ||
+        pattern.test(m.match || '') ||
+        pattern.test(m.phase || '') ||
+        pattern.test(m.rawRound || '')
+      );
 
       const renderSlot = (title, match, fallback, medalType = null) => {
         const t1 = (match && match.t1 && match.t1 !== 'TBD') ? match.t1 : (fallback ? fallback.t1 : 'TBD');
         const t2 = (match && match.t2 && match.t2 !== 'TBD') ? match.t2 : (fallback ? fallback.t2 : 'TBD');
-        const ath1 = match ? match.athlete1 : (fallback ? (fallback.ath1 || '') : '');
-        const ath2 = match ? match.athlete2 : (fallback ? (fallback.ath2 || '') : '');
+        const ath1 = match ? (match.athlete1 || (match.player1 && match.player1.includes('(') ? match.player1.replace(/\s*\([^)]*\)/g, '').trim() : '')) : (fallback ? (fallback.ath1 || '') : '');
+        const ath2 = match ? (match.athlete2 || (match.player2 && match.player2.includes('(') ? match.player2.replace(/\s*\([^)]*\)/g, '').trim() : '')) : (fallback ? (fallback.ath2 || '') : '');
         const s1 = match ? (match.s1 != null && match.s1 !== '' ? match.s1 : '-') : '-';
         const s2 = match ? (match.s2 != null && match.s2 !== '' ? match.s2 : '-') : '-';
-        const isFin = match ? match.isFinished : false;
+        const isFin = match ? (match.isFinished || (match.status || '').toLowerCase().includes('finish') || (match.state || '').toLowerCase().includes('official')) : false;
 
         const cWinner = match && match.winner ? cleanTeamName(match.winner) : '';
-        const t1Win = cWinner ? (cWinner === cleanTeamName(t1) || (ath1 && cWinner === cleanTeamName(ath1)) || cleanTeamName(t1).includes(cWinner)) : (isFin && Number(s1) > Number(s2));
-        const t2Win = cWinner ? (cWinner === cleanTeamName(t2) || (ath2 && cWinner === cleanTeamName(ath2)) || cleanTeamName(t2).includes(cWinner)) : (isFin && Number(s2) > Number(s1));
-        const displayDateTime = match ? (formatMatchDateTime(match.date, match.time) || match.status || 'Scheduled') : 'Scheduled';
+        const t1Win = cWinner ? (cWinner === cleanTeamName(t1) || (ath1 && cWinner === cleanTeamName(ath1)) || cleanTeamName(t1).includes(cWinner) || (ath1 && cleanTeamName(ath1).includes(cWinner))) : (isFin && Number(s1) > Number(s2));
+        const t2Win = cWinner ? (cWinner === cleanTeamName(t2) || (ath2 && cWinner === cleanTeamName(ath2)) || cleanTeamName(t2).includes(cWinner) || (ath2 && cleanTeamName(ath2).includes(cWinner))) : (isFin && Number(s2) > Number(s1));
+
+        let badgeHtml = '';
+        if (isFin) {
+          badgeHtml = `<span style="font-size:0.62rem; font-weight:800; padding:1px 6px; border-radius:4px; background:rgba(74,222,128,0.18); color:#4ade80; border:1px solid rgba(74,222,128,0.35);">OFFICIAL</span>`;
+        } else if (match && ((match.status || '').toLowerCase().includes('live') || (match.state || '').toLowerCase().includes('running'))) {
+          badgeHtml = `<span style="font-size:0.62rem; font-weight:800; padding:1px 6px; border-radius:4px; background:rgba(239,68,68,0.22); color:#ef4444; border:1px solid rgba(239,68,68,0.4);">LIVE</span>`;
+        } else {
+          const dt = match ? (formatMatchDateTime(match.date, match.time) || match.status || 'Scheduled') : 'Scheduled';
+          badgeHtml = `<span>${dt}</span>`;
+        }
 
         return `
           <div class="bracket-match-card">
             <div class="bracket-match-header">
               <span>${title}</span>
               ${medalType ? `<span class="bracket-medal-badge medal-${medalType}">${medalType.toUpperCase()}</span>` : ''}
-              <span>${displayDateTime}</span>
+              ${badgeHtml}
             </div>
             <div class="bracket-team-row ${t1Win ? 'winner' : ''}">
               <div class="bracket-team-info">
@@ -598,7 +649,7 @@
           <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
           <div class="event-selector-wrap">
             <select class="event-dropdown" onchange="window.setSoftTennisBracketEvent(this.value)">
-              ${rawEvents.map(ev => `<option value="${escapeAttr(ev)}" ${activeSoftTennisBracketEvent === ev ? 'selected' : ''}>${ev}</option>`).join('')}
+              ${eventsList.map(ev => `<option value="${escapeAttr(ev)}" ${activeSoftTennisBracketEvent === ev ? 'selected' : ''}>${ev}</option>`).join('')}
             </select>
           </div>
         </div>
@@ -607,7 +658,7 @@
       const evName = activeSoftTennisBracketEvent || '';
       const evLower = evName.toLowerCase();
 
-      const finalMatch = findRound(/gold|final/i) || eventMatches.find(m => /final/i.test(m.stage || m.round || '') && !/semi|quarter|first/i.test(m.stage || m.round || ''));
+      const finalMatch = findRound(/gold|\bfinal\b/i) || eventMatches.find(m => /(?:gold\s*medal|\bfinal\b)/i.test(m.stage || m.round || m.match || '') && !/semi|quarter|first/i.test(m.stage || m.round || m.match || ''));
       const sf1 = findRound(/semifinal\s*1\b|sf\s*1\b/i);
       const sf2 = findRound(/semifinal\s*2\b|sf\s*2\b/i);
 
@@ -843,8 +894,8 @@
           .filter(m => clean(m.event) === targetClean);
 
         const finalMatch = matches.find(m => {
-          const r = (m.round || m.stage || '').toLowerCase();
-          return /\bfinal\b/i.test(r) && !/semi|quarter|bronze|repechage/i.test(r);
+          const r = (m.round || m.stage || m.match || '').toLowerCase();
+          return /(?:gold|\bfinal\b)/i.test(r) && !/semi|quarter|bronze|repechage/i.test(r);
         });
 
         let gold = null, silver = null, bronze = null;
