@@ -23,24 +23,29 @@
     const base = typeof parseMatchData === 'function' ? parseMatchData(m) : {};
 
     let country1 = m.team1 || m.team_1 || '';
-    if (!country1 && m.player1 && m.player1.includes('(')) {
-      const match = m.player1.match(/\(([^)]+)\)/);
-      if (match) country1 = match[1];
+    let athlete1 = m.athlete1 || '';
+    if (m.player1 && m.player1.includes('(')) {
+      const m1 = m.player1.match(/^(.*?)\s*\(([^)]+)\)/);
+      if (m1) {
+        if (!country1) country1 = m1[1].trim();
+        if (!athlete1) athlete1 = m1[2].trim();
+      }
     }
-    if (!country1) country1 = base.t1 || 'TBD';
+    if (!country1) country1 = m.player1 || base.t1 || 'TBD';
 
     let country2 = m.team2 || m.team_2 || '';
-    if (!country2 && m.player2 && m.player2.includes('(')) {
-      const match = m.player2.match(/\(([^)]+)\)/);
-      if (match) country2 = match[1];
+    let athlete2 = m.athlete2 || '';
+    if (m.player2 && m.player2.includes('(')) {
+      const m2 = m.player2.match(/^(.*?)\s*\(([^)]+)\)/);
+      if (m2) {
+        if (!country2) country2 = m2[1].trim();
+        if (!athlete2) athlete2 = m2[2].trim();
+      }
     }
-    if (!country2) country2 = base.t2 || 'TBD';
+    if (!country2) country2 = m.player2 || base.t2 || 'TBD';
 
     const t1 = typeof formatTeamDisplayName === 'function' ? formatTeamDisplayName(country1) : country1;
     const t2 = typeof formatTeamDisplayName === 'function' ? formatTeamDisplayName(country2) : country2;
-
-    const athlete1 = m.athlete1 || (m.player1 && m.player1.includes('(') ? m.player1.replace(/\s*\([^)]*\)/g, '').trim() : '');
-    const athlete2 = m.athlete2 || (m.player2 && m.player2.includes('(') ? m.player2.replace(/\s*\([^)]*\)/g, '').trim() : '');
 
     let s1 = (m.score1 != null && m.score1 !== '') ? String(m.score1) : '';
     let s2 = (m.score2 != null && m.score2 !== '') ? String(m.score2) : '';
@@ -481,6 +486,8 @@
       let qualifierNote = 'Group winner advances (Q)';
       if (isWomen && isTeam) {
         qualifierNote = 'Top 2 advance directly to Semifinals (Q)';
+      } else if (isDoubles) {
+        qualifierNote = 'Top 2 advance to First Round (12 teams qualify; 4 seeds get QF BYEs) (Q)';
       } else if (isTeamOrMixed) {
         qualifierNote = 'Top 2 advance to Knockout Stage (Q)';
       } else if (!isWomen && isSingles) {
@@ -776,35 +783,35 @@
         const qf3 = findRound(/quarterfinal\s*3\b|qf\s*3\b/i);
         const qf4 = findRound(/quarterfinal\s*4\b|qf\s*4\b/i);
 
-        footnotes.unshift("* In Mixed Doubles, the top 4 seeds received Round of 16 BYEs directly into the Quarterfinals.");
+        footnotes.unshift("* In Mixed Doubles, 12 teams qualified from the preliminary groups (top 2 from Groups A–F). The top 4 seeded group winners received direct BYEs into the Quarterfinals, while the remaining 8 teams competed in the First Round for the remaining 4 QF berths.");
 
         bracketRoundsHtml = `
           <div class="bracket-round">
-            <div class="bracket-round-header">Round of 16</div>
-            ${renderByeSlot('R16 M1 • Direct BYE', 'Japan', 'UEMATSU / TEMMA', 'Seed 1 (Direct to QF1)')}
-            ${renderSlot('R16 M2', r16_2, { t1: 'Nepal', t2: 'Indonesia' })}
-            ${renderByeSlot('R16 M4 • Direct BYE', 'Chinese Taipei', 'LIN / CHIANG', 'Seed (Direct to QF2)')}
-            ${renderSlot('R16 M3', r16_3, { t1: 'South Korea', t2: 'Philippines' })}
-            ${renderByeSlot('R16 M5 • Direct BYE', 'South Korea', 'KIM / LEE', 'Seed (Direct to QF3)')}
-            ${renderSlot('R16 M6', r16_6, { t1: 'Indonesia', t2: 'Japan' })}
-            ${renderByeSlot('R16 M8 • Direct BYE', 'Chinese Taipei', 'YU / HUANG', 'Seed (Direct to QF4)')}
-            ${renderSlot('R16 M7', r16_7, { t1: 'India', t2: 'Philippines' })}
+            <div class="bracket-round-header">First Round</div>
+            ${renderByeSlot('First Round Match 1 • Direct BYE', 'Japan', 'UEMATSU Toshiki / TEMMA Rena', 'Group A Winner • Seed 1 (Direct to QF1)')}
+            ${renderSlot('First Round Match 2', r16_2, { t1: 'Nepal', ath1: 'BHANDARI Kamal / CHAUDHARY Georgia', t2: 'Indonesia', ath2: 'SANGER Fernando / ARASY Siti Nur' })}
+            ${renderSlot('First Round Match 3', r16_3, { t1: 'South Korea', ath1: 'PARK Jaekyu / KIM Yeon-hwa', t2: 'Philippines', ath2: 'MANALAC Noelle / NUGUIT Samuel' })}
+            ${renderByeSlot('First Round Match 4 • Direct BYE', 'Chinese Taipei', 'LIN Wei-chieh / CHIANG Min-yu', 'Group C Winner • Seed (Direct to QF2)')}
+            ${renderByeSlot('First Round Match 5 • Direct BYE', 'South Korea', 'KIM Hyunsoo / LEE Sujin', 'Group D Winner • Seed (Direct to QF3)')}
+            ${renderSlot('First Round Match 6', r16_6, { t1: 'Indonesia', ath1: 'LALUYAN Rizky / NAFIIAH Allif', t2: 'Japan', ath2: 'MARUYAMA Kaito / MAEDA Rio' })}
+            ${renderSlot('First Round Match 7', r16_7, { t1: 'India', ath1: 'TIWARI Aadhya / MEENA Jay', t2: 'Philippines', ath2: 'SANOSA Christy / NUGUIT Sherwin Ray' })}
+            ${renderByeSlot('First Round Match 8 • Direct BYE', 'Chinese Taipei', 'YU Kai-wen / HUANG Shih-yuan', 'Group F Winner • Seed (Direct to QF4)')}
           </div>
           <div class="bracket-round">
             <div class="bracket-round-header">Quarterfinals</div>
-            ${renderSlot('QF 1', qf1, { t1: 'Japan', ath1: 'UEMATSU / TEMMA', t2: 'Indonesia', ath2: 'SANGER / ARASY' })}
-            ${renderSlot('QF 2', qf2, { t1: 'South Korea', ath1: 'PARK / KIM', t2: 'Chinese Taipei', ath2: 'LIN / CHIANG' })}
-            ${renderSlot('QF 3', qf3, { t1: 'South Korea', ath1: 'KIM / LEE', t2: 'Japan', ath2: 'MARUYAMA / MAEDA' })}
-            ${renderSlot('QF 4', qf4, { t1: 'Philippines', ath1: 'SANOSA / NUGUIT', t2: 'Chinese Taipei', ath2: 'YU / HUANG' })}
+            ${renderSlot('QF 1', qf1, { t1: 'Japan', ath1: 'UEMATSU Toshiki / TEMMA Rena', t2: 'Indonesia', ath2: 'SANGER Fernando / ARASY Siti Nur' })}
+            ${renderSlot('QF 2', qf2, { t1: 'South Korea', ath1: 'PARK Jaekyu / KIM Yeon-hwa', t2: 'Chinese Taipei', ath2: 'LIN Wei-chieh / CHIANG Min-yu' })}
+            ${renderSlot('QF 3', qf3, { t1: 'South Korea', ath1: 'KIM Hyunsoo / LEE Sujin', t2: 'Japan', ath2: 'MARUYAMA Kaito / MAEDA Rio' })}
+            ${renderSlot('QF 4', qf4, { t1: 'Philippines', ath1: 'SANOSA Christy / NUGUIT Sherwin Ray', t2: 'Chinese Taipei', ath2: 'YU Kai-wen / HUANG Shih-yuan' })}
           </div>
           <div class="bracket-round">
             <div class="bracket-round-header">Semifinals (Bronze)</div>
-            ${renderSlot('SF 1', sf1, { t1: 'Japan', ath1: 'UEMATSU / TEMMA', t2: 'South Korea', ath2: 'PARK / KIM' }, 'bronze')}
-            ${renderSlot('SF 2', sf2, { t1: 'Japan', ath1: 'MARUYAMA / MAEDA', t2: 'Chinese Taipei', ath2: 'YU / HUANG' }, 'bronze')}
+            ${renderSlot('SF 1', sf1, { t1: 'Japan', ath1: 'UEMATSU Toshiki / TEMMA Rena', t2: 'South Korea', ath2: 'PARK Jaekyu / KIM Yeon-hwa' }, 'bronze')}
+            ${renderSlot('SF 2', sf2, { t1: 'Japan', ath1: 'MARUYAMA Kaito / MAEDA Rio', t2: 'Chinese Taipei', ath2: 'YU Kai-wen / HUANG Shih-yuan' }, 'bronze')}
           </div>
           <div class="bracket-round">
             <div class="bracket-round-header">Gold Medal Match</div>
-            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', ath1: 'UEMATSU / TEMMA', t2: 'Chinese Taipei', ath2: 'YU / HUANG' }, 'gold')}
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', ath1: 'UEMATSU Toshiki / TEMMA Rena', t2: 'Chinese Taipei', ath2: 'YU Kai-wen / HUANG Shih-yuan' }, 'gold')}
           </div>
         `;
       } else {
