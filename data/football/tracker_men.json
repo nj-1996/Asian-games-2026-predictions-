@@ -212,25 +212,25 @@
     },
     {
       "round": "Group A",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-23",
       "time": "19:30",
       "player1": "Japan",
       "player2": "Thailand",
-      "score": "vs",
-      "winner": ""
+      "score": "3 - 0",
+      "winner": "Japan"
     },
     {
       "round": "Group A",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-23",
       "time": "19:30",
       "player1": "Kyrgyzstan",
       "player2": "Hong Kong, China",
-      "score": "vs",
-      "winner": ""
+      "score": "4 - 0",
+      "winner": "Kyrgyzstan"
     },
     {
       "round": "Men 1/4",
@@ -261,7 +261,7 @@
       "date": "2026-09-26",
       "time": "15:00",
       "player1": "China",
-      "player2": "TBD",
+      "player2": "Thailand",
       "score": "vs",
       "winner": ""
     },
@@ -271,7 +271,7 @@
       "state": "Scheduled",
       "date": "2026-09-26",
       "time": "19:30",
-      "player1": "TBD",
+      "player1": "Japan",
       "player2": "DPR Korea",
       "score": "vs",
       "winner": ""
