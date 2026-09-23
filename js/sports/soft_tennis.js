@@ -219,9 +219,9 @@
       if (activeSoftTennisPhaseFilter === 'groups') {
         filtered = filtered.filter(m => /group/i.test(m.stage || m.round || ''));
       } else if (activeSoftTennisPhaseFilter === 'knockout') {
-        filtered = filtered.filter(m => /quarter|semi/i.test(m.stage || m.round || ''));
+        filtered = filtered.filter(m => /first\s*round|round\s*of|quarter|semi|qf|sf/i.test(m.stage || m.round || ''));
       } else if (activeSoftTennisPhaseFilter === 'finals') {
-        filtered = filtered.filter(m => /gold|final|bronze/i.test(m.stage || m.round || ''));
+        filtered = filtered.filter(m => /gold|final/i.test(m.stage || m.round || '') && !/semi|quarter|first/i.test(m.stage || m.round || ''));
       }
 
       // Event Selector & Phase Filter Bar (Rendered FIRST)
@@ -445,6 +445,19 @@
         `;
       }
 
+      const evLower = (activeSoftTennisStandingsEvent || '').toLowerCase();
+      const isTeamOrMixed = evLower.includes('team') || evLower.includes('doubles');
+      const qualifyingCount = isTeamOrMixed ? 2 : 1;
+
+      let qualifierNote = 'Group winner advances (Q)';
+      if (evLower.includes("women's team")) {
+        qualifierNote = 'Top 2 advance directly to Semifinals (Q)';
+      } else if (isTeamOrMixed) {
+        qualifierNote = 'Top 2 advance to Knockout Stage (Q)';
+      } else if (evLower.includes("men's singles")) {
+        qualifierNote = 'Group winner advances (Group A winner receives QF BYE) (Q)';
+      }
+
       const tablesHtml = groupKeys.map(grpKey => {
         const teams = Object.values(groups[grpKey]).sort((a, b) => b.pts - a.pts || b.w - a.w || b.gd - a.gd || b.gw - a.gw);
 
@@ -452,7 +465,7 @@
           <div style="background:var(--card-bg, #1e293b); border:1px solid rgba(255,255,255,0.08); border-radius:10px; margin-bottom:1.25rem; overflow-x:auto;">
             <div style="padding:0.65rem 1rem; font-weight:700; font-size:0.85rem; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center;">
               <span>${grpKey}</span>
-              <span style="font-size:0.72rem; color:#94a3b8; font-weight:400;">Top qualifier advances (Q)</span>
+              <span style="font-size:0.72rem; color:#94a3b8; font-weight:400;">${qualifierNote}</span>
             </div>
             <table style="width:100%; border-collapse:collapse; font-size:0.82rem; text-align:center;">
               <thead>
@@ -469,7 +482,7 @@
               </thead>
               <tbody>
                 ${teams.map((t, idx) => {
-                  const isQ = idx === 0;
+                  const isQ = idx < qualifyingCount;
                   return `
                     <tr style="border-bottom:1px solid rgba(255,255,255,0.03); background:${isQ ? 'rgba(59,130,246,0.05)' : 'transparent'};">
                       <td style="padding:0.55rem 0.5rem; text-align:left; font-weight:${isQ ? '700' : '400'};">
@@ -514,26 +527,20 @@
       }
 
       const eventMatches = parsedMatches.filter(m => m.event === activeSoftTennisBracketEvent);
-      const getStage = (m) => String(m.stage || m.round || '').toLowerCase();
-
-      const qfMatches = eventMatches.filter(m => getStage(m).includes('quarter') || getStage(m).includes('qf'));
-      const sfMatches = eventMatches.filter(m => getStage(m).includes('semi') || getStage(m).includes('sf'));
-      const finalMatch = eventMatches.find(m => getStage(m).includes('gold') || (getStage(m).includes('final') && !getStage(m).includes('semi') && !getStage(m).includes('quarter') && !getStage(m).includes('bronze')));
-
-      const getGame = (list, num) => list.find(m => new RegExp(`match\\s*${num}|qf\\s*${num}|sf\\s*${num}`, 'i').test(m.stage || m.round)) || list[num - 1];
+      const findRound = (pattern) => eventMatches.find(m => pattern.test(m.stage || m.round || ''));
 
       const renderSlot = (title, match, fallback, medalType = null) => {
         const t1 = (match && match.t1 && match.t1 !== 'TBD') ? match.t1 : (fallback ? fallback.t1 : 'TBD');
         const t2 = (match && match.t2 && match.t2 !== 'TBD') ? match.t2 : (fallback ? fallback.t2 : 'TBD');
-        const ath1 = match ? match.athlete1 : '';
-        const ath2 = match ? match.athlete2 : '';
-        const s1 = match ? (match.s1 != null ? match.s1 : '-') : '-';
-        const s2 = match ? (match.s2 != null ? match.s2 : '-') : '-';
+        const ath1 = match ? match.athlete1 : (fallback ? (fallback.ath1 || '') : '');
+        const ath2 = match ? match.athlete2 : (fallback ? (fallback.ath2 || '') : '');
+        const s1 = match ? (match.s1 != null && match.s1 !== '' ? match.s1 : '-') : '-';
+        const s2 = match ? (match.s2 != null && match.s2 !== '' ? match.s2 : '-') : '-';
         const isFin = match ? match.isFinished : false;
 
         const cWinner = match && match.winner ? cleanTeamName(match.winner) : '';
-        const t1Win = cWinner ? cWinner === cleanTeamName(t1) : (isFin && Number(s1) > Number(s2));
-        const t2Win = cWinner ? cWinner === cleanTeamName(t2) : (isFin && Number(s2) > Number(s1));
+        const t1Win = cWinner ? (cWinner === cleanTeamName(t1) || (ath1 && cWinner === cleanTeamName(ath1)) || cleanTeamName(t1).includes(cWinner)) : (isFin && Number(s1) > Number(s2));
+        const t2Win = cWinner ? (cWinner === cleanTeamName(t2) || (ath2 && cWinner === cleanTeamName(ath2)) || cleanTeamName(t2).includes(cWinner)) : (isFin && Number(s2) > Number(s1));
         const displayDateTime = match ? (formatMatchDateTime(match.date, match.time) || match.status || 'Scheduled') : 'Scheduled';
 
         return `
@@ -561,6 +568,31 @@
         `;
       };
 
+      const renderByeSlot = (title, teamName, athleteName, note) => {
+        return `
+          <div class="bracket-match-card" style="border:1px dashed rgba(56,189,248,0.35); background:rgba(56,189,248,0.04);">
+            <div class="bracket-match-header">
+              <span>${title}</span>
+              <span style="font-size:0.62rem; font-weight:800; padding:1px 6px; border-radius:4px; background:rgba(56,189,248,0.2); color:#38bdf8;">BYE</span>
+            </div>
+            <div class="bracket-team-row winner">
+              <div class="bracket-team-info">
+                <span>${getFlagEmoji(teamName)}</span>
+                <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${teamName} ${athleteName ? `<small style="color:#94a3b8; font-size:0.68rem;">(${athleteName})</small>` : ''}</span>
+              </div>
+              <span class="bracket-score" style="font-size:0.65rem; color:#38bdf8; font-weight:700;">ADV</span>
+            </div>
+            <div class="bracket-team-row" style="opacity:0.4;">
+              <div class="bracket-team-info">
+                <span>—</span>
+                <span style="font-style:italic; font-size:0.75rem;">${note || 'Direct Bye'}</span>
+              </div>
+              <span class="bracket-score">—</span>
+            </div>
+          </div>
+        `;
+      };
+
       const eventPickerHtml = `
         <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; gap:8px;">
           <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
@@ -572,30 +604,181 @@
         </div>
       `;
 
+      const evName = activeSoftTennisBracketEvent || '';
+      const evLower = evName.toLowerCase();
+
+      const finalMatch = findRound(/gold|final/i) || eventMatches.find(m => /final/i.test(m.stage || m.round || '') && !/semi|quarter|first/i.test(m.stage || m.round || ''));
+      const sf1 = findRound(/semifinal\s*1\b|sf\s*1\b/i);
+      const sf2 = findRound(/semifinal\s*2\b|sf\s*2\b/i);
+
+      let bracketRoundsHtml = '';
+      let footnotes = ['* In Soft Tennis, both semifinal losers are awarded Bronze medals (no bronze playoff).'];
+
+      if (evLower.includes("men's singles")) {
+        const qf2 = findRound(/quarterfinal\s*2\b|qf\s*2\b/i);
+        const qf3 = findRound(/quarterfinal\s*3\b|qf\s*3\b/i);
+        const qf4 = findRound(/quarterfinal\s*4\b|qf\s*4\b/i);
+
+        footnotes.unshift("* In Men's Singles, Japan's Toshiki Uematsu (Group A Winner / #1 Seed) received a direct BYE in QF 1 into Semifinal 1.");
+
+        bracketRoundsHtml = `
+          <div class="bracket-round">
+            <div class="bracket-round-header">Quarterfinals</div>
+            ${renderByeSlot('QF 1 • Direct BYE', 'Japan', 'UEMATSU Toshiki', 'Seed 1 (Direct to SF1)')}
+            ${renderSlot('QF 2', qf2, { t1: 'South Korea', ath1: 'LEE Haneul', t2: 'Chinese Taipei', ath2: 'CHEN Po-yi' })}
+            ${renderSlot('QF 3', qf3, { t1: 'India', ath1: 'MEENA Jay', t2: 'Philippines', ath2: 'NUGUIT Sherwin' })}
+            ${renderSlot('QF 4', qf4, { t1: 'Japan', ath1: 'KUROSAKA Takuya', t2: 'Chinese Taipei', ath2: 'CHANG Yu-sung' })}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Semifinals (Bronze)</div>
+            ${renderSlot('SF 1', sf1, { t1: 'Japan', ath1: 'UEMATSU Toshiki', t2: 'Chinese Taipei', ath2: 'CHEN Po-yi' }, 'bronze')}
+            ${renderSlot('SF 2', sf2, { t1: 'India', ath1: 'MEENA Jay', t2: 'Japan', ath2: 'KUROSAKA Takuya' }, 'bronze')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Gold Medal Match</div>
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Winner SF 1', t2: 'Winner SF 2' }, 'gold')}
+          </div>
+        `;
+      } else if (evLower.includes("men's team")) {
+        const qf2 = findRound(/quarterfinal\s*2\b|qf\s*2\b/i);
+        const qf3 = findRound(/quarterfinal\s*3\b|qf\s*3\b/i);
+
+        footnotes.unshift("* In Men's Team, group winners Japan (Group A) and Chinese Taipei (Group C) received direct BYEs into the Semifinals.");
+
+        bracketRoundsHtml = `
+          <div class="bracket-round">
+            <div class="bracket-round-header">Quarterfinals</div>
+            ${renderByeSlot('QF 1 • Direct BYE', 'Japan', '', 'Group A Winner (Direct to SF1)')}
+            ${renderSlot('QF 2', qf2, { t1: 'India', t2: 'Indonesia' })}
+            ${renderSlot('QF 3', qf3, { t1: 'South Korea', t2: 'Philippines' })}
+            ${renderByeSlot('QF 4 • Direct BYE', 'Chinese Taipei', '', 'Group C Winner (Direct to SF2)')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Semifinals (Bronze)</div>
+            ${renderSlot('SF 1', sf1, { t1: 'Japan', t2: 'Indonesia' }, 'bronze')}
+            ${renderSlot('SF 2', sf2, { t1: 'Chinese Taipei', t2: 'South Korea' }, 'bronze')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Gold Medal Match</div>
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', t2: 'Chinese Taipei' }, 'gold')}
+          </div>
+        `;
+      } else if (evLower.includes("women's team")) {
+        footnotes.unshift("* In Women's Team, the top 2 teams from Group A and Group B advanced directly to the Semifinals (no Quarterfinals).");
+
+        bracketRoundsHtml = `
+          <div class="bracket-round">
+            <div class="bracket-round-header">Semifinals (Bronze)</div>
+            ${renderSlot('SF 1 (A1 vs B2)', sf1, { t1: 'Japan', t2: 'Philippines' }, 'bronze')}
+            ${renderSlot('SF 2 (B1 vs A2)', sf2, { t1: 'Chinese Taipei', t2: 'South Korea' }, 'bronze')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Gold Medal Match</div>
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', t2: 'Chinese Taipei' }, 'gold')}
+          </div>
+        `;
+      } else if (evLower.includes("women's singles")) {
+        const qf1 = findRound(/quarterfinal\s*1\b|qf\s*1\b/i);
+        const qf2 = findRound(/quarterfinal\s*2\b|qf\s*2\b/i);
+        const qf3 = findRound(/quarterfinal\s*3\b|qf\s*3\b/i);
+        const qf4 = findRound(/quarterfinal\s*4\b|qf\s*4\b/i);
+
+        footnotes.unshift("* In Women's Singles, all 8 preliminary group winners advanced to the Quarterfinals (no BYEs).");
+
+        bracketRoundsHtml = `
+          <div class="bracket-round">
+            <div class="bracket-round-header">Quarterfinals</div>
+            ${renderSlot('QF 1', qf1, { t1: 'Japan', ath1: 'TEMMA Rena', t2: 'South Korea', ath2: 'LEE Sujin' })}
+            ${renderSlot('QF 2', qf2, { t1: 'North Korea', ath1: 'RI So Hyang', t2: 'Thailand', ath2: 'ZIEGLER Alisha' })}
+            ${renderSlot('QF 3', qf3, { t1: 'Chinese Taipei', ath1: 'CHIANG Min-yu', t2: 'Japan', ath2: 'MIYAMAE Kiho' })}
+            ${renderSlot('QF 4', qf4, { t1: 'North Korea', ath1: 'RI Jin Mi', t2: 'South Korea', ath2: 'HWANG Jeongmi' })}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Semifinals (Bronze)</div>
+            ${renderSlot('SF 1', sf1, { t1: 'Japan', ath1: 'TEMMA Rena', t2: 'North Korea', ath2: 'RI So Hyang' }, 'bronze')}
+            ${renderSlot('SF 2', sf2, { t1: 'Japan', ath1: 'MIYAMAE Kiho', t2: 'North Korea', ath2: 'RI Jin Mi' }, 'bronze')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Gold Medal Match</div>
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', ath1: 'TEMMA Rena', t2: 'North Korea', ath2: 'RI Jin Mi' }, 'gold')}
+          </div>
+        `;
+      } else if (evLower.includes("doubles")) {
+        // Mixed Doubles
+        const r16_2 = findRound(/first\s*round\s*match\s*2\b|r16\s*match\s*2\b/i);
+        const r16_3 = findRound(/first\s*round\s*match\s*3\b|r16\s*match\s*3\b/i);
+        const r16_6 = findRound(/first\s*round\s*match\s*6\b|r16\s*match\s*6\b/i);
+        const r16_7 = findRound(/first\s*round\s*match\s*7\b|r16\s*match\s*7\b/i);
+
+        const qf1 = findRound(/quarterfinal\s*1\b|qf\s*1\b/i);
+        const qf2 = findRound(/quarterfinal\s*2\b|qf\s*2\b/i);
+        const qf3 = findRound(/quarterfinal\s*3\b|qf\s*3\b/i);
+        const qf4 = findRound(/quarterfinal\s*4\b|qf\s*4\b/i);
+
+        footnotes.unshift("* In Mixed Doubles, the top 4 seeds received Round of 16 BYEs directly into the Quarterfinals.");
+
+        bracketRoundsHtml = `
+          <div class="bracket-round">
+            <div class="bracket-round-header">Round of 16</div>
+            ${renderByeSlot('R16 M1 • Direct BYE', 'Japan', 'UEMATSU / TEMMA', 'Seed 1 (Direct to QF1)')}
+            ${renderSlot('R16 M2', r16_2, { t1: 'Nepal', t2: 'Indonesia' })}
+            ${renderByeSlot('R16 M4 • Direct BYE', 'Chinese Taipei', 'LIN / CHIANG', 'Seed (Direct to QF2)')}
+            ${renderSlot('R16 M3', r16_3, { t1: 'South Korea', t2: 'Philippines' })}
+            ${renderByeSlot('R16 M5 • Direct BYE', 'South Korea', 'KIM / LEE', 'Seed (Direct to QF3)')}
+            ${renderSlot('R16 M6', r16_6, { t1: 'Indonesia', t2: 'Japan' })}
+            ${renderByeSlot('R16 M8 • Direct BYE', 'Chinese Taipei', 'YU / HUANG', 'Seed (Direct to QF4)')}
+            ${renderSlot('R16 M7', r16_7, { t1: 'India', t2: 'Philippines' })}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Quarterfinals</div>
+            ${renderSlot('QF 1', qf1, { t1: 'Japan', ath1: 'UEMATSU / TEMMA', t2: 'Indonesia', ath2: 'SANGER / ARASY' })}
+            ${renderSlot('QF 2', qf2, { t1: 'South Korea', ath1: 'PARK / KIM', t2: 'Chinese Taipei', ath2: 'LIN / CHIANG' })}
+            ${renderSlot('QF 3', qf3, { t1: 'South Korea', ath1: 'KIM / LEE', t2: 'Japan', ath2: 'MARUYAMA / MAEDA' })}
+            ${renderSlot('QF 4', qf4, { t1: 'Philippines', ath1: 'SANOSA / NUGUIT', t2: 'Chinese Taipei', ath2: 'YU / HUANG' })}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Semifinals (Bronze)</div>
+            ${renderSlot('SF 1', sf1, { t1: 'Japan', ath1: 'UEMATSU / TEMMA', t2: 'South Korea', ath2: 'PARK / KIM' }, 'bronze')}
+            ${renderSlot('SF 2', sf2, { t1: 'Japan', ath1: 'MARUYAMA / MAEDA', t2: 'Chinese Taipei', ath2: 'YU / HUANG' }, 'bronze')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Gold Medal Match</div>
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Japan', ath1: 'UEMATSU / TEMMA', t2: 'Chinese Taipei', ath2: 'YU / HUANG' }, 'gold')}
+          </div>
+        `;
+      } else {
+        const qfMatches = eventMatches.filter(m => /quarter|qf/i.test(m.stage || m.round || ''));
+        const getGame = (list, num) => list.find(m => new RegExp(`match\\s*${num}|qf\\s*${num}|sf\\s*${num}`, 'i').test(m.stage || m.round)) || list[num - 1];
+
+        bracketRoundsHtml = `
+          ${qfMatches.length > 0 ? `
+            <div class="bracket-round">
+              <div class="bracket-round-header">Quarterfinals</div>
+              ${[0, 1, 2, 3].map(i => renderSlot(`QF ${i + 1}`, getGame(qfMatches, i + 1), { t1: 'TBD', t2: 'TBD' })).join('')}
+            </div>
+          ` : ''}
+          <div class="bracket-round">
+            <div class="bracket-round-header">Semifinals (Bronze)</div>
+            ${renderSlot('SF 1', getGame(sfMatches, 1), { t1: 'TBD', t2: 'TBD' }, 'bronze')}
+            ${renderSlot('SF 2', getGame(sfMatches, 2), { t1: 'TBD', t2: 'TBD' }, 'bronze')}
+          </div>
+          <div class="bracket-round">
+            <div class="bracket-round-header">Gold Medal Match</div>
+            ${renderSlot('Gold Medal', finalMatch, { t1: 'Winner SF 1', t2: 'Winner SF 2' }, 'gold')}
+          </div>
+        `;
+      }
+
       return `
         <div>
           ${eventPickerHtml}
           <div class="bracket-wrapper">
             <div class="bracket-container" style="justify-content:center;">
-              ${qfMatches.length > 0 ? `
-                <div class="bracket-round">
-                  <div class="bracket-round-header">Quarterfinals</div>
-                  ${[0, 1, 2, 3].map(i => renderSlot(`QF ${i + 1}`, getGame(qfMatches, i + 1), { t1: 'TBD', t2: 'TBD' })).join('')}
-                </div>
-              ` : ''}
-              <div class="bracket-round">
-                <div class="bracket-round-header">Semifinals (Bronze)</div>
-                ${renderSlot('SF 1', getGame(sfMatches, 1), { t1: 'TBD', t2: 'TBD' }, 'bronze')}
-                ${renderSlot('SF 2', getGame(sfMatches, 2), { t1: 'TBD', t2: 'TBD' }, 'bronze')}
-              </div>
-              <div class="bracket-round">
-                <div class="bracket-round-header">Gold Medal Match</div>
-                ${renderSlot('Gold Medal', finalMatch, { t1: 'Winner SF 1', t2: 'Winner SF 2' }, 'gold')}
-              </div>
+              ${bracketRoundsHtml}
             </div>
           </div>
-          <div style="text-align:center; font-size:0.72rem; color:#94a3b8; margin-top:0.75rem;">
-            * In Soft Tennis, both semifinal losers are awarded Bronze medals (no bronze playoff).
+          <div style="text-align:center; font-size:0.72rem; color:#94a3b8; margin-top:0.75rem; display:flex; flex-direction:column; gap:3px;">
+            ${footnotes.map(fn => `<span>${fn}</span>`).join('')}
           </div>
         </div>
       `;
