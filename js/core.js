@@ -582,12 +582,24 @@ function formatMatchDateTime(dateStr, timeStr) {
 function parseMatchData(m) {
   if (!m) return { t1: 'TBD', t2: 'TBD', s1: '-', s2: '-', status: '', time: '', date: '', stage: '', isFinished: false, winner: '' };
 
-  let t1 = m.player1 || m.player_1 || m.team1 || m.team_1 || m.teamA || m.team_a || m.home || m.home_team || '';
+  let country1 = m.team1 || m.team_1 || m.teamA || m.team_a || m.home || m.home_team || '';
+  if (!country1 && (m.player1 || m.player_1)) {
+    const rawP1 = String(m.player1 || m.player_1);
+    const match = rawP1.match(/\(([^)]+)\)/);
+    country1 = match ? match[1] : rawP1;
+  }
+  let t1 = country1;
   if (!t1 && Array.isArray(m.teams) && m.teams.length > 0) t1 = m.teams[0];
   if (typeof t1 === 'object' && t1 !== null) t1 = t1.name || t1.team || 'TBD';
   t1 = formatTeamDisplayName(t1);
 
-  let t2 = m.player2 || m.player_2 || m.team2 || m.team_2 || m.teamB || m.team_b || m.away || m.away_team || '';
+  let country2 = m.team2 || m.team_2 || m.teamB || m.team_b || m.away || m.away_team || '';
+  if (!country2 && (m.player2 || m.player_2)) {
+    const rawP2 = String(m.player2 || m.player_2);
+    const match = rawP2.match(/\(([^)]+)\)/);
+    country2 = match ? match[1] : rawP2;
+  }
+  let t2 = country2;
   if (!t2 && Array.isArray(m.teams) && m.teams.length > 1) t2 = m.teams[1];
   if (typeof t2 === 'object' && t2 !== null) t2 = t2.name || t2.team || 'TBD';
   t2 = formatTeamDisplayName(t2);
@@ -1238,13 +1250,14 @@ function renderScheduleAndHero(matches) {
 }
 
 // --- Universal Sport Medal Analytics & Comparison Engine ---
-function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPreds, womenPreds) {
+function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPreds, womenPreds, mixedMatches, mixedPreds, currentGender) {
   const isPentathlon = activeSport.includes('pentathlon');
+  const curGen = String(currentGender || (typeof window !== 'undefined' && window.currentGender) || 'men').toLowerCase();
 
   // Allow sport engines to provide their own medal analytics hook
   const engine = window.SPORT_ENGINES && window.SPORT_ENGINES[activeSport];
   if (!isPentathlon && engine && typeof engine.extractMedalAnalytics === 'function') {
-    return engine.extractMedalAnalytics(menMatches, womenMatches, menPreds, womenPreds);
+    return engine.extractMedalAnalytics(menMatches, womenMatches, menPreds, womenPreds, mixedMatches, mixedPreds, curGen);
   }
 
   const getProb = (obj, keys) => {
@@ -1408,7 +1421,7 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
   const medalEvents = [];
 
   if (isPentathlon) {
-    const pentathlonDefinitions = [
+    const allPentathlonDefs = [
       {
         id: 'mpn_men_indiv',
         name: "Men's Individual",
@@ -1446,6 +1459,7 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
         rankings: getPentathlonEventRankings('women', 'team')
       }
     ];
+    const pentathlonDefinitions = allPentathlonDefs.filter(d => (curGen === 'all' ? true : d.gender === curGen));
 
     pentathlonDefinitions.forEach(def => {
       const isIndiv = def.type === 'individual';
@@ -1577,10 +1591,11 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
       womenShort = "Women's Senior";
     }
 
-    const divisions = [
+    const allDivisions = [
       { id: 'men_team', name: menName, shortName: menShort, icon: sportIcon, gender: 'men', matches: menMatches, preds: menPreds },
       { id: 'women_team', name: womenName, shortName: womenShort, icon: sportIcon, gender: 'women', matches: womenMatches, preds: womenPreds }
     ];
+    const divisions = allDivisions.filter(d => (curGen === 'all' ? true : d.gender === curGen));
 
     divisions.forEach(div => {
       const pPodium = projectPodium(div.preds);
@@ -1624,8 +1639,19 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
         const isFinished = gStat.includes('finish') || gStat.includes('official') || gState.includes('finish') || gState.includes('official');
         const isLive = gStat.includes('live') || gState.includes('run');
 
-        const t1 = goldMatch.player1 || goldMatch.team1 || 'TBD';
-        const t2 = goldMatch.player2 || goldMatch.team2 || 'TBD';
+        let country1 = goldMatch.team1 || goldMatch.team_1 || '';
+        if (!country1 && (goldMatch.player1 || goldMatch.player_1)) {
+          const match = String(goldMatch.player1 || goldMatch.player_1).match(/\(([^)]+)\)/);
+          country1 = match ? match[1] : String(goldMatch.player1 || goldMatch.player_1);
+        }
+        const t1 = formatTeamDisplayName(country1 || goldMatch.player1 || 'TBD');
+
+        let country2 = goldMatch.team2 || goldMatch.team_2 || '';
+        if (!country2 && (goldMatch.player2 || goldMatch.player_2)) {
+          const match = String(goldMatch.player2 || goldMatch.player_2).match(/\(([^)]+)\)/);
+          country2 = match ? match[1] : String(goldMatch.player2 || goldMatch.player_2);
+        }
+        const t2 = formatTeamDisplayName(country2 || goldMatch.player2 || 'TBD');
         const s = goldMatch.score || `${goldMatch.score1 || '-'} - ${goldMatch.score2 || '-'}`;
 
         if (isFinished) {
@@ -1638,8 +1664,14 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
             else if (s2 > s1) w = t2;
           }
           if (w) {
-            actualGold = formatContenderObj({ name: w }, false);
-            const runnerUp = cleanTeamName(w) === cleanTeamName(t1) ? t2 : t1;
+            let winCountry = w;
+            if (winCountry.includes('(')) {
+              const match = winCountry.match(/\(([^)]+)\)/);
+              if (match && match[1]) winCountry = match[1].trim();
+            }
+            winCountry = formatTeamDisplayName(winCountry);
+            actualGold = formatContenderObj({ name: winCountry }, false);
+            const runnerUp = cleanTeamName(winCountry) === cleanTeamName(t1) ? t2 : t1;
             actualSilver = formatContenderObj({ name: runnerUp }, false);
           }
           goldScoreInfo = `Gold Final: ${t1} ${s} ${t2} (Official)`;
@@ -1660,8 +1692,19 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
         const isFinished = bStat.includes('finish') || bStat.includes('official') || bState.includes('finish') || bState.includes('official');
         const isLive = bStat.includes('live') || bState.includes('run');
 
-        const t1 = bronzeMatch.player1 || bronzeMatch.team1 || 'TBD';
-        const t2 = bronzeMatch.player2 || bronzeMatch.team2 || 'TBD';
+        let bCountry1 = bronzeMatch.team1 || bronzeMatch.team_1 || '';
+        if (!bCountry1 && (bronzeMatch.player1 || bronzeMatch.player_1)) {
+          const match = String(bronzeMatch.player1 || bronzeMatch.player_1).match(/\(([^)]+)\)/);
+          bCountry1 = match ? match[1] : String(bronzeMatch.player1 || bronzeMatch.player_1);
+        }
+        const t1 = formatTeamDisplayName(bCountry1 || bronzeMatch.player1 || 'TBD');
+
+        let bCountry2 = bronzeMatch.team2 || bronzeMatch.team_2 || '';
+        if (!bCountry2 && (bronzeMatch.player2 || bronzeMatch.player_2)) {
+          const match = String(bronzeMatch.player2 || bronzeMatch.player_2).match(/\(([^)]+)\)/);
+          bCountry2 = match ? match[1] : String(bronzeMatch.player2 || bronzeMatch.player_2);
+        }
+        const t2 = formatTeamDisplayName(bCountry2 || bronzeMatch.player2 || 'TBD');
         const s = bronzeMatch.score || `${bronzeMatch.score1 || '-'} - ${bronzeMatch.score2 || '-'}`;
 
         if (isFinished) {
@@ -1673,7 +1716,13 @@ function extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPr
             else if (s2 > s1) w = t2;
           }
           if (w) {
-            actualBronze = formatContenderObj({ name: w }, false);
+            let winCountry = w;
+            if (winCountry.includes('(')) {
+              const match = winCountry.match(/\(([^)]+)\)/);
+              if (match && match[1]) winCountry = match[1].trim();
+            }
+            winCountry = formatTeamDisplayName(winCountry);
+            actualBronze = formatContenderObj({ name: winCountry }, false);
           }
           bronzeScoreInfo = `Bronze Match: ${t1} ${s} ${t2} (Official)`;
           matchInfo += (matchInfo ? ' • ' : '') + bronzeScoreInfo;
@@ -1981,7 +2030,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
   if (!mixedPreds || mixedPreds.length === 0) mixedPreds = globalData.mixedPredictions || [];
   if (!currentGender) currentGender = window.currentGender || 'men';
 
-  const analytics = extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPreds, womenPreds, mixedMatches, mixedPreds);
+  const analytics = extractSportMedalAnalytics(activeSport, menMatches, womenMatches, menPreds, womenPreds, mixedMatches, mixedPreds, currentGender);
   const kpi = analytics.kpi;
 
   // --- 1. FULL MEDAL TABLE (PROJECTED & ACTUAL) AT TOP ---
@@ -2062,7 +2111,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                       <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
                     </div>
                     ${(r.projectedAthletes && r.projectedAthletes.length > 0) ? `
-                      <div style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
+                      <div class="medal-table-athletes" style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
                         ${r.projectedAthletes.map(a => `<span style="white-space:nowrap; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px;">${a.medal} <strong>${a.athlete}</strong></span>`).join('')}
                       </div>
                     ` : ''}
@@ -2134,7 +2183,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                       <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
                     </div>
                     ${(r.athletes && r.athletes.length > 0) ? `
-                      <div style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
+                      <div class="medal-table-athletes" style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
                         ${r.athletes.map(a => `<span style="white-space:nowrap; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px;">${a.medal} <strong>${a.athlete}</strong></span>`).join('')}
                       </div>
                     ` : ''}
@@ -2174,7 +2223,7 @@ function renderPredictionsView(container, menPreds, womenPreds, currentGender, m
                     <span style="color:#f8fafc; margin-left:3px;">${r.name}${r.isHost ? ' (Host)' : ''}</span>
                   </div>
                   ${(r.athletes && r.athletes.length > 0) ? `
-                    <div style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
+                    <div class="medal-table-athletes" style="font-size:0.68rem; color:#cbd5e1; font-weight:400; margin-left:20px; margin-top:3px; display:flex; flex-wrap:wrap; gap:3px;">
                       ${r.athletes.map(a => `<span style="white-space:nowrap; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px;">${a.medal} <strong>${a.athlete}</strong></span>`).join('')}
                     </div>
                   ` : ''}
@@ -2838,7 +2887,16 @@ function renderCalibrationView(container, predictions, matches) {
   const skippedCount = finished.length - evaluatedMatches;
 
   const medalKpi = typeof extractSportMedalAnalytics === 'function' && window.appData
-    ? extractSportMedalAnalytics(activeSport, window.appData.menMatches || [], window.appData.womenMatches || [], window.appData.menPredictions || [], window.appData.womenPredictions || []).kpi
+    ? extractSportMedalAnalytics(
+        activeSport,
+        window.appData.menMatches || [],
+        window.appData.womenMatches || [],
+        window.appData.menPredictions || [],
+        window.appData.womenPredictions || [],
+        window.appData.mixedMatches || [],
+        window.appData.mixedPredictions || [],
+        window.currentGender || 'men'
+      ).kpi
     : null;
   const medalAccDisplay = medalKpi && medalKpi.accuracyPct != null ? `${medalKpi.accuracyPct}%` : '--%';
   const medalAccSub = medalKpi && medalKpi.decidedMedals > 0 

@@ -896,7 +896,7 @@
     },
 
     // --- Medal Analytics Hook (for Predictions & Calibration) ---
-    extractMedalAnalytics(menMatches, womenMatches, menPreds, womenPreds) {
+    extractMedalAnalytics(menMatches, womenMatches, menPreds, womenPreds, mixedMatches, mixedPreds, currentGender) {
       const predEvents = (window.appData && Array.isArray(window.appData.predictionEvents))
         ? window.appData.predictionEvents : [];
 
@@ -935,9 +935,13 @@
 
       const formatC = (item, isIndiv) => {
         if (!item) return null;
-        const rawName = item.team || item.country || item.name || '';
+        let rawName = item.team || item.country || item.name || '';
+        if (rawName.includes('(')) {
+          const match = rawName.match(/\(([^)]+)\)/);
+          if (match && match[1]) rawName = match[1].trim();
+        }
         const flag = typeof getFlagEmoji === 'function' ? getFlagEmoji(rawName) : '🏅';
-        const displayName = rawName.replace(/\(host\)/gi, '').trim();
+        const displayName = typeof formatTeamDisplayName === 'function' ? formatTeamDisplayName(rawName.replace(/\(host\)/gi, '').trim()) : rawName.replace(/\(host\)/gi, '').trim();
         const athlete = isIndiv ? (item.athlete || item.player || '') : '';
         const cleaned = typeof cleanTeamName === 'function' ? cleanTeamName(rawName) : rawName.toLowerCase().replace(/[^a-z0-9]/g, '');
         return { raw: rawName, cleaned, name: displayName, flag, athlete, isHost: false, goldProb: item.gold || '', silverProb: item.silver || '', bronzeProb: item.bronze || '' };
@@ -1028,10 +1032,11 @@
         return { gold, silver, bronze, bronzes, status, matchInfo, goldScoreInfo, bronzeScoreInfo };
       };
 
-      const allMatchesBoth = [...(menMatches || []), ...(womenMatches || [])];
+      const curGen = String(currentGender || (typeof window !== 'undefined' && window.currentGender) || 'men').toLowerCase();
+      const allMatchesBoth = [...(menMatches || []), ...(womenMatches || []), ...(mixedMatches || [])];
       const medalEvents = [];
 
-      const teqEventDefs = [
+      const allEventDefs = [
         { id: 'teq_men_singles',    event: "Men's Singles",    gender: 'men',    icon: '🏓', shortName: "Men's Singles" },
         { id: 'teq_men_doubles',    event: "Men's Doubles",    gender: 'men',    icon: '🏓', shortName: "Men's Doubles" },
         { id: 'teq_mixed_doubles',  event: "Mixed Doubles",    gender: 'mixed',  icon: '🏓', shortName: "Mixed Doubles" },
@@ -1039,13 +1044,15 @@
         { id: 'teq_women_doubles',  event: "Women's Doubles",  gender: 'women',  icon: '🏓', shortName: "Women's Doubles" }
       ];
 
+      const teqEventDefs = allEventDefs.filter(d => (curGen === 'all' ? true : d.gender === curGen));
+
       teqEventDefs.forEach(def => {
         let predEvent = predEvents.find(e => e.id === def.id || clean(e.event || e.name || '') === clean(def.event));
         let rankings = predEvent ? (predEvent.rankings || []) : [];
         if (!rankings || rankings.length === 0) {
           const pool = def.gender === 'women'
             ? (womenPreds || [])
-            : (def.gender === 'mixed' ? (window.appData?.mixedPredictions || menPreds || []) : (menPreds || []));
+            : (def.gender === 'mixed' ? (mixedPreds || window.appData?.mixedPredictions || menPreds || []) : (menPreds || []));
           if (Array.isArray(pool)) {
             rankings = pool.filter(p => clean(p.event || '') === clean(def.event));
           }
@@ -1060,7 +1067,7 @@
 
         const matchPool = def.gender === 'women'
           ? (womenMatches || [])
-          : (def.gender === 'mixed' ? (window.appData?.mixedMatches || allMatchesBoth || []) : (menMatches || []));
+          : (def.gender === 'mixed' ? (mixedMatches || window.appData?.mixedMatches || allMatchesBoth || []) : (menMatches || []));
         const { gold: actualGold, silver: actualSilver, bronze: actualBronze, bronzes: actualBronzes, status, matchInfo, goldScoreInfo, bronzeScoreInfo } = resolveActuals(def.event, matchPool);
 
         medalEvents.push({
@@ -1160,7 +1167,9 @@
         };
 
         // Resolve actual finish for projected picks
-        const matchPool = ev.gender === 'women' ? womenMatches : menMatches;
+        const matchPool = ev.gender === 'women'
+          ? womenMatches
+          : (ev.gender === 'mixed' ? (mixedMatches || window.appData?.mixedMatches || allMatchesBoth) : menMatches);
         const allProjPicks = [ev.projected.gold, ev.projected.silver, ...(Array.isArray(ev.projected.bronzes) ? ev.projected.bronzes : [ev.projected.bronze])];
         allProjPicks.forEach(pick => {
           if (!pick) return;
@@ -1349,12 +1358,15 @@
       const accuracy = evaluatedMatches > 0 ? Math.round((correctFavorites / evaluatedMatches) * 100) : '--';
       const skippedCount = evalMatches.length - evaluatedMatches;
 
-      // Get medal KPI from extractMedalAnalytics
+      // Get medal KPI from extractMedalAnalytics strictly for active gender
       const medalKpi = this.extractMedalAnalytics(
         window.appData?.menMatches || [],
         window.appData?.womenMatches || [],
         window.appData?.menPredictions || [],
-        window.appData?.womenPredictions || []
+        window.appData?.womenPredictions || [],
+        window.appData?.mixedMatches || [],
+        window.appData?.mixedPredictions || [],
+        gender
       ).kpi;
 
       const medalAccDisplay = medalKpi && medalKpi.accuracyPct != null ? `${medalKpi.accuracyPct}%` : '--%';

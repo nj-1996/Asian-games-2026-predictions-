@@ -857,6 +857,16 @@ button.sync-status.is-success {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.medal-comp-table thead tr:first-child th:first-child, 
+.medal-comp-table tbody td:first-child,
+.medal-comp-table tfoot td:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--card-bg, #131c2e);
+  z-index: 2;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.35);
+}
+
 .medal-comp-table thead tr:first-child th {
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
@@ -930,6 +940,9 @@ button.sync-status.is-success {
 @media (max-width: 640px) {
   .event-comp-grid {
     grid-template-columns: 1fr;
+  }
+  .medal-table-athletes {
+    display: none !important;
   }
 }
 
