@@ -201,13 +201,13 @@
     },
     {
       "round": "Women 1/4 G 1",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-24",
       "time": "19:20",
       "player1": "Japan",
       "player2": "Thailand",
-      "score": "61 - 22",
+      "score": "86 - 29",
       "winner": "Japan"
     },
     {
@@ -216,8 +216,8 @@
       "state": "Scheduled",
       "date": "2026-09-25",
       "time": "16:00",
-      "player1": "Korea",
-      "player2": "China",
+      "player1": "China",
+      "player2": "Korea",
       "score": "vs",
       "winner": ""
     },
@@ -227,8 +227,8 @@
       "state": "Scheduled",
       "date": "2026-09-25",
       "time": "19:20",
-      "player1": "TBD",
-      "player2": "Chinese Taipei",
+      "player1": "Chinese Taipei",
+      "player2": "Japan",
       "score": "vs",
       "winner": ""
     },
