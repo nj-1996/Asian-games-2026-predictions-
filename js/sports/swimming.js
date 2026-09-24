@@ -82,32 +82,36 @@
       genderEvents = events;
     }
 
-    // Validate active filter
-    var isValidFilter = activeSwimmingEventFilter === 'all' || genderEvents.some(function (e) { return e.id === activeSwimmingEventFilter; });
-    if (!isValidFilter) {
-      activeSwimmingEventFilter = 'all';
+    // Validate active filter: default to first event in the category (no 'All Events' option)
+    var isValidFilter = genderEvents.some(function (e) { return e.id === activeSwimmingEventFilter; });
+    if (!isValidFilter && genderEvents.length > 0) {
+      activeSwimmingEventFilter = genderEvents[0].id;
     }
 
-    var filtered = activeSwimmingEventFilter === 'all'
-      ? genderEvents
-      : genderEvents.filter(function (e) { return e.id === activeSwimmingEventFilter; });
+    var filtered = genderEvents.filter(function (e) { return e.id === activeSwimmingEventFilter; });
+    if (filtered.length === 0 && genderEvents.length > 0) {
+      filtered = [genderEvents[0]];
+      activeSwimmingEventFilter = genderEvents[0].id;
+    }
 
-    // Event Dropdown Filter Bar (Identical styling to Soft Tennis / Teqball)
+    var currentIdx = genderEvents.findIndex(function (e) { return e.id === activeSwimmingEventFilter; });
+    var indexDisplay = currentIdx >= 0 ? 'Event ' + (currentIdx + 1) + ' of ' + genderEvents.length : genderEvents.length + ' events';
+
+    // Event Dropdown Filter Bar (Standard layout matching other sports)
     var filterBarHtml = `
       <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
         <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:240px;">
           <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
           <div class="event-selector-wrap" style="flex:1;">
-            <select class="event-dropdown" onchange="window.setSwimmingEventFilter(this.value)" style="width:100%; max-width:400px;">
-              <option value="all" ${activeSwimmingEventFilter === 'all' ? 'selected' : ''}>All Events (${genderEvents.length} Events)</option>
+            <select class="event-dropdown" onchange="window.setSwimmingEventFilter(this.value)" style="width:100%; max-width:420px;">
               ${genderEvents.map(function (ev) {
                 return '<option value="' + escapeAttr(ev.id) + '" ' + (activeSwimmingEventFilter === ev.id ? 'selected' : '') + '>' + ev.name + '</option>';
               }).join('')}
             </select>
           </div>
         </div>
-        <span style="font-size:0.72rem; color:#64748b;">
-          Showing ${filtered.length} of ${genderEvents.length} events
+        <span style="font-size:0.72rem; color:#64748b; font-weight:600;">
+          ${indexDisplay}
         </span>
       </div>
     `;
