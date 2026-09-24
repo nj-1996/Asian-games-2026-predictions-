@@ -169,18 +169,18 @@
     {
       "round": "Women 1/4 G 3",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Getting Ready",
       "date": "2026-09-24",
       "time": "10:00",
       "player1": "Korea",
       "player2": "Indonesia",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {
       "round": "Women 1/4 G 4",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-24",
       "time": "13:00",
       "player1": "Mongolia",
@@ -191,7 +191,7 @@
     {
       "round": "Women 1/4 G 2",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-24",
       "time": "16:00",
       "player1": "Chinese Taipei",
@@ -202,7 +202,7 @@
     {
       "round": "Women 1/4 G 1",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-24",
       "time": "19:20",
       "player1": "Japan",

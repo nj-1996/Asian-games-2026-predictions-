@@ -135,14 +135,14 @@
     },
     {
       "round": "Pool B",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-24",
       "time": "09:00",
       "player1": "Thailand",
       "player2": "Malaysia",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 4",
+      "winner": "Malaysia"
     },
     {
       "round": "Pool A",
