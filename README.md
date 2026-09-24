@@ -47,6 +47,7 @@ The entire frontend runs client-side as a zero-dependency Single Page Applicatio
 | 🎯 **Modern Pentathlon** | Men · Women | Riding, Fencing, Swim, Laser-Run | Direct Ranking / Points | Event Breakdown | 50,000 Runs (UIPM Cutoff Model) | ❌ Ranked Podium |
 | 🏏 **Cricket** | Men · Women | Group Standings & NRR | Super 8s / Knockouts | Inning Scores & Overs | 50,000 Runs (ICC T20 Rankings) | ❌ Single (Bronze Playoff) |
 | 🤾 **Handball** | Men · Women | Official IHF (2-1-0 Pts, GD) | QFs & SFs → Final | Half-time & Full-time | 50,000 Runs (IHF/Asian Champs) | ❌ Single (Bronze Playoff) |
+| 🏊 **Swimming** | Men · Women · Mixed | 41 Medal Events (20 M, 20 W, 1 X) | Heats → Finals (10 Lanes) | Lane Times & Splits (50m+) | 50,000 Runs (World Aquatics) | ❌ Ranked Podium |
 
 ---
 
