@@ -190,25 +190,25 @@
     },
     {
       "round": "Women 1/4 G 2",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-24",
       "time": "16:00",
       "player1": "Chinese Taipei",
       "player2": "Philippines",
-      "score": "vs",
-      "winner": ""
+      "score": "83 - 71",
+      "winner": "Chinese Taipei"
     },
     {
       "round": "Women 1/4 G 1",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-24",
       "time": "19:20",
       "player1": "Japan",
       "player2": "Thailand",
-      "score": "vs",
-      "winner": ""
+      "score": "61 - 22",
+      "winner": "Japan"
     },
     {
       "round": "Women 1/2 G 2",
@@ -228,7 +228,7 @@
       "date": "2026-09-25",
       "time": "19:20",
       "player1": "TBD",
-      "player2": "TBD",
+      "player2": "Chinese Taipei",
       "score": "vs",
       "winner": ""
     },
