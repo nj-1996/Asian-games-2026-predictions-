@@ -3,28 +3,28 @@
   "matches": [
     {
       "round": "Preliminary Round - Group A",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-24",
       "time": "09:00",
       "player1": "Afghanistan",
       "player2": "Japan",
-      "score": "61 - 0",
-      "score1": "61/2",
-      "score2": "0/0",
-      "winner": ""
+      "score": "129 - 81",
+      "score1": "129/6",
+      "score2": "81/10",
+      "winner": "Afghanistan"
     },
     {
       "round": "Preliminary Round - Group B",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-24",
       "time": "14:00",
       "player1": "Hong Kong, China",
       "player2": "Malaysia",
-      "score": "vs",
-      "score1": "-",
-      "score2": "-",
+      "score": "50 - 0",
+      "score1": "50/6",
+      "score2": "0/0",
       "winner": ""
     },
     {

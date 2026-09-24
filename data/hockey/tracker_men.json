@@ -135,41 +135,41 @@
     },
     {
       "round": "Pool B",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-24",
       "time": "09:00",
       "player1": "Thailand",
       "player2": "Malaysia",
-      "score": "0 - 4",
+      "score": "0 - 10",
       "winner": "Malaysia"
     },
     {
       "round": "Pool A",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-24",
       "time": "11:00",
       "player1": "Bangladesh",
       "player2": "Sri Lanka",
-      "score": "vs",
-      "winner": ""
+      "score": "5 - 1",
+      "winner": "Bangladesh"
     },
     {
       "round": "Pool B",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-24",
       "time": "13:00",
       "player1": "Oman",
       "player2": "Uzbekistan",
-      "score": "vs",
-      "winner": ""
+      "score": "2 - 3",
+      "winner": "Uzbekistan"
     },
     {
       "round": "Pool A",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-24",
       "time": "15:00",
       "player1": "Korea",
