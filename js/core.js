@@ -1009,6 +1009,7 @@ window.toggleDetailedPredictions = function() {
 
 // --- Matches Router ---
 function renderMatchesView(container, matches) {
+  window.renderMatchesView = renderMatchesView;
   const rawSport = window.currentSport || (typeof currentSport !== 'undefined' ? currentSport : 'basketball');
   const activeSport = String(rawSport).trim().toLowerCase();
 

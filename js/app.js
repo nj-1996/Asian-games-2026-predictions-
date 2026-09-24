@@ -4,6 +4,7 @@ let currentTab = 'matches';
 let currentGender = 'men';
 window.currentSport = currentSport;
 window.currentGender = currentGender;
+window.currentTab = currentTab;
 let isSyncing = false;
 let appData = {
   menMatches: [],
@@ -382,6 +383,9 @@ async function handleSportChange(sport, force) {
   if (typeof window.setSoftTennisCalibrationEvent === 'function') {
     window.setSoftTennisCalibrationEvent(null, false);
   }
+  if (typeof window.setSwimmingEventFilter === 'function') {
+    window.setSwimmingEventFilter(null, false);
+  }
   window.activePredictionsEventFilter = null;
   window.activeUniversalEventFilter = null;
 
@@ -438,6 +442,9 @@ function setGender(gender) {
   if (typeof window.setSoftTennisCalibrationEvent === 'function') {
     window.setSoftTennisCalibrationEvent(null, false);
   }
+  if (typeof window.setSwimmingEventFilter === 'function') {
+    window.setSwimmingEventFilter(null, false);
+  }
   window.activePredictionsEventFilter = null;
   window.activeUniversalEventFilter = null;
 
@@ -448,6 +455,7 @@ window.handleSportChange = handleSportChange;
 window.setTab = setTab;
 window.setGender = setGender;
 window.handleManualSync = handleManualSync;
+window.renderView = renderView;
 
 
 // --- Global Router ---

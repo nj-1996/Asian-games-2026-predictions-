@@ -299,7 +299,7 @@
     var modalRoot = document.getElementById('swimming-unit-modal-root');
     if (!modalRoot) return;
 
-    var isFinal = unit.isFinal;
+    var isFinal = !!unit.isFinal;
     var results = unit.results || [];
     var isRelay = (ev.name || '').includes('Relay') || (ev.name || '').includes('4 x');
     var isDistance = (ev.name || '').includes('800m') || (ev.name || '').includes('1500m');
@@ -311,6 +311,56 @@
               ? 'Top 8 fastest relay squads across all heats advance to the Final (Lanes 1–8).' 
               : 'Top 10 fastest swimmers across all heats advance to the Final (Lanes 0–9).'));
 
+    // Helper to normalize names
+    function normSwimmerName(name) {
+      return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+
+    function parseSwimmingTime(tStr) {
+      if (!tStr) return 999999;
+      var s = String(tStr).trim();
+      if (s === 'DQ' || s === 'DNS' || s === 'DNF' || s === 'Awaiting' || s === '--') return 999999;
+      if (s.includes(':')) {
+        var parts = s.split(':');
+        var min = parseFloat(parts[0]) || 0;
+        var sec = parseFloat(parts[1]) || 0;
+        return min * 60 + sec;
+      }
+      var val = parseFloat(s);
+      return isNaN(val) ? 999999 : val;
+    }
+
+    // Collect all finalists for this event to identify qualifiers in heats
+    var finalistNames = new Set();
+    (ev.finals || []).forEach(function (f) {
+      (f.results || []).forEach(function (res) {
+        if (res.name) {
+          finalistNames.add(normSwimmerName(res.name));
+        }
+      });
+    });
+
+    // If finals results aren't populated yet, compute qualifiers from all heats across this event
+    if (finalistNames.size === 0 && ev.heats && ev.heats.length > 0) {
+      var maxQualifiers = isRelay ? 8 : 10;
+      var allHeatSwimmers = [];
+      ev.heats.forEach(function (h) {
+        (h.results || []).forEach(function (res) {
+          var tSec = parseSwimmingTime(res.time);
+          if (res.name && tSec < 999999) {
+            allHeatSwimmers.push({
+              norm: normSwimmerName(res.name),
+              timeSec: tSec
+            });
+          }
+        });
+      });
+      allHeatSwimmers.sort(function (a, b) { return a.timeSec - b.timeSec; });
+      allHeatSwimmers.slice(0, maxQualifiers).forEach(function (item) {
+        finalistNames.add(item.norm);
+      });
+    }
+
     var rowsHtml = results.length === 0 ? `
       <tr>
         <td colspan="7" style="text-align:center; padding:2.5rem 1rem; color:#94a3b8;">
@@ -318,19 +368,46 @@
         </td>
       </tr>
     ` : results.map(function (r, idx) {
-      var isMedalist = isFinal && (r.rank === '1' || r.rank === '2' || r.rank === '3' || r.medal);
-      var medIcon = r.medal === 'Gold' || r.rank === '1' ? '🥇' : (r.medal === 'Silver' || r.rank === '2' ? '🥈' : (r.medal === 'Bronze' || r.rank === '3' ? '🥉' : ''));
-      var rankBadge = medIcon ? `<span style="font-size:1.15rem; margin-right:4px;">${medIcon}</span><strong style="color:#f8fafc;">${r.rank}</strong>` : `<strong style="color:#94a3b8;">${r.rank || idx + 1}</strong>`;
+      var normName = normSwimmerName(r.name);
+      var isQualified = !isFinal && (finalistNames.has(normName) || (r.qual && r.qual.toUpperCase() === 'Q'));
 
-      var qualBadge = r.qual ? `<span style="background:rgba(56,189,248,0.18); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; padding:2px 6px; border-radius:4px; font-size:0.68rem;">${r.qual}</span>` : '';
+      // Medals are ONLY shown in Finals - never in Heats
+      var isMedalist = isFinal && (r.rank === '1' || r.rank === '2' || r.rank === '3' || r.medal);
+      var medIcon = '';
+      if (isFinal) {
+        if (r.medal === 'Gold' || r.rank === '1') medIcon = '🥇';
+        else if (r.medal === 'Silver' || r.rank === '2') medIcon = '🥈';
+        else if (r.medal === 'Bronze' || r.rank === '3') medIcon = '🥉';
+      }
+
+      var rankBadge = medIcon 
+        ? `<span style="font-size:1.15rem; margin-right:4px;">${medIcon}</span><strong style="color:#f8fafc;">${r.rank}</strong>` 
+        : `<strong style="color:#94a3b8;">${r.rank || idx + 1}</strong>`;
+
+      var qualBadge = '';
+      if (isFinal) {
+        if (r.qual) {
+          qualBadge = `<span style="background:rgba(56,189,248,0.18); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; padding:2px 6px; border-radius:4px; font-size:0.68rem;">${r.qual}</span>`;
+        }
+      } else {
+        // In heats: Mark Q against those who moved to finals
+        if (isQualified) {
+          qualBadge = `<span style="background:rgba(34,197,94,0.22); border:1px solid rgba(34,197,94,0.6); color:#4ade80; font-weight:800; padding:2px 8px; border-radius:4px; font-size:0.75rem; letter-spacing:0.5px; box-shadow:0 0 6px rgba(34,197,94,0.25);">Q</span>`;
+        }
+      }
+
       var recBadge = r.record ? `<span style="background:rgba(234,179,8,0.2); border:1px solid rgba(234,179,8,0.5); color:#facc15; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.68rem;">${r.record}</span>` : '';
 
       var splitsCount = (r.splits || []).length;
       var hasSplits = splitsCount > 0;
       var rowId = 'splits-row-' + idx;
 
+      var rowBg = isMedalist 
+        ? 'rgba(234,179,8,0.06)' 
+        : (isQualified ? 'rgba(34,197,94,0.06)' : 'transparent');
+
       return `
-        <tr style="background:${isMedalist ? 'rgba(234,179,8,0.04)' : 'transparent'}; border-bottom:1px solid rgba(255,255,255,0.06);">
+        <tr style="background:${rowBg}; border-bottom:1px solid rgba(255,255,255,0.06);">
           <td style="text-align:center; padding:9px 6px; font-family:monospace;">${rankBadge}</td>
           <td style="text-align:center; padding:9px 6px;">
             <span style="background:rgba(255,255,255,0.08); border-radius:4px; padding:2px 7px; font-size:0.75rem; font-weight:700; color:#e2e8f0;">Lane ${r.lane || '--'}</span>
@@ -354,7 +431,7 @@
             ${r.reaction ? r.reaction + 's' : '--'}
           </td>
           <td style="text-align:center; padding:9px 6px;">
-            <div style="display:flex; justify-content:center; gap:4px; flex-wrap:wrap;">
+            <div style="display:flex; justify-content:center; gap:4px; flex-wrap:wrap; align-items:center;">
               ${qualBadge}
               ${recBadge}
               ${hasSplits ? `
@@ -420,7 +497,7 @@
 
           <!-- Qualification & Pool Note -->
           <div style="background:rgba(0,0,0,0.25); border-bottom:1px solid rgba(255,255,255,0.05); padding:0.6rem 1.25rem; font-size:0.74rem; color:#94a3b8; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-            <span>ℹ️ <strong>Rule:</strong> ${qualNote}</span>
+            <span>ℹ️ <strong>Rule:</strong> ${qualNote} ${!isFinal ? '<span style="color:#4ade80; font-weight:700; margin-left:6px;">[Q] = Advanced to Final</span>' : ''}</span>
             <span style="color:#4ade80; font-weight:700;">Status: ${unit.status}</span>
           </div>
 
@@ -475,13 +552,21 @@
     row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
   };
 
-  window.setSwimmingEventFilter = function (evId) {
-    activeSwimmingEventFilter = evId;
-    if (typeof window.renderMatchesView === 'function' && window.currentTab === 'matches') {
-      var container = document.getElementById('content-cards');
-      var curGen = String((typeof window !== 'undefined' && window.currentGender) || 'men').toLowerCase();
-      var dataList = curGen === 'men' ? window.appData.menMatches : (curGen === 'women' ? window.appData.womenMatches : window.appData.mixedMatches);
-      window.renderMatchesView(container, dataList);
+  window.setSwimmingEventFilter = function (evId, triggerRender) {
+    if (evId !== undefined) {
+      activeSwimmingEventFilter = evId;
+    }
+    if (triggerRender !== false) {
+      if (typeof window.renderView === 'function') {
+        window.renderView();
+      } else if (typeof window.renderMatchesView === 'function') {
+        var container = document.getElementById('content-cards');
+        var curGen = String((typeof window !== 'undefined' && window.currentGender) || 'men').toLowerCase();
+        var dataList = curGen === 'men' 
+          ? (window.appData && window.appData.menMatches) 
+          : (curGen === 'women' ? (window.appData && window.appData.womenMatches) : (window.appData && window.appData.mixedMatches));
+        window.renderMatchesView(container, dataList);
+      }
     }
   };
 
