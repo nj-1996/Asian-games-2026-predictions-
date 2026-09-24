@@ -1,15 +1,13 @@
 // ==========================================================================
 // Asian Games 2026: Swimming Sport Engine (41 Medal Events: 20 Men | 20 Women | 1 Mixed)
-// Tokyo Aquatics Centre 10-Lane Competition Pool (Heats & Finals Interactive System)
+// Tokyo Aquatics Centre 10-Lane Olympic Pool (Standard Layout with Event Dropdown)
 // ==========================================================================
 
 (function () {
   window.SPORT_ENGINES = window.SPORT_ENGINES || {};
 
   var swimmingEventsCache = {};
-  var activeDayFilter = 'all';
-  var activeStrokeFilter = 'all';
-  var activeSearchQuery = '';
+  var activeSwimmingEventFilter = 'all';
 
   function escapeAttr(str) {
     if (!str) return '';
@@ -58,62 +56,7 @@
     return (timeJst || '--:--') + ' JST';
   }
 
-  // --- Filter and Search Logic ---
-  function filterEvents(events, currentGender) {
-    if (!Array.isArray(events)) return [];
-    var curGen = String(currentGender || (typeof window !== 'undefined' && window.currentGender) || 'men').toLowerCase();
-
-    return events.filter(function (ev) {
-      // 1. Gender check
-      var evGen = String(ev.gender || '').toLowerCase();
-      if (curGen === 'men' && evGen !== 'men') return false;
-      if (curGen === 'women' && evGen !== 'women') return false;
-      if (curGen === 'mixed' && evGen !== 'mixed') return false;
-
-      // 2. Day Filter
-      if (activeDayFilter !== 'all') {
-        var hasDay = (ev.dates || []).includes(activeDayFilter) || ev.date === activeDayFilter;
-        if (!hasDay) return false;
-      }
-
-      // 3. Stroke Filter
-      if (activeStrokeFilter !== 'all') {
-        var nameLower = (ev.name || '').toLowerCase();
-        if (activeStrokeFilter === 'freestyle' && !nameLower.includes('freestyle')) return false;
-        if (activeStrokeFilter === 'backstroke' && !nameLower.includes('backstroke')) return false;
-        if (activeStrokeFilter === 'breaststroke' && !nameLower.includes('breaststroke')) return false;
-        if (activeStrokeFilter === 'butterfly' && !nameLower.includes('butterfly')) return false;
-        if (activeStrokeFilter === 'medley' && !nameLower.includes('medley')) return false;
-        if (activeStrokeFilter === 'relays' && (!nameLower.includes('relay') && !nameLower.includes('4 x'))) return false;
-      }
-
-      // 4. Text Search
-      if (activeSearchQuery.trim()) {
-        var q = activeSearchQuery.toLowerCase();
-        var matchName = (ev.name || '').toLowerCase().includes(q);
-        var matchVenue = (ev.venue || '').toLowerCase().includes(q);
-        var matchPodium = false;
-        if (ev.podium) {
-          matchPodium = Object.values(ev.podium).some(function (p) {
-            return p && ((p.athlete || '').toLowerCase().includes(q) || (p.country || '').toLowerCase().includes(q));
-          });
-        }
-        var matchAthlete = false;
-        (ev.finals || []).concat(ev.heats || []).forEach(function (u) {
-          (u.results || []).forEach(function (r) {
-            if ((r.name || '').toLowerCase().includes(q) || (r.country || '').toLowerCase().includes(q) || (r.org || '').toLowerCase().includes(q)) {
-              matchAthlete = true;
-            }
-          });
-        });
-        if (!matchName && !matchVenue && !matchPodium && !matchAthlete) return false;
-      }
-
-      return true;
-    });
-  }
-
-  // --- Main Schedule & Events Renderer ---
+  // --- Main Schedule & Events Renderer (Standard Hub Layout with Event Dropdown) ---
   function renderMatches(events) {
     if (!events || events.length === 0) {
       return '<div class="empty-state">No swimming events data available.</div>';
@@ -125,118 +68,60 @@
     });
 
     var curGender = String((typeof window !== 'undefined' && window.currentGender) || 'men').toLowerCase();
-    var filtered = filterEvents(events, curGender);
 
-    var genderTitle = curGender === 'men' ? "Men's Events (20 Medal Events)" : (curGender === 'women' ? "Women's Events (20 Medal Events)" : "Mixed Event (1 Medal Event)");
+    // Filter events by gender
+    var genderEvents = events.filter(function (ev) {
+      var evGen = String(ev.gender || '').toLowerCase();
+      if (curGender === 'men') return evGen === 'men' || (!evGen && (ev.name || '').includes("Men's"));
+      if (curGender === 'women') return evGen === 'women' || (!evGen && (ev.name || '').includes("Women's"));
+      if (curGender === 'mixed') return evGen === 'mixed' || (!evGen && (ev.name || '').includes("Mixed"));
+      return true;
+    });
 
-    var dayPills = [
-      { id: 'all', label: 'All Days' },
-      { id: '2026-09-20', label: 'Day 1 • Sep 20' },
-      { id: '2026-09-21', label: 'Day 2 • Sep 21' },
-      { id: '2026-09-22', label: 'Day 3 • Sep 22' },
-      { id: '2026-09-23', label: 'Day 4 • Sep 23' },
-      { id: '2026-09-24', label: 'Day 5 • Sep 24' },
-      { id: '2026-09-25', label: 'Day 6 • Sep 25' }
-    ].map(function (d) {
-      var isActive = activeDayFilter === d.id;
-      return '<button style="padding:6px 12px; font-size:0.75rem; font-weight:700; border-radius:8px; border:none; cursor:pointer; transition:all 0.15s; background:' + (isActive ? '#2563eb' : 'rgba(255,255,255,0.06)') + '; color:' + (isActive ? '#ffffff' : '#94a3b8') + ';" onclick="window.setSwimmingDayFilter(\'' + d.id + '\')">' + d.label + '</button>';
-    }).join('');
+    if (genderEvents.length === 0) {
+      genderEvents = events;
+    }
 
-    var strokePills = [
-      { id: 'all', label: 'All Strokes' },
-      { id: 'freestyle', label: '🏊 Freestyle' },
-      { id: 'backstroke', label: '🏊 Backstroke' },
-      { id: 'breaststroke', label: '🏊 Breaststroke' },
-      { id: 'butterfly', label: '🦋 Butterfly' },
-      { id: 'medley', label: '⚡ Medley' },
-      { id: 'relays', label: '👥 Relays' }
-    ].map(function (s) {
-      var isActive = activeStrokeFilter === s.id;
-      return '<button style="padding:4px 10px; font-size:0.72rem; font-weight:600; border-radius:6px; border:1px solid ' + (isActive ? '#38bdf8' : 'rgba(255,255,255,0.08)') + '; cursor:pointer; transition:all 0.15s; background:' + (isActive ? 'rgba(56,189,248,0.15)' : 'transparent') + '; color:' + (isActive ? '#38bdf8' : '#94a3b8') + ';" onclick="window.setSwimmingStrokeFilter(\'' + s.id + '\')">' + s.label + '</button>';
-    }).join('');
+    // Validate active filter
+    var isValidFilter = activeSwimmingEventFilter === 'all' || genderEvents.some(function (e) { return e.id === activeSwimmingEventFilter; });
+    if (!isValidFilter) {
+      activeSwimmingEventFilter = 'all';
+    }
 
-    var html = `
-      <!-- Venue & Qualification Rules Banner -->
-      <div style="background:linear-gradient(135deg, rgba(37,99,235,0.18), rgba(15,23,42,0.9)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:1.15rem 1.25rem; margin-bottom:1.25rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:0.75rem;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-size:1.6rem;">🏊</span>
-            <div>
-              <div style="font-size:1.05rem; font-weight:800; color:#f8fafc;">Asian Games 2026 Swimming Championships</div>
-              <div style="font-size:0.76rem; color:#93c5fd; margin-top:2px;">
-                Tokyo Aquatics Centre • 10-Lane Olympic Competition Pool • 41 Medal Events
-              </div>
-            </div>
-          </div>
-          <div style="background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:4px 10px; font-size:0.73rem; color:#cbd5e1; font-weight:600;">
-            ${genderTitle}
+    var filtered = activeSwimmingEventFilter === 'all'
+      ? genderEvents
+      : genderEvents.filter(function (e) { return e.id === activeSwimmingEventFilter; });
+
+    // Event Dropdown Filter Bar (Identical styling to Soft Tennis / Teqball)
+    var filterBarHtml = `
+      <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:240px;">
+          <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
+          <div class="event-selector-wrap" style="flex:1;">
+            <select class="event-dropdown" onchange="window.setSwimmingEventFilter(this.value)" style="width:100%; max-width:400px;">
+              <option value="all" ${activeSwimmingEventFilter === 'all' ? 'selected' : ''}>All Events (${genderEvents.length} Events)</option>
+              ${genderEvents.map(function (ev) {
+                return '<option value="' + escapeAttr(ev.id) + '" ' + (activeSwimmingEventFilter === ev.id ? 'selected' : '') + '>' + ev.name + '</option>';
+              }).join('')}
+            </select>
           </div>
         </div>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; background:rgba(0,0,0,0.3); border-radius:8px; padding:0.75rem 1rem; border:1px solid rgba(255,255,255,0.06); font-size:0.73rem;">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="color:#facc15; font-size:1rem;">🏅</span>
-            <div>
-              <strong style="color:#f8fafc;">Individual Finals (10 Athletes):</strong>
-              <div style="color:#94a3b8;">Top 10 fastest times across heats advance to Final (Lanes 0–9).</div>
-            </div>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="color:#38bdf8; font-size:1rem;">👥</span>
-            <div>
-              <strong style="color:#f8fafc;">Relay Finals (8 Teams):</strong>
-              <div style="color:#94a3b8;">Top 8 fastest relay squads advance to Final (Lanes 1–8).</div>
-            </div>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="color:#4ade80; font-size:1rem;">⏱️</span>
-            <div>
-              <strong style="color:#f8fafc;">Distance Timed Finals:</strong>
-              <div style="color:#94a3b8;">800m & 1500m direct timed heats (Fast Heat in evening).</div>
-            </div>
-          </div>
-        </div>
+        <span style="font-size:0.72rem; color:#64748b;">
+          Showing ${filtered.length} of ${genderEvents.length} events
+        </span>
       </div>
-
-      <!-- Filter Controls Bar -->
-      <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:1rem; margin-bottom:1.25rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:0.85rem;">
-          <div style="display:flex; gap:6px; flex-wrap:wrap; overflow-x:auto;">
-            ${dayPills}
-          </div>
-          <div style="position:relative; min-width:220px;">
-            <input 
-              type="text" 
-              placeholder="🔍 Search athlete, country, event..." 
-              value="${activeSearchQuery}"
-              oninput="window.setSwimmingSearch(this.value)"
-              style="width:100%; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:7px 12px; font-size:0.78rem; color:#f8fafc; outline:none;"
-            />
-          </div>
-        </div>
-        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-          <span style="font-size:0.7rem; font-weight:700; color:#64748b; text-transform:uppercase;">Stroke Filter:</span>
-          ${strokePills}
-        </div>
-      </div>
-
-      <!-- Events List -->
-      <div class="swimming-events-container" style="display:flex; flex-direction:column; gap:1.25rem;">
-        ${filtered.length === 0 ? `
-          <div style="text-align:center; padding:3rem 1rem; color:#94a3b8; background:var(--card-bg, #131c2e); border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
-            No swimming events matched your selected filter criteria.
-          </div>
-        ` : filtered.map(renderEventCard).join('')}
-      </div>
-
-      <!-- Modal Root for Clickable Unit Results -->
-      <div id="swimming-unit-modal-root"></div>
     `;
 
-    return html;
+    return `
+      ${filterBarHtml}
+      <div class="swimming-events-container" style="display:flex; flex-direction:column; gap:1.25rem;">
+        ${filtered.map(renderEventCard).join('')}
+      </div>
+      <div id="swimming-unit-modal-root"></div>
+    `;
   }
 
-  // --- Render Single Event Card with Clickable Heats & Finals ---
+  // --- Render Event Card with Heats & Finals Buttons ---
   function renderEventCard(ev) {
     var isOfficial = ev.status === 'Official';
     var isLive = ev.status === 'Live';
@@ -299,7 +184,7 @@
       `;
     }
 
-    // Interactive clickable units (Heats and Finals)
+    // Heats buttons
     var heatsHtml = (ev.heats || []).map(function (h) {
       var isFin = h.status === 'OFFICIAL' || h.status === 'Finished';
       var timeStr = formatTimeDisplay(h.timeJst, h.timeIst);
@@ -308,7 +193,7 @@
         <button 
           class="swm-unit-btn" 
           onclick="window.openSwimmingUnitModal('${escapeAttr(ev.id)}', '${escapeAttr(h.id)}')"
-          style="display:inline-flex; align-items:center; gap:6px; background:rgba(30,41,59,0.7); hover:background:rgba(51,65,85,0.9); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:7px 12px; color:#cbd5e1; font-size:0.75rem; font-weight:600; cursor:pointer; transition:all 0.15s;"
+          style="display:inline-flex; align-items:center; gap:6px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:7px 12px; color:#cbd5e1; font-size:0.75rem; font-weight:600; cursor:pointer; transition:all 0.15s;"
         >
           <span>🏊</span>
           <span>${h.unitDesc || ('Heat ' + h.unitNum)}</span>
@@ -319,6 +204,7 @@
       `;
     }).join('');
 
+    // Finals buttons
     var finalsHtml = (ev.finals || []).map(function (f) {
       var isFin = f.status === 'OFFICIAL' || f.status === 'Finished';
       var timeStr = formatTimeDisplay(f.timeJst, f.timeIst);
@@ -341,6 +227,14 @@
 
     var datesStr = (ev.dates || [ev.date || '']).join(' • ');
 
+    var isRelay = (ev.name || '').includes('Relay') || (ev.name || '').includes('4 x');
+    var isDistance = (ev.name || '').includes('800m') || (ev.name || '').includes('1500m');
+    var ruleText = isDistance
+      ? 'Timed Finals across heats • Medals awarded on overall times.'
+      : (isRelay 
+          ? 'Top 8 teams from heats qualify for Final (Lanes 1–8).' 
+          : 'Top 10 swimmers from heats qualify for Final (Lanes 0–9).');
+
     return `
       <div class="swimming-event-card" style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:1.25rem; transition:border 0.2s;">
         <!-- Header -->
@@ -350,7 +244,7 @@
             <div>
               <div style="font-size:1.05rem; font-weight:800; color:#f8fafc;">${ev.name}</div>
               <div style="font-size:0.74rem; color:#94a3b8; margin-top:2px;">
-                📅 ${datesStr} • 📍 ${ev.venue || 'Tokyo Aquatics Centre'}
+                📅 ${datesStr} • 📍 ${ev.venue || 'Tokyo Aquatics Centre'} • <span style="color:#38bdf8;">${ruleText}</span>
               </div>
             </div>
           </div>
@@ -366,7 +260,7 @@
         <div style="margin-top:0.85rem;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
             <span style="font-size:0.72rem; font-weight:700; color:#64748b; text-transform:uppercase;">
-              Interactive Units (Click to view full lane results & splits):
+              Interactive Units (Click to view full results & lane times):
             </span>
             <span style="font-size:0.7rem; color:#38bdf8;">
               👆 Click Heat or Final to open results
@@ -404,13 +298,18 @@
     var isFinal = unit.isFinal;
     var results = unit.results || [];
     var isRelay = (ev.name || '').includes('Relay') || (ev.name || '').includes('4 x');
+    var isDistance = (ev.name || '').includes('800m') || (ev.name || '').includes('1500m');
     var qualNote = isFinal 
       ? 'Tokyo Aquatics Centre Final • Medals decided by official finish times.'
-      : (isRelay ? 'Top 8 fastest relay squads across all heats advance to the Final.' : 'Top 10 fastest swimmers across all heats advance to the Final (Lanes 0–9).');
+      : (isDistance 
+          ? 'Timed Final heat • Official times determine tournament medal standings.'
+          : (isRelay 
+              ? 'Top 8 fastest relay squads across all heats advance to the Final (Lanes 1–8).' 
+              : 'Top 10 fastest swimmers across all heats advance to the Final (Lanes 0–9).'));
 
     var rowsHtml = results.length === 0 ? `
       <tr>
-        <td colspan="8" style="text-align:center; padding:2.5rem 1rem; color:#94a3b8;">
+        <td colspan="7" style="text-align:center; padding:2.5rem 1rem; color:#94a3b8;">
           Start list / Results for this session will be officially updated when available.
         </td>
       </tr>
@@ -572,28 +471,8 @@
     row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
   };
 
-  window.setSwimmingDayFilter = function (day) {
-    activeDayFilter = day;
-    if (typeof window.renderMatchesView === 'function' && window.currentTab === 'matches') {
-      var container = document.getElementById('content-cards');
-      var curGen = String((typeof window !== 'undefined' && window.currentGender) || 'men').toLowerCase();
-      var dataList = curGen === 'men' ? window.appData.menMatches : (curGen === 'women' ? window.appData.womenMatches : window.appData.mixedMatches);
-      window.renderMatchesView(container, dataList);
-    }
-  };
-
-  window.setSwimmingStrokeFilter = function (stroke) {
-    activeStrokeFilter = stroke;
-    if (typeof window.renderMatchesView === 'function' && window.currentTab === 'matches') {
-      var container = document.getElementById('content-cards');
-      var curGen = String((typeof window !== 'undefined' && window.currentGender) || 'men').toLowerCase();
-      var dataList = curGen === 'men' ? window.appData.menMatches : (curGen === 'women' ? window.appData.womenMatches : window.appData.mixedMatches);
-      window.renderMatchesView(container, dataList);
-    }
-  };
-
-  window.setSwimmingSearch = function (q) {
-    activeSearchQuery = q;
+  window.setSwimmingEventFilter = function (evId) {
+    activeSwimmingEventFilter = evId;
     if (typeof window.renderMatchesView === 'function' && window.currentTab === 'matches') {
       var container = document.getElementById('content-cards');
       var curGen = String((typeof window !== 'undefined' && window.currentGender) || 'men').toLowerCase();

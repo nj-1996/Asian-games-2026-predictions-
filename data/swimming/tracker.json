@@ -5,6 +5,7 @@
     {
       "id": "W.200MBF------------",
       "name": "Women's 200m Butterfly",
+      "event": "Women's 200m Butterfly",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -1091,6 +1092,7 @@
     {
       "id": "M.200MIM------------",
       "name": "Men's 200m Individual Medley",
+      "event": "Men's 200m Individual Medley",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -2863,6 +2865,7 @@
     {
       "id": "W.1500MFR-----------",
       "name": "Women's 1500m Freestyle",
+      "event": "Women's 1500m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -5104,6 +5107,7 @@
     {
       "id": "M.100MFR------------",
       "name": "Men's 100m Freestyle",
+      "event": "Men's 100m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -6814,6 +6818,7 @@
     {
       "id": "W.50MBR-------------",
       "name": "Women's 50m Breaststroke",
+      "event": "Women's 50m Breaststroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -7746,6 +7751,7 @@
     {
       "id": "M.100MBA------------",
       "name": "Men's 100m Backstroke",
+      "event": "Men's 100m Backstroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -9038,6 +9044,7 @@
     {
       "id": "W.4X100MFR----------",
       "name": "Women's 4 x 100m Freestyle Relay",
+      "event": "Women's 4 x 100m Freestyle Relay",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -10304,6 +10311,7 @@
     {
       "id": "M.50MBA-------------",
       "name": "Men's 50m Backstroke",
+      "event": "Men's 50m Backstroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -11356,6 +11364,7 @@
     {
       "id": "W.50MBA-------------",
       "name": "Women's 50m Backstroke",
+      "event": "Women's 50m Backstroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -12446,6 +12455,7 @@
     {
       "id": "M.50MFR-------------",
       "name": "Men's 50m Freestyle",
+      "event": "Men's 50m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -13958,6 +13968,7 @@
     {
       "id": "W.200MFR------------",
       "name": "Women's 200m Freestyle",
+      "event": "Women's 200m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -15394,6 +15405,7 @@
     {
       "id": "M.100MBR------------",
       "name": "Men's 100m Breaststroke",
+      "event": "Men's 100m Breaststroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -16875,6 +16887,7 @@
     {
       "id": "W.200MIM------------",
       "name": "Women's 200m Individual Medley",
+      "event": "Women's 200m Individual Medley",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -18353,6 +18366,7 @@
     {
       "id": "M.4X200MFR----------",
       "name": "Men's 4 x 200m Freestyle Relay",
+      "event": "Men's 4 x 200m Freestyle Relay",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -20825,6 +20839,7 @@
     {
       "id": "W.100MFR------------",
       "name": "Women's 100m Freestyle",
+      "event": "Women's 100m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -22281,6 +22296,7 @@
     {
       "id": "M.400MIM------------",
       "name": "Men's 400m Individual Medley",
+      "event": "Men's 400m Individual Medley",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -24617,6 +24633,7 @@
     {
       "id": "W.200MBA------------",
       "name": "Women's 200m Backstroke",
+      "event": "Women's 200m Backstroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -26011,6 +26028,7 @@
     {
       "id": "M.1500MFR-----------",
       "name": "Men's 1500m Freestyle",
+      "event": "Men's 1500m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -30642,6 +30660,7 @@
     {
       "id": "W.400MFR------------",
       "name": "Women's 400m Freestyle",
+      "event": "Women's 400m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -32436,6 +32455,7 @@
     {
       "id": "M.4X100MMD----------",
       "name": "Men's 4 x 100m Medley Relay",
+      "event": "Men's 4 x 100m Medley Relay",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -34098,6 +34118,7 @@
     {
       "id": "W.100MBF------------",
       "name": "Women's 100m Butterfly",
+      "event": "Women's 100m Butterfly",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -35120,6 +35141,7 @@
     {
       "id": "M.100MBF------------",
       "name": "Men's 100m Butterfly",
+      "event": "Men's 100m Butterfly",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -36546,6 +36568,7 @@
     {
       "id": "W.100MBA------------",
       "name": "Women's 100m Backstroke",
+      "event": "Women's 100m Backstroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -37808,6 +37831,7 @@
     {
       "id": "M.200MFR------------",
       "name": "Men's 200m Freestyle",
+      "event": "Men's 200m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -39678,6 +39702,7 @@
     {
       "id": "W.100MBR------------",
       "name": "Women's 100m Breaststroke",
+      "event": "Women's 100m Breaststroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -40820,6 +40845,7 @@
     {
       "id": "W.400MIM------------",
       "name": "Women's 400m Individual Medley",
+      "event": "Women's 400m Individual Medley",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -42548,6 +42574,7 @@
     {
       "id": "X.4X100MMD----------",
       "name": "Mixed 4 x 100m Medley Relay",
+      "event": "Mixed 4 x 100m Medley Relay",
       "gender": "mixed",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -44078,6 +44105,7 @@
     {
       "id": "W.50MFR-------------",
       "name": "Women's 50m Freestyle",
+      "event": "Women's 50m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -45044,6 +45072,7 @@
     {
       "id": "M.50MBF-------------",
       "name": "Men's 50m Butterfly",
+      "event": "Men's 50m Butterfly",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -46288,6 +46317,7 @@
     {
       "id": "W.200MBR------------",
       "name": "Women's 200m Breaststroke",
+      "event": "Women's 200m Breaststroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -47063,6 +47093,7 @@
     {
       "id": "M.200MBR------------",
       "name": "Men's 200m Breaststroke",
+      "event": "Men's 200m Breaststroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -48146,6 +48177,7 @@
     {
       "id": "M.800MFR------------",
       "name": "Men's 800m Freestyle",
+      "event": "Men's 800m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -50845,6 +50877,7 @@
     {
       "id": "M.4X100MFR----------",
       "name": "Men's 4 x 100m Freestyle Relay",
+      "event": "Men's 4 x 100m Freestyle Relay",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -51764,6 +51797,7 @@
     {
       "id": "W.4X200MFR----------",
       "name": "Women's 4 x 200m Freestyle Relay",
+      "event": "Women's 4 x 200m Freestyle Relay",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -52851,6 +52885,7 @@
     {
       "id": "W.50MBF-------------",
       "name": "Women's 50m Butterfly",
+      "event": "Women's 50m Butterfly",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -53598,6 +53633,7 @@
     {
       "id": "M.50MBR-------------",
       "name": "Men's 50m Breaststroke",
+      "event": "Men's 50m Breaststroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -54647,6 +54683,7 @@
     {
       "id": "W.800MFR------------",
       "name": "Women's 800m Freestyle",
+      "event": "Women's 800m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -56290,6 +56327,7 @@
     {
       "id": "M.200MBA------------",
       "name": "Men's 200m Backstroke",
+      "event": "Men's 200m Backstroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -57289,6 +57327,7 @@
     {
       "id": "M.400MFR------------",
       "name": "Men's 400m Freestyle",
+      "event": "Men's 400m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -59278,6 +59317,7 @@
     {
       "id": "M.200MBF------------",
       "name": "Men's 200m Butterfly",
+      "event": "Men's 200m Butterfly",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -60445,6 +60485,7 @@
     {
       "id": "W.4X100MMD----------",
       "name": "Women's 4 x 100m Medley Relay",
+      "event": "Women's 4 x 100m Medley Relay",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -61300,6 +61341,7 @@
     {
       "id": "M.100MBA------------",
       "name": "Men's 100m Backstroke",
+      "event": "Men's 100m Backstroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -62592,6 +62634,7 @@
     {
       "id": "M.100MFR------------",
       "name": "Men's 100m Freestyle",
+      "event": "Men's 100m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -64302,6 +64345,7 @@
     {
       "id": "M.200MIM------------",
       "name": "Men's 200m Individual Medley",
+      "event": "Men's 200m Individual Medley",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -66074,6 +66118,7 @@
     {
       "id": "M.100MBR------------",
       "name": "Men's 100m Breaststroke",
+      "event": "Men's 100m Breaststroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -67555,6 +67600,7 @@
     {
       "id": "M.4X200MFR----------",
       "name": "Men's 4 x 200m Freestyle Relay",
+      "event": "Men's 4 x 200m Freestyle Relay",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -70027,6 +70073,7 @@
     {
       "id": "M.50MBA-------------",
       "name": "Men's 50m Backstroke",
+      "event": "Men's 50m Backstroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -71079,6 +71126,7 @@
     {
       "id": "M.50MFR-------------",
       "name": "Men's 50m Freestyle",
+      "event": "Men's 50m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -72591,6 +72639,7 @@
     {
       "id": "M.1500MFR-----------",
       "name": "Men's 1500m Freestyle",
+      "event": "Men's 1500m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -77222,6 +77271,7 @@
     {
       "id": "M.4X100MMD----------",
       "name": "Men's 4 x 100m Medley Relay",
+      "event": "Men's 4 x 100m Medley Relay",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -78884,6 +78934,7 @@
     {
       "id": "M.400MIM------------",
       "name": "Men's 400m Individual Medley",
+      "event": "Men's 400m Individual Medley",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -81220,6 +81271,7 @@
     {
       "id": "M.100MBF------------",
       "name": "Men's 100m Butterfly",
+      "event": "Men's 100m Butterfly",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -82646,6 +82698,7 @@
     {
       "id": "M.200MFR------------",
       "name": "Men's 200m Freestyle",
+      "event": "Men's 200m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -84516,6 +84569,7 @@
     {
       "id": "M.200MBR------------",
       "name": "Men's 200m Breaststroke",
+      "event": "Men's 200m Breaststroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -85599,6 +85653,7 @@
     {
       "id": "M.4X100MFR----------",
       "name": "Men's 4 x 100m Freestyle Relay",
+      "event": "Men's 4 x 100m Freestyle Relay",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -86518,6 +86573,7 @@
     {
       "id": "M.50MBF-------------",
       "name": "Men's 50m Butterfly",
+      "event": "Men's 50m Butterfly",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -87762,6 +87818,7 @@
     {
       "id": "M.800MFR------------",
       "name": "Men's 800m Freestyle",
+      "event": "Men's 800m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -90461,6 +90518,7 @@
     {
       "id": "M.200MBA------------",
       "name": "Men's 200m Backstroke",
+      "event": "Men's 200m Backstroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -91460,6 +91518,7 @@
     {
       "id": "M.200MBF------------",
       "name": "Men's 200m Butterfly",
+      "event": "Men's 200m Butterfly",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -92627,6 +92686,7 @@
     {
       "id": "M.400MFR------------",
       "name": "Men's 400m Freestyle",
+      "event": "Men's 400m Freestyle",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -94616,6 +94676,7 @@
     {
       "id": "M.50MBR-------------",
       "name": "Men's 50m Breaststroke",
+      "event": "Men's 50m Breaststroke",
       "gender": "men",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -95667,6 +95728,7 @@
     {
       "id": "W.1500MFR-----------",
       "name": "Women's 1500m Freestyle",
+      "event": "Women's 1500m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -97908,6 +97970,7 @@
     {
       "id": "W.200MBF------------",
       "name": "Women's 200m Butterfly",
+      "event": "Women's 200m Butterfly",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -98994,6 +99057,7 @@
     {
       "id": "W.4X100MFR----------",
       "name": "Women's 4 x 100m Freestyle Relay",
+      "event": "Women's 4 x 100m Freestyle Relay",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -100260,6 +100324,7 @@
     {
       "id": "W.50MBR-------------",
       "name": "Women's 50m Breaststroke",
+      "event": "Women's 50m Breaststroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -101192,6 +101257,7 @@
     {
       "id": "W.200MFR------------",
       "name": "Women's 200m Freestyle",
+      "event": "Women's 200m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -102628,6 +102694,7 @@
     {
       "id": "W.200MIM------------",
       "name": "Women's 200m Individual Medley",
+      "event": "Women's 200m Individual Medley",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -104106,6 +104173,7 @@
     {
       "id": "W.50MBA-------------",
       "name": "Women's 50m Backstroke",
+      "event": "Women's 50m Backstroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -105196,6 +105264,7 @@
     {
       "id": "W.100MFR------------",
       "name": "Women's 100m Freestyle",
+      "event": "Women's 100m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -106652,6 +106721,7 @@
     {
       "id": "W.200MBA------------",
       "name": "Women's 200m Backstroke",
+      "event": "Women's 200m Backstroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -108046,6 +108116,7 @@
     {
       "id": "W.400MFR------------",
       "name": "Women's 400m Freestyle",
+      "event": "Women's 400m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -109840,6 +109911,7 @@
     {
       "id": "W.100MBA------------",
       "name": "Women's 100m Backstroke",
+      "event": "Women's 100m Backstroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -111102,6 +111174,7 @@
     {
       "id": "W.100MBR------------",
       "name": "Women's 100m Breaststroke",
+      "event": "Women's 100m Breaststroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -112244,6 +112317,7 @@
     {
       "id": "W.100MBF------------",
       "name": "Women's 100m Butterfly",
+      "event": "Women's 100m Butterfly",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -113266,6 +113340,7 @@
     {
       "id": "W.400MIM------------",
       "name": "Women's 400m Individual Medley",
+      "event": "Women's 400m Individual Medley",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -114994,6 +115069,7 @@
     {
       "id": "W.200MBR------------",
       "name": "Women's 200m Breaststroke",
+      "event": "Women's 200m Breaststroke",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -115769,6 +115845,7 @@
     {
       "id": "W.4X200MFR----------",
       "name": "Women's 4 x 200m Freestyle Relay",
+      "event": "Women's 4 x 200m Freestyle Relay",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -116856,6 +116933,7 @@
     {
       "id": "W.50MFR-------------",
       "name": "Women's 50m Freestyle",
+      "event": "Women's 50m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -117822,6 +117900,7 @@
     {
       "id": "W.4X100MMD----------",
       "name": "Women's 4 x 100m Medley Relay",
+      "event": "Women's 4 x 100m Medley Relay",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -118675,6 +118754,7 @@
     {
       "id": "W.50MBF-------------",
       "name": "Women's 50m Butterfly",
+      "event": "Women's 50m Butterfly",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -119422,6 +119502,7 @@
     {
       "id": "W.800MFR------------",
       "name": "Women's 800m Freestyle",
+      "event": "Women's 800m Freestyle",
       "gender": "women",
       "venue": "Tokyo Aquatics Centre",
       "dates": [
@@ -121067,6 +121148,7 @@
     {
       "id": "X.4X100MMD----------",
       "name": "Mixed 4 x 100m Medley Relay",
+      "event": "Mixed 4 x 100m Medley Relay",
       "gender": "mixed",
       "venue": "Tokyo Aquatics Centre",
       "dates": [

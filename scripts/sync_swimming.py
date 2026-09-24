@@ -305,6 +305,7 @@ def sync_swimming():
             events_dict[ev_code] = {
                 "id": ev_code,
                 "name": ev_desc,
+                "event": ev_desc,
                 "gender": gender,
                 "venue": venue,
                 "dates": set(),

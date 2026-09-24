@@ -78,7 +78,7 @@ async function loadAllData() {
     const rawMixed = extractList(mixedTrackerRaw) || [];
 
     const isMixedMatch = (m) => {
-      const ev = String(m.event || m.gender || m.round || m.discipline || '').toLowerCase();
+      const ev = String(m.event || m.name || m.gender || m.round || m.discipline || '').toLowerCase();
       return ev.includes('mixed');
     };
 
