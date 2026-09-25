@@ -223,8 +223,8 @@
     },
     {
       "round": "Women 1/4",
-      "status": "Upcoming",
-      "state": "Unofficial",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "19:30",
       "player1": "Japan",
@@ -234,8 +234,8 @@
     },
     {
       "round": "Women 1/4",
-      "status": "Upcoming",
-      "state": "Unofficial",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "19:30",
       "player1": "Korea",
@@ -260,8 +260,8 @@
       "state": "Scheduled",
       "date": "2026-09-29",
       "time": "19:30",
-      "player1": "TBD",
-      "player2": "TBD",
+      "player1": "Japan",
+      "player2": "Korea",
       "score": "vs",
       "winner": ""
     },
