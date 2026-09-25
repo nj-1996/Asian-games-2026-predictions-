@@ -30425,173 +30425,47 @@
           "date": "2026-09-25",
           "timeJst": "10:28",
           "timeIst": "06:58",
-          "status": "START_LIST",
+          "status": "UNOFFICIAL",
           "isFinal": false,
           "participantCount": 7,
           "results": [
             {
-              "lane": "1",
-              "rank": "",
-              "name": "OTGONBAATAR Ireeduinbaatar",
-              "org": "MGL",
-              "country": "Mongolia",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2011",
-              "qualifyingTime": "2:24.00",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "2",
-              "rank": "",
-              "name": "KANTEEMOOL Tonnam",
-              "org": "THA",
-              "country": "Thailand",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2005",
-              "qualifyingTime": "2:02.89",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "3",
-              "rank": "",
-              "name": "RUMYNSKIY Alexandr",
-              "org": "KAZ",
-              "country": "Kazakhstan",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2008",
-              "qualifyingTime": "2:01.50",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
               "lane": "4",
-              "rank": "",
+              "rank": "1",
               "name": "LEE Juho",
               "org": "KOR",
               "country": "Korea",
-              "time": "",
+              "time": "1:58.90",
               "diff": "",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.58",
               "birthYear": "1995",
               "qualifyingTime": "1:57.48",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.47",
+                  "accumulated": "27.47",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "29.94",
+                  "accumulated": "57.41",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.88",
+                  "accumulated": "1:28.29",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.61",
+                  "accumulated": "1:58.90",
                   "rank": "0"
                 }
               ],
@@ -30599,41 +30473,125 @@
             },
             {
               "lane": "5",
-              "rank": "",
+              "rank": "2",
               "name": "DAS Rishabh",
               "org": "IND",
               "country": "India",
-              "time": "",
-              "diff": "",
+              "time": "2:00.53",
+              "diff": "+1.63",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.67",
               "birthYear": "2007",
               "qualifyingTime": "1:59.90",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.02",
+                  "accumulated": "28.02",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.15",
+                  "accumulated": "58.17",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.16",
+                  "accumulated": "1:29.33",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.20",
+                  "accumulated": "2:00.53",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "3",
+              "rank": "3",
+              "name": "RUMYNSKIY Alexandr",
+              "org": "KAZ",
+              "country": "Kazakhstan",
+              "time": "2:03.33",
+              "diff": "+4.43",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.62",
+              "birthYear": "2008",
+              "qualifyingTime": "2:01.50",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "29.24",
+                  "accumulated": "29.24",
+                  "rank": "0"
+                },
+                {
+                  "distance": "100m",
+                  "split": "31.77",
+                  "accumulated": "1:01.01",
+                  "rank": "0"
+                },
+                {
+                  "distance": "150m",
+                  "split": "31.68",
+                  "accumulated": "1:32.69",
+                  "rank": "0"
+                },
+                {
+                  "distance": "200m",
+                  "split": "30.64",
+                  "accumulated": "2:03.33",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "2",
+              "rank": "4",
+              "name": "KANTEEMOOL Tonnam",
+              "org": "THA",
+              "country": "Thailand",
+              "time": "2:04.20",
+              "diff": "+5.30",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.56",
+              "birthYear": "2005",
+              "qualifyingTime": "2:02.89",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.39",
+                  "accumulated": "28.39",
+                  "rank": "0"
+                },
+                {
+                  "distance": "100m",
+                  "split": "31.16",
+                  "accumulated": "59.55",
+                  "rank": "0"
+                },
+                {
+                  "distance": "150m",
+                  "split": "33.31",
+                  "accumulated": "1:32.86",
+                  "rank": "0"
+                },
+                {
+                  "distance": "200m",
+                  "split": "31.34",
+                  "accumulated": "2:04.20",
                   "rank": "0"
                 }
               ],
@@ -30641,41 +30599,41 @@
             },
             {
               "lane": "6",
-              "rank": "",
+              "rank": "5",
               "name": "TAY Zackery",
               "org": "SGP",
               "country": "Singapore",
-              "time": "",
-              "diff": "",
+              "time": "2:05.63",
+              "diff": "+6.73",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.60",
               "birthYear": "2005",
               "qualifyingTime": "2:02.08",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.95",
+                  "accumulated": "28.95",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.49",
+                  "accumulated": "1:00.44",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "32.38",
+                  "accumulated": "1:32.82",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "32.81",
+                  "accumulated": "2:05.63",
                   "rank": "0"
                 }
               ],
@@ -30683,41 +30641,83 @@
             },
             {
               "lane": "7",
-              "rank": "",
+              "rank": "6",
               "name": "ELGHAMRY Abdalla",
               "org": "QAT",
               "country": "Qatar",
-              "time": "",
-              "diff": "",
+              "time": "2:06.78",
+              "diff": "+7.88",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.62",
               "birthYear": "2007",
               "qualifyingTime": "2:05.91",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "29.73",
+                  "accumulated": "29.73",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "32.55",
+                  "accumulated": "1:02.28",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "32.55",
+                  "accumulated": "1:34.83",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.95",
+                  "accumulated": "2:06.78",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "1",
+              "rank": "7",
+              "name": "OTGONBAATAR Ireeduinbaatar",
+              "org": "MGL",
+              "country": "Mongolia",
+              "time": "2:30.49",
+              "diff": "+31.59",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.68",
+              "birthYear": "2011",
+              "qualifyingTime": "2:24.00",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "33.22",
+                  "accumulated": "33.22",
+                  "rank": "0"
+                },
+                {
+                  "distance": "100m",
+                  "split": "38.20",
+                  "accumulated": "1:11.42",
+                  "rank": "0"
+                },
+                {
+                  "distance": "150m",
+                  "split": "39.95",
+                  "accumulated": "1:51.37",
+                  "rank": "0"
+                },
+                {
+                  "distance": "200m",
+                  "split": "39.12",
+                  "accumulated": "2:30.49",
                   "rank": "0"
                 }
               ],
@@ -30733,89 +30733,47 @@
           "date": "2026-09-25",
           "timeJst": "10:32",
           "timeIst": "07:02",
-          "status": "START_LIST",
+          "status": "UNOFFICIAL",
           "isFinal": false,
           "participantCount": 7,
           "results": [
             {
-              "lane": "1",
-              "rank": "",
-              "name": "OYUNBAT Jonon",
-              "org": "MGL",
-              "country": "Mongolia",
-              "time": "",
+              "lane": "4",
+              "rank": "1",
+              "name": "NISHIONO Kodai",
+              "org": "JPN",
+              "country": "Japan",
+              "time": "2:00.64",
               "diff": "",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
-              "birthYear": "2010",
-              "qualifyingTime": "2:20.40",
+              "reaction": "0.55",
+              "birthYear": "2003",
+              "qualifyingTime": "1:57.04",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.83",
+                  "accumulated": "27.83",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.20",
+                  "accumulated": "58.03",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.65",
+                  "accumulated": "1:28.68",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "2",
-              "rank": "",
-              "name": "CHANG Kai-yueh",
-              "org": "TPE",
-              "country": "Chinese Taipei",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2009",
-              "qualifyingTime": "2:02.49",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.96",
+                  "accumulated": "2:00.64",
                   "rank": "0"
                 }
               ],
@@ -30823,83 +30781,41 @@
             },
             {
               "lane": "3",
-              "rank": "",
+              "rank": "2",
               "name": "KWAN Hayden",
               "org": "HKG",
               "country": "Hong Kong, China",
-              "time": "",
-              "diff": "",
+              "time": "2:01.39",
+              "diff": "+0.75",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.67",
               "birthYear": "2002",
               "qualifyingTime": "2:01.18",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.41",
+                  "accumulated": "28.41",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.73",
+                  "accumulated": "59.14",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.55",
+                  "accumulated": "1:30.69",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "4",
-              "rank": "",
-              "name": "NISHIONO Kodai",
-              "org": "JPN",
-              "country": "Japan",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2003",
-              "qualifyingTime": "1:57.04",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.70",
+                  "accumulated": "2:01.39",
                   "rank": "0"
                 }
               ],
@@ -30907,41 +30823,41 @@
             },
             {
               "lane": "5",
-              "rank": "",
+              "rank": "3",
               "name": "XU Jiayu",
               "org": "CHN",
               "country": "China",
-              "time": "",
-              "diff": "",
+              "time": "2:01.78",
+              "diff": "+1.14",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.59",
               "birthYear": "1995",
               "qualifyingTime": "1:57.55",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.29",
+                  "accumulated": "28.29",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "29.94",
+                  "accumulated": "58.23",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.42",
+                  "accumulated": "1:29.65",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "32.13",
+                  "accumulated": "2:01.78",
                   "rank": "0"
                 }
               ],
@@ -30949,41 +30865,83 @@
             },
             {
               "lane": "6",
-              "rank": "",
+              "rank": "4",
               "name": "HUANG Yu-teng",
               "org": "TPE",
               "country": "Chinese Taipei",
-              "time": "",
-              "diff": "",
+              "time": "2:03.23",
+              "diff": "+2.59",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.56",
               "birthYear": "2010",
               "qualifyingTime": "2:01.96",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.58",
+                  "accumulated": "28.58",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.51",
+                  "accumulated": "1:00.09",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.53",
+                  "accumulated": "1:31.62",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.61",
+                  "accumulated": "2:03.23",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "2",
+              "rank": "5",
+              "name": "CHANG Kai-yueh",
+              "org": "TPE",
+              "country": "Chinese Taipei",
+              "time": "2:03.70",
+              "diff": "+3.06",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.66",
+              "birthYear": "2009",
+              "qualifyingTime": "2:02.49",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.72",
+                  "accumulated": "28.72",
+                  "rank": "0"
+                },
+                {
+                  "distance": "100m",
+                  "split": "31.54",
+                  "accumulated": "1:00.26",
+                  "rank": "0"
+                },
+                {
+                  "distance": "150m",
+                  "split": "32.00",
+                  "accumulated": "1:32.26",
+                  "rank": "0"
+                },
+                {
+                  "distance": "200m",
+                  "split": "31.44",
+                  "accumulated": "2:03.70",
                   "rank": "0"
                 }
               ],
@@ -30991,41 +30949,83 @@
             },
             {
               "lane": "7",
-              "rank": "",
+              "rank": "6",
               "name": "CHAN Tsz Chiu",
               "org": "HKG",
               "country": "Hong Kong, China",
-              "time": "",
-              "diff": "",
+              "time": "2:06.07",
+              "diff": "+5.43",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.59",
               "birthYear": "2003",
               "qualifyingTime": "2:05.53",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.89",
+                  "accumulated": "28.89",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.48",
+                  "accumulated": "1:00.37",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "32.89",
+                  "accumulated": "1:33.26",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "32.81",
+                  "accumulated": "2:06.07",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "1",
+              "rank": "7",
+              "name": "OYUNBAT Jonon",
+              "org": "MGL",
+              "country": "Mongolia",
+              "time": "2:22.38",
+              "diff": "+21.74",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.71",
+              "birthYear": "2010",
+              "qualifyingTime": "2:20.40",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "32.25",
+                  "accumulated": "32.25",
+                  "rank": "0"
+                },
+                {
+                  "distance": "100m",
+                  "split": "35.75",
+                  "accumulated": "1:08.00",
+                  "rank": "0"
+                },
+                {
+                  "distance": "150m",
+                  "split": "38.25",
+                  "accumulated": "1:46.25",
+                  "rank": "0"
+                },
+                {
+                  "distance": "200m",
+                  "split": "36.13",
+                  "accumulated": "2:22.38",
                   "rank": "0"
                 }
               ],
@@ -31041,173 +31041,47 @@
           "date": "2026-09-25",
           "timeJst": "10:36",
           "timeIst": "07:06",
-          "status": "START_LIST",
+          "status": "UNOFFICIAL",
           "isFinal": false,
           "participantCount": 8,
           "results": [
             {
-              "lane": "1",
-              "rank": "",
-              "name": "ALYAMMAHI Mohamed",
-              "org": "UAE",
-              "country": "United Arab Emirates",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2010",
-              "qualifyingTime": "2:16.29",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "2",
-              "rank": "",
-              "name": "CHENG Reagan",
-              "org": "SGP",
-              "country": "Singapore",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2008",
-              "qualifyingTime": "2:02.10",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "3",
-              "rank": "",
-              "name": "TANGKAS Farrel",
-              "org": "INA",
-              "country": "Indonesia",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2001",
-              "qualifyingTime": "2:01.16",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                },
-                {
-                  "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
               "lane": "4",
-              "rank": "",
+              "rank": "1",
               "name": "TAKEHARA Hidekazu",
               "org": "JPN",
               "country": "Japan",
-              "time": "",
+              "time": "1:58.15",
               "diff": "",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.58",
               "birthYear": "2004",
               "qualifyingTime": "1:55.57",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.15",
+                  "accumulated": "27.15",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "29.66",
+                  "accumulated": "56.81",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.74",
+                  "accumulated": "1:27.55",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.60",
+                  "accumulated": "1:58.15",
                   "rank": "0"
                 }
               ],
@@ -31215,41 +31089,83 @@
             },
             {
               "lane": "5",
-              "rank": "",
+              "rank": "2",
               "name": "SONG Borui",
               "org": "CHN",
               "country": "China",
-              "time": "",
-              "diff": "",
+              "time": "1:59.59",
+              "diff": "+1.44",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.57",
               "birthYear": "2007",
               "qualifyingTime": "1:57.50",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.83",
+                  "accumulated": "27.83",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.32",
+                  "accumulated": "58.15",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.56",
+                  "accumulated": "1:28.71",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.88",
+                  "accumulated": "1:59.59",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "2",
+              "rank": "3",
+              "name": "CHENG Reagan",
+              "org": "SGP",
+              "country": "Singapore",
+              "time": "2:01.71",
+              "diff": "+3.56",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.61",
+              "birthYear": "2008",
+              "qualifyingTime": "2:02.10",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.15",
+                  "accumulated": "28.15",
+                  "rank": "0"
+                },
+                {
+                  "distance": "100m",
+                  "split": "30.80",
+                  "accumulated": "58.95",
+                  "rank": "0"
+                },
+                {
+                  "distance": "150m",
+                  "split": "31.69",
+                  "accumulated": "1:30.64",
+                  "rank": "0"
+                },
+                {
+                  "distance": "200m",
+                  "split": "31.07",
+                  "accumulated": "2:01.71",
                   "rank": "0"
                 }
               ],
@@ -31257,41 +31173,41 @@
             },
             {
               "lane": "6",
-              "rank": "",
+              "rank": "4",
               "name": "PATIL Utkarsh",
               "org": "IND",
               "country": "India",
-              "time": "",
-              "diff": "",
+              "time": "2:02.13",
+              "diff": "+3.98",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.60",
               "birthYear": "2005",
               "qualifyingTime": "2:01.82",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.65",
+                  "accumulated": "28.65",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.29",
+                  "accumulated": "59.94",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.66",
+                  "accumulated": "1:31.60",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.53",
+                  "accumulated": "2:02.13",
                   "rank": "0"
                 }
               ],
@@ -31299,41 +31215,125 @@
             },
             {
               "lane": "7",
-              "rank": "",
+              "rank": "5",
               "name": "TRAN Hung Nguyen",
               "org": "VIE",
               "country": "Vietnam",
-              "time": "",
-              "diff": "",
+              "time": "2:03.57",
+              "diff": "+5.42",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.60",
               "birthYear": "2003",
               "qualifyingTime": "2:03.24",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.95",
+                  "accumulated": "28.95",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.02",
+                  "accumulated": "59.97",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "31.54",
+                  "accumulated": "1:31.51",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "32.06",
+                  "accumulated": "2:03.57",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "3",
+              "rank": "6",
+              "name": "TANGKAS Farrel",
+              "org": "INA",
+              "country": "Indonesia",
+              "time": "2:03.73",
+              "diff": "+5.58",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.57",
+              "birthYear": "2001",
+              "qualifyingTime": "2:01.16",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.41",
+                  "accumulated": "28.41",
+                  "rank": "0"
+                },
+                {
+                  "distance": "100m",
+                  "split": "31.06",
+                  "accumulated": "59.47",
+                  "rank": "0"
+                },
+                {
+                  "distance": "150m",
+                  "split": "31.83",
+                  "accumulated": "1:31.30",
+                  "rank": "0"
+                },
+                {
+                  "distance": "200m",
+                  "split": "32.43",
+                  "accumulated": "2:03.73",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "1",
+              "rank": "7",
+              "name": "ALYAMMAHI Mohamed",
+              "org": "UAE",
+              "country": "United Arab Emirates",
+              "time": "2:17.99",
+              "diff": "+19.84",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.57",
+              "birthYear": "2010",
+              "qualifyingTime": "2:16.29",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "30.88",
+                  "accumulated": "30.88",
+                  "rank": "0"
+                },
+                {
+                  "distance": "100m",
+                  "split": "34.76",
+                  "accumulated": "1:05.64",
+                  "rank": "0"
+                },
+                {
+                  "distance": "150m",
+                  "split": "36.75",
+                  "accumulated": "1:42.39",
+                  "rank": "0"
+                },
+                {
+                  "distance": "200m",
+                  "split": "35.60",
+                  "accumulated": "2:17.99",
                   "rank": "0"
                 }
               ],
@@ -31341,7 +31341,7 @@
             },
             {
               "lane": "8",
-              "rank": "",
+              "rank": "8",
               "name": "KABBARA Munzer Mark",
               "org": "LBN",
               "country": "Lebanon",
@@ -31357,29 +31357,29 @@
                 {
                   "distance": "50m",
                   "split": "",
-                  "accumulated": "",
+                  "accumulated": "DNS",
                   "rank": "0"
                 },
                 {
                   "distance": "100m",
                   "split": "",
-                  "accumulated": "",
+                  "accumulated": "DNS",
                   "rank": "0"
                 },
                 {
                   "distance": "150m",
                   "split": "",
-                  "accumulated": "",
+                  "accumulated": "DNS",
                   "rank": "0"
                 },
                 {
                   "distance": "200m",
                   "split": "",
-                  "accumulated": "",
+                  "accumulated": "DNS",
                   "rank": "0"
                 }
               ],
-              "irm": "OK"
+              "irm": "DNS"
             }
           ]
         }
@@ -34573,7 +34573,7 @@
       "dates": [
         "2026-09-25"
       ],
-      "status": "Scheduled",
+      "status": "Heats Completed",
       "heats": [
         {
           "id": "M.50MBR-------------.HEAT.000100--",
@@ -34583,53 +34583,29 @@
           "date": "2026-09-25",
           "timeJst": "10:06",
           "timeIst": "06:36",
-          "status": "START_LIST",
+          "status": "OFFICIAL",
           "isFinal": false,
           "participantCount": 10,
           "results": [
             {
               "lane": "0",
-              "rank": "",
+              "rank": "1",
               "name": "AKOPYAN David",
               "org": "TKM",
               "country": "Turkmenistan",
-              "time": "",
+              "time": "29.28",
               "diff": "",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.73",
               "birthYear": "2007",
               "qualifyingTime": "",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "1",
-              "rank": "",
-              "name": "HUSSAIN Looth",
-              "org": "MDV",
-              "country": "Maldives",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2009",
-              "qualifyingTime": "32.16",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "29.28",
+                  "accumulated": "29.28",
                   "rank": "0"
                 }
               ],
@@ -34637,47 +34613,23 @@
             },
             {
               "lane": "2",
-              "rank": "",
+              "rank": "2",
               "name": "SOK Esarak",
               "org": "CAM",
               "country": "Cambodia",
-              "time": "",
-              "diff": "",
+              "time": "29.81",
+              "diff": "+0.53",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.74",
               "birthYear": "2009",
               "qualifyingTime": "31.32",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "3",
-              "rank": "",
-              "name": "SHRESTHA Jaden",
-              "org": "NEP",
-              "country": "Nepal",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2008",
-              "qualifyingTime": "30.70",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "29.81",
+                  "accumulated": "29.81",
                   "rank": "0"
                 }
               ],
@@ -34685,23 +34637,23 @@
             },
             {
               "lane": "4",
-              "rank": "",
+              "rank": "3",
               "name": "GANZORIGT Sugar",
               "org": "MGL",
               "country": "Mongolia",
-              "time": "",
-              "diff": "",
+              "time": "29.97",
+              "diff": "+0.69",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.74",
               "birthYear": "2005",
               "qualifyingTime": "29.90",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "29.97",
+                  "accumulated": "29.97",
                   "rank": "0"
                 }
               ],
@@ -34709,95 +34661,23 @@
             },
             {
               "lane": "5",
-              "rank": "",
+              "rank": "4",
               "name": "UUGANBAATAR Javkhlan",
               "org": "MGL",
               "country": "Mongolia",
-              "time": "",
-              "diff": "",
+              "time": "30.03",
+              "diff": "+0.75",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.65",
               "birthYear": "2010",
               "qualifyingTime": "29.90",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "6",
-              "rank": "",
-              "name": "ALHAMMADI Omar",
-              "org": "UAE",
-              "country": "United Arab Emirates",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "1993",
-              "qualifyingTime": "30.90",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "7",
-              "rank": "",
-              "name": "ANWARI Fahim",
-              "org": "AFG",
-              "country": "Afghanistan",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "1999",
-              "qualifyingTime": "31.33",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "8",
-              "rank": "",
-              "name": "KUZIEV David",
-              "org": "TJK",
-              "country": "Tajikistan",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2010",
-              "qualifyingTime": "38.29",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.03",
+                  "accumulated": "30.03",
                   "rank": "0"
                 }
               ],
@@ -34805,23 +34685,143 @@
             },
             {
               "lane": "9",
-              "rank": "",
+              "rank": "5",
               "name": "ASIF Hamza",
               "org": "PAK",
               "country": "Pakistan",
-              "time": "",
-              "diff": "",
+              "time": "30.47",
+              "diff": "+1.19",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.63",
               "birthYear": "2006",
               "qualifyingTime": "",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "30.47",
+                  "accumulated": "30.47",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "6",
+              "rank": "6",
+              "name": "ALHAMMADI Omar",
+              "org": "UAE",
+              "country": "United Arab Emirates",
+              "time": "30.64",
+              "diff": "+1.36",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.67",
+              "birthYear": "1993",
+              "qualifyingTime": "30.90",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "30.64",
+                  "accumulated": "30.64",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "1",
+              "rank": "7",
+              "name": "HUSSAIN Looth",
+              "org": "MDV",
+              "country": "Maldives",
+              "time": "30.98",
+              "diff": "+1.70",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.60",
+              "birthYear": "2009",
+              "qualifyingTime": "32.16",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "30.98",
+                  "accumulated": "30.98",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "3",
+              "rank": "8",
+              "name": "SHRESTHA Jaden",
+              "org": "NEP",
+              "country": "Nepal",
+              "time": "31.49",
+              "diff": "+2.21",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.66",
+              "birthYear": "2008",
+              "qualifyingTime": "30.70",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "31.49",
+                  "accumulated": "31.49",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "7",
+              "rank": "9",
+              "name": "ANWARI Fahim",
+              "org": "AFG",
+              "country": "Afghanistan",
+              "time": "31.86",
+              "diff": "+2.58",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.67",
+              "birthYear": "1999",
+              "qualifyingTime": "31.33",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "31.86",
+                  "accumulated": "31.86",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "8",
+              "rank": "10",
+              "name": "KUZIEV David",
+              "org": "TJK",
+              "country": "Tajikistan",
+              "time": "38.15",
+              "diff": "+8.87",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.67",
+              "birthYear": "2010",
+              "qualifyingTime": "38.29",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "38.15",
+                  "accumulated": "38.15",
                   "rank": "0"
                 }
               ],
@@ -34837,125 +34837,29 @@
           "date": "2026-09-25",
           "timeJst": "10:08",
           "timeIst": "06:38",
-          "status": "START_LIST",
+          "status": "OFFICIAL",
           "isFinal": false,
           "participantCount": 10,
           "results": [
             {
-              "lane": "0",
-              "rank": "",
-              "name": "ALOTAIBI Sultan Mansoor M",
-              "org": "KSA",
-              "country": "Saudi Arabia",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "1996",
-              "qualifyingTime": "28.91",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "1",
-              "rank": "",
-              "name": "LEE Zavv Xian Le",
-              "org": "SGP",
-              "country": "Singapore",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2008",
-              "qualifyingTime": "28.28",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "2",
-              "rank": "",
-              "name": "MOHAMED Mohamed",
-              "org": "QAT",
-              "country": "Qatar",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2003",
-              "qualifyingTime": "27.81",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "3",
-              "rank": "",
-              "name": "CHAN Chun Ho",
-              "org": "SGP",
-              "country": "Singapore",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2004",
-              "qualifyingTime": "27.68",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
               "lane": "4",
-              "rank": "",
+              "rank": "1",
               "name": "OHASHI Shin",
               "org": "JPN",
               "country": "Japan",
-              "time": "",
+              "time": "27.00",
               "diff": "",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.73",
               "birthYear": "2009",
               "qualifyingTime": "26.98",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.00",
+                  "accumulated": "27.00",
                   "rank": "0"
                 }
               ],
@@ -34963,23 +34867,47 @@
             },
             {
               "lane": "5",
-              "rank": "",
+              "rank": "2",
               "name": "CHOI Dongyeol",
               "org": "KOR",
               "country": "Korea",
-              "time": "",
-              "diff": "",
+              "time": "27.58",
+              "diff": "+0.58",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.67",
               "birthYear": "1999",
               "qualifyingTime": "27.21",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.58",
+                  "accumulated": "27.58",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "3",
+              "rank": "3",
+              "name": "CHAN Chun Ho",
+              "org": "SGP",
+              "country": "Singapore",
+              "time": "28.17",
+              "diff": "+1.17",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.58",
+              "birthYear": "2004",
+              "qualifyingTime": "27.68",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.17",
+                  "accumulated": "28.17",
                   "rank": "0"
                 }
               ],
@@ -34987,23 +34915,47 @@
             },
             {
               "lane": "6",
-              "rank": "",
+              "rank": "4",
               "name": "WATANABE Ippei",
               "org": "JPN",
               "country": "Japan",
-              "time": "",
-              "diff": "",
+              "time": "28.21",
+              "diff": "+1.21",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.67",
               "birthYear": "1997",
               "qualifyingTime": "27.72",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.21",
+                  "accumulated": "28.21",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "2",
+              "rank": "5",
+              "name": "MOHAMED Mohamed",
+              "org": "QAT",
+              "country": "Qatar",
+              "time": "28.24",
+              "diff": "+1.24",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.73",
+              "birthYear": "2003",
+              "qualifyingTime": "27.81",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.24",
+                  "accumulated": "28.24",
                   "rank": "0"
                 }
               ],
@@ -35011,23 +34963,47 @@
             },
             {
               "lane": "7",
-              "rank": "",
+              "rank": "6",
               "name": "CHANG Chiao-i",
               "org": "TPE",
               "country": "Chinese Taipei",
-              "time": "",
-              "diff": "",
+              "time": "28.39",
+              "diff": "+1.39",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.63",
               "birthYear": "2007",
               "qualifyingTime": "28.08",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.39",
+                  "accumulated": "28.39",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "1",
+              "rank": "7",
+              "name": "LEE Zavv Xian Le",
+              "org": "SGP",
+              "country": "Singapore",
+              "time": "28.52",
+              "diff": "+1.52",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.65",
+              "birthYear": "2008",
+              "qualifyingTime": "28.28",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.52",
+                  "accumulated": "28.52",
                   "rank": "0"
                 }
               ],
@@ -35035,23 +35011,47 @@
             },
             {
               "lane": "8",
-              "rank": "",
+              "rank": "8",
               "name": "SADULLAEV Iskandar",
               "org": "UZB",
               "country": "Uzbekistan",
-              "time": "",
-              "diff": "",
+              "time": "28.79",
+              "diff": "+1.79",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.68",
               "birthYear": "2005",
               "qualifyingTime": "28.39",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.79",
+                  "accumulated": "28.79",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "0",
+              "rank": "9",
+              "name": "ALOTAIBI Sultan Mansoor M",
+              "org": "KSA",
+              "country": "Saudi Arabia",
+              "time": "29.07",
+              "diff": "+2.07",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.76",
+              "birthYear": "1996",
+              "qualifyingTime": "28.91",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "29.07",
+                  "accumulated": "29.07",
                   "rank": "0"
                 }
               ],
@@ -35059,23 +35059,23 @@
             },
             {
               "lane": "9",
-              "rank": "",
+              "rank": "10",
               "name": "JAMAL Abdulla",
               "org": "BRN",
               "country": "Bahrain",
-              "time": "",
-              "diff": "",
+              "time": "29.71",
+              "diff": "+2.71",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.66",
               "birthYear": "2003",
               "qualifyingTime": "29.69",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "29.71",
+                  "accumulated": "29.71",
                   "rank": "0"
                 }
               ],
@@ -35091,77 +35091,29 @@
           "date": "2026-09-25",
           "timeJst": "10:10",
           "timeIst": "06:40",
-          "status": "START_LIST",
+          "status": "OFFICIAL",
           "isFinal": false,
           "participantCount": 10,
           "results": [
             {
-              "lane": "0",
-              "rank": "",
-              "name": "ALTARMOOM Rashed",
-              "org": "KUW",
-              "country": "Kuwait",
-              "time": "",
+              "lane": "4",
+              "rank": "1",
+              "name": "PETRASHOV Denis",
+              "org": "KGZ",
+              "country": "KGZ",
+              "time": "27.45",
               "diff": "",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
-              "birthYear": "1999",
-              "qualifyingTime": "28.60",
+              "reaction": "0.69",
+              "birthYear": "2000",
+              "qualifyingTime": "26.92",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "1",
-              "rank": "",
-              "name": "ABDOLI Samyar",
-              "org": "IRI",
-              "country": "IR Iran",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2002",
-              "qualifyingTime": "28.18",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "2",
-              "rank": "",
-              "name": "GOH Andrew",
-              "org": "MAS",
-              "country": "Malaysia",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2004",
-              "qualifyingTime": "27.75",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.45",
+                  "accumulated": "27.45",
                   "rank": "0"
                 }
               ],
@@ -35169,47 +35121,23 @@
             },
             {
               "lane": "3",
-              "rank": "",
+              "rank": "2",
               "name": "MAK Sai Ting Adam",
               "org": "HKG",
               "country": "Hong Kong, China",
-              "time": "",
-              "diff": "",
+              "time": "27.71",
+              "diff": "+0.26",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.62",
               "birthYear": "2006",
               "qualifyingTime": "27.64",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "4",
-              "rank": "",
-              "name": "PETRASHOV Denis",
-              "org": "KGZ",
-              "country": "KGZ",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2000",
-              "qualifyingTime": "26.92",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.71",
+                  "accumulated": "27.71",
                   "rank": "0"
                 }
               ],
@@ -35217,23 +35145,23 @@
             },
             {
               "lane": "5",
-              "rank": "",
+              "rank": "3",
               "name": "SOMRIDHIVEJ Marrich",
               "org": "THA",
               "country": "Thailand",
-              "time": "",
-              "diff": "",
+              "time": "27.73",
+              "diff": "+0.28",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.65",
               "birthYear": "2004",
               "qualifyingTime": "27.19",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.73",
+                  "accumulated": "27.73",
                   "rank": "0"
                 }
               ],
@@ -35241,23 +35169,23 @@
             },
             {
               "lane": "6",
-              "rank": "",
+              "rank": "4",
               "name": "MYRZAMURATOV Aibat",
               "org": "KAZ",
               "country": "Kazakhstan",
-              "time": "",
-              "diff": "",
+              "time": "27.86",
+              "diff": "+0.41",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.61",
               "birthYear": "2007",
               "qualifyingTime": "27.70",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.86",
+                  "accumulated": "27.86",
                   "rank": "0"
                 }
               ],
@@ -35265,23 +35193,47 @@
             },
             {
               "lane": "7",
-              "rank": "",
+              "rank": "5",
               "name": "YANG Yu-xiang",
               "org": "TPE",
               "country": "Chinese Taipei",
-              "time": "",
-              "diff": "",
+              "time": "28.15",
+              "diff": "+0.70",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.70",
               "birthYear": "2001",
               "qualifyingTime": "28.06",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.15",
+                  "accumulated": "28.15",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "2",
+              "rank": "6",
+              "name": "GOH Andrew",
+              "org": "MAS",
+              "country": "Malaysia",
+              "time": "28.28",
+              "diff": "+0.83",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.65",
+              "birthYear": "2004",
+              "qualifyingTime": "27.75",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.28",
+                  "accumulated": "28.28",
                   "rank": "0"
                 }
               ],
@@ -35289,23 +35241,71 @@
             },
             {
               "lane": "8",
-              "rank": "",
+              "rank": "7",
               "name": "SURESH Danush",
               "org": "IND",
               "country": "India",
-              "time": "",
-              "diff": "",
+              "time": "28.40",
+              "diff": "+0.95",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.74",
               "birthYear": "2000",
               "qualifyingTime": "28.38",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.40",
+                  "accumulated": "28.40",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "1",
+              "rank": "8",
+              "name": "ABDOLI Samyar",
+              "org": "IRI",
+              "country": "IR Iran",
+              "time": "28.53",
+              "diff": "+1.08",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.70",
+              "birthYear": "2002",
+              "qualifyingTime": "28.18",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.53",
+                  "accumulated": "28.53",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "0",
+              "rank": "9",
+              "name": "ALTARMOOM Rashed",
+              "org": "KUW",
+              "country": "Kuwait",
+              "time": "28.70",
+              "diff": "+1.25",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.64",
+              "birthYear": "1999",
+              "qualifyingTime": "28.60",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.70",
+                  "accumulated": "28.70",
                   "rank": "0"
                 }
               ],
@@ -35313,23 +35313,23 @@
             },
             {
               "lane": "9",
-              "rank": "",
+              "rank": "10",
               "name": "RAHMONOV Muhammadismail",
               "org": "UZB",
               "country": "Uzbekistan",
-              "time": "",
-              "diff": "",
+              "time": "28.74",
+              "diff": "+1.29",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.73",
               "birthYear": "2009",
               "qualifyingTime": "29.25",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "28.74",
+                  "accumulated": "28.74",
                   "rank": "0"
                 }
               ],
@@ -35345,53 +35345,53 @@
           "date": "2026-09-25",
           "timeJst": "10:12",
           "timeIst": "06:42",
-          "status": "START_LIST",
+          "status": "UNOFFICIAL",
           "isFinal": false,
           "participantCount": 10,
           "results": [
             {
-              "lane": "0",
-              "rank": "",
-              "name": "KANTAKOM Pasawat",
-              "org": "THA",
-              "country": "Thailand",
-              "time": "",
+              "lane": "4",
+              "rank": "1",
+              "name": "QIN Haiyang",
+              "org": "CHN",
+              "country": "China",
+              "time": "26.87",
               "diff": "",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
-              "birthYear": "2006",
-              "qualifyingTime": "28.49",
+              "reaction": "0.65",
+              "birthYear": "1999",
+              "qualifyingTime": "26.90",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "26.87",
+                  "accumulated": "26.87",
                   "rank": "0"
                 }
               ],
               "irm": "OK"
             },
             {
-              "lane": "1",
-              "rank": "",
-              "name": "CHAO Man Hou",
-              "org": "MAC",
-              "country": "Macau, China",
-              "time": "",
-              "diff": "",
+              "lane": "5",
+              "rank": "2",
+              "name": "LIU Junjie",
+              "org": "CHN",
+              "country": "China",
+              "time": "27.08",
+              "diff": "+0.21",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
-              "birthYear": "1996",
-              "qualifyingTime": "28.11",
+              "reaction": "0.68",
+              "birthYear": "2007",
+              "qualifyingTime": "27.07",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.08",
+                  "accumulated": "27.08",
                   "rank": "0"
                 }
               ],
@@ -35399,23 +35399,47 @@
             },
             {
               "lane": "2",
-              "rank": "",
+              "rank": "3",
               "name": "MOTAEE Amir",
               "org": "IRI",
               "country": "IR Iran",
-              "time": "",
-              "diff": "",
+              "time": "27.28",
+              "diff": "+0.41",
               "medal": "",
               "qual": "",
               "record": "",
-              "reaction": "",
+              "reaction": "0.71",
               "birthYear": "2005",
               "qualifyingTime": "27.74",
               "splits": [
                 {
                   "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
+                  "split": "27.28",
+                  "accumulated": "27.28",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "8",
+              "rank": "4",
+              "name": "PHAM Thanh Bao",
+              "org": "VIE",
+              "country": "Vietnam",
+              "time": "27.72",
+              "diff": "+0.85",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.66",
+              "birthYear": "2001",
+              "qualifyingTime": "28.28",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "27.72",
+                  "accumulated": "27.72",
                   "rank": "0"
                 }
               ],
@@ -35423,6 +35447,164 @@
             },
             {
               "lane": "3",
+              "rank": "5",
+              "name": "TSUI Yik Ki",
+              "org": "HKG",
+              "country": "Hong Kong, China",
+              "time": "27.86",
+              "diff": "+0.99",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.73",
+              "birthYear": "2008",
+              "qualifyingTime": "27.63",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "27.86",
+                  "accumulated": "27.86",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "1",
+              "rank": "6",
+              "name": "CHAO Man Hou",
+              "org": "MAC",
+              "country": "Macau, China",
+              "time": "27.98",
+              "diff": "+1.11",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.75",
+              "birthYear": "1996",
+              "qualifyingTime": "28.11",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "27.98",
+                  "accumulated": "27.98",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "7",
+              "rank": "7",
+              "name": "LAM Chi Chong",
+              "org": "MAC",
+              "country": "Macau, China",
+              "time": "28.10",
+              "diff": "+1.23",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.63",
+              "birthYear": "2007",
+              "qualifyingTime": "27.98",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.10",
+                  "accumulated": "28.10",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "6",
+              "rank": "8",
+              "name": "HARYONO Arya",
+              "org": "INA",
+              "country": "Indonesia",
+              "time": "28.18",
+              "diff": "+1.31",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.65",
+              "birthYear": "2007",
+              "qualifyingTime": "27.70",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.18",
+                  "accumulated": "28.18",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "0",
+              "rank": "9",
+              "name": "KANTAKOM Pasawat",
+              "org": "THA",
+              "country": "Thailand",
+              "time": "28.88",
+              "diff": "+2.01",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.63",
+              "birthYear": "2006",
+              "qualifyingTime": "28.49",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "28.88",
+                  "accumulated": "28.88",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            },
+            {
+              "lane": "9",
+              "rank": "10",
+              "name": "ALOTAIBI Mohammed Mansoor M",
+              "org": "KSA",
+              "country": "Saudi Arabia",
+              "time": "29.81",
+              "diff": "+2.94",
+              "medal": "",
+              "qual": "",
+              "record": "",
+              "reaction": "0.65",
+              "birthYear": "1999",
+              "qualifyingTime": "29.00",
+              "splits": [
+                {
+                  "distance": "50m",
+                  "split": "29.81",
+                  "accumulated": "29.81",
+                  "rank": "0"
+                }
+              ],
+              "irm": "OK"
+            }
+          ]
+        },
+        {
+          "id": "M.50MBR-------------.HEAT.0001RR--",
+          "unitDesc": "Men's 50m Breaststroke Swim-off 1",
+          "phase": "Men's 50m Breaststroke Heats",
+          "unitNum": "1",
+          "date": "2026-09-25",
+          "timeJst": "11:20",
+          "timeIst": "07:50",
+          "status": "SCHEDULED",
+          "isFinal": false,
+          "participantCount": 2,
+          "results": [
+            {
+              "lane": "4",
               "rank": "",
               "name": "TSUI Yik Ki",
               "org": "HKG",
@@ -35446,59 +35628,11 @@
               "irm": "OK"
             },
             {
-              "lane": "4",
-              "rank": "",
-              "name": "QIN Haiyang",
-              "org": "CHN",
-              "country": "China",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "1999",
-              "qualifyingTime": "26.90",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
               "lane": "5",
               "rank": "",
-              "name": "LIU Junjie",
-              "org": "CHN",
-              "country": "China",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2007",
-              "qualifyingTime": "27.07",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "6",
-              "rank": "",
-              "name": "HARYONO Arya",
-              "org": "INA",
-              "country": "Indonesia",
+              "name": "MYRZAMURATOV Aibat",
+              "org": "KAZ",
+              "country": "Kazakhstan",
               "time": "",
               "diff": "",
               "medal": "",
@@ -35507,78 +35641,6 @@
               "reaction": "",
               "birthYear": "2007",
               "qualifyingTime": "27.70",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "7",
-              "rank": "",
-              "name": "LAM Chi Chong",
-              "org": "MAC",
-              "country": "Macau, China",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2007",
-              "qualifyingTime": "27.98",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "8",
-              "rank": "",
-              "name": "PHAM Thanh Bao",
-              "org": "VIE",
-              "country": "Vietnam",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "2001",
-              "qualifyingTime": "28.28",
-              "splits": [
-                {
-                  "distance": "50m",
-                  "split": "",
-                  "accumulated": "",
-                  "rank": "0"
-                }
-              ],
-              "irm": "OK"
-            },
-            {
-              "lane": "9",
-              "rank": "",
-              "name": "ALOTAIBI Mohammed Mansoor M",
-              "org": "KSA",
-              "country": "Saudi Arabia",
-              "time": "",
-              "diff": "",
-              "medal": "",
-              "qual": "",
-              "record": "",
-              "reaction": "",
-              "birthYear": "1999",
-              "qualifyingTime": "29.00",
               "splits": [
                 {
                   "distance": "50m",

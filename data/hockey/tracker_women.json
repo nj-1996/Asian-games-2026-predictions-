@@ -201,19 +201,19 @@
     },
     {
       "round": "Pool A",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "09:00",
       "player1": "Kazakhstan",
       "player2": "Bangladesh",
-      "score": "vs",
+      "score": "3 - 3",
       "winner": ""
     },
     {
       "round": "Pool B",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-25",
       "time": "11:00",
       "player1": "Japan",
