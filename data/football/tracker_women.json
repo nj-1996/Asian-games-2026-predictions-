@@ -201,47 +201,47 @@
     },
     {
       "round": "Women 1/4",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "15:00",
       "player1": "DPR Korea",
       "player2": "Chinese Taipei",
-      "score": "4 - 0",
+      "score": "5 - 1",
       "winner": "DPR Korea"
     },
     {
       "round": "Women 1/4",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "15:00",
       "player1": "China",
       "player2": "Vietnam",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "1 - 0",
+      "winner": "China"
     },
     {
       "round": "Women 1/4",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Unofficial",
       "date": "2026-09-25",
       "time": "19:30",
       "player1": "Japan",
       "player2": "Philippines",
-      "score": "vs",
-      "winner": ""
+      "score": "4 - 0",
+      "winner": "Japan"
     },
     {
       "round": "Women 1/4",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Unofficial",
       "date": "2026-09-25",
       "time": "19:30",
       "player1": "Korea",
       "player2": "Uzbekistan",
-      "score": "vs",
-      "winner": ""
+      "score": "6 - 3",
+      "winner": "Korea"
     },
     {
       "round": "Women 1/2",
@@ -249,8 +249,8 @@
       "state": "Scheduled",
       "date": "2026-09-29",
       "time": "15:00",
-      "player1": "TBD",
-      "player2": "TBD",
+      "player1": "DPR Korea",
+      "player2": "China",
       "score": "vs",
       "winner": ""
     },

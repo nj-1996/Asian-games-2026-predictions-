@@ -212,25 +212,25 @@
     },
     {
       "round": "Women 1/2 G 2",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "16:00",
       "player1": "China",
       "player2": "Korea",
-      "score": "27 - 26",
-      "winner": "China"
+      "score": "80 - 85",
+      "winner": "Korea"
     },
     {
       "round": "Women 1/2 G 1",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "19:20",
       "player1": "Chinese Taipei",
       "player2": "Japan",
-      "score": "vs",
-      "winner": ""
+      "score": "52 - 80",
+      "winner": "Japan"
     },
     {
       "round": "Women F BM",
@@ -238,8 +238,8 @@
       "state": "Scheduled",
       "date": "2026-09-26",
       "time": "16:00",
-      "player1": "TBD",
-      "player2": "TBD",
+      "player1": "Chinese Taipei",
+      "player2": "China",
       "score": "vs",
       "winner": ""
     },
@@ -249,8 +249,8 @@
       "state": "Scheduled",
       "date": "2026-09-26",
       "time": "19:20",
-      "player1": "TBD",
-      "player2": "TBD",
+      "player1": "Japan",
+      "player2": "Korea",
       "score": "vs",
       "winner": ""
     }

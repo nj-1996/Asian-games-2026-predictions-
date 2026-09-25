@@ -245,14 +245,14 @@
     },
     {
       "round": "Men 1/4",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "19:30",
       "player1": "Korea",
       "player2": "Vietnam",
-      "score": "vs",
-      "winner": ""
+      "score": "4 - 0",
+      "winner": "Korea"
     },
     {
       "round": "Men 1/4",
@@ -282,7 +282,7 @@
       "state": "Scheduled",
       "date": "2026-09-30",
       "time": "15:00",
-      "player1": "TBD",
+      "player1": "Korea",
       "player2": "TBD",
       "score": "vs",
       "winner": ""

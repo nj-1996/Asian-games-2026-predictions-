@@ -42,16 +42,16 @@
     },
     {
       "round": "Preliminary Round - Group A",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "14:00",
       "player1": "Afghanistan",
       "player2": "Nepal",
-      "score": "102 - 56",
+      "score": "102 - 103",
       "score1": "102/7",
-      "score2": "56/4",
-      "winner": ""
+      "score2": "103/5",
+      "winner": "Nepal"
     },
     {
       "round": "Preliminary Round - Group A",
