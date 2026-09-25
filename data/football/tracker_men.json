@@ -234,14 +234,14 @@
     },
     {
       "round": "Men 1/4",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "14:00",
       "player1": "Uzbekistan",
       "player2": "Saudi Arabia",
-      "score": "vs",
-      "winner": ""
+      "score": "3 - 0",
+      "winner": "Uzbekistan"
     },
     {
       "round": "Men 1/4",
@@ -293,7 +293,7 @@
       "state": "Scheduled",
       "date": "2026-09-30",
       "time": "19:30",
-      "player1": "TBD",
+      "player1": "Uzbekistan",
       "player2": "TBD",
       "score": "vs",
       "winner": ""

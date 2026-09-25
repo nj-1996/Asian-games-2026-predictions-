@@ -29,28 +29,28 @@
     },
     {
       "round": "Preliminary Round - Group B",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "09:00",
       "player1": "Hong Kong, China",
       "player2": "Oman",
-      "score": "121 - 0",
+      "score": "121 - 80",
       "score1": "121/8",
-      "score2": "0/0",
-      "winner": ""
+      "score2": "80/6",
+      "winner": "Hong Kong, China"
     },
     {
       "round": "Preliminary Round - Group A",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-25",
       "time": "14:00",
       "player1": "Afghanistan",
       "player2": "Nepal",
-      "score": "vs",
-      "score1": "-",
-      "score2": "-",
+      "score": "102 - 56",
+      "score1": "102/7",
+      "score2": "56/4",
       "winner": ""
     },
     {

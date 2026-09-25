@@ -201,24 +201,24 @@
     },
     {
       "round": "Women 1/4",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-25",
       "time": "15:00",
       "player1": "DPR Korea",
       "player2": "Chinese Taipei",
-      "score": "vs",
-      "winner": ""
+      "score": "4 - 0",
+      "winner": "DPR Korea"
     },
     {
       "round": "Women 1/4",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-25",
       "time": "15:00",
       "player1": "China",
       "player2": "Vietnam",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {

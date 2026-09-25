@@ -212,36 +212,36 @@
     },
     {
       "round": "Pool B",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "11:00",
       "player1": "Japan",
       "player2": "India",
-      "score": "vs",
-      "winner": ""
+      "score": "1 - 3",
+      "winner": "India"
     },
     {
       "round": "Pool A",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-25",
       "time": "13:00",
       "player1": "Korea",
       "player2": "China",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 3",
+      "winner": "China"
     },
     {
       "round": "Pool B",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-25",
       "time": "15:00",
       "player1": "Indonesia",
       "player2": "Thailand",
-      "score": "vs",
-      "winner": ""
+      "score": "1 - 0",
+      "winner": "Indonesia"
     },
     {
       "round": "Pool B",

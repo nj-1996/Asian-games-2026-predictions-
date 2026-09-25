@@ -167,7 +167,7 @@
       "winner": "Mongolia"
     },
     {
-      "round": "Women 1/4 G 3",
+      "round": "Women 1/4 G 4",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-24",
@@ -178,7 +178,7 @@
       "winner": "Korea"
     },
     {
-      "round": "Women 1/4 G 4",
+      "round": "Women 1/4 G 3",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-24",
@@ -189,7 +189,7 @@
       "winner": "China"
     },
     {
-      "round": "Women 1/4 G 2",
+      "round": "Women 1/4 G 1",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-24",
@@ -200,7 +200,7 @@
       "winner": "Chinese Taipei"
     },
     {
-      "round": "Women 1/4 G 1",
+      "round": "Women 1/4 G 2",
       "status": "Finished",
       "state": "Official",
       "date": "2026-09-24",
@@ -212,19 +212,19 @@
     },
     {
       "round": "Women 1/2 G 2",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-25",
       "time": "16:00",
       "player1": "China",
       "player2": "Korea",
-      "score": "vs",
-      "winner": ""
+      "score": "27 - 26",
+      "winner": "China"
     },
     {
       "round": "Women 1/2 G 1",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-25",
       "time": "19:20",
       "player1": "Chinese Taipei",
