@@ -267,8 +267,8 @@
     },
     {
       "round": "Men 1/4",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-26",
       "time": "19:30",
       "player1": "Japan",
@@ -294,7 +294,7 @@
       "date": "2026-09-30",
       "time": "19:30",
       "player1": "Uzbekistan",
-      "player2": "TBD",
+      "player2": "Japan",
       "score": "vs",
       "winner": ""
     },
