@@ -245,14 +245,14 @@
     },
     {
       "round": "Women F GM",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-26",
       "time": "19:20",
       "player1": "Japan",
       "player2": "Korea",
-      "score": "vs",
-      "winner": ""
+      "score": "10 - 20",
+      "winner": "Korea"
     }
   ]
 }
