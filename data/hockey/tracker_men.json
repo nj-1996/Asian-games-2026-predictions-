@@ -201,13 +201,13 @@
     },
     {
       "round": "Pool B",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-26",
       "time": "09:00",
       "player1": "Oman",
       "player2": "Thailand",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {
