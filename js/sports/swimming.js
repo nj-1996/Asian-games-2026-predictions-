@@ -184,14 +184,64 @@
       return '<div class="empty-state">No swimming finals available.</div>';
     }
 
-    var sections = uniqueEvents.map(function (event) {
-      var finals = (event.finals || []).filter(function (finalUnit) {
-        return finalUnit && finalUnit.isFinal !== false;
+    var validFilter = uniqueEvents.some(function (event) { return event.id === activeSwimmingEventFilter; });
+    if (!validFilter) activeSwimmingEventFilter = uniqueEvents[0].id;
+    var selectedEvents = uniqueEvents.filter(function (event) { return event.id === activeSwimmingEventFilter; });
+    var filterBarHtml = `
+      <div style="background:var(--card-bg, #131c2e); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:240px;">
+          <span style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Event:</span>
+          <div class="event-selector-wrap" style="flex:1;">
+            <select class="event-dropdown" onchange="window.setSwimmingEventFilter(this.value)" style="width:100%; max-width:420px;">
+              ${uniqueEvents.map(function (event) {
+                return '<option value="' + escapeAttr(event.id) + '" ' + (activeSwimmingEventFilter === event.id ? 'selected' : '') + '>' + escapeHtml(event.name || event.event || 'Swimming Event') + '</option>';
+              }).join('')}
+            </select>
+          </div>
+        </div>
+        <span style="font-size:0.72rem; color:#64748b; font-weight:600;">Final results only</span>
+      </div>
+    `;
+
+    var parseResultTime = function (value) {
+      var text = String(value || '').trim();
+      if (!text || /^(DNS|DSQ|DNF|DNC|--|Awaiting)$/i.test(text)) return Infinity;
+      if (text.includes(':')) {
+        var parts = text.split(':');
+        return (parseFloat(parts[0]) || 0) * 60 + (parseFloat(parts[1]) || 0);
+      }
+      var seconds = parseFloat(text);
+      return isNaN(seconds) ? Infinity : seconds;
+    };
+
+    var getFinalResults = function (event) {
+      var finals = event.finals || [];
+      var isTimedFinal = /(?:800m|1500m)/i.test(String(event.name || event.event || '')) || finals.length > 1;
+      if (!isTimedFinal) return (finals[0] && finals[0].results || []).map(function (result, index) {
+        return { result: result, medalRank: String(result.rank || index + 1) };
       });
-      if (finals.length === 0) return '';
-      var rows = finals.map(function (finalUnit) {
-        return (finalUnit.results || []).map(function (result, index) {
-          var rank = result.rank || String(index + 1);
+
+      var byCompetitor = {};
+      finals.forEach(function (finalUnit) {
+        (finalUnit.results || []).forEach(function (result) {
+          var key = String(result.name || result.country || result.org || '').trim().toLowerCase();
+          if (!key) return;
+          var time = parseResultTime(result.time);
+          if (!byCompetitor[key] || time < byCompetitor[key].time) {
+            byCompetitor[key] = { result: result, time: time };
+          }
+        });
+      });
+      return Object.keys(byCompetitor).map(function (key) { return byCompetitor[key]; })
+        .sort(function (a, b) { return a.time - b.time; })
+        .map(function (item, index) { return { result: item.result, medalRank: String(index + 1) }; });
+    };
+
+    var sections = selectedEvents.map(function (event) {
+      if (!event.finals || event.finals.length === 0) return '';
+      var rows = getFinalResults(event).map(function (item) {
+          var result = item.result;
+          var rank = item.medalRank;
           var medal = rank === '1' ? '🥇' : (rank === '2' ? '🥈' : (rank === '3' ? '🥉' : ''));
           return `<tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
             <td style="padding:8px;text-align:center;font-weight:700;">${medal} ${escapeHtml(rank)}</td>
@@ -200,13 +250,12 @@
             <td style="padding:8px;text-align:right;font-family:monospace;color:${result.time ? '#f8fafc' : '#facc15'};">${escapeHtml(result.time || result.irm || 'Awaiting')}</td>
           </tr>`;
         }).join('');
-      }).join('');
       return `<section style="background:var(--card-bg,#131c2e);border:1px solid rgba(255,255,255,0.08);border-radius:10px;margin-bottom:1rem;overflow:hidden;">
         <div style="padding:.8rem 1rem;font-weight:800;color:#f8fafc;border-bottom:1px solid rgba(255,255,255,0.08);">${escapeHtml(event.name || event.event || 'Swimming Event')}</div>
         <table style="width:100%;border-collapse:collapse;font-size:.82rem;"><thead><tr style="color:#94a3b8;text-transform:uppercase;font-size:.7rem;"><th style="padding:8px;text-align:center;">Rank</th><th style="padding:8px;text-align:left;">Athlete / Team</th><th style="padding:8px;text-align:left;">Country</th><th style="padding:8px;text-align:right;">Final Result</th></tr></thead><tbody>${rows}</tbody></table>
       </section>`;
     }).join('');
-    return sections || '<div class="empty-state">No swimming finals available.</div>';
+    return filterBarHtml + (sections || '<div class="empty-state">No swimming finals available.</div>');
   }
 
   // --- Render Event Card with Heats & Finals Buttons ---
@@ -294,12 +343,14 @@
     }).join('');
 
     // Finals buttons
-    var finalsHtml = (ev.finals || []).map(function (f) {
+    var finalsHtml = (ev.finals || []).map(function (f, finalIndex) {
       var isFin = isOfficialStatus(f.status);
       var timeStr = formatTimeDisplay(f.timeJst, f.timeIst);
       var partCount = f.participantCount || (f.results ? f.results.length : 0);
       var finalDescription = String(f.unitDesc || 'Final');
-      var isGoldMedal = finalDescription.toLowerCase().includes('final');
+      var isTimedFinal = /(?:800m|1500m)/i.test(eventName);
+      var finalLabel = isTimedFinal ? 'Timed Final ' + (finalIndex + 1) : finalDescription;
+      var isGoldMedal = !isTimedFinal && finalDescription.toLowerCase().includes('final');
       return `
         <button 
           class="swm-unit-btn swm-final-btn" 
@@ -307,7 +358,7 @@
           style="display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, rgba(234,179,8,0.18), rgba(30,41,59,0.85)); border:1px solid rgba(234,179,8,0.4); border-radius:8px; padding:7px 14px; color:#fef08a; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s;"
         >
           <span>${isGoldMedal ? '🏆' : '🔥'}</span>
-          <span>${escapeHtml(finalDescription)}</span>
+          <span>${escapeHtml(finalLabel)}</span>
           <span style="color:#fde047; font-size:0.7rem;">(${partCount} finalists)</span>
           <span style="color:#38bdf8; font-family:monospace; font-size:0.7rem; margin-left:2px;">${timeStr}</span>
           ${isFin ? '<span style="color:#4ade80; font-size:0.72rem;">✓ Official</span>' : ''}
@@ -459,9 +510,12 @@
       var isQualified = !isFinal && (finalistNames.has(normName) || (r.qual && r.qual.toUpperCase() === 'Q'));
 
       // Medals are ONLY shown in Finals - never in Heats
-      var isMedalist = isFinal && (r.rank === '1' || r.rank === '2' || r.rank === '3' || r.medal);
+      // Distance events use multiple timed-final heats; medals are assigned
+      // only after the overall times are combined in the standings view.
+      var isMedalFinal = isFinal && !isDistance;
+      var isMedalist = isMedalFinal && (r.rank === '1' || r.rank === '2' || r.rank === '3' || r.medal);
       var medIcon = '';
-      if (isFinal) {
+      if (isMedalFinal) {
         if (r.medal === 'Gold' || r.rank === '1') medIcon = '🥇';
         else if (r.medal === 'Silver' || r.rank === '2') medIcon = '🥈';
         else if (r.medal === 'Bronze' || r.rank === '3') medIcon = '🥉';
