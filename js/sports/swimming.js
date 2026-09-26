@@ -33,6 +33,44 @@
     return entries.map(function (entry) { return entry.athlete || 'Unknown'; }).join(' / ');
   }
 
+  function mergeSwimmingEvents(events) {
+    var merged = [];
+    var byKey = {};
+    (events || []).forEach(function (event) {
+      if (!event) return;
+      var eventName = String(event.name || event.event || '').trim();
+      var key = String(event.id || eventName).toLowerCase().replace(/\s+/g, ' ');
+      if (!key) return;
+      var existing = byKey[key];
+      if (!existing) {
+        existing = Object.assign({}, event, {
+          heats: (event.heats || []).slice(),
+          finals: (event.finals || []).slice(),
+          dates: (event.dates || []).slice()
+        });
+        byKey[key] = existing;
+        merged.push(existing);
+        return;
+      }
+
+      var addUnits = function (target, source) {
+        var known = new Set(target.map(function (unit) { return unit.id; }));
+        (source || []).forEach(function (unit) {
+          if (!known.has(unit.id)) {
+            target.push(unit);
+            known.add(unit.id);
+          }
+        });
+      };
+      addUnits(existing.heats, event.heats);
+      addUnits(existing.finals, event.finals);
+      existing.dates = Array.from(new Set(existing.dates.concat(event.dates || []))).sort();
+      if (isOfficialStatus(event.status)) existing.status = 'Official';
+      if (!existing.podium || !existing.podium.gold) existing.podium = event.podium || existing.podium;
+    });
+    return merged;
+  }
+
   var SWM_FLAGS = {
     'China': '🇨🇳', 'CHN': '🇨🇳',
     'Japan': '🇯🇵', 'JPN': '🇯🇵',
@@ -72,6 +110,7 @@
 
   // --- Main Schedule & Events Renderer (Standard Hub Layout with Event Dropdown) ---
   function renderMatches(events) {
+    events = mergeSwimmingEvents(events);
     if (!events || events.length === 0) {
       return '<div class="empty-state">No swimming events data available.</div>';
     }
@@ -137,6 +176,37 @@
       </div>
       <div id="swimming-unit-modal-root"></div>
     `;
+  }
+
+  function renderStandingsTable(events) {
+    var uniqueEvents = mergeSwimmingEvents(events);
+    if (uniqueEvents.length === 0) {
+      return '<div class="empty-state">No swimming finals available.</div>';
+    }
+
+    var sections = uniqueEvents.map(function (event) {
+      var finals = (event.finals || []).filter(function (finalUnit) {
+        return finalUnit && finalUnit.isFinal !== false;
+      });
+      if (finals.length === 0) return '';
+      var rows = finals.map(function (finalUnit) {
+        return (finalUnit.results || []).map(function (result, index) {
+          var rank = result.rank || String(index + 1);
+          var medal = rank === '1' ? '🥇' : (rank === '2' ? '🥈' : (rank === '3' ? '🥉' : ''));
+          return `<tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+            <td style="padding:8px;text-align:center;font-weight:700;">${medal} ${escapeHtml(rank)}</td>
+            <td style="padding:8px;font-weight:600;">${escapeHtml(result.name || 'TBD')}</td>
+            <td style="padding:8px;color:#94a3b8;">${escapeHtml(result.country || result.org || '--')}</td>
+            <td style="padding:8px;text-align:right;font-family:monospace;color:${result.time ? '#f8fafc' : '#facc15'};">${escapeHtml(result.time || result.irm || 'Awaiting')}</td>
+          </tr>`;
+        }).join('');
+      }).join('');
+      return `<section style="background:var(--card-bg,#131c2e);border:1px solid rgba(255,255,255,0.08);border-radius:10px;margin-bottom:1rem;overflow:hidden;">
+        <div style="padding:.8rem 1rem;font-weight:800;color:#f8fafc;border-bottom:1px solid rgba(255,255,255,0.08);">${escapeHtml(event.name || event.event || 'Swimming Event')}</div>
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem;"><thead><tr style="color:#94a3b8;text-transform:uppercase;font-size:.7rem;"><th style="padding:8px;text-align:center;">Rank</th><th style="padding:8px;text-align:left;">Athlete / Team</th><th style="padding:8px;text-align:left;">Country</th><th style="padding:8px;text-align:right;">Final Result</th></tr></thead><tbody>${rows}</tbody></table>
+      </section>`;
+    }).join('');
+    return sections || '<div class="empty-state">No swimming finals available.</div>';
   }
 
   // --- Render Event Card with Heats & Finals Buttons ---
@@ -760,8 +830,9 @@
   var SWIMMING_ENGINE = {
     icon: '🏊',
     hasBracket: false,
-    hasStandings: false,
+    hasStandings: true,
     renderMatches: renderMatches,
+    renderStandingsTable: renderStandingsTable,
     extractMedalAnalytics: extractMedalAnalytics
   };
 
