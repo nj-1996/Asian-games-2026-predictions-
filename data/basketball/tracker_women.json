@@ -234,19 +234,19 @@
     },
     {
       "round": "Women F BM",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-26",
       "time": "16:00",
       "player1": "Chinese Taipei",
       "player2": "China",
-      "score": "vs",
-      "winner": ""
+      "score": "64 - 77",
+      "winner": "China"
     },
     {
       "round": "Women F GM",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-26",
       "time": "19:20",
       "player1": "Japan",

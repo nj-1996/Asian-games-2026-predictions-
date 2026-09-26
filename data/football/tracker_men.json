@@ -256,19 +256,19 @@
     },
     {
       "round": "Men 1/4",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-26",
       "time": "15:00",
       "player1": "China",
       "player2": "Thailand",
-      "score": "vs",
-      "winner": ""
+      "score": "3 - 0",
+      "winner": "China"
     },
     {
       "round": "Men 1/4",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Start List",
       "date": "2026-09-26",
       "time": "19:30",
       "player1": "Japan",
@@ -283,7 +283,7 @@
       "date": "2026-09-30",
       "time": "15:00",
       "player1": "Korea",
-      "player2": "TBD",
+      "player2": "China",
       "score": "vs",
       "winner": ""
     },
