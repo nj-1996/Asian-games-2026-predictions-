@@ -19,6 +19,20 @@
       .replace(/>/g, '&gt;');
   }
 
+  function escapeHtml(str) {
+    return escapeAttr(str);
+  }
+
+  function isOfficialStatus(status) {
+    return ['OFFICIAL', 'OFFICIAL_RESULTS', 'FINISHED'].includes(String(status || '').toUpperCase());
+  }
+
+  function displayPodiumAthletes(medal) {
+    if (!medal) return '';
+    var entries = Array.isArray(medal.tiedMedalists) ? medal.tiedMedalists : [medal];
+    return entries.map(function (entry) { return entry.athlete || 'Unknown'; }).join(' / ');
+  }
+
   var SWM_FLAGS = {
     'China': '🇨🇳', 'CHN': '🇨🇳',
     'Japan': '🇯🇵', 'JPN': '🇯🇵',
@@ -79,7 +93,7 @@
     });
 
     if (genderEvents.length === 0) {
-      genderEvents = events;
+      return '<div class="empty-state">No swimming events available for this category.</div>';
     }
 
     // Validate active filter: default to first event in the category (no 'All Events' option)
@@ -105,7 +119,7 @@
           <div class="event-selector-wrap" style="flex:1;">
             <select class="event-dropdown" onchange="window.setSwimmingEventFilter(this.value)" style="width:100%; max-width:420px;">
               ${genderEvents.map(function (ev) {
-                return '<option value="' + escapeAttr(ev.id) + '" ' + (activeSwimmingEventFilter === ev.id ? 'selected' : '') + '>' + ev.name + '</option>';
+                return '<option value="' + escapeAttr(ev.id) + '" ' + (activeSwimmingEventFilter === ev.id ? 'selected' : '') + '>' + escapeHtml(ev.name || ev.event || 'Swimming Event') + '</option>';
               }).join('')}
             </select>
           </div>
@@ -127,8 +141,9 @@
 
   // --- Render Event Card with Heats & Finals Buttons ---
   function renderEventCard(ev) {
-    var isOfficial = ev.status === 'Official';
-    var isLive = ev.status === 'Live';
+    var eventName = String(ev.name || ev.event || 'Swimming Event');
+    var isOfficial = isOfficialStatus(ev.status);
+    var isLive = String(ev.status || '').toUpperCase() === 'LIVE';
     var statusBadge = isOfficial 
       ? '<span style="background:rgba(74,222,128,0.15); color:#4ade80; border:1px solid rgba(74,222,128,0.3); padding:3px 9px; border-radius:6px; font-size:0.72rem; font-weight:700;">🟢 Official Results</span>'
       : (isLive 
@@ -148,7 +163,7 @@
               <div>
                 <div style="font-size:0.68rem; font-weight:700; color:#facc15; text-transform:uppercase;">Gold Medalist</div>
                 <div style="font-size:0.85rem; font-weight:800; color:#f8fafc;">
-                  ${getFlag(p.gold.country)} ${p.gold.athlete}
+                  ${getFlag(p.gold.country)} ${escapeHtml(displayPodiumAthletes(p.gold))}
                 </div>
                 <div style="font-size:0.72rem; color:#94a3b8; font-family:monospace; margin-top:1px;">
                   ${p.gold.time} ${p.gold.record ? `<span style="background:rgba(234,179,8,0.2); color:#facc15; padding:1px 4px; border-radius:3px; font-size:0.65rem; font-weight:700;">${p.gold.record}</span>` : ''}
@@ -162,7 +177,7 @@
               <div>
                 <div style="font-size:0.68rem; font-weight:700; color:#cbd5e1; text-transform:uppercase;">Silver Medalist</div>
                 <div style="font-size:0.85rem; font-weight:800; color:#f8fafc;">
-                  ${getFlag(p.silver.country)} ${p.silver.athlete}
+                  ${getFlag(p.silver.country)} ${escapeHtml(displayPodiumAthletes(p.silver))}
                 </div>
                 <div style="font-size:0.72rem; color:#94a3b8; font-family:monospace; margin-top:1px;">
                   ${p.silver.time}
@@ -176,7 +191,7 @@
               <div>
                 <div style="font-size:0.68rem; font-weight:700; color:#f59e0b; text-transform:uppercase;">Bronze Medalist</div>
                 <div style="font-size:0.85rem; font-weight:800; color:#f8fafc;">
-                  ${getFlag(p.bronze.country)} ${p.bronze.athlete}
+                  ${getFlag(p.bronze.country)} ${escapeHtml(displayPodiumAthletes(p.bronze))}
                 </div>
                 <div style="font-size:0.72rem; color:#94a3b8; font-family:monospace; margin-top:1px;">
                   ${p.bronze.time}
@@ -190,7 +205,7 @@
 
     // Heats buttons
     var heatsHtml = (ev.heats || []).map(function (h) {
-      var isFin = h.status === 'OFFICIAL' || h.status === 'Finished';
+      var isFin = isOfficialStatus(h.status);
       var timeStr = formatTimeDisplay(h.timeJst, h.timeIst);
       var partCount = h.participantCount || (h.results ? h.results.length : 0);
       return `
@@ -210,10 +225,11 @@
 
     // Finals buttons
     var finalsHtml = (ev.finals || []).map(function (f) {
-      var isFin = f.status === 'OFFICIAL' || f.status === 'Finished';
+      var isFin = isOfficialStatus(f.status);
       var timeStr = formatTimeDisplay(f.timeJst, f.timeIst);
       var partCount = f.participantCount || (f.results ? f.results.length : 0);
-      var isGoldMedal = f.unitDesc.toLowerCase().includes('final');
+      var finalDescription = String(f.unitDesc || 'Final');
+      var isGoldMedal = finalDescription.toLowerCase().includes('final');
       return `
         <button 
           class="swm-unit-btn swm-final-btn" 
@@ -221,7 +237,7 @@
           style="display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, rgba(234,179,8,0.18), rgba(30,41,59,0.85)); border:1px solid rgba(234,179,8,0.4); border-radius:8px; padding:7px 14px; color:#fef08a; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s;"
         >
           <span>${isGoldMedal ? '🏆' : '🔥'}</span>
-          <span>${f.unitDesc}</span>
+          <span>${escapeHtml(finalDescription)}</span>
           <span style="color:#fde047; font-size:0.7rem;">(${partCount} finalists)</span>
           <span style="color:#38bdf8; font-family:monospace; font-size:0.7rem; margin-left:2px;">${timeStr}</span>
           ${isFin ? '<span style="color:#4ade80; font-size:0.72rem;">✓ Official</span>' : ''}
@@ -231,8 +247,8 @@
 
     var datesStr = (ev.dates || [ev.date || '']).join(' • ');
 
-    var isRelay = (ev.name || '').includes('Relay') || (ev.name || '').includes('4 x');
-    var isDistance = (ev.name || '').includes('800m') || (ev.name || '').includes('1500m');
+    var isRelay = eventName.includes('Relay') || eventName.includes('4 x');
+    var isDistance = eventName.includes('800m') || eventName.includes('1500m');
     var ruleText = isDistance
       ? 'Timed Finals across heats • Medals awarded on overall times.'
       : (isRelay 
@@ -246,7 +262,7 @@
           <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-size:1.4rem;">🏊</span>
             <div>
-              <div style="font-size:1.05rem; font-weight:800; color:#f8fafc;">${ev.name}</div>
+                <div style="font-size:1.05rem; font-weight:800; color:#f8fafc;">${escapeHtml(eventName)}</div>
               <div style="font-size:0.74rem; color:#94a3b8; margin-top:2px;">
                 📅 ${datesStr} • 📍 ${ev.venue || 'Tokyo Aquatics Centre'} • <span style="color:#38bdf8;">${ruleText}</span>
               </div>
@@ -301,8 +317,9 @@
 
     var isFinal = !!unit.isFinal;
     var results = unit.results || [];
-    var isRelay = (ev.name || '').includes('Relay') || (ev.name || '').includes('4 x');
-    var isDistance = (ev.name || '').includes('800m') || (ev.name || '').includes('1500m');
+    var eventName = String(ev.name || ev.event || 'Swimming Event');
+    var isRelay = eventName.includes('Relay') || eventName.includes('4 x');
+    var isDistance = eventName.includes('800m') || eventName.includes('1500m');
     var qualNote = isFinal 
       ? 'Tokyo Aquatics Centre Final • Medals decided by official finish times.'
       : (isDistance 
@@ -421,8 +438,8 @@
               </div>
             </div>
           </td>
-          <td style="text-align:center; padding:9px 6px; font-family:monospace; font-weight:700; font-size:0.9rem; color:${r.time ? '#f8fafc' : '#64748b'};">
-            ${r.time || 'Awaiting'}
+          <td style="text-align:center; padding:9px 6px; font-family:monospace; font-weight:700; font-size:0.9rem; color:${r.time ? '#f8fafc' : '#facc15'};">
+            ${escapeHtml(r.time || r.irm || 'Awaiting')}
           </td>
           <td style="text-align:center; padding:9px 6px; font-family:monospace; font-size:0.75rem; color:#94a3b8;">
             ${r.diff || '--'}
@@ -596,41 +613,68 @@
     var decidedCount = 0;
     var totalMedalEvents = (allEvents || []).length;
 
+    var medalEntries = function (medal) {
+      if (!medal) return [];
+      if (Array.isArray(medal)) return medal;
+      if (Array.isArray(medal.tiedMedalists) && medal.tiedMedalists.length > 0) {
+        return medal.tiedMedalists;
+      }
+      return [medal];
+    };
+
+    var addActualMedal = function (medal, medalName, fallbackCountry, eventName) {
+      medalEntries(medal).forEach(function (entry) {
+        var team = entry.country || entry.org || fallbackCountry;
+        actualTally[team] = actualTally[team] || { gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
+        actualTally[team][medalName] += 1;
+        actualTally[team].total += 1;
+        actualTally[team].athletes.push({
+          medal: medalName,
+          athlete: (entry.athlete || 'Unknown') + ' (' + eventName + ')'
+        });
+      });
+    };
+
     allEvents.forEach(function (ev) {
       var p = ev.podium || {};
       if (p.gold) {
         decidedCount++;
-        var gTeam = p.gold.country || p.gold.org || 'China';
-        actualTally[gTeam] = actualTally[gTeam] || { gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
-        actualTally[gTeam].gold += 1;
-        actualTally[gTeam].total += 1;
-        actualTally[gTeam].athletes.push({ medal: '🥇', athlete: p.gold.athlete + ' (' + ev.name + ')' });
+        addActualMedal(p.gold, 'gold', 'China', ev.name);
       }
       if (p.silver) {
-        var sTeam = p.silver.country || p.silver.org || 'Japan';
-        actualTally[sTeam] = actualTally[sTeam] || { gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
-        actualTally[sTeam].silver += 1;
-        actualTally[sTeam].total += 1;
-        actualTally[sTeam].athletes.push({ medal: '🥈', athlete: p.silver.athlete + ' (' + ev.name + ')' });
+        addActualMedal(p.silver, 'silver', 'Japan', ev.name);
       }
       if (p.bronze) {
-        var bTeam = p.bronze.country || p.bronze.org || 'Korea';
-        actualTally[bTeam] = actualTally[bTeam] || { gold: 0, silver: 0, bronze: 0, total: 0, athletes: [] };
-        actualTally[bTeam].bronze += 1;
-        actualTally[bTeam].total += 1;
-        actualTally[bTeam].athletes.push({ medal: '🥉', athlete: p.bronze.athlete + ' (' + ev.name + ')' });
+        addActualMedal(p.bronze, 'bronze', 'Korea', ev.name);
       }
     });
 
-    // Projected medals tally (baseline Monte Carlo expectations)
-    var projectedTally = {
-      'China': { gold: curGen === 'men' ? 11 : (curGen === 'women' ? 14 : 1), silver: 8, bronze: 6, total: 25 },
-      'Japan': { gold: curGen === 'men' ? 5 : (curGen === 'women' ? 4 : 0), silver: 7, bronze: 8, total: 20 },
-      'Korea': { gold: curGen === 'men' ? 4 : (curGen === 'women' ? 2 : 0), silver: 4, bronze: 5, total: 11 },
-      'Hong Kong, China': { gold: 0, silver: 1, bronze: 1, total: 2 },
-      'Singapore': { gold: 0, silver: 0, bronze: 1, total: 1 },
-      'Chinese Taipei': { gold: 0, silver: 0, bronze: 1, total: 1 }
+    // Projected medals come from the probabilities stored in predictions.json.
+    // Keep this data-driven so the UI cannot drift from the published model.
+    var predEvents = (window.appData && window.appData.predictionEvents) || [];
+    var projectedTally = {};
+    var parseProbability = function (value) {
+      if (typeof value === 'number') return value > 1 ? value / 100 : value;
+      var parsed = parseFloat(String(value || '').replace('%', ''));
+      return isNaN(parsed) ? 0 : parsed / 100;
     };
+    var projectedEvents = predEvents.filter(function (event) {
+      return curGen === 'all' || String(event.gender || '').toLowerCase() === curGen;
+    });
+    projectedEvents.forEach(function (event) {
+      (event.rankings || []).forEach(function (ranking) {
+        var team = ranking.team || ranking.country || ranking.org;
+        if (!team) return;
+        if (!projectedTally[team]) {
+          projectedTally[team] = { gold: 0, silver: 0, bronze: 0, total: 0 };
+        }
+        projectedTally[team].gold += parseProbability(ranking.gold);
+        projectedTally[team].silver += parseProbability(ranking.silver);
+        projectedTally[team].bronze += parseProbability(ranking.bronze);
+        projectedTally[team].total += parseProbability(ranking.gold) +
+          parseProbability(ranking.silver) + parseProbability(ranking.bronze);
+      });
+    });
 
     var nations = Array.from(new Set(Object.keys(actualTally).concat(Object.keys(projectedTally))));
 
@@ -660,17 +704,17 @@
     });
 
     // Prediction events definitions for podium view
-    var predEvents = (window.appData && window.appData.predictionEvents) || [];
     var eventCards = allEvents.map(function (ev) {
       var pDef = predEvents.find(function (pe) { return pe.id === ev.id; }) || {};
       var p = ev.podium || {};
+      var eventName = String(ev.name || ev.event || 'Swimming Event');
       return {
         id: ev.id,
-        name: ev.name,
-        shortName: ev.name,
+        name: eventName,
+        shortName: eventName,
         icon: '🏊',
         gender: ev.gender,
-        type: ev.name.includes('Relay') ? 'team' : 'individual',
+        type: eventName.includes('Relay') ? 'team' : 'individual',
         status: ev.status,
         rankings: pDef.rankings || [],
         goldScoreInfo: p.gold ? p.gold.time : '',

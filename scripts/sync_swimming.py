@@ -277,6 +277,30 @@ def main():
     # Group into Events
     events_dict = {}
 
+    def add_podium_medalist(event, medal, competitor):
+        entry = {
+            "athlete": competitor["name"],
+            "country": competitor["country"],
+            "org": competitor["org"],
+            "time": competitor["time"]
+        }
+        if medal == "gold":
+            entry["record"] = competitor["record"]
+
+        current = event["podium"].get(medal)
+        if not current:
+            event["podium"][medal] = entry
+            return
+
+        tied = current.get("tiedMedalists") if isinstance(current, dict) else None
+        if tied is None:
+            tied = [current]
+        if not any(item.get("athlete") == entry["athlete"] for item in tied):
+            tied.append(entry)
+        event["podium"][medal] = dict(tied[0])
+        event["podium"][medal]["tiedMedalists"] = tied
+        event["podium"][medal]["tieCount"] = len(tied)
+
     for item in all_schedule_items:
         ev_code = item.get("Event")
         if not ev_code:
@@ -351,30 +375,11 @@ def main():
                 ev_entry["status"] = "Official"
                 for c in parsed_comp:
                     if c["medal"] == "Gold" or c["rank"] == "1":
-                        if not ev_entry["podium"]["gold"]:
-                            ev_entry["podium"]["gold"] = {
-                                "athlete": c["name"],
-                                "country": c["country"],
-                                "org": c["org"],
-                                "time": c["time"],
-                                "record": c["record"]
-                            }
+                        add_podium_medalist(ev_entry, "gold", c)
                     elif c["medal"] == "Silver" or c["rank"] == "2":
-                        if not ev_entry["podium"]["silver"]:
-                            ev_entry["podium"]["silver"] = {
-                                "athlete": c["name"],
-                                "country": c["country"],
-                                "org": c["org"],
-                                "time": c["time"]
-                            }
+                        add_podium_medalist(ev_entry, "silver", c)
                     elif c["medal"] == "Bronze" or c["rank"] == "3":
-                        if not ev_entry["podium"]["bronze"]:
-                            ev_entry["podium"]["bronze"] = {
-                                "athlete": c["name"],
-                                "country": c["country"],
-                                "org": c["org"],
-                                "time": c["time"]
-                            }
+                        add_podium_medalist(ev_entry, "bronze", c)
         else:
             ev_entry["heats"].append(unit_obj)
 

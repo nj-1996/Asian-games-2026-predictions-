@@ -6250,7 +6250,24 @@
           "country": "China",
           "org": "CHN",
           "time": "58.64",
-          "record": ""
+          "record": "",
+          "tiedMedalists": [
+            {
+              "athlete": "DONG Zhihao",
+              "country": "China",
+              "org": "CHN",
+              "time": "58.64",
+              "record": ""
+            },
+            {
+              "athlete": "OHASHI Shin",
+              "country": "Japan",
+              "org": "JPN",
+              "time": "58.64",
+              "record": ""
+            }
+          ],
+          "tieCount": 2
         },
         "silver": null,
         "bronze": {
