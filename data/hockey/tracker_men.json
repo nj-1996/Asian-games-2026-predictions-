@@ -201,36 +201,36 @@
     },
     {
       "round": "Pool B",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-26",
       "time": "09:00",
       "player1": "Oman",
       "player2": "Thailand",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "0 - 1",
+      "winner": "Thailand"
     },
     {
       "round": "Pool A",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-26",
       "time": "11:00",
       "player1": "Bangladesh",
       "player2": "Indonesia",
-      "score": "vs",
-      "winner": ""
+      "score": "3 - 1",
+      "winner": "Bangladesh"
     },
     {
       "round": "Pool B",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-26",
       "time": "13:00",
       "player1": "Malaysia",
       "player2": "Pakistan",
-      "score": "vs",
-      "winner": ""
+      "score": "3 - 4",
+      "winner": "Pakistan"
     },
     {
       "round": "Pool A",
