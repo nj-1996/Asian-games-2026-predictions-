@@ -258,8 +258,8 @@
     },
     {
       "round": "Preliminary Round - Group Stage",
-      "status": "Upcoming",
-      "state": "Unofficial",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-26",
       "time": "17:30",
       "player1": "Korea",
@@ -268,7 +268,7 @@
       "score1": "46",
       "score2": "18",
       "set_scores": "HT: 22-9",
-      "winner": "",
+      "winner": "Korea",
       "venue": "ENTRIO"
     },
     {

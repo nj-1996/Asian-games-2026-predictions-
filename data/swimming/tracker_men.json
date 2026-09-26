@@ -15933,19 +15933,85 @@
           "country": "Thailand",
           "org": "THA",
           "time": "15:54.53",
-          "record": ""
+          "record": "",
+          "tiedMedalists": [
+            {
+              "athlete": "THAMMANANTHACHOTE Ratthawit",
+              "country": "Thailand",
+              "org": "THA",
+              "time": "15:54.53",
+              "record": ""
+            },
+            {
+              "athlete": "SAADEDDIN Saadeddin",
+              "country": "Qatar",
+              "org": "QAT",
+              "time": "15:21.33",
+              "record": ""
+            },
+            {
+              "athlete": "ZHANG Zhanshuo",
+              "country": "China",
+              "org": "CHN",
+              "time": "14:42.42",
+              "record": ""
+            }
+          ],
+          "tieCount": 3
         },
         "silver": {
           "athlete": "TAN Nicholas James",
           "country": "Singapore",
           "org": "SGP",
-          "time": "15:57.59"
+          "time": "15:57.59",
+          "tiedMedalists": [
+            {
+              "athlete": "TAN Nicholas James",
+              "country": "Singapore",
+              "org": "SGP",
+              "time": "15:57.59"
+            },
+            {
+              "athlete": "PANG Russel",
+              "country": "Singapore",
+              "org": "SGP",
+              "time": "15:22.16"
+            },
+            {
+              "athlete": "TABUCHI Kaito",
+              "country": "Japan",
+              "org": "JPN",
+              "time": "14:45.99"
+            }
+          ],
+          "tieCount": 3
         },
         "bronze": {
           "athlete": "NASREDINOV Daniel",
           "country": "KGZ",
           "org": "KGZ",
-          "time": "16:03.92"
+          "time": "16:03.92",
+          "tiedMedalists": [
+            {
+              "athlete": "NASREDINOV Daniel",
+              "country": "KGZ",
+              "org": "KGZ",
+              "time": "16:03.92"
+            },
+            {
+              "athlete": "MAI Tran Tuan Anh",
+              "country": "Vietnam",
+              "org": "VIE",
+              "time": "15:33.97"
+            },
+            {
+              "athlete": "IMAFUKU Kazushi",
+              "country": "Japan",
+              "org": "JPN",
+              "time": "14:54.37"
+            }
+          ],
+          "tieCount": 3
         }
       },
       "date": "2026-09-22"
@@ -30406,19 +30472,85 @@
           "country": "Thailand",
           "org": "THA",
           "time": "8:15.63",
-          "record": ""
+          "record": "",
+          "tiedMedalists": [
+            {
+              "athlete": "THAMMANANTHACHOTE Ratthawit",
+              "country": "Thailand",
+              "org": "THA",
+              "time": "8:15.63",
+              "record": ""
+            },
+            {
+              "athlete": "NGUYEN Huy Hoang",
+              "country": "Vietnam",
+              "org": "VIE",
+              "time": "7:57.39",
+              "record": ""
+            },
+            {
+              "athlete": "ZHANG Zhanshuo",
+              "country": "China",
+              "org": "CHN",
+              "time": "7:42.49",
+              "record": "GR"
+            }
+          ],
+          "tieCount": 3
         },
         "silver": {
           "athlete": "TAN Nicholas James",
           "country": "Singapore",
           "org": "SGP",
-          "time": "8:19.36"
+          "time": "8:19.36",
+          "tiedMedalists": [
+            {
+              "athlete": "TAN Nicholas James",
+              "country": "Singapore",
+              "org": "SGP",
+              "time": "8:19.36"
+            },
+            {
+              "athlete": "TRAN Van Nguyen Quoc",
+              "country": "Vietnam",
+              "org": "VIE",
+              "time": "8:00.89"
+            },
+            {
+              "athlete": "TABUCHI Kaito",
+              "country": "Japan",
+              "org": "JPN",
+              "time": "7:43.86"
+            },
+            {
+              "athlete": "KIM Junwoo",
+              "country": "Korea",
+              "org": "KOR",
+              "time": "7:43.86"
+            }
+          ],
+          "tieCount": 4
         },
         "bronze": {
           "athlete": "DIDENKO Fedor",
           "country": "Kazakhstan",
           "org": "KAZ",
-          "time": "8:22.35"
+          "time": "8:22.35",
+          "tiedMedalists": [
+            {
+              "athlete": "DIDENKO Fedor",
+              "country": "Kazakhstan",
+              "org": "KAZ",
+              "time": "8:22.35"
+            },
+            {
+              "athlete": "NEHRA Aryan",
+              "country": "India",
+              "org": "IND",
+              "time": "8:02.52"
+            }
+          ],
+          "tieCount": 2
         }
       },
       "date": "2026-09-24"

@@ -2228,19 +2228,66 @@
           "country": "Singapore",
           "org": "SGP",
           "time": "17:21.51",
-          "record": ""
+          "record": "",
+          "tiedMedalists": [
+            {
+              "athlete": "SIM En Xi Sarah",
+              "country": "Singapore",
+              "org": "SGP",
+              "time": "17:21.51",
+              "record": ""
+            },
+            {
+              "athlete": "LI Bingjie",
+              "country": "China",
+              "org": "CHN",
+              "time": "15:53.52",
+              "record": ""
+            }
+          ],
+          "tieCount": 2
         },
         "silver": {
           "athlete": "MA Gilaine",
           "country": "Hong Kong, China",
           "org": "HKG",
-          "time": "17:37.48"
+          "time": "17:37.48",
+          "tiedMedalists": [
+            {
+              "athlete": "MA Gilaine",
+              "country": "Hong Kong, China",
+              "org": "HKG",
+              "time": "17:37.48"
+            },
+            {
+              "athlete": "GAN Ching Hwee",
+              "country": "Singapore",
+              "org": "SGP",
+              "time": "16:00.45"
+            }
+          ],
+          "tieCount": 2
         },
         "bronze": {
           "athlete": "LEFALHER Sana",
           "country": "Bahrain",
           "org": "BRN",
-          "time": "17:57.23"
+          "time": "17:57.23",
+          "tiedMedalists": [
+            {
+              "athlete": "LEFALHER Sana",
+              "country": "Bahrain",
+              "org": "BRN",
+              "time": "17:57.23"
+            },
+            {
+              "athlete": "KAJIMOTO Ichika",
+              "country": "Japan",
+              "org": "JPN",
+              "time": "16:06.83"
+            }
+          ],
+          "tieCount": 2
         }
       },
       "date": "2026-09-20"
@@ -27832,19 +27879,66 @@
           "country": "Singapore",
           "org": "SGP",
           "time": "9:13.62",
-          "record": ""
+          "record": "",
+          "tiedMedalists": [
+            {
+              "athlete": "SIM En Xi Sarah",
+              "country": "Singapore",
+              "org": "SGP",
+              "time": "9:13.62",
+              "record": ""
+            },
+            {
+              "athlete": "LI Bingjie",
+              "country": "China",
+              "org": "CHN",
+              "time": "8:24.02",
+              "record": ""
+            }
+          ],
+          "tieCount": 2
         },
         "silver": {
           "athlete": "LEFALHER Sana",
           "country": "Bahrain",
           "org": "BRN",
-          "time": "9:27.33"
+          "time": "9:27.33",
+          "tiedMedalists": [
+            {
+              "athlete": "LEFALHER Sana",
+              "country": "Bahrain",
+              "org": "BRN",
+              "time": "9:27.33"
+            },
+            {
+              "athlete": "GAN Ching Hwee",
+              "country": "Singapore",
+              "org": "SGP",
+              "time": "8:26.25"
+            }
+          ],
+          "tieCount": 2
         },
         "bronze": {
           "athlete": "AMGALAN Altannar",
           "country": "Mongolia",
           "org": "MGL",
-          "time": "10:23.84"
+          "time": "10:23.84",
+          "tiedMedalists": [
+            {
+              "athlete": "AMGALAN Altannar",
+              "country": "Mongolia",
+              "org": "MGL",
+              "time": "10:23.84"
+            },
+            {
+              "athlete": "KAJIMOTO Ichika",
+              "country": "Japan",
+              "org": "JPN",
+              "time": "8:27.37"
+            }
+          ],
+          "tieCount": 2
         }
       },
       "date": "2026-09-25"

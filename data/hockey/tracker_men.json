@@ -256,13 +256,13 @@
     },
     {
       "round": "Pool B",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-26",
       "time": "19:00",
       "player1": "Uzbekistan",
       "player2": "China",
-      "score": "1 - 2",
+      "score": "1 - 3",
       "winner": "China"
     },
     {
