@@ -145,8 +145,6 @@ flowchart LR
 │       ├── teqball.js              # 3-set scoring & dual bronze bracket
 │       └── volleyball.js           # Set ratio / points ratio standings engine
 ├── scripts/
-│   ├── simulate_handball.py        # Monte Carlo generator for Handball
-│   ├── simulate_soft_tennis.py     # Monte Carlo generator for Soft Tennis
 │   ├── sync_basketball.py          # Scraper & parser for Basketball
 │   ├── sync_cricket.py             # Scraper & parser for Cricket
 │   ├── sync_football.py            # Scraper & parser for Football

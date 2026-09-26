@@ -225,15 +225,19 @@ def main():
     # Classify matches by division cleanly
     men_matches = [
         m for m in parsed_matches
-        if ("men" in m["event"].lower() and "women" not in m["event"].lower()) or "mixed" in m["event"].lower()
+        if "men" in m["event"].lower() and "women" not in m["event"].lower()
     ]
     women_matches = [
         m for m in parsed_matches
-        if "women" in m["event"].lower() or "mixed" in m["event"].lower()
+        if "women" in m["event"].lower()
     ]
+    mixed_matches = [m for m in parsed_matches if "mixed" in m["event"].lower()]
 
     out_dir = os.path.join(os.path.dirname(__file__), "..", "data", "teqball")
     os.makedirs(out_dir, exist_ok=True)
+    legacy_tracker = os.path.join(out_dir, "tracker.json")
+    if os.path.exists(legacy_tracker):
+        os.remove(legacy_tracker)
 
     with open(os.path.join(out_dir, "tracker_men.json"), "w", encoding="utf-8") as f:
         json.dump({"sport": "Teqball (Men)", "matches": men_matches}, f, indent=2, ensure_ascii=False)
@@ -241,13 +245,13 @@ def main():
     with open(os.path.join(out_dir, "tracker_women.json"), "w", encoding="utf-8") as f:
         json.dump({"sport": "Teqball (Women)", "matches": women_matches}, f, indent=2, ensure_ascii=False)
 
-    with open(os.path.join(out_dir, "tracker.json"), "w", encoding="utf-8") as f:
-        json.dump({"sport": "Teqball", "matches": parsed_matches}, f, indent=2, ensure_ascii=False)
+    with open(os.path.join(out_dir, "tracker_mixed.json"), "w", encoding="utf-8") as f:
+        json.dump({"sport": "Teqball (Mixed)", "matches": mixed_matches}, f, indent=2, ensure_ascii=False)
 
     print(f"Successfully generated Teqball trackers in {out_dir}:")
     print(f"  tracker_men.json: {len(men_matches)} matches")
     print(f"  tracker_women.json: {len(women_matches)} matches")
-    print(f"  tracker.json: {len(parsed_matches)} matches")
+    print(f"  tracker_mixed.json: {len(mixed_matches)} matches")
 
 
 if __name__ == "__main__":

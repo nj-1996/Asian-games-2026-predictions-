@@ -237,7 +237,7 @@ def parse_competitors(comp_list):
     parsed.sort(key=sort_key)
     return parsed
 
-def sync_swimming():
+def main():
     print("Fetching Asian Games 2026 Swimming (SWM) official data...")
     session = requests.Session()
     dates = [
@@ -416,6 +416,9 @@ def sync_swimming():
 
     # Save outputs
     os.makedirs("data/swimming", exist_ok=True)
+    legacy_tracker = "data/swimming/tracker.json"
+    if os.path.exists(legacy_tracker):
+        os.remove(legacy_tracker)
 
     men_output = {
         "sport": "Swimming",
@@ -444,19 +447,7 @@ def sync_swimming():
     with open("data/swimming/tracker_mixed.json", "w", encoding="utf-8") as f:
         json.dump(mixed_output, f, indent=2, ensure_ascii=False)
 
-    # Also unified tracker.json
-    all_output = {
-        "sport": "Swimming",
-        "totalEvents": len(formatted_events),
-        "events": formatted_events,
-        "men": men_events,
-        "women": women_events,
-        "mixed": mixed_events
-    }
-    with open("data/swimming/tracker.json", "w", encoding="utf-8") as f:
-        json.dump(all_output, f, indent=2, ensure_ascii=False)
-
-    print("\n[OK] Successfully generated data/swimming/ trackers!")
+    print("\n[OK] Successfully generated gender-specific data/swimming/ trackers!")
 
 if __name__ == "__main__":
-    sync_swimming()
+    main()
