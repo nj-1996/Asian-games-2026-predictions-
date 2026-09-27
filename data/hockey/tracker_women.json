@@ -289,46 +289,46 @@
     },
     {
       "round": "Pool A",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-27",
       "time": "13:00",
       "player1": "Chinese Taipei",
       "player2": "Bangladesh",
-      "score": "1 - 2",
-      "winner": "Bangladesh"
+      "score": "3 - 2",
+      "winner": "Chinese Taipei"
     },
     {
       "round": "Pool A",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-27",
       "time": "15:00",
       "player1": "Malaysia",
       "player2": "Korea",
-      "score": "vs",
-      "winner": ""
+      "score": "1 - 2",
+      "winner": "Korea"
     },
     {
       "round": "Pool B",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-27",
       "time": "17:00",
       "player1": "Thailand",
       "player2": "Japan",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 3",
+      "winner": "Japan"
     },
     {
       "round": "Pool B",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-27",
       "time": "19:00",
       "player1": "India",
       "player2": "Singapore",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {
@@ -337,7 +337,7 @@
       "state": "Scheduled",
       "date": "2026-09-30",
       "time": "09:00",
-      "player1": "TBD",
+      "player1": "Kazakhstan",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
@@ -348,7 +348,7 @@
       "state": "Scheduled",
       "date": "2026-09-30",
       "time": "11:30",
-      "player1": "TBD",
+      "player1": "Malaysia",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
@@ -360,7 +360,7 @@
       "date": "2026-09-30",
       "time": "14:00",
       "player1": "TBD",
-      "player2": "TBD",
+      "player2": "Chinese Taipei",
       "score": "vs",
       "winner": ""
     },
@@ -370,7 +370,7 @@
       "state": "Scheduled",
       "date": "2026-09-30",
       "time": "16:30",
-      "player1": "TBD",
+      "player1": "China",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
@@ -382,7 +382,7 @@
       "date": "2026-09-30",
       "time": "19:00",
       "player1": "TBD",
-      "player2": "TBD",
+      "player2": "Korea",
       "score": "vs",
       "winner": ""
     },
@@ -392,7 +392,7 @@
       "state": "Scheduled",
       "date": "2026-10-02",
       "time": "09:00",
-      "player1": "TBD",
+      "player1": "Bangladesh",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
