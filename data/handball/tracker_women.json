@@ -303,17 +303,17 @@
     },
     {
       "round": "Preliminary Round - Group Stage",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-27",
       "time": "18:00",
       "player1": "Japan",
       "player2": "Korea",
-      "score": "22 - 25",
-      "score1": "22",
-      "score2": "25",
+      "score": "23 - 27",
+      "score1": "23",
+      "score2": "27",
       "set_scores": "HT: 12-16",
-      "winner": "",
+      "winner": "Korea",
       "venue": "ENTRIO"
     }
   ]

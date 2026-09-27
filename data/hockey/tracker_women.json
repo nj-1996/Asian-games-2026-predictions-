@@ -322,14 +322,14 @@
     },
     {
       "round": "Pool B",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-27",
       "time": "19:00",
       "player1": "India",
       "player2": "Singapore",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "7 - 0",
+      "winner": "India"
     },
     {
       "round": "11th-12th Place Match",
@@ -338,7 +338,7 @@
       "date": "2026-09-30",
       "time": "09:00",
       "player1": "Kazakhstan",
-      "player2": "TBD",
+      "player2": "Uzbekistan",
       "score": "vs",
       "winner": ""
     },
@@ -349,7 +349,7 @@
       "date": "2026-09-30",
       "time": "11:30",
       "player1": "Malaysia",
-      "player2": "TBD",
+      "player2": "Indonesia",
       "score": "vs",
       "winner": ""
     },
@@ -359,7 +359,7 @@
       "state": "Scheduled",
       "date": "2026-09-30",
       "time": "14:00",
-      "player1": "TBD",
+      "player1": "Thailand",
       "player2": "Chinese Taipei",
       "score": "vs",
       "winner": ""
@@ -371,7 +371,7 @@
       "date": "2026-09-30",
       "time": "16:30",
       "player1": "China",
-      "player2": "TBD",
+      "player2": "Japan",
       "score": "vs",
       "winner": ""
     },
@@ -381,7 +381,7 @@
       "state": "Scheduled",
       "date": "2026-09-30",
       "time": "19:00",
-      "player1": "TBD",
+      "player1": "India",
       "player2": "Korea",
       "score": "vs",
       "winner": ""
@@ -393,7 +393,7 @@
       "date": "2026-10-02",
       "time": "09:00",
       "player1": "Bangladesh",
-      "player2": "TBD",
+      "player2": "Singapore",
       "score": "vs",
       "winner": ""
     },
