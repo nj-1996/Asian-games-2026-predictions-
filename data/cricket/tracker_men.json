@@ -90,12 +90,12 @@
       "score": "vs",
       "score1": "-",
       "score2": "-",
-      "winner": ""
+      "winner": "Pakistan"
     },
     {
       "round": "Quarterfinal 2",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Cancelled",
       "date": "2026-09-28",
       "time": "13:30",
       "player1": "India",
@@ -103,7 +103,7 @@
       "score": "vs",
       "score1": "-",
       "score2": "-",
-      "winner": ""
+      "winner": "India"
     },
     {
       "round": "Quarterfinal 3",
@@ -137,7 +137,7 @@
       "state": "Scheduled",
       "date": "2026-10-01",
       "time": "09:00",
-      "player1": "TBD",
+      "player1": "Pakistan",
       "player2": "TBD",
       "score": "vs",
       "score1": "-",
@@ -150,7 +150,7 @@
       "state": "Scheduled",
       "date": "2026-10-01",
       "time": "13:30",
-      "player1": "TBD",
+      "player1": "India",
       "player2": "TBD",
       "score": "vs",
       "score1": "-",
