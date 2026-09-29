@@ -246,13 +246,13 @@
     {
       "round": "Women 1/2",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Unofficial",
       "date": "2026-09-29",
       "time": "15:00",
       "player1": "DPR Korea",
       "player2": "China",
-      "score": "vs",
-      "winner": ""
+      "score": "2 - 0",
+      "winner": "DPR Korea"
     },
     {
       "round": "Women 1/2",
@@ -271,7 +271,7 @@
       "state": "Scheduled",
       "date": "2026-10-02",
       "time": "15:00",
-      "player1": "TBD",
+      "player1": "China",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
