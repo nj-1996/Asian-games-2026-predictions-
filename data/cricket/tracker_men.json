@@ -108,7 +108,7 @@
     {
       "round": "Quarterfinal 3",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Cancelled",
       "date": "2026-09-29",
       "time": "09:00",
       "player1": "Sri Lanka",
@@ -116,12 +116,12 @@
       "score": "vs",
       "score1": "-",
       "score2": "-",
-      "winner": ""
+      "winner": "Sri Lanka"
     },
     {
       "round": "Quarterfinal 4",
       "status": "Upcoming",
-      "state": "Scheduled",
+      "state": "Cancelled",
       "date": "2026-09-29",
       "time": "13:30",
       "player1": "Bangladesh",
@@ -129,7 +129,7 @@
       "score": "vs",
       "score1": "-",
       "score2": "-",
-      "winner": ""
+      "winner": "Bangladesh"
     },
     {
       "round": "Semifinal 1",
@@ -138,7 +138,7 @@
       "date": "2026-10-01",
       "time": "09:00",
       "player1": "Pakistan",
-      "player2": "TBD",
+      "player2": "Bangladesh",
       "score": "vs",
       "score1": "-",
       "score2": "-",
@@ -151,7 +151,7 @@
       "date": "2026-10-01",
       "time": "13:30",
       "player1": "India",
-      "player2": "TBD",
+      "player2": "Sri Lanka",
       "score": "vs",
       "score1": "-",
       "score2": "-",
