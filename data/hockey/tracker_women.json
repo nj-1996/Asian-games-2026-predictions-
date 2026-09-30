@@ -333,35 +333,35 @@
     },
     {
       "round": "11th-12th Place Match",
-      "status": "Upcoming",
-      "state": "Getting Ready",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-30",
       "time": "09:00",
       "player1": "Kazakhstan",
       "player2": "Uzbekistan",
-      "score": "0 - 0",
+      "score": "1 - 1",
       "winner": ""
     },
     {
       "round": "5th-8th Match 1",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-30",
       "time": "11:30",
       "player1": "Malaysia",
       "player2": "Indonesia",
-      "score": "vs",
-      "winner": ""
+      "score": "3 - 0",
+      "winner": "Malaysia"
     },
     {
       "round": "5th-8th Match 2",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-30",
       "time": "14:00",
       "player1": "Thailand",
       "player2": "Chinese Taipei",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {
@@ -403,7 +403,7 @@
       "state": "Scheduled",
       "date": "2026-10-02",
       "time": "11:30",
-      "player1": "TBD",
+      "player1": "Indonesia",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
@@ -414,7 +414,7 @@
       "state": "Scheduled",
       "date": "2026-10-02",
       "time": "14:00",
-      "player1": "TBD",
+      "player1": "Malaysia",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
