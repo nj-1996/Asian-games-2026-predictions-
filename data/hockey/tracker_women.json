@@ -377,13 +377,13 @@
     },
     {
       "round": "Semifinal 2",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-30",
       "time": "19:00",
       "player1": "India",
       "player2": "Korea",
-      "score": "1 - 0",
+      "score": "2 - 0",
       "winner": "India"
     },
     {
@@ -426,7 +426,7 @@
       "date": "2026-10-02",
       "time": "16:30",
       "player1": "Japan",
-      "player2": "TBD",
+      "player2": "Korea",
       "score": "vs",
       "winner": ""
     },
@@ -437,7 +437,7 @@
       "date": "2026-10-02",
       "time": "19:00",
       "player1": "China",
-      "player2": "TBD",
+      "player2": "India",
       "score": "vs",
       "winner": ""
     }
