@@ -355,36 +355,36 @@
     },
     {
       "round": "5th-8th Match 2",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-30",
       "time": "14:00",
       "player1": "Thailand",
       "player2": "Chinese Taipei",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "2 - 1",
+      "winner": "Thailand"
     },
     {
       "round": "Semifinal 1",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-30",
       "time": "16:30",
       "player1": "China",
       "player2": "Japan",
-      "score": "vs",
+      "score": "0 - 0",
       "winner": ""
     },
     {
       "round": "Semifinal 2",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-30",
       "time": "19:00",
       "player1": "India",
       "player2": "Korea",
-      "score": "vs",
-      "winner": ""
+      "score": "1 - 0",
+      "winner": "India"
     },
     {
       "round": "9th-10th Place Match",
@@ -404,7 +404,7 @@
       "date": "2026-10-02",
       "time": "11:30",
       "player1": "Indonesia",
-      "player2": "TBD",
+      "player2": "Chinese Taipei",
       "score": "vs",
       "winner": ""
     },
@@ -415,7 +415,7 @@
       "date": "2026-10-02",
       "time": "14:00",
       "player1": "Malaysia",
-      "player2": "TBD",
+      "player2": "Thailand",
       "score": "vs",
       "winner": ""
     },
@@ -425,7 +425,7 @@
       "state": "Scheduled",
       "date": "2026-10-02",
       "time": "16:30",
-      "player1": "TBD",
+      "player1": "Japan",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
@@ -436,7 +436,7 @@
       "state": "Scheduled",
       "date": "2026-10-02",
       "time": "19:00",
-      "player1": "TBD",
+      "player1": "China",
       "player2": "TBD",
       "score": "vs",
       "winner": ""

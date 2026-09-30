@@ -278,25 +278,25 @@
     },
     {
       "round": "Men 1/2",
-      "status": "Upcoming",
-      "state": "Start List",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-09-30",
       "time": "15:00",
       "player1": "Korea",
       "player2": "China",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "2 - 1",
+      "winner": "Korea"
     },
     {
       "round": "Men 1/2",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-09-30",
       "time": "19:30",
       "player1": "Uzbekistan",
       "player2": "Japan",
-      "score": "vs",
-      "winner": ""
+      "score": "1 - 0",
+      "winner": "Uzbekistan"
     },
     {
       "round": "Men F 3rd Place Match",
@@ -304,7 +304,7 @@
       "state": "Scheduled",
       "date": "2026-10-03",
       "time": "15:00",
-      "player1": "TBD",
+      "player1": "China",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
@@ -315,7 +315,7 @@
       "state": "Scheduled",
       "date": "2026-10-03",
       "time": "19:30",
-      "player1": "TBD",
+      "player1": "Korea",
       "player2": "TBD",
       "score": "vs",
       "winner": ""
