@@ -333,14 +333,14 @@
     },
     {
       "round": "11th-12th Place Match",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-10-01",
       "time": "09:00",
       "player1": "Indonesia",
       "player2": "Oman",
-      "score": "vs",
-      "winner": ""
+      "score": "1 - 2",
+      "winner": "Oman"
     },
     {
       "round": "5th-8th Match 1",
