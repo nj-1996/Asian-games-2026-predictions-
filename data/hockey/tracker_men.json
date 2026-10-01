@@ -366,25 +366,25 @@
     },
     {
       "round": "Semifinal 1",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-01",
       "time": "16:30",
       "player1": "India",
       "player2": "Pakistan",
-      "score": "vs",
-      "winner": ""
+      "score": "4 - 3",
+      "winner": "India"
     },
     {
       "round": "Semifinal 2",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-01",
       "time": "19:00",
       "player1": "Malaysia",
       "player2": "Korea",
-      "score": "vs",
-      "winner": ""
+      "score": "2 - 1",
+      "winner": "Malaysia"
     },
     {
       "round": "9th-10th Place Match",
@@ -425,8 +425,8 @@
       "state": "Scheduled",
       "date": "2026-10-03",
       "time": "16:30",
-      "player1": "TBD",
-      "player2": "TBD",
+      "player1": "Pakistan",
+      "player2": "Korea",
       "score": "vs",
       "winner": ""
     },
@@ -436,8 +436,8 @@
       "state": "Scheduled",
       "date": "2026-10-03",
       "time": "19:00",
-      "player1": "TBD",
-      "player2": "TBD",
+      "player1": "India",
+      "player2": "Malaysia",
       "score": "vs",
       "winner": ""
     }
