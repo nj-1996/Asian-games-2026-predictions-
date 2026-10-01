@@ -333,36 +333,36 @@
     },
     {
       "round": "11th-12th Place Match",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-01",
       "time": "09:00",
       "player1": "Indonesia",
       "player2": "Oman",
-      "score": "1 - 2",
-      "winner": "Oman"
+      "score": "3 - 3",
+      "winner": ""
     },
     {
       "round": "5th-8th Match 1",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-01",
       "time": "11:30",
       "player1": "Japan",
       "player2": "Thailand",
-      "score": "vs",
-      "winner": ""
+      "score": "9 - 1",
+      "winner": "Japan"
     },
     {
       "round": "5th-8th Match 2",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-01",
       "time": "14:00",
       "player1": "China",
       "player2": "Bangladesh",
-      "score": "vs",
-      "winner": ""
+      "score": "7 - 1",
+      "winner": "China"
     },
     {
       "round": "Semifinal 1",
@@ -403,8 +403,8 @@
       "state": "Scheduled",
       "date": "2026-10-03",
       "time": "11:30",
-      "player1": "TBD",
-      "player2": "TBD",
+      "player1": "Thailand",
+      "player2": "Bangladesh",
       "score": "vs",
       "winner": ""
     },
@@ -414,8 +414,8 @@
       "state": "Scheduled",
       "date": "2026-10-03",
       "time": "14:00",
-      "player1": "TBD",
-      "player2": "TBD",
+      "player1": "Japan",
+      "player2": "China",
       "score": "vs",
       "winner": ""
     },
