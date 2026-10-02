@@ -267,24 +267,24 @@
     },
     {
       "round": "Women F 3rd Place Match",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-02",
       "time": "15:00",
       "player1": "China",
       "player2": "Korea",
-      "score": "0 - 0",
-      "winner": ""
+      "score": "0 - 1",
+      "winner": "Korea"
     },
     {
       "round": "Women F Final",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-10-02",
       "time": "19:30",
       "player1": "DPR Korea",
       "player2": "Japan",
-      "score": "vs",
+      "score": "2 - 2",
       "winner": ""
     }
   ]
