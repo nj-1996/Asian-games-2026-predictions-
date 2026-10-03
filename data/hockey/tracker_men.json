@@ -388,8 +388,8 @@
     },
     {
       "round": "9th-10th Place Match",
-      "status": "Upcoming",
-      "state": "Unofficial",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-03",
       "time": "09:00",
       "player1": "Sri Lanka",
@@ -399,35 +399,35 @@
     },
     {
       "round": "7th-8th Place Match",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-03",
       "time": "11:30",
       "player1": "Thailand",
       "player2": "Bangladesh",
-      "score": "vs",
-      "winner": ""
+      "score": "0 - 3",
+      "winner": "Bangladesh"
     },
     {
       "round": "5th-6th Place Match",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-03",
       "time": "14:00",
       "player1": "Japan",
       "player2": "China",
-      "score": "vs",
-      "winner": ""
+      "score": "5 - 0",
+      "winner": "Japan"
     },
     {
       "round": "Bronze Medal Match",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Live",
+      "state": "Running",
       "date": "2026-10-03",
       "time": "16:30",
       "player1": "Pakistan",
       "player2": "Korea",
-      "score": "vs",
+      "score": "1 - 1",
       "winner": ""
     },
     {
