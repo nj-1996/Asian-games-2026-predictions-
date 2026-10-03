@@ -300,8 +300,8 @@
     },
     {
       "round": "Men F 3rd Place Match",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-03",
       "time": "15:00",
       "player1": "China",
@@ -311,14 +311,14 @@
     },
     {
       "round": "Men F Final",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-03",
       "time": "19:30",
       "player1": "Korea",
       "player2": "Japan",
-      "score": "vs",
-      "winner": ""
+      "score": "1 - 0",
+      "winner": "Korea"
     }
   ]
 }

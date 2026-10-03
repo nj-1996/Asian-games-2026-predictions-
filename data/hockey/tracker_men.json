@@ -421,25 +421,25 @@
     },
     {
       "round": "Bronze Medal Match",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-03",
       "time": "16:30",
       "player1": "Pakistan",
       "player2": "Korea",
-      "score": "1 - 1",
-      "winner": ""
+      "score": "5 - 3",
+      "winner": "Pakistan"
     },
     {
       "round": "Gold Medal Match",
-      "status": "Upcoming",
-      "state": "Scheduled",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-03",
       "time": "19:00",
       "player1": "India",
       "player2": "Malaysia",
-      "score": "vs",
-      "winner": ""
+      "score": "5 - 1",
+      "winner": "India"
     }
   ]
 }

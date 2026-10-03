@@ -172,16 +172,16 @@
     },
     {
       "round": "Gold Medal Match",
-      "status": "Live",
-      "state": "Running",
+      "status": "Finished",
+      "state": "Official",
       "date": "2026-10-03",
       "time": "13:30",
       "player1": "Pakistan",
       "player2": "India",
-      "score": "168 - 211",
-      "score1": "168/5",
+      "score": "192 - 211",
+      "score1": "192/6",
       "score2": "211/6",
-      "winner": ""
+      "winner": "India"
     }
   ]
 }
